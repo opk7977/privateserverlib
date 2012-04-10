@@ -99,8 +99,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="../Release/Client"
+			IntermediateDirectory="../Release/Client"
 			ConfigurationType="1"
 			UseOfMFC="2"
 			CharacterSet="1"
@@ -128,6 +128,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="../Rinclude"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
@@ -150,7 +151,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="SegClient.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="../Rlib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -205,6 +208,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PacketQueue.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Scheduler.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -247,7 +258,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PacketQueue.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Scheduler.h"
 				>
 			</File>
 			<File
@@ -322,10 +341,19 @@
 			</Filter>
 		</Filter>
 		<File
+			RelativePath=".\Join.htm"
+			DeploymentContent="true"
+			>
+		</File>
+		<File
 			RelativePath=".\ReadMe.txt"
 			>
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="Client.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

@@ -9,26 +9,27 @@ private:
 	friend class SSingleton<Network>;
 
 private:
-	SSocket		m_conSock;
+	SSocket			m_conSock;
 
-	HANDLE		m_startWork;
+	HANDLE			m_startWork;
 	//쓰레드핸들과 id
-	HANDLE		m_recvThread;
-	int			m_iThread;
+	HANDLE			m_recvThread;
+	unsigned int	m_iThread;
 
-	SPacket		m_recvPack;
+	SPacket			m_recvPack;
 
 private:
 	Network(void);
 	~Network(void);
 
+public:
 	//초기화/해제
-	void Init( BOOL isNon = TRUE );
+	BOOL Init( BOOL isNon = TRUE );
 	void Release();
 
 	//연결 관련
-	void ConnectToSrv( char* ipAddr, int port );
-	void Reconnect( char* ipAddr, int port );
+	BOOL ConnectToSrv( char* ipAddr, int port );
+	BOOL Reconnect( char* ipAddr, int port );
 	void DisConnect();
 
 	//쓰레드 동작함수

@@ -80,32 +80,10 @@ IDR_ClientTYPE          ICON                    "res\\ClientDoc.ico"
 
 IDR_MAINFRAME MENU 
 BEGIN
-    POPUP "파일(&F)"
+    POPUP "네트워크(&N)"
     BEGIN
-        MENUITEM "새로 만들기(&N)\tCtrl+N",          ID_FILE_NEW
-        MENUITEM "열기(&O)...\tCtrl+O",           ID_FILE_OPEN
-        MENUITEM "저장(&S)\tCtrl+S",              ID_FILE_SAVE
-        MENUITEM "다른 이름으로 저장(&A)...",           ID_FILE_SAVE_AS
-        MENUITEM SEPARATOR
-        MENUITEM "인쇄(&P)...\tCtrl+P",           ID_FILE_PRINT
-        MENUITEM "인쇄 미리 보기(&V)",                ID_FILE_PRINT_PREVIEW
-        MENUITEM "인쇄 설정(&R)...",                ID_FILE_PRINT_SETUP
-        MENUITEM SEPARATOR
-        MENUITEM "최근에 사용한 파일",                  ID_FILE_MRU_FILE1, GRAYED
-        MENUITEM SEPARATOR
-        MENUITEM "끝내기(&X)",                     ID_APP_EXIT
-    END
-    POPUP "편집(&E)"
-    BEGIN
-        MENUITEM "실행 취소(&U)\tCtrl+Z",           ID_EDIT_UNDO
-        MENUITEM SEPARATOR
-        MENUITEM "잘라내기(&T)\tCtrl+X",            ID_EDIT_CUT
-        MENUITEM "복사(&C)\tCtrl+C",              ID_EDIT_COPY
-        MENUITEM "붙여넣기(&P)\tCtrl+V",            ID_EDIT_PASTE
-    END
-    POPUP "보기(&V)"
-    BEGIN
-        MENUITEM "상태 표시줄(&S)",                  ID_VIEW_STATUS_BAR
+        MENUITEM "연결하기(&C)",                    ID_NET_CONN
+        MENUITEM "로그인(&L)",                     ID_NET_LOGIN
     END
     POPUP "도움말(&H)"
     BEGIN
@@ -121,20 +99,8 @@ END
 
 IDR_MAINFRAME ACCELERATORS 
 BEGIN
-    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
-    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
-    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
-    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
-    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
-    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
-    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
-    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
-    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
-    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
-    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
-    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
-    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
-    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+    "C",            ID_NET_CONN,            VIRTKEY, ALT, NOINVERT
+    "L",            ID_NET_LOGIN,           VIRTKEY, ALT, NOINVERT
 END
 
 
@@ -162,8 +128,8 @@ BEGIN
     DEFPUSHBUTTON   "확인",IDOK,145,77,50,14
     PUSHBUTTON      "취소",IDCANCEL,200,77,50,14
     PUSHBUTTON      "가입하기",IDC_JOIN,90,77,50,14
-    EDITTEXT        IDC_EDIT1,63,22,126,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT2,63,44,126,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_LOGIN_ID,63,22,126,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_LOGIN_PW,63,44,126,14,ES_AUTOHSCROLL
     LTEXT           "I            D :",IDC_STATIC,21,24,37,8
     LTEXT           "Password :",IDC_STATIC,21,47,36,8
 END
@@ -176,9 +142,9 @@ BEGIN
     DEFPUSHBUTTON   "만들기",IDOK,129,90,50,14
     PUSHBUTTON      "취소",IDCANCEL,188,90,50,14
     PUSHBUTTON      "중복체크",IDC_CHECKID,188,13,50,14
-    EDITTEXT        IDC_EDIT1,69,14,104,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT2,69,41,104,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT3,69,68,104,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_JOIN_ID,69,14,104,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_JOIN_PW,69,41,104,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_JOIN_MAIL,69,68,104,14,ES_AUTOHSCROLL
     LTEXT           "I            D :",IDC_STATIC,23,16,37,8
     LTEXT           "Password :",IDC_STATIC,23,43,36,8
     LTEXT           "E_Mail      :",IDC_STATIC,23,70,36,8

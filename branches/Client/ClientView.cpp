@@ -8,6 +8,9 @@
 #include "ClientDoc.h"
 #include "ClientView.h"
 
+#include "Network.h"
+#include "Login.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -22,6 +25,8 @@ BEGIN_MESSAGE_MAP(CClientView, CView)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
+	ON_COMMAND(ID_NET_CONN, &CClientView::OnNetConn)
+	ON_COMMAND(ID_NET_LOGIN, &CClientView::OnNetLogin)
 END_MESSAGE_MAP()
 
 // CClientView 생성/소멸
@@ -97,4 +102,56 @@ CClientDoc* CClientView::GetDocument() const // 디버그되지 않은 버전은 인라인으�
 #endif //_DEBUG
 
 
+//======================================
+// 메뉴 함수
+//======================================
 // CClientView 메시지 처리기
+
+void CClientView::OnNetConn()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CClientDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
+
+	if( pDoc->isConnectToLogin && pDoc->isConnectToLobby )
+	{
+		MessageBox( NULL, _T("이미 서버와 연결되어 있습니다."), _T("error"), MB_OK | MB_ICONERROR );
+		return;
+	}
+
+	if( !GetNetwork.Init() )
+	{
+		MessageBox( NULL, _T("소켓 초기화 실패"), _T("error"), MB_OK | MB_ICONERROR );
+		return;
+	}
+
+	if( !GetNetwork.ConnectToSrv( "192.168.0.70", 8880 ) )
+	{
+		MessageBox( NULL, _T(""), _T(""), MB_OK | MB_ICONERROR );
+		return;
+	}
+}
+
+void CClientView::OnNetLogin()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CClientDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
+
+	//아직 로그인 서버에 연결이 되어 있지 않으면 실행하지 않는다.
+	if( !pDoc->isConnectToLogin )
+	{
+		MessageBox( NULL, _T("로그인 서버에 접속되어 있지 않습니다."), _T("error"), MB_OK | MB_ICONERROR );
+		return;
+	}
+
+	CLogin	loginDlg = new CLogin;
+
+	int result = loginDlg.DoModal();
+}
+
+//======================================

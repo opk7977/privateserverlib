@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Network.h"
 #include "SLogger.h"
+#include "PacketQueue.h"
 
 //쓰레드 전역 함수
 unsigned int __stdcall _RecvRunc( void* pArg )
@@ -17,7 +18,7 @@ Network::~Network(void)
 	Release();
 }
 
-void Network::Init( BOOL isNon /*= TRUE */ )
+BOOL Network::Init( BOOL isNon /*= TRUE */ )
 {
 	if( !m_conSock.Init() )
 		return FALSE;
@@ -37,10 +38,10 @@ void Network::Init( BOOL isNon /*= TRUE */ )
 void Network::Release()
 {
 	ResetEvent( m_startWork );
-	m_srvSock.Release();
+	m_conSock.Release();
 }
 
-void Network::ConnectToSrv( char* ipAddr, int port )
+BOOL Network::ConnectToSrv( char* ipAddr, int port )
 {
 	m_startWork = ::CreateEvent( NULL, TRUE, FALSE, NULL);
 
@@ -56,7 +57,7 @@ void Network::ConnectToSrv( char* ipAddr, int port )
 	return TRUE;
 }
 
-void Network::Reconnect( char* ipAddr, int port )
+BOOL Network::Reconnect( char* ipAddr, int port )
 {
 	//우선 연결 끊고
 	DisConnect();
@@ -92,7 +93,7 @@ unsigned int Network::RecvEvent()
 		Sleep( 10 );
 
 		WaitForSingleObject( m_startWork, INFINITE );
-		retval = recv( m_srvSock.GetSocket(), tmpbuf, tmpbufSize, 0 );
+		retval = recv( m_conSock.GetSocket(), tmpbuf, tmpbufSize, 0 );
 
 		if( retval == SOCKET_ERROR )
 		{
@@ -114,20 +115,28 @@ unsigned int Network::RecvEvent()
 
 				if( m_recvPack.IsValidPacket() && m_recvPack.GetPacketSize() <= recvSize )
 				{
-					//패킷을 처리 할 수 있는 함수 호출
-					PacketParsing( &m_recvPack );
+					//패킷을 패킷큐에 넣어 둔다.
+					GetPacketQ.PutPacket( m_recvPack.GetDataBufferPtr(), m_recvPack.GetPacketSize() );
+
+					//받아 처리한 만큼의 크기를 빼주고
+					recvSize -= m_recvPack.GetPacketSize();
 
 					//혹시 받은 패킷이 한개 이상이라면 또 확인해야 한다
-					recvSize -= m_recvPack.GetPacketSize();
 					if( recvSize > 0 )
 					{
-						CopyMemory( buffer, ( m_recvPack.GetDataBufferPtr()+recvSize-4 ), recvSize );
+						//아직 받아야 할게 남았다면 우선 buffer에 넣어 둔다
+						CopyMemory( buffer, ( m_recvPack.GetDataBufferPtr()+m_recvPack.GetPacketSize() ), recvSize );
 						tmpbuf += recvSize;
+					}
+					else
+					{
+						//다 받아서 새로 받아야 하니까 버퍼의 처음으로 돌아가자
+						tmpbuf = &buffer[0];
 					}
 				}
 				else
 				{
-					//아니면 돌아가서 더 받자.
+					//그냥 아직 덜 받음...돌아가서 더 받자.
 					tmpbuf += recvSize;
 					break;
 				}
@@ -139,7 +148,7 @@ unsigned int Network::RecvEvent()
 
 int Network::SendPacket( SPacket* packet )
 {
-	int retval = send( m_srvSock.GetSocket(), packet->GetDataBufferPtr(), packet->GetPacketSize(), 0 );
+	int retval = send( m_conSock.GetSocket(), packet->GetDataBufferPtr(), packet->GetPacketSize(), 0 );
 
 	if( retval < 0 )
 	{

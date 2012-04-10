@@ -25,7 +25,7 @@ END_MESSAGE_MAP()
 CClientDoc::CClientDoc()
 {
 	// TODO: 여기에 일회성 생성 코드를 추가합니다.
-
+	Init();
 }
 
 CClientDoc::~CClientDoc()
@@ -77,3 +77,19 @@ void CClientDoc::Dump(CDumpContext& dc) const
 
 
 // CClientDoc 명령
+
+//======================================
+// 사용자 정의 함수
+//======================================
+void CClientDoc::Init()
+{
+	isConnectToLogin = FALSE;
+	isCheckID = FALSE;
+	CheckID = 0;
+	isReturnLogin = FALSE;
+	isConnectToLobby = FALSE;
+
+	SessionID = 0;
+	strId = "";
+}
+

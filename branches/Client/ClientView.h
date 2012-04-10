@@ -41,6 +41,9 @@ protected:
 // 생성된 메시지 맵 함수
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnNetConn();
+	afx_msg void OnNetLogin();
 };
 
 #ifndef _DEBUG  // ClientView.cpp의 디버그 버전
