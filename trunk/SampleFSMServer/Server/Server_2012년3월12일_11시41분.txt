@@ -1,0 +1,429 @@
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 135, 580
+[FSMSession] goalX, Y	: 28, 22
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 135, 580
+[FSMSession] goalX, Y	: 28, 22
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 691, 3
+[FSMSession] goalX, Y	: 337, 62
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 173, 9
+[FSMSession] goalX, Y	: 337, 62
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 691, 3
+[FSMSession] goalX, Y	: 337, 62
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 173, 9
+[FSMSession] goalX, Y	: 337, 62
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 0
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 273, 7
+[FSMSession] goalX, Y	: 789, 88
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 333, 61
+[FSMSession] goalX, Y	: 369, 91
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 333, 61
+[FSMSession] goalX, Y	: 369, 91
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 365, 89
+[FSMSession] goalX, Y	: 266, 98
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 0
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 273, 7
+[FSMSession] goalX, Y	: 789, 88
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 339, 59
+[FSMSession] goalX, Y	: 646, 101
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 365, 89
+[FSMSession] goalX, Y	: 266, 98
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 269, 97
+[FSMSession] goalX, Y	: 123, 111
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 3
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 447, 23
+[FSMSession] goalX, Y	: 123, 111
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 339, 59
+[FSMSession] goalX, Y	: 646, 101
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 27, 26
+[FSMSession] goalX, Y	: 20, 117
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 269, 97
+[FSMSession] goalX, Y	: 123, 111
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 3
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 447, 23
+[FSMSession] goalX, Y	: 123, 111
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 27, 26
+[FSMSession] goalX, Y	: 20, 117
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 125, 109
+[FSMSession] goalX, Y	: 678, 130
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 125, 109
+[FSMSession] goalX, Y	: 678, 130
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 643, 99
+[FSMSession] goalX, Y	: 155, 140
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 19, 112
+[FSMSession] goalX, Y	: 155, 140
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 643, 99
+[FSMSession] goalX, Y	: 155, 140
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 19, 112
+[FSMSession] goalX, Y	: 155, 140
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 3
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 127, 111
+[FSMSession] goalX, Y	: 155, 169
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 3
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 127, 111
+[FSMSession] goalX, Y	: 155, 169
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 151, 140
+[FSMSession] goalX, Y	: 84, 176
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 673, 129
+[FSMSession] goalX, Y	: 84, 176
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 151, 140
+[FSMSession] goalX, Y	: 84, 176
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 3
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 155, 165
+[FSMSession] goalX, Y	: 432, 179
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 159, 139
+[FSMSession] goalX, Y	: 12, 182
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 0
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 785, 87
+[FSMSession] goalX, Y	: 12, 182
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 3
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 155, 165
+[FSMSession] goalX, Y	: 432, 179
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 0
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 785, 87
+[FSMSession] goalX, Y	: 12, 182
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 89, 176
+[FSMSession] goalX, Y	: 361, 186
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 89, 176
+[FSMSession] goalX, Y	: 361, 186
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 159, 139
+[FSMSession] goalX, Y	: 12, 182
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 673, 129
+[FSMSession] goalX, Y	: 84, 176
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 15, 179
+[FSMSession] goalX, Y	: 567, 202
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 15, 179
+[FSMSession] goalX, Y	: 567, 202
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 3
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 427, 179
+[FSMSession] goalX, Y	: 598, 231
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 357, 186
+[FSMSession] goalX, Y	: 598, 231
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 357, 186
+[FSMSession] goalX, Y	: 598, 231
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 3
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 427, 179
+[FSMSession] goalX, Y	: 598, 231
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 89, 173
+[FSMSession] goalX, Y	: 424, 245
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 563, 199
+[FSMSession] goalX, Y	: 772, 248
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 2
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 89, 173
+[FSMSession] goalX, Y	: 424, 245
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: walk
+[FSMSession] charX, Y	: 563, 199
+[FSMSession] goalX, Y	: 772, 248
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 3
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 593, 231
+[FSMSession] goalX, Y	: 107, 271
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 593, 230
+[FSMSession] goalX, Y	: 107, 271
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 4
+[FSMSession] charState	: stand
+[FSMSession] charX, Y	: 767, 247
+[FSMSession] goalX, Y	: 456, 274
+[FSMSession] ==========================================Packet send
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[FSMSession] Packet send==========================================
+[FSMSession] PacketID	: SERVER_CHANGE_CHARACTER
+[FSMSession] charID	: 1
+[FSMSession] charState	: walk

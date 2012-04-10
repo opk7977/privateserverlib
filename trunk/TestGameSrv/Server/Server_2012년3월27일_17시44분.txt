@@ -1,0 +1,334 @@
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 1
+	State		: 1
+	Pos(x/y/z)	: 371, 321, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 1
+	State		: 1
+	Pos(x/y/z)	: 371, 321, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 1
+	State		: 0
+	Pos(x/y/z)	: 371, 266, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 1
+	State		: 0
+	Pos(x/y/z)	: 371, 266, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 3
+	State		: 3
+	Pos(x/y/z)	: 371, 261, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 3
+	State		: 3
+	Pos(x/y/z)	: 371, 261, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 3
+	State		: 0
+	Pos(x/y/z)	: 261, 261, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 3
+	State		: 0
+	Pos(x/y/z)	: 261, 261, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 1
+	State		: 1
+	Pos(x/y/z)	: 256, 261, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 1
+	State		: 1
+	Pos(x/y/z)	: 256, 261, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 1
+	State		: 0
+	Pos(x/y/z)	: 256, 176, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 1
+	State		: 0
+	Pos(x/y/z)	: 256, 176, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 3
+	State		: 3
+	Pos(x/y/z)	: 256, 171, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 3
+	State		: 3
+	Pos(x/y/z)	: 256, 171, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 3
+	State		: 0
+	Pos(x/y/z)	: 171, 171, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 3
+	State		: 0
+	Pos(x/y/z)	: 171, 171, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 5
+	State		: 5
+	Pos(x/y/z)	: 166, 171, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 5
+	State		: 5
+	Pos(x/y/z)	: 166, 171, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 5
+	State		: 0
+	Pos(x/y/z)	: 166, 406, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 5
+	State		: 0
+	Pos(x/y/z)	: 166, 406, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 5
+	State		: 5
+	Pos(x/y/z)	: 166, 411, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 5
+	State		: 5
+	Pos(x/y/z)	: 166, 411, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 5
+	State		: 0
+	Pos(x/y/z)	: 166, 451, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 5
+	State		: 0
+	Pos(x/y/z)	: 166, 451, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 3
+	State		: 3
+	Pos(x/y/z)	: 166, 456, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 3
+	State		: 3
+	Pos(x/y/z)	: 166, 456, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 3
+	State		: 0
+	Pos(x/y/z)	: 101, 456, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 3
+	State		: 0
+	Pos(x/y/z)	: 101, 456, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 1
+	State		: 1
+	Pos(x/y/z)	: 96, 456, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 1
+	State		: 1
+	Pos(x/y/z)	: 96, 456, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 2
+	State		: 2
+	Pos(x/y/z)	: 96, 346, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 2
+	State		: 2
+	Pos(x/y/z)	: 96, 346, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 1
+	State		: 1
+	Pos(x/y/z)	: 56, 306, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 1
+	State		: 1
+	Pos(x/y/z)	: 56, 306, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 1
+	State		: 0
+	Pos(x/y/z)	: 56, 141, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 1
+	State		: 0
+	Pos(x/y/z)	: 56, 141, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 7
+	State		: 7
+	Pos(x/y/z)	: 56, 136, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 7
+	State		: 7
+	Pos(x/y/z)	: 56, 136, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[TestGSession] RecvChangeState--------------------------------------
+	PACKET_ID: CS_TGAME_STATECHANGE / PACKET_SIZE: 28
+	Direction	: 7
+	State		: 0
+	Pos(x/y/z)	: 266, 136, 4
+[TestGSession] -------------------------------------RecvChangeState
+[TestGSession] SendChangeState--------------------------------------
+	PACKET_ID: SC_TGAME_STATECHANGE / PACKET_SIZE: 28
+	SessionId	: 2
+	Direction	: 7
+	State		: 0
+	Pos(x/y/z)	: 266, 136, 4
+[TestGSession] -------------------------------------SendChangeState
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5820 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 28
+[TestGSession] SendDeleteCharacter--------------------------------------
+	PACKET_ID: SC_TGAME_DELETECHAR / PACKET_SIZE: 8
+	SessionId: 1
+[TestGSession] -------------------------------------SendDeleteCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5804 / bytes: 8
+[Session] Disconnect Client_IP: 192.168.0.70_Port: 1536
+[TestGSession] SendDeleteCharacter--------------------------------------
+	PACKET_ID: SC_TGAME_DELETECHAR / PACKET_SIZE: 8
+	SessionId: 2
+[TestGSession] -------------------------------------SendDeleteCharacter
+[TestGSession] SendDeleteCharacter() 방이 존재하지 않습니다.
+[Session] Disconnect Client_IP: 192.168.0.70_Port: 1537
+[Thread] 2312번 쓰레드가 종료 됩니다
+[Thread] 3148번 쓰레드가 종료 됩니다
+[Thread] 2604번 쓰레드가 종료 됩니다

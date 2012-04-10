@@ -1,0 +1,8 @@
+[Acceptor] 소겟을 생성
+[Acceptor] ip재사용을 위해 ResuseAddr옵션을 설정
+[Acceptor] NonBlock 옵션 설정
+[Acceptor] 소켓 Bind
+[Acceptor] 소켓 Listen
+[Thread] 3452번 쓰레드가 종료 됩니다
+[Thread] 2612번 쓰레드가 종료 됩니다
+[Thread] 1136번 쓰레드가 종료 됩니다

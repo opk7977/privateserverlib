@@ -1,0 +1,67 @@
+[Acceptor] 소겟을 생성
+[Acceptor] ip재사용을 위해 ResuseAddr옵션을 설정
+[Acceptor] NonBlock 옵션 설정
+[Acceptor] 소켓 Bind
+[Acceptor] 소켓 Listen
+[Acceptor] client Listen
+[Session] Connect Client_IP: 192.168.0.70_Port: 1545
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 4
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 16
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 32
+[Acceptor] client Listen
+[Session] Connect Client_IP: 192.168.0.70_Port: 1546
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 4
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 16
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 32
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 32
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 32
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 4
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 4
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5836 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 28
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5812 / bytes: 8
+[Session] Disconnect Client_IP: 192.168.0.70_Port: 1545
+[Session] Disconnect Client_IP: 192.168.0.70_Port: 1546
+[Thread] 3024번 쓰레드가 종료 됩니다
+[Thread] 3880번 쓰레드가 종료 됩니다
+[Thread] 2692번 쓰레드가 종료 됩니다

@@ -1,0 +1,444 @@
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 3
+[Network] x, y : 29, 509
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 0
+[Network] char Pos(x/y) : 7/ 509
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 0
+[Network] x, y : 7, 509
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 1
+[Network] char Pos(x/y) : 7/ 509
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 1
+[Network] x, y : 7, 509
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 7
+[Network] char Pos(x/y) : 7/ 489
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 7
+[Network] x, y : 7, 489
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 0
+[Network] char Pos(x/y) : 7/ 489
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 0
+[Network] x, y : 7, 489
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 7
+[Network] char Pos(x/y) : 7/ 489
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 7
+[Network] x, y : 7, 489
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 0
+[Network] char Pos(x/y) : 43/ 489
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 0
+[Network] x, y : 43, 489
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 7
+[Network] char Pos(x/y) : 43/ 489
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 7
+[Network] x, y : 43, 489
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 0
+[Network] char Pos(x/y) : 89/ 489
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 0
+[Network] x, y : 89, 489
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 2
+[Network] char state    : 3
+[Network] char Pos(x/y) : 647/ 169
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 3
+[Network] x, y : 647, 169
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 2
+[Network] char state    : 0
+[Network] char Pos(x/y) : 547/ 169
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 547, 169
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 1
+[Network] char Pos(x/y) : 89/ 489
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 1
+[Network] x, y : 89, 489
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 7
+[Network] char Pos(x/y) : 89/ 431
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 7
+[Network] x, y : 89, 431
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 0
+[Network] char Pos(x/y) : 91/ 431
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 0
+[Network] x, y : 91, 431
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 7
+[Network] char Pos(x/y) : 91/ 431
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 7
+[Network] x, y : 91, 431
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 0
+[Network] char Pos(x/y) : 113/ 431
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 0
+[Network] x, y : 113, 431
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 7
+[Network] char Pos(x/y) : 113/ 431
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 7
+[Network] x, y : 113, 431
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 1
+[Network] char state    : 0
+[Network] char Pos(x/y) : 157/ 431
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 1
+[Network] state : 0
+[Network] x, y : 157, 431
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 2
+[Network] char state    : 3
+[Network] char Pos(x/y) : 547/ 169
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 3
+[Network] x, y : 547, 169
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 2
+[Network] char state    : 0
+[Network] char Pos(x/y) : 545/ 169
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 545, 169
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 2
+[Network] char state    : 3
+[Network] char Pos(x/y) : 545/ 169
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 3
+[Network] x, y : 545, 169
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 2
+[Network] char state    : 0
+[Network] char Pos(x/y) : 473/ 169
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 473, 169
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 2
+[Network] char state    : 5
+[Network] char Pos(x/y) : 473/ 169
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 5
+[Network] x, y : 473, 169
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 2
+[Network] char state    : 0
+[Network] char Pos(x/y) : 473/ 207
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 473, 207
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] [RecvChangeChar]
+[Network] 캐릭터의 상태가 변화한다.
+[Network] SessionID     : 2
+[Network] char state    : 7
+[Network] char Pos(x/y) : 473/ 207
+[Network] -------------------------------------RecvChangeChar
+[Network] SendChangeCharacter-------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 7
+[Network] x, y : 473, 207
+[Network] -------------------------------------SendChangeCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 20
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE

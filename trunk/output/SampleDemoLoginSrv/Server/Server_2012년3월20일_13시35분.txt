@@ -1,0 +1,35 @@
+[Query] 환경핸들 할당 성공
+[Query] 환경핸들 버젼 설정 성공
+[Query] 연결핸들 할당 성공
+[Query] DRIVER={Microsoft Access Driver (*.mdb)};DBQ=D:\SegServer\output\SampleDemoLoginSrv\DemoLogin.mdb;
+[Query] mdb연결 성공
+[Query] 명령핸들 할당 성공
+[Acceptor] 소겟을 생성
+[Acceptor] ip재사용을 위해 ResuseAddr옵션을 설정
+[Acceptor] NonBlock 옵션 설정
+[Acceptor] 소켓 Bind
+[Acceptor] 소켓 Listen
+[Acceptor] client Listen
+[Session] Connect Client_IP: 192.168.0.70_Port: 2177
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 4
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 24
+[Query] 쿼리 성공
+[Query] select ID, U_ID,U_PW from tblUser where U_ID='seg'
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[Session] Disconnect Client_IP: 192.168.0.70_Port: 2177
+[Acceptor] client Listen
+[Session] Connect Client_IP: 192.168.0.70_Port: 2213
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 4
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 24
+[Query] 쿼리 성공
+[Query] select ID, U_ID,U_PW from tblUser where U_ID='seg'
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[Session] Disconnect Client_IP: 192.168.0.70_Port: 2213
+[Acceptor] client Listen
+[Session] Connect Client_IP: 192.168.0.70_Port: 2219
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 4
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 24
+[Query] 쿼리 성공
+[Query] select ID, U_ID,U_PW from tblUser where U_ID='seg'
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / bytes: 28
+[Session] Disconnect Client_IP: 192.168.0.70_Port: 2219

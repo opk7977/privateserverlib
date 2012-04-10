@@ -1,0 +1,29 @@
+[Acceptor] 家百阑 积己
+[Acceptor] ip犁荤侩阑 困秦 ResuseAddr可记阑 汲沥
+[Acceptor] NonBlock 可记 汲沥
+[Acceptor] 家南 Bind
+[Acceptor] 家南 Listen
+[Acceptor] client Listen
+[Session] Connect Client_IP: 192.168.0.70_Port: 1489
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5808 / bytes: 4
+[Session] Reciev Packet From IP: 192.168.0.70 / bytes: 16
+[TestGSession] RecvInfo--------------------------------------
+	PACKET_ID: CS_TGAME_SENDINFO / PACKET_SIZE: 16
+	Session: 18930772
+	roomNo : 18922320
+	Count  : 18922332
+[TestGSession] -------------------------------------RecvInfo
+[TestGSession] Add Player
+[TestGSession] SendCreateMyCharacter--------------------------------------
+	PACKET_ID: SC_TGAME_CREATECHAR / PACKET_SIZE: 28
+	PlayerCount: 1
+	SessionId: 2
+	Direction: 0
+	State    : 0
+	Pos(x/y) : 60, 10
+[TestGSession] -------------------------------------SendCreateMyCharacter
+[Session] Completed Send Pakcet To IP: 192.168.0.70 / socket: 5808 / bytes: 28
+[TestGSession] SendDeleteCharacter--------------------------------------
+	PACKET_ID: SC_TGAME_DELETECHAR / PACKET_SIZE: 8
+	SessionId: 18930516
+[TestGSession] -------------------------------------SendDeleteCharacter
