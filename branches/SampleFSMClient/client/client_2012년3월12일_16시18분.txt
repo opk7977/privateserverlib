@@ -1,0 +1,487 @@
+[Network] charX, Y	: 219, 463
+[Network] goalX, Y	: 729, 548
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: stand
+[Network] charX, Y	: 148, 498
+[Network] goalX, Y	: 483, 568
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: walk
+[Network] charX, Y	: 148, 498
+[Network] goalX, Y	: 483, 568
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: stand
+[Network] charX, Y	: 551, 530
+[Network] goalX, Y	: 167, 594
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: walk
+[Network] charX, Y	: 551, 530
+[Network] goalX, Y	: 167, 594
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: stand
+[Network] charX, Y	: 77, 506
+[Network] goalX, Y	: 167, 594
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: walk
+[Network] charX, Y	: 77, 506
+[Network] goalX, Y	: 167, 594
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: stand
+[Network] charX, Y	: 163, 592
+[Network] goalX, Y	: 373, 10
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: walk
+[Network] charX, Y	: 163, 592
+[Network] goalX, Y	: 373, 10
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: stand
+[Network] charX, Y	: 478, 568
+[Network] goalX, Y	: 547, 26
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: walk
+[Network] charX, Y	: 478, 568
+[Network] goalX, Y	: 547, 26
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: stand
+[Network] charX, Y	: 170, 593
+[Network] goalX, Y	: 24, 36
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: walk
+[Network] charX, Y	: 170, 593
+[Network] goalX, Y	: 24, 36
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 4
+[Network] charState	: stand
+[Network] charX, Y	: 725, 547
+[Network] goalX, Y	: 372, 39
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 2
+[Network] charState	: stand
+[Network] charX, Y	: 36, 540
+[Network] goalX, Y	: 372, 39
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 4
+[Network] charState	: walk
+[Network] charX, Y	: 725, 547
+[Network] goalX, Y	: 372, 39
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 2
+[Network] charState	: walk
+[Network] charX, Y	: 36, 540
+[Network] goalX, Y	: 372, 39
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: stand
+[Network] charX, Y	: 23, 41
+[Network] goalX, Y	: 436, 98
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: walk
+[Network] charX, Y	: 23, 41
+[Network] goalX, Y	: 436, 98
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: stand
+[Network] charX, Y	: 373, 14
+[Network] goalX, Y	: 713, 108
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: walk
+[Network] charX, Y	: 373, 14
+[Network] goalX, Y	: 713, 108
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: stand
+[Network] charX, Y	: 546, 30
+[Network] goalX, Y	: 571, 121
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 4
+[Network] charState	: stand
+[Network] charX, Y	: 371, 43
+[Network] goalX, Y	: 119, 124
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: walk
+[Network] charX, Y	: 546, 30
+[Network] goalX, Y	: 571, 121
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 4
+[Network] charState	: walk
+[Network] charX, Y	: 371, 43
+[Network] goalX, Y	: 119, 124
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 2
+[Network] charState	: stand
+[Network] charX, Y	: 372, 44
+[Network] goalX, Y	: 396, 134
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 2
+[Network] charState	: walk
+[Network] charX, Y	: 372, 44
+[Network] goalX, Y	: 396, 134
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: stand
+[Network] charX, Y	: 570, 116
+[Network] goalX, Y	: 745, 137
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: walk
+[Network] charX, Y	: 570, 116
+[Network] goalX, Y	: 745, 137
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: stand
+[Network] charX, Y	: 431, 98
+[Network] goalX, Y	: 222, 147
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 2
+[Network] charState	: stand
+[Network] charX, Y	: 396, 130
+[Network] goalX, Y	: 602, 150
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 2
+[Network] charState	: walk
+[Network] charX, Y	: 396, 130
+[Network] goalX, Y	: 602, 150
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: walk
+[Network] charX, Y	: 431, 98
+[Network] goalX, Y	: 222, 147
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: stand
+[Network] charX, Y	: 709, 108
+[Network] goalX, Y	: 705, 173
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 4
+[Network] charState	: stand
+[Network] charX, Y	: 123, 123
+[Network] goalX, Y	: 705, 173
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: stand
+[Network] charX, Y	: 740, 136
+[Network] goalX, Y	: 705, 173
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: walk
+[Network] charX, Y	: 709, 108
+[Network] goalX, Y	: 705, 173
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 4
+[Network] charState	: walk
+[Network] charX, Y	: 123, 123
+[Network] goalX, Y	: 705, 173
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: walk
+[Network] charX, Y	: 740, 136
+[Network] goalX, Y	: 705, 173
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: stand
+[Network] charX, Y	: 227, 146
+[Network] goalX, Y	: 634, 180
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: walk
+[Network] charX, Y	: 227, 146
+[Network] goalX, Y	: 634, 180
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: stand
+[Network] charX, Y	: 708, 168
+[Network] goalX, Y	: 182, 183
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: stand
+[Network] charX, Y	: 705, 168
+[Network] goalX, Y	: 182, 183
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: walk
+[Network] charX, Y	: 705, 168
+[Network] goalX, Y	: 182, 183
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: walk
+[Network] charX, Y	: 708, 168
+[Network] goalX, Y	: 182, 183
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 2
+[Network] charState	: stand
+[Network] charX, Y	: 598, 150
+[Network] goalX, Y	: 111, 190
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 2
+[Network] charState	: walk
+[Network] charX, Y	: 598, 150
+[Network] goalX, Y	: 111, 190
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: stand
+[Network] charX, Y	: 629, 179
+[Network] goalX, Y	: 40, 226
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: walk
+[Network] charX, Y	: 629, 179
+[Network] goalX, Y	: 40, 226
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 4
+[Network] charState	: stand
+[Network] charX, Y	: 701, 173
+[Network] goalX, Y	: 277, 271
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: stand
+[Network] charX, Y	: 187, 182
+[Network] goalX, Y	: 626, 275
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: walk
+[Network] charX, Y	: 187, 182
+[Network] goalX, Y	: 626, 275
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: stand
+[Network] charX, Y	: 186, 182
+[Network] goalX, Y	: 626, 275
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: walk
+[Network] charX, Y	: 186, 182
+[Network] goalX, Y	: 626, 275
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 2
+[Network] charState	: stand
+[Network] charX, Y	: 116, 190
+[Network] goalX, Y	: 554, 281
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 2
+[Network] charState	: walk
+[Network] charX, Y	: 116, 190
+[Network] goalX, Y	: 554, 281
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 4
+[Network] charState	: walk
+[Network] charX, Y	: 701, 173
+[Network] goalX, Y	: 277, 271
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: stand
+[Network] charX, Y	: 44, 224
+[Network] goalX, Y	: 380, 294
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: walk
+[Network] charX, Y	: 44, 224
+[Network] goalX, Y	: 380, 294
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: stand
+[Network] charX, Y	: 377, 293
+[Network] goalX, Y	: 689, 333
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: stand
+[Network] charX, Y	: 621, 274
+[Network] goalX, Y	: 515, 346
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: walk
+[Network] charX, Y	: 621, 274
+[Network] goalX, Y	: 515, 346
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: stand
+[Network] charX, Y	: 622, 274
+[Network] goalX, Y	: 515, 346
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 0
+[Network] charState	: walk
+[Network] charX, Y	: 622, 274
+[Network] goalX, Y	: 515, 346
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 1
+[Network] charState	: walk
+[Network] charX, Y	: 377, 293
+[Network] goalX, Y	: 689, 333
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 2
+[Network] charState	: stand
+[Network] charX, Y	: 550, 280
+[Network] goalX, Y	: 443, 353
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 2
+[Network] charState	: walk
+[Network] charX, Y	: 550, 280
+[Network] goalX, Y	: 443, 353
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 4
+[Network] charState	: stand
+[Network] charX, Y	: 281, 271
+[Network] goalX, Y	: 721, 363
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 4
+[Network] charState	: walk
+[Network] charX, Y	: 281, 271
+[Network] goalX, Y	: 721, 363
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================
+[Network] PacketID	: SERVER_CHANGE_CHARACTER
+[Network] charID	: 3
+[Network] charState	: stand
+[Network] charX, Y	: 519, 346
+[Network] goalX, Y	: 721, 363
+[Network] ==========================================recv Packet
+[Network] recv Packet==========================================

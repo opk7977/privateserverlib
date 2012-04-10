@@ -1,0 +1,2 @@
+[Network::RecvEvent()] 현재 연결은 원격 호스트에 의해 강제로 끊겼습니다.
+[Network::RecvEvent()] 접속이 끊겼습니다

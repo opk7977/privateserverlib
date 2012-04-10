@@ -1,0 +1,447 @@
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 1번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 1
+[Network] x, y : 387, 39
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 3번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 3
+[Network] x, y : 387, 35
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 379, 35
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 3번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 3
+[Network] x, y : 379, 35
+[Network] -------------------------------------SendChangeState
+[Network] Recv Packet------------------------------------
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 373, 35
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 3번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 3
+[Network] x, y : 373, 35
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 337, 35
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 5번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 5
+[Network] x, y : 337, 35
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 337, 63
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 7번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 7
+[Network] x, y : 337, 63
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 387, 63
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 5번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 5
+[Network] x, y : 387, 63
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 387, 101
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 3번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 3
+[Network] x, y : 387, 101
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 289, 101
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Character] 캐릭터의 상태가 1번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 1
+[Network] x, y : 289, 101
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 289, 59
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 3번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 3
+[Network] x, y : 289, 59
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 195, 59
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 5번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 5
+[Network] x, y : 195, 59
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 195, 83
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 3번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 3
+[Network] x, y : 195, 83
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 149, 83
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Character] 캐릭터의 상태가 1번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 1
+[Network] x, y : 149, 83
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 149, 57
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Character] 캐릭터의 상태가 3번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 3
+[Network] x, y : 149, 57
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 123, 57
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 3번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 3
+[Network] x, y : 123, 57
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 87, 57
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 5번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 5
+[Network] x, y : 87, 57
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16
+[Network] sessionID : 2
+[Network] state : 0
+[Network] x, y : 87, 79
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Character] 캐릭터의 상태가 3번 상태로 변함
+[Network] SendChangeState-------------------------------------
+[Network] PACKET ID : CS_GAME_CHANGE_STATE
+[Network] PACKET SIZE / DATA SIZE : 20 / 16

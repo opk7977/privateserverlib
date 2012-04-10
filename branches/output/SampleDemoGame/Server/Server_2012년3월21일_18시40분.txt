@@ -1,0 +1,54 @@
+[Character] 캐릭터의 상태가 3번 상태로 변함
+[Network] SendChangeState-------------------------------------
+	PACKET ID : CS_GAME_CHANGE_STATE
+	PACKET SIZE / DATA SIZE : 20 / 16
+	sessionID : 1
+	state : 3
+	x, y : 511, 74
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+	PACKET ID : CS_GAME_CHANGE_STATE
+	PACKET SIZE / DATA SIZE : 20 / 16
+	sessionID : 1
+	state : 0
+	x, y : 489, 74
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Character] 캐릭터의 상태가 5번 상태로 변함
+[Network] SendChangeState-------------------------------------
+	PACKET ID : CS_GAME_CHANGE_STATE
+	PACKET SIZE / DATA SIZE : 20 / 16
+	sessionID : 1
+	state : 5
+	x, y : 489, 74
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+	PACKET ID : CS_GAME_CHANGE_STATE
+	PACKET SIZE / DATA SIZE : 20 / 16
+	sessionID : 1
+	state : 0
+	x, y : 489, 94
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Character] 캐릭터의 상태가 3번 상태로 변함
+[Network] SendChangeState-------------------------------------
+	PACKET ID : CS_GAME_CHANGE_STATE
+	PACKET SIZE / DATA SIZE : 20 / 16
+	sessionID : 1
+	state : 3
+	x, y : 489, 94
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20
+[Character] 캐릭터의 상태가 0번 상태로 변함
+[Network] SendChangeState-------------------------------------
+	PACKET ID : CS_GAME_CHANGE_STATE
+	PACKET SIZE / DATA SIZE : 20 / 16
+	sessionID : 1
+	state : 0
+	x, y : 477, 94
+[Network] -------------------------------------SendChangeState
+[Network] SendPacket_SIZE : 20

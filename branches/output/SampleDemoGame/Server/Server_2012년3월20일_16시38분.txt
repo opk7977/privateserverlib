@@ -1,0 +1,156 @@
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 5
+[Network] char pos(x/y) : 473/ 169
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 0
+[Network] char pos(x/y) : 473/ 207
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 7
+[Network] char pos(x/y) : 473/ 207
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 0
+[Network] char pos(x/y) : 529/ 207
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 5
+[Network] char pos(x/y) : 529/ 207
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 0
+[Network] char pos(x/y) : 529/ 241
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 3
+[Network] char pos(x/y) : 529/ 241
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 0
+[Network] char pos(x/y) : 501/ 241
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 3
+[Network] char pos(x/y) : 501/ 241
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 1
+[Network] char pos(x/y) : 493/ 241
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 0
+[Network] char pos(x/y) : 493/ 237
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 1
+[Network] char pos(x/y) : 493/ 237
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 0
+[Network] char pos(x/y) : 493/ 233
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 1
+[Network] char pos(x/y) : 493/ 233
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 0
+[Network] char pos(x/y) : 493/ 229
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 1
+[Network] char pos(x/y) : 493/ 229
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 0
+[Network] char pos(x/y) : 493/ 209
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 3
+[Network] char pos(x/y) : 493/ 209
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_CHANGE_STATE
+[Network] [RecvMoveCharacter]
+[Network] 캐릭터 상태 변화
+[Network] SesseionId    : 2
+[Network] char staet    : 0
+[Network] char pos(x/y) : 461/ 209
+[Network] -------------------------------------RecvMoveCharacter
+[Network] Recv Packet------------------------------------
+[Network] PACKET ID : SC_GAME_DELETE_CHARACTER
+[Network] [RecvDeleteCharacter]
+[Network] 캐릭터 접속종료 등으로 인한 삭제
+[Network] SesseionId : 2
+[Network] -------------------------------------RecvDeleteCharacter

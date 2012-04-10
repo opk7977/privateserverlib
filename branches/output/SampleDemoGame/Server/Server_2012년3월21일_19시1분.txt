@@ -1,0 +1,553 @@
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 320/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 320/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 320/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 320/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 1
+	char pos(x/y) : 320/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 320/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 320/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 320/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 5
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 1
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 5
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 318/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 318/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 318/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 318/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 1
+	char pos(x/y) : 314/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 314/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 316/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 1
+	char pos(x/y) : 316/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 316/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 316/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 316/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 316/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 316/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 316/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 1
+	char pos(x/y) : 318/ 214
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 318/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 5
+	char pos(x/y) : 316/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 316/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 316/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 316/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 316/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 316/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 1
+	char pos(x/y) : 316/ 212
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 316/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 316/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 316/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 316/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 5
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 1
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 5
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 5
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 1
+	char pos(x/y) : 314/ 210
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 208
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 5
+	char pos(x/y) : 314/ 208
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 314/ 208
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 314/ 208
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 7
+	char pos(x/y) : 314/ 208
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 3
+	char pos(x/y) : 318/ 208
+[Network] -------------------------------------RecvMoveCharacter
+[Network] RecvCreateCharacter-------------------------------------
+	PACKET ID : SC_GAME_CHANGE_STATE
+	캐릭터 상태 변화
+	SesseionId    : 1
+	char staet    : 0
+	char pos(x/y) : 318/ 208
+[Network] -------------------------------------RecvMoveCharacter
