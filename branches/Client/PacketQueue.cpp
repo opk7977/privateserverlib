@@ -67,3 +67,8 @@ void PacketQueue::MoveReadPos()
 	if( ++m_iReadPos >= VECBUFFER_SIZE )
 		m_iReadPos = 0;
 }
+
+int PacketQueue::GetDataCount()
+{
+	return m_iDataCount;
+}

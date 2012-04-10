@@ -32,6 +32,9 @@ public:
 	char* GetPacket();
 	
 	void MoveReadPos();
+
+	//쌓여 있는 데이터 수를 return
+	int GetDataCount();
 };
 
 #define GetPacketQ PacketQueue::GetInstance()

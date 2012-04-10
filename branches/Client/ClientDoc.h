@@ -14,14 +14,22 @@ protected: // serialization에서만 만들어집니다.
 
 // 특성입니다.
 public:
-	BOOL isConnectToLogin;	//로그인서버에 연결되길 기다릴 변수
+	BOOL isConnectToLogin;	//로그인서버에 연결되길 기다릴 변수\
+
 	BOOL isCheckID;			//아이디 체크결과를 받았는지를 위한 변수
 	int  CheckID;
-	BOOL isReturnLogin;		//로그인 결과를 받아왔는지를 체크할 변수
-	BOOL isConnectToLobby;	//로비 서버에 연결되길 기다릴 변수
 
+	BOOL RecvCreateResult;
+	int isCreateResult;
+
+	BOOL isReturnLogin;		//로그인 결과를 받아왔는지를 체크할 변수
 	BOOL SessionID;			//세션 ID
 	CString strId[50];		//내id
+
+	BOOL isConnectToLobby;	//로비 서버에 연결되길 기다릴 변수
+
+
+	
 
 // 작업입니다.
 public:

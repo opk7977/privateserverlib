@@ -208,14 +208,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PacketQueue.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Scheduler.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -258,15 +250,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PacketQueue.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Resource.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Scheduler.h"
 				>
 			</File>
 			<File
@@ -315,6 +299,14 @@
 				RelativePath=".\Network.h"
 				>
 			</File>
+			<File
+				RelativePath=".\PacketQueue.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PacketQueue.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="로그인"
@@ -339,6 +331,18 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="스케줄러"
+			>
+			<File
+				RelativePath=".\Scheduler.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Scheduler.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\Join.htm"

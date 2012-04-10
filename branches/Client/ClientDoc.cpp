@@ -84,12 +84,17 @@ void CClientDoc::Dump(CDumpContext& dc) const
 void CClientDoc::Init()
 {
 	isConnectToLogin = FALSE;
+	
 	isCheckID = FALSE;
 	CheckID = 0;
-	isReturnLogin = FALSE;
-	isConnectToLobby = FALSE;
 
+	RecvCreateResult = FALSE;
+	isCreateResult = 0;
+
+	isReturnLogin = FALSE;
 	SessionID = 0;
 	strId = "";
+
+	isConnectToLobby = FALSE;
 }
 
