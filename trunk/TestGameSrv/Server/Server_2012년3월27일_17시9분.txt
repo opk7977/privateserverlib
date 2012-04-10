@@ -1,9 +1,0 @@
-[TestGSession] SendDeleteCharacter--------------------------------------
-	PACKET_ID: SC_TGAME_DELETECHAR / PACKET_SIZE: 8
-	SessionId: 1
-[TestGSession] -------------------------------------SendDeleteCharacter
-[TestGSession] SendDeleteCharacter() 방이 존재하지 않습니다.
-[Session] Disconnect Client_IP: 192.168.0.70_Port: 1297
-[Thread] 3392번 쓰레드가 종료 됩니다
-[Thread] 3632번 쓰레드가 종료 됩니다
-[Thread] 3140번 쓰레드가 종료 됩니다

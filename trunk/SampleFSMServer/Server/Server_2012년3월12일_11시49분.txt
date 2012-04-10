@@ -1,5 +1,0 @@
-[FSMSession] charID	: 0
-[FSMSession] charState	: stand
-[FSMSession] charX, Y	: 671, 327
-[FSMSession] goalX, Y	: 422, 442
-[FSMSession] ==========================================Packet send
