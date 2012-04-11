@@ -103,11 +103,5 @@ public:
 
 #define GetLogger SLogger::GetInstance()
 
-#ifdef _DEBUG
-#define LOGMSG	GetLogger.PutLog
-#else
-#define LOGMSG	__noop
-#endif
-
 #endif
 

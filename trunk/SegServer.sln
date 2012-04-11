@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestPipeSrv", "TestPipeSrv\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoginSrv", "LoginSrv\LoginSrv.vcproj", "{B7477046-3578-4E25-B8BE-953C0EB2DB6B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LobbySrv", "LobbySrv\LobbySrv.vcproj", "{5F805C17-00F7-4EEB-A000-A4307B30AC03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -73,6 +75,10 @@ Global
 		{B7477046-3578-4E25-B8BE-953C0EB2DB6B}.Debug|Win32.Build.0 = Debug|Win32
 		{B7477046-3578-4E25-B8BE-953C0EB2DB6B}.Release|Win32.ActiveCfg = Release|Win32
 		{B7477046-3578-4E25-B8BE-953C0EB2DB6B}.Release|Win32.Build.0 = Release|Win32
+		{5F805C17-00F7-4EEB-A000-A4307B30AC03}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5F805C17-00F7-4EEB-A000-A4307B30AC03}.Debug|Win32.Build.0 = Debug|Win32
+		{5F805C17-00F7-4EEB-A000-A4307B30AC03}.Release|Win32.ActiveCfg = Release|Win32
+		{5F805C17-00F7-4EEB-A000-A4307B30AC03}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

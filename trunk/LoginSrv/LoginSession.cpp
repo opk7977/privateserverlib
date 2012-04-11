@@ -29,13 +29,13 @@ void LoginSession::PacketParsing( SPacket& packet )
 	switch( packet.GetID() )
 	{
 	case CS_LOGIN_CHECK_ID:
-		//RecvCheckId( packet );
+		RecvCheckId( packet );
 		break;
 	case CS_LOGIN_CREATE_ACCOUNT:
-		//RecvCreateAccount( packet );
+		RecvCreateAccount( packet );
 		break;
 	case CS_LOGIN_LOGIN:
-		//RecvTryLogin( packet );
+		RecvTryLogin( packet );
 		break;
 	default:
 		GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("정의되지 않은 패킷 id입니다.\n") );

@@ -5,7 +5,7 @@ enum LOGIN_SERVER
 	// server -> client
 	// 로그인 서버에 연결이 정상적으로 되었다는 확인 패킷
 	// 데이터 없음
-	SC_LOGIN_CONNECT_OK = 0,
+	SC_LOGIN_CONNECT_OK = 10,
 
 	// client -> server
 	// 계정생성을 위해 id중복 확인을 위한 패킷
