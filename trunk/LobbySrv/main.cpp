@@ -4,7 +4,7 @@
 
 
 void Init();
-void Relase();
+void Release();
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdParam, int nCmdShow )
 {
@@ -35,7 +35,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		}
 	}
 
-	Relase();
+	Release();
 	return (int)Message.wParam;
 }
 
@@ -50,9 +50,9 @@ void Init()
 // 
 // 	// GameProcess Setting
 // 	GetGPMgr.Init( 3 );
-// }
+}
 
-void Relase()
+void Release()
 {
 
 }
