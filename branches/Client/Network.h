@@ -3,6 +3,8 @@
 #include "SSocket.h"
 #include "SPacket.h"
 
+#include "NetProtocol.h"
+
 class Network : public SSingleton <Network>
 {
 private:

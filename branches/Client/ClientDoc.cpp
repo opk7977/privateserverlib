@@ -87,13 +87,27 @@ void CClientDoc::Init()
 	
 	isCheckID = FALSE;
 	CheckID = 0;
+<<<<<<< .mine
+
+	iRecvCreateResult = FALSE;
+	isCreateResult = 0;
+
+=======
 
 	RecvCreateResult = FALSE;
 	isCreateResult = 0;
 
+>>>>>>> .r10
 	isReturnLogin = FALSE;
+<<<<<<< .mine
+	SessionID = 0;
+	strId = _T("");
+
+	isConnectToLobby = FALSE;
+=======
 	SessionID = 0;
 	strId = "";
+>>>>>>> .r10
 
 	isConnectToLobby = FALSE;
 }

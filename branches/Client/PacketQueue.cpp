@@ -43,8 +43,8 @@ BOOL PacketQueue::PutPacket( char* buf, int dataSize )
 	++m_iDataCount;
 
 	//써야하는위치를 옮겨 준다.
-	if( ++m_iReadPos >= VECBUFFER_SIZE )
-		m_iReadPos = 0;			//끝을 넘기게 되면 0으로..
+	if( ++m_iWritePos >= VECBUFFER_SIZE )
+		m_iWritePos = 0;			//끝을 넘기게 되면 0으로..
 
 	return TRUE;
 }

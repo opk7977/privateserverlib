@@ -11,6 +11,8 @@
 #include "Network.h"
 #include "Login.h"
 
+#include "Scheduler.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -115,23 +117,31 @@ void CClientView::OnNetConn()
 	if (!pDoc)
 		return;
 
-	if( pDoc->isConnectToLogin && pDoc->isConnectToLobby )
+	if( pDoc->isConnectToLogin || pDoc->isConnectToLobby )
 	{
-		MessageBox( NULL, _T("이미 서버와 연결되어 있습니다."), _T("error"), MB_OK | MB_ICONERROR );
+		MessageBox( _T("이미 서버와 연결되어 있습니다."), _T("error"), MB_OK | MB_ICONERROR );
 		return;
 	}
 
 	if( !GetNetwork.Init() )
 	{
-		MessageBox( NULL, _T("소켓 초기화 실패"), _T("error"), MB_OK | MB_ICONERROR );
+		MessageBox( _T("소켓 초기화 실패"), _T("error"), MB_OK | MB_ICONERROR );
 		return;
 	}
 
 	if( !GetNetwork.ConnectToSrv( "192.168.0.70", 8880 ) )
 	{
-		MessageBox( NULL, _T(""), _T(""), MB_OK | MB_ICONERROR );
+		MessageBox( _T("연결 실패.."), _T("?!?!?"), MB_OK | MB_ICONERROR );
 		return;
 	}
+
+	//GetNetwork.Begin
+
+// 	while( !pDoc->isConnectToLogin )
+// 	{
+// 	}
+// 
+// 	MessageBox( _T("로그인 서버와 연결되었습니다."), _T("Info"), MB_OK );
 }
 
 void CClientView::OnNetLogin()
@@ -145,13 +155,26 @@ void CClientView::OnNetLogin()
 	//아직 로그인 서버에 연결이 되어 있지 않으면 실행하지 않는다.
 	if( !pDoc->isConnectToLogin )
 	{
-		MessageBox( NULL, _T("로그인 서버에 접속되어 있지 않습니다."), _T("error"), MB_OK | MB_ICONERROR );
+		MessageBox( _T("로그인 서버에 접속되어 있지 않습니다."), _T("error"), MB_OK | MB_ICONERROR );
 		return;
 	}
 
-	CLogin	loginDlg = new CLogin;
+	CLogin*	loginDlg = new CLogin;
+	loginDlg->DoModal();
+	delete loginDlg;
 
-	int result = loginDlg.DoModal();
+// 	CLogin logInDlg;
+// 	logInDlg.Create( IDD_LOGIN );
+// 	logInDlg.ShowWindow( SW_SHOW );
 }
 
 //======================================
+
+
+void CClientView::OnInitialUpdate()
+{
+	CView::OnInitialUpdate();
+
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	GetScheduler.Init();
+}

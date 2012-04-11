@@ -9,6 +9,7 @@
 
 #include "resource.h"       // 주 기호입니다.
 
+#include "STime.h"
 
 // CClientApp:
 // 이 클래스의 구현에 대해서는 Client.cpp을 참조하십시오.
@@ -19,6 +20,9 @@ class CClientApp : public CWinApp
 public:
 	CClientApp();
 
+//
+// 	STime time;
+// 	float timePer;
 
 // 재정의입니다.
 public:
@@ -27,6 +31,7 @@ public:
 // 구현입니다.
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
+	virtual BOOL OnIdle(LONG lCount);
 };
 
 extern CClientApp theApp;

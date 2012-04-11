@@ -5,6 +5,14 @@
 #include "Client.h"
 #include "Login.h"
 
+#include "Join.h"
+
+#include "Network.h"
+
+#include "ClientDoc.h"
+#include "ClientView.h"
+
+
 
 // CLogin 대화 상자입니다.
 
@@ -44,11 +52,56 @@ END_MESSAGE_MAP()
 void CLogin::OnBnClickedJoin()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CJoin* NewAccount = new CJoin;
+	NewAccount->DoModal();
+	delete NewAccount;
+
+// 	CJoin NewAccount;
+// 	NewAccount.Create( IDD_JOIN );
+// 	NewAccount.ShowWindow( SW_SHOW );
 }
 
 void CLogin::OnBnClickedOk()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);		//입력한 자료(?)를 받아 온다
+
+	if( m_csId == "" )
+	{
+		MessageBox( _T("id를 입력하세요"), _T("warning"), MB_OK );
+		return;
+	}
+
+	if( m_csPw == "" )
+	{
+		MessageBox( _T("password를 입력하세요"), _T("warning"), MB_OK );
+		return;
+	}
+
+	//======================================
+	// 모두 입력되어 있으면 패킷을 보낸다.
+	//======================================
+	SPacket sendPacket;
+	int size;
+
+	sendPacket.SetID( CS_LOGIN_LOGIN );
+	//id넣고
+	size = _tcslen(m_csId.GetString())*sizeof(TCHAR);
+	sendPacket << size;
+	sendPacket.PutDataW( (TCHAR*)m_csId.GetString(), size );
+	//pw넣고
+	size = _tcslen(m_csPw.GetString())*sizeof(TCHAR);
+	sendPacket << size;
+	sendPacket.PutDataW( (TCHAR*)m_csPw.GetString(), size );
+
+	int result = GetNetwork.SendPacket( &sendPacket );
+
+	if( result != sendPacket.GetPacketSize() )
+	{
+		MessageBox( _T("패킷 크기와 전송 크기가 다릅니다...\n왜 그럴까?,,,ㅠㅠ"), _T("error"), MB_OK | MB_ICONERROR );
+		return;
+	}
+
 	OnOK();
 }
 

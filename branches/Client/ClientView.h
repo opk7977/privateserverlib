@@ -44,6 +44,7 @@ protected:
 public:
 	afx_msg void OnNetConn();
 	afx_msg void OnNetLogin();
+	virtual void OnInitialUpdate();
 };
 
 #ifndef _DEBUG  // ClientView.cpp의 디버그 버전

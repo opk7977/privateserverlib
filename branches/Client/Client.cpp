@@ -10,6 +10,9 @@
 #include "ClientDoc.h"
 #include "ClientView.h"
 
+// #include "Scheduler.h"
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -103,6 +106,11 @@ BOOL CClientApp::InitInstance()
 	m_pMainWnd->UpdateWindow();
 	// 접미사가 있을 경우에만 DragAcceptFiles를 호출합니다.
 	//  SDI 응용 프로그램에서는 ProcessShellCommand 후에 이러한 호출이 발생해야 합니다.
+
+	//시간 
+// 	time.Init();
+// 	timePer = 0.f;
+
 	return TRUE;
 }
 
@@ -147,5 +155,20 @@ void CClientApp::OnAppAbout()
 
 // CClientApp 메시지 처리기
 
-
-
+BOOL CClientApp::OnIdle(LONG lCount)
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+// 	time.ProcessTime();
+// 
+// 	timePer += time.GetElapsedTime();
+// 
+// 	if( timePer > 1.f )
+// 	{
+// 		timePer -= 1.f;
+// 
+// 		GetScheduler.Run();
+// 	}
+// 
+ 	return CWinApp::OnIdle(lCount);
+// 	return 1;
+}

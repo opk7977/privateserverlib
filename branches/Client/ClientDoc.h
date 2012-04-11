@@ -18,19 +18,37 @@ public:
 
 	BOOL isCheckID;			//아이디 체크결과를 받았는지를 위한 변수
 	int  CheckID;
+<<<<<<< .mine
+
+	BOOL iRecvCreateResult;
+	int isCreateResult;
+
+=======
 
 	BOOL RecvCreateResult;
 	int isCreateResult;
 
+>>>>>>> .r10
 	BOOL isReturnLogin;		//로그인 결과를 받아왔는지를 체크할 변수
+<<<<<<< .mine
 	BOOL SessionID;			//세션 ID
-	CString strId[50];		//내id
+	CString strId;		//내id
 
+	BOOL isConnectToLobby;	//로비 서버에 연결되길 기다릴 변수
+
+=======
+>>>>>>> .r10
+
+<<<<<<< .mine
+	
+
+=======
 	BOOL isConnectToLobby;	//로비 서버에 연결되길 기다릴 변수
 
 
 	
 
+>>>>>>> .r10
 // 작업입니다.
 public:
 	void Init();
