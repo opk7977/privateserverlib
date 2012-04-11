@@ -1,6 +1,5 @@
 #pragma once
 
-<<<<<<< .mine
 #define MAXPROCESS_PER_FRAME 30
 
 
@@ -9,16 +8,7 @@
 #include "STime.h"
 
 class CScheduler : public SSingleton <CScheduler>
-=======
-#define MAXPROCESS_PER_FRAME 30
-
-#include "SPacket.h"
-
-
-class CScheduler
->>>>>>> .r10
 {
-<<<<<<< .mine
 private:
 	friend class SSingleton<CScheduler>;
 
@@ -32,14 +22,6 @@ private:
 	float m_frame;
 
 private:
-=======
-private:
-	SPacket m_packet;
-
-	CSampleDemoGameDoc* pDoc;
-
-public:
->>>>>>> .r10
 	CScheduler(void);
 	~CScheduler(void);
 
@@ -50,22 +32,6 @@ public:
 	unsigned int Run();
 
 	void PacketProcess();
-
-
-	void PacketParsing();
-
-	//패킷을 처리하는 함수
-	//SC_LOGIN_CONNECT_OK
-	void RecvConnectOK();
-
-	//SC_LOGIN_CHECK_ID_RESULT
-	void RecvCheckID();
-
-	//SC_LOGIN_CREATE_RESULT
-	void RecvCreateResult();
-
-	//SC_LOGIN_LOGIN_RESULT
-	void RecvLoginResult();
 
 
 	void PacketParsing();

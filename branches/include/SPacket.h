@@ -96,10 +96,16 @@ public:
 	//멀티바이트 용( in dataBuf, in size )( return size )
 	int PutData( char* data, int size );
 	int GetData( char* data, int size );
+
+	int PutDataA( char* data, int size );
+	int GetDataA( char* data, int size );
 	//---------------------------------------------------------------------------------------
 	//유니코드 용( in dataBuf, in size )( return size )
 	int PutData( TCHAR* data, int size );
 	int GetData( TCHAR* data, int size );
+
+	int PutDataW( TCHAR* data, int size );
+	int GetDataW( TCHAR* data, int size );
 	//=======================================================================================
 
 	////////////////////////////////////////////////////////////

@@ -8,17 +8,12 @@
 
 #include "NetProtocol.h"
 
-<<<<<<< .mine
-
 unsigned int __stdcall _Schdul( void* pArg )
 {
 	return ((CScheduler*)pArg)->Run();
 }
 
 CScheduler::CScheduler(void)
-=======
-CScheduler::CScheduler(void) : pDoc(NULL)
->>>>>>> .r10
 {
 }
 
@@ -28,13 +23,9 @@ CScheduler::~CScheduler(void)
 
 void CScheduler::Init()
 {
-<<<<<<< .mine
-	m_startWork = ::CreateEvent( NULL, TRUE, FALSE, NULL); 
-=======
-	int count = GetPacketQ.GetDataCount();
->>>>>>> .r10
 
-<<<<<<< .mine
+	m_startWork = ::CreateEvent( NULL, TRUE, FALSE, NULL); 
+
 	unsigned int iThread;
 	m_schThread = (HANDLE)_beginthreadex( NULL, 0, &::_Schdul, (void*)this, 0, &iThread );
 	if( !m_schThread )
@@ -44,26 +35,7 @@ void CScheduler::Init()
 	m_frame = 0.f;
 
 	SetEvent( m_startWork );
-=======
-	//30보다 크면 그냥 30으로
-	if( count > 30 )
-		count = 30;
-
-	char* tmpBuf;
-
-	for( int i=0; i<count; ++i )
-	{
-		tmpBuf = GetPacketQ.GetPacket();
-		if( tmpBuf == NULL )
-			return;
-
-		m_packet.CopyToPacket( tmpBuf, PACKETDATA_SIZE );
-
-		PacketParsing();
-	}
->>>>>>> .r10
 }
-<<<<<<< .mine
 
 unsigned int CScheduler::Run()
 {
@@ -236,132 +208,3 @@ void CScheduler::RecvLoginResult()
 	pDoc->isReturnLogin = TRUE;
 }
 
-
-
-=======
-
-void CScheduler::PacketParsing()
-{
-	switch( m_packet.GetID() )
-	{
-	case SC_LOGIN_CONNECT_OK:
-		//RecvConnectOK();
-		break;
-	case SC_LOGIN_CHECK_ID_RESULT:
-		//RecvCheckID();
-		break;
-	case SC_LOGIN_CREATE_RESULT:
-		//RecvCreateResult();
-		break;
-	case SC_LOGIN_LOGIN_RESULT:
-		//RecvLoginResult();
-		break;
-	}
-}
-
-
-
-
-/*
-CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
-CSampleDemoGameView* pView = (CSampleDemoGameView*) pChild->GetActiveView();
-CSampleDemoGameDoc* pDoc = pView->GetDocument();
-
-if (!pDoc)
-return;
-*/
-
-//패킷을 처리하는 함수
-//SC_LOGIN_CONNECT_OK
-void CScheduler::RecvConnectOK()
-{
-	if( pDoc == NULL )
-	{
-		//없으면 넣어 놓고 시작
-		CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-		CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
-		CClientView* pView = (CClientView*) pChild->GetActiveView();
-		pDoc = pView->GetDocument();
-	}
-
-	if (!pDoc)
-		return;
-	
-	//CClientView* pView = ((CClientView*)AfxGetMainWnd())->GetAc
-
-	//::SetWindowText( pDoc->GetV
-
-	//로그인 서버에 연결되었다는 것을 확인할 수 있게 윈도우 텍스트를 바꿔야 하나?..
-
-	pDoc->isConnectToLoginSrv = TRUE;
-}
-
-//SC_LOGIN_CHECK_ID_RESULT
-void CScheduler::RecvCheckID()
-{
-	if( pDoc == NULL )
-	{
-		//없으면 넣어 놓고 시작
-		CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-		CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
-		CClientView* pView = (CClientView*) pChild->GetActiveView();
-		pDoc = pView->GetDocument();
-	}
-
-	if (!pDoc)
-		return;
-
-	int result;
-	m_packet >> result;
-
-	pDoc->CheckID = result;
-	pDoc->isCheckID = TRUE;
-}
-
-//SC_LOGIN_CREATE_RESULT
-void CScheduler::RecvCreateResult()
-{
-	if( pDoc == NULL )
-	{
-		//없으면 넣어 놓고 시작
-		CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-		CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
-		CClientView* pView = (CClientView*) pChild->GetActiveView();
-		pDoc = pView->GetDocument();
-	}
-
-	if (!pDoc)
-		return;
-
-	int result;
-	m_packet >> result;
-
-	pDoc->isCreateResult = result;
-	pDoc->RecvCreateResult = TRUE;
-}
-
-//SC_LOGIN_LOGIN_RESULT
-void CScheduler::RecvLoginResult()
-{
-	if( pDoc == NULL )
-	{
-		//없으면 넣어 놓고 시작
-		CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-		CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
-		CClientView* pView = (CClientView*) pChild->GetActiveView();
-		pDoc = pView->GetDocument();
-	}
-
-	if (!pDoc)
-		return;
-
-	int result;
-	m_packet >> result;
-
-
-}
-
-
-
->>>>>>> .r10

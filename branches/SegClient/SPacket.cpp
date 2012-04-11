@@ -142,6 +142,16 @@ void SPacket::CopyToPacket( char* buf, int size )
 
 int SPacket::PutData( char* data, int size )
 {
+	return PutDataA( data, size );
+}
+
+int SPacket::GetData( char* data, int size )
+{
+	return GetDataA( data, size );
+}
+
+int SPacket::PutDataA( char* data, int size )
+{
 	//쓸 데이터가 마지막 공간을 넘어가면 return
 	if( m_chpWritePos + size >= m_chpEndofDataField )
 		return 0;
@@ -158,7 +168,7 @@ int SPacket::PutData( char* data, int size )
 	return size;
 }
 
-int SPacket::GetData( char* data, int size )
+int SPacket::GetDataA( char* data, int size )
 {
 	//읽을 데이터가 현재 쓰인 데이터의 크기를 넘어가면 return
 	if( m_chpReadPos + size > m_chpBuffer + GetDateFiledSize() )
@@ -175,6 +185,16 @@ int SPacket::GetData( char* data, int size )
 }
 
 int SPacket::PutData( TCHAR* data, int size )
+{
+	return PutDataW( data, size );
+}
+
+int SPacket::GetData( TCHAR* data, int size )
+{
+	return GetDataW( data, size );
+}
+
+int SPacket::PutDataW( TCHAR* data, int size )
 {
 	//유니코드형 문자열을 넣음
 	//변환 없이 그냥 그대로 넣어서 나중에 뺄때도 그래도 뺀다.
@@ -195,7 +215,7 @@ int SPacket::PutData( TCHAR* data, int size )
 	return size;
 }
 
-int SPacket::GetData( TCHAR* data, int size )
+int SPacket::GetDataW( TCHAR* data, int size )
 {
 	//읽을 데이터가 현재 쓰인 데이터의 크기를 넘어가면 return
 	if( m_chpReadPos + size > m_chpBuffer + GetDateFiledSize() )
@@ -206,7 +226,7 @@ int SPacket::GetData( TCHAR* data, int size )
 		return 0;
 
 	//문자열이 들어가고 뒤에 null값이 있기 위해 복사할 문자열+2만큼의 공간을 0으로 초기화 해준다
-	//그러고 복하사면 문사된 문자열 끝의 글자가 null값이 들어가게 되어
+	//그러고 복사하면 복사된 문자열 끝의 글자가 null값이 들어가게 되어
 	//문자열이 완성된다.
 	ZeroMemory( data, size+sizeof(TCHAR) );
 	CopyMemory( data, m_chpReadPos, size );
@@ -335,3 +355,4 @@ SPacket &SPacket::operator >> ( SPacket &_value )
 
 	return *this;
 }
+
