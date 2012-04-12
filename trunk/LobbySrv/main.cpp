@@ -1,10 +1,5 @@
 #include "WinMgr.h"
-// #include "Network.h"
-// #include "GProcMgr.h"
-
-
-void Init();
-void Release();
+#include "LobbyMain.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdParam, int nCmdShow )
 {
@@ -14,8 +9,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	if( !window.CreateWindows( hInstance, _T("Lobby"), _T("TestGameSrv"), hWnd, 800, 600, nCmdShow ) )
 		return 0;
 
-	//Setting
-	Init();
+
+	LobbyMain  myMain;
+	myMain.Init();
 
 
 	MSG Message;
@@ -34,25 +30,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		{
 		}
 	}
-
-	Release();
 	return (int)Message.wParam;
 }
 
-void Init()
-{
-	// Server Setting
-// 	if( !GetNetwork.Init( 150 ) )
-// 		return;
-// 
-// 	if( !GetNetwork.SettingSrv( 8800 ) )
-// 		return;
-// 
-// 	// GameProcess Setting
-// 	GetGPMgr.Init( 3 );
-}
-
-void Release()
-{
-
-}

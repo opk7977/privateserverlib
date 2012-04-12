@@ -177,7 +177,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\LobbyMgr.cpp"
+				RelativePath=".\LobbyMain.cpp"
 				>
 			</File>
 			<File
@@ -189,7 +189,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Room.cpp"
+				RelativePath=".\Network.cpp"
 				>
 			</File>
 			<File
@@ -203,7 +203,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\LobbyMgr.h"
+				RelativePath=".\LobbyMain.h"
 				>
 			</File>
 			<File
@@ -215,7 +215,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Room.h"
+				RelativePath=".\Network.h"
 				>
 			</File>
 			<File
@@ -228,6 +228,30 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+		</Filter>
+		<Filter
+			Name="Lobby"
+			>
+			<File
+				RelativePath=".\LobbyMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LobbyMgr.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Room"
+			>
+			<File
+				RelativePath=".\Room.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Room.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

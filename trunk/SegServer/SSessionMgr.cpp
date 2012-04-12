@@ -22,7 +22,7 @@ void SSessionMgr::Create( SRTClass* pRTC, int _size )
 	for( int i=1; i<=_size; ++i )
 	{
 		SObject* pObj = pRTC->CreateObject();
-		m_sessionMap.PushIndex( i, (SServerObj*)pObj );		
+		m_sessionMap.PushIndex( i, (SServerObj*)pObj );
 	}
 }
 

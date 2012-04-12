@@ -35,6 +35,8 @@ BOOL Room::Play()
 	//방의 모든 플레이어의 세션에 표시한다.
 
 	//방의 모든 플레이어에게 게임서버로 이동하라는 페킷을 보낸다.
+
+	return TRUE;
 }
 
 void Room::SendPacketAllInRoom( SPacket &packet )
@@ -55,4 +57,6 @@ BOOL Room::PossiblePlay()
 	//팀의 비율이 다르면 안됨
 	if( m_AttectTeam == m_DefenceTeam )
 		return FALSE;
+
+	return TRUE;
 }

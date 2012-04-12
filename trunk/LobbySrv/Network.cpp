@@ -1,5 +1,5 @@
 #include "Network.h"
-#include "LoginSession.h"
+#include "LobbySession.h"
 #include "SSessionMgr.h"
 #include "SegIOCP.h"
 
@@ -15,10 +15,10 @@ BOOL Network::Init( int sessionCount )
 {
 	m_accept.Init();
 
-	//세션공간 확보
-	GetSessionMgr.Create( SRUNTIME_CLASS(LoginSession), sessionCount );
+	//세션 공간 확보
+	GetSessionMgr.Create( SRUNTIME_CLASS(LobbySession), sessionCount );
 
-	//IOCP
+	//IOCP초기화
 	if( !GetIOCP.Init() )
 		return FALSE;
 
@@ -29,6 +29,6 @@ BOOL Network::SrvSetting( int port )
 {
 	if( !m_accept.SetAcceptor( port ) )
 		return FALSE;
-
+	
 	return TRUE;
 }

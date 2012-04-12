@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SServerObj.h"
+#include "SPacket.h"
 
 //방의 정원
 #define MIN_PLAYER_COUNT 6

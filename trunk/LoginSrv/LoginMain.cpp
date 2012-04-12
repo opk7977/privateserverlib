@@ -19,7 +19,7 @@ BOOL LoginMain::Init()
 		return FALSE;
 
 	//서버 초기화
-	if( !GetNetwork.Init( 30 ) )
+	if( !GetNetwork.Init( 100 ) )
 		return FALSE;
 
 	//서버 셋팅

@@ -23,13 +23,20 @@ private:
 	SOCKET				m_socket;
 	//////////////////////////////////////
 
+private:
+	//자신의 iocp핸들값 = map의 키값
+	int					m_iIocpKey;
+
 public:
 	SSession(void);
 	virtual ~SSession(void);
 
 	//생성과 파괴
-	virtual	void OnCreate();
-	virtual void OnDestroy();
+	virtual	void	OnCreate();
+	virtual void	OnDestroy();
+
+	inline void		SetKey( int i ) { m_iIocpKey = i; }
+	inline int		GetKey() { return m_iIocpKey; }
 
 	//====================================
 	// 패킷을 받았을 때의 호출 함수
