@@ -344,6 +344,30 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="·Îºñ"
+			>
+			<File
+				RelativePath=".\Lobby.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Lobby.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="¹æ"
+			>
+			<File
+				RelativePath=".\Room.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Room.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\Join.htm"
 			DeploymentContent="true"

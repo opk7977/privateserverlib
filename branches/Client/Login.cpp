@@ -66,6 +66,9 @@ void CLogin::OnBnClickedOk()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);		//입력한 자료(?)를 받아 온다
 
+// 	while(1)
+// 	{
+// 	}
 	if( m_csId == "" )
 	{
 		MessageBox( _T("id를 입력하세요"), _T("warning"), MB_OK );
