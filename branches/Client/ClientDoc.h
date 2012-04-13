@@ -14,6 +14,9 @@ protected: // serialization에서만 만들어집니다.
 
 // 특성입니다.
 public:
+	int isSceneState;		//지금의 상태(0:네트웍X, 1:로비, 2:방에 들어옴 )
+
+
 	BOOL isConnectToLogin;	//로그인서버에 연결되길 기다릴 변수\
 
 	BOOL isCheckID;			//아이디 체크결과를 받았는지를 위한 변수

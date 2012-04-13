@@ -7,6 +7,9 @@
 
 #include "MainFrm.h"
 
+#include "Lobby.h"
+#include "Room.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -17,6 +20,7 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
+	ON_WM_GETMINMAXINFO()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -79,3 +83,35 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 
 // CMainFrame 메시지 처리기
+
+BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	if( !wndSplitterRow.CreateStatic( this, 2, 1 ) )
+		return FALSE;
+
+	wndSplitterRow.CreateView( 0, 0, RUNTIME_CLASS( CLobby ), CSize( 0, 0 ), pContext );
+	wndSplitterRow.CreateView( 1, 0, RUNTIME_CLASS( CRoom ), CSize( 0, 0 ), pContext );
+	
+	wndSplitterRow.SetRowInfo( 0, 300, 300 );
+	wndSplitterRow.SetRowInfo( 1, 300, 300 );
+
+	wndSplitterRow.RecalcLayout();
+
+	SetActiveView( ( CView* )wndSplitterRow.GetPane( 0, 0 ) );
+
+	//return CFrameWnd::OnCreateClient(lpcs, pContext);
+	return TRUE;
+}
+
+void CMainFrame::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	lpMMI->ptMaxTrackSize.x = 750;
+	lpMMI->ptMaxTrackSize.y = 700;
+
+	lpMMI->ptMinTrackSize.x = 750;
+	lpMMI->ptMinTrackSize.y = 700;
+
+	CFrameWnd::OnGetMinMaxInfo(lpMMI);
+}

@@ -6,6 +6,8 @@
 #include "ClientDoc.h"
 #include "ClientView.h"
 
+#include "CharMgr.h"
+
 #include "NetProtocol.h"
 
 unsigned int __stdcall _Schdul( void* pArg )
@@ -92,23 +94,30 @@ void CScheduler::PacketParsing()
 	switch( m_packet.GetID() )
 	{
 	case SC_LOGIN_CONNECT_OK:
-		RecvConnectOK();
+		RecvLoginConnectOK();
 		break;
 	case SC_LOGIN_CHECK_ID_RESULT:
-		RecvCheckID();
+		RecvLoginCheckID();
 		break;
 	case SC_LOGIN_CREATE_RESULT:
-		RecvCreateResult();
+		RecvLoginCreateResult();
 		break;
 	case SC_LOGIN_LOGIN_RESULT:
-		RecvLoginResult();
+		RecvLoginLoginResult();
+		break;
+
+	case SC_LOBBY_CONNECT_OK:
+		//
+		break;
+	case SC_LOBBY_OTHER_CHARINFO:
+		//
 		break;
 	}
 }
 
 //패킷을 처리하는 함수
 //SC_LOGIN_CONNECT_OK
-void CScheduler::RecvConnectOK()
+void CScheduler::RecvLoginConnectOK()
 {
 	CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
 	CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
@@ -124,7 +133,7 @@ void CScheduler::RecvConnectOK()
 }
 
 //SC_LOGIN_CHECK_ID_RESULT
-void CScheduler::RecvCheckID()
+void CScheduler::RecvLoginCheckID()
 {
 	CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
 	CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
@@ -151,7 +160,7 @@ void CScheduler::RecvCheckID()
 }
 
 //SC_LOGIN_CREATE_RESULT
-void CScheduler::RecvCreateResult()
+void CScheduler::RecvLoginCreateResult()
 {
 	CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
 	CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
@@ -178,7 +187,7 @@ void CScheduler::RecvCreateResult()
 }
 
 //SC_LOGIN_LOGIN_RESULT
-void CScheduler::RecvLoginResult()
+void CScheduler::RecvLoginLoginResult()
 {
 	CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
 	CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
@@ -206,5 +215,8 @@ void CScheduler::RecvLoginResult()
 	
 	pDoc->SessionID = result;
 	pDoc->isReturnLogin = TRUE;
+
+	//로비에 있는 상태로 바꿔준다.
+	pDoc->isSceneState = 1;
 }
 

@@ -83,6 +83,9 @@ void CClientDoc::Dump(CDumpContext& dc) const
 //======================================
 void CClientDoc::Init()
 {
+	isSceneState = 0;
+
+
 	isConnectToLogin = FALSE;
 	
 	isCheckID = FALSE;
@@ -96,5 +99,6 @@ void CClientDoc::Init()
 	strId = _T("");
 
 	isConnectToLobby = FALSE;
+
 }
 

@@ -28,18 +28,6 @@ protected:
 public:
 	CString m_csTitle;
 
-	CString m_csPlayer01_id;
-	CString m_csPlayer02_id;
-	CString m_csPlayer03_id;
-	CString m_csPlayer04_id;
-	CString m_csPlayer05_id;
-	CString m_csPlayer06_id;
-	CString m_csPlayer07_id;
-	CString m_csPlayer08_id;
-
-	CString m_csPlayer01_Team;
-	CString m_csPlayer02_Team;
-	CString m_csPlayer03_Team;
 };
 
 

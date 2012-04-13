@@ -208,6 +208,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RoomMgr.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -251,6 +255,10 @@
 			</File>
 			<File
 				RelativePath=".\Resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RoomMgr.h"
 				>
 			</File>
 			<File
@@ -365,6 +373,30 @@
 			</File>
 			<File
 				RelativePath=".\Room.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="CustomSplitterWnd"
+			>
+			<File
+				RelativePath=".\CustomSplitterWnd.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CustomSplitterWnd.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="오브젝트"
+			>
+			<File
+				RelativePath=".\CharMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CharMgr.h"
 				>
 			</File>
 		</Filter>

@@ -32,22 +32,56 @@ public:
 	unsigned int Run();
 
 	void PacketProcess();
-
-
 	void PacketParsing();
 
 	//패킷을 처리하는 함수
+
+	//======================================
+	// LOGIN
+	//======================================
 	//SC_LOGIN_CONNECT_OK
-	void RecvConnectOK();
+	void RecvLoginConnectOK();
 
 	//SC_LOGIN_CHECK_ID_RESULT
-	void RecvCheckID();
+	void RecvLoginCheckID();
 
 	//SC_LOGIN_CREATE_RESULT
-	void RecvCreateResult();
+	void RecvLoginCreateResult();
 
 	//SC_LOGIN_LOGIN_RESULT
-	void RecvLoginResult();
+	void RecvLoginLoginResult();
+
+	//======================================
+	// LOBBY
+	//======================================
+	//SC_LOBBY_CONNECT_OK
+	void RecvLobbyConnectOK();
+
+	//SC_LOBBY_OTHER_CHARINFO
+
+	//SC_LOBBY_ROOMINFO,
+
+	//SC_ROOM_RESULT_CREATE,
+
+	//SC_LOBBY_OPEN_ROOM,
+
+	//SC_ROOM_RESULT_INSERT,
+
+	//SC_LOBBY_INSERT_ROOM,
+
+	//SC_ROOM_CHAR_INSERT,
+
+	//SC_ROOM_OTHER_CHARINFO,
+
+	//SC_ROOM_LEADER,
+
+	//SC_ROOM_CHAR_OUT,
+
+	//SC_ROOM_CHAR_READY,
+
+	//SC_ROOM_TEAM_CHANGE,
+
+	//SC_ROOM_CHAT,
 };
 
 #define GetScheduler CScheduler::GetInstance()
