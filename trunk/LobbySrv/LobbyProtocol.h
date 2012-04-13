@@ -2,13 +2,13 @@
 
 enum SERVER_TO_SERVER
 {
-	// loginSrv -> gameSrv
+	// lobbySrv -> gameSrv
 	// 방의 유저들이 게임을 시작하게 되어 게임서버의 준비상태를 명령
 	// int			-		roomNo
 	// int			-		playerCount
 	LG_START_GAME = 100,
 
-	// gameSrv -> loginSrv
+	// gameSrv -> lobbySrv
 	// 게임서버에서 접속을 끊어버린 player에 대한 처리
 	// int			-		roomNum
 	// int			-		SessionId
