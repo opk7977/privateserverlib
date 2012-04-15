@@ -105,4 +105,7 @@ public:
 
 	//SC_ROOM_CHAT
 	BOOL SendRoomChat();
+
+	//SC_LOBBY_PLAYER_DISCONNECT
+	BOOL SendPlayerDisconnect();
 };

@@ -160,4 +160,10 @@ enum LOBBY_SERVER
 	// int			-		문장의 데이터 크기
 	// TCHAR		-		문장
 	SC_ROOM_CHAT,
+
+	// server -> client
+	// player가 접속을 끊으면 알려 준다.
+	// int			-		SessionID;
+	SC_LOBBY_PLAYER_DISCONNECT,
+
 };

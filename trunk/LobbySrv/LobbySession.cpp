@@ -25,9 +25,20 @@ void LobbySession::OnCreate()
 
 void LobbySession::OnDestroy()
 {
-	//세션의 IsPlayNow가 FALSE이면 그냥 다 지워 준다
+	if( !IsPlayNow )
+	{
+		//세션의 IsPlayNow가 FALSE이면 그냥 다 지워 준다
+		if( m_roomNo == 0 )			//lobby에 있는 사람이면
+			GetLobbyMgr.MinusUser( this );
+		//else
+			//
+		
+	}
+	//else
+		//세션의 IsPlayNow가 TRUE이면 방에 있는 list는 지우면 안된다.
 
-	//세션의 IsPlayNow가 TRUE이면 방에 있는 list는 지우면 안된다.
+	//모두에게 나간것을 알려줘야 한다
+	SendPlayerDisconnect();
 
 	//Mgr에서는 지워준다.
 	SSession::OnDestroy();
@@ -40,7 +51,7 @@ void LobbySession::PacketParsing( SPacket& packet )
 	//==============================================================> GameSrv
 	//==============================================================> Client
 	case CS_LOBBY_INSERT_LOBBY:
-		//RecvInsertLobby( packet );
+		RecvInsertLobby( packet );
 		break;
 	}
 }
@@ -233,6 +244,18 @@ BOOL LobbySession::SendRoomTeamChange()
 
 BOOL LobbySession::SendRoomChat()
 {
+	return TRUE;
+}
+
+BOOL LobbySession::SendPlayerDisconnect()
+{
+	SPacket sendPacket;
+
+	sendPacket.SetID( SC_LOBBY_PLAYER_DISCONNECT );
+	sendPacket << m_SessionId;
+
+	GetLobbyMgr.SendPacketAllInLobby(sendPacket, this );
+
 	return TRUE;
 }
 
