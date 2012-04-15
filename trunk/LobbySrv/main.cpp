@@ -6,7 +6,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	HWND hWnd;
 
 	WinMgr window;
-	if( !window.CreateWindows( hInstance, _T("Lobby"), _T("TestGameSrv"), hWnd, 800, 600, nCmdShow ) )
+	if( !window.CreateWindows( hInstance, _T("Lobby"), _T("LobbySrv"), hWnd, 800, 600, nCmdShow ) )
 		return 0;
 
 

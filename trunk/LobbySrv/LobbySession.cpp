@@ -35,9 +35,14 @@ void LobbySession::OnDestroy()
 
 void LobbySession::PacketParsing( SPacket& packet )
 {
-// 	switch( packet.GetID() )
-// 	{
-// 	}
+	switch( packet.GetID() )
+	{
+	//==============================================================> GameSrv
+	//==============================================================> Client
+	case CS_LOBBY_INSERT_LOBBY:
+		//RecvInsertLobby( packet );
+		break;
+	}
 }
 
 //내 정보를 넘겨 받은 패킷에 넣는다.

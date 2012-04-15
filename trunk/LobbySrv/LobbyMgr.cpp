@@ -29,7 +29,7 @@ void LobbyMgr::Release()
 	m_iPlayerCountInLobby = 0;
 }
 
-void LobbyMgr::SendPacketAllInLobby( SPacket& packet, LobbySession* mySession )
+void LobbyMgr::SendPacketAllInLobby( SPacket& packet, LobbySession* mySession /*= NULL*/ )
 {
 	{
 		SSynchronize sync( m_critical );
@@ -38,7 +38,7 @@ void LobbyMgr::SendPacketAllInLobby( SPacket& packet, LobbySession* mySession )
 
 		for( ; iter != m_listPlayerInLobby.end(); ++iter )
 		{
-			//나한테는 보내지 않아도 된다.
+			//mySession이 NULL이 아니면 나한테는 보내지 말라는 것.
 			if( *iter == mySession )
 				continue;
 

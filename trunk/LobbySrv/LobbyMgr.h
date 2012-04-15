@@ -29,7 +29,7 @@ public:
 	void Release();
 
 	//로비에 있는 사람들에게만 패킷 보내기( 나빼고 )
-	void SendPacketAllInLobby( SPacket& packet, LobbySession* mySession );
+	void SendPacketAllInLobby( SPacket& packet, LobbySession* mySession = NULL );
 
 	//모두의 정보를 담기
 	void PackageDataAllInLobby( SPacket& packet );
