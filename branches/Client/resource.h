@@ -11,6 +11,8 @@
 #define IDR_HTML_JOIN                   312
 #define IDD_LOBBY                       313
 #define IDD_ROOM                        314
+#define IDD_ROOMOBJ                     314
+#define IDD_INROOM                      314
 #define IDC_JOIN                        1001
 #define IDC_JOIN_ID                     1002
 #define IDC_JOIN_PW                     1003

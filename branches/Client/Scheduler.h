@@ -4,8 +4,9 @@
 
 
 #include "SPacket.h"
-
 #include "STime.h"
+
+#include "ClientDoc.h"
 
 class CScheduler : public SSingleton <CScheduler>
 {
@@ -20,6 +21,8 @@ private:
 
 	STime m_timer;
 	float m_frame;
+
+	CClientDoc* m_pDoc;
 
 private:
 	CScheduler(void);
@@ -58,6 +61,7 @@ public:
 	void RecvLobbyConnectOK();
 
 	//SC_LOBBY_OTHER_CHARINFO
+	void RecvLobbyPlayerInfo();
 
 	//SC_LOBBY_ROOMINFO,
 
@@ -82,6 +86,9 @@ public:
 	//SC_ROOM_TEAM_CHANGE,
 
 	//SC_ROOM_CHAT,
+
+	//SC_LOBBY_PLAYER_DISCONNECT,
+	void RecvLobbyPlayerDisconnect();
 };
 
 #define GetScheduler CScheduler::GetInstance()

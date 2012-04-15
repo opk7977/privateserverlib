@@ -13,6 +13,8 @@
 #include "ClientDoc.h"
 #include "ClientView.h"
 
+#include "CharMgr.h"
+
 
 // CLobby
 
@@ -64,6 +66,9 @@ void CLobby::OnInitialUpdate()
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 	GetScheduler.Init();
+
+	//여기서 charMgr에게 날 주면 되지..
+	GetCharMgr.m_pLobby = this;
 }
 
 void CLobby::OnNetConn()
@@ -109,7 +114,25 @@ void CLobby::OnNetLogin()
 	}
 
 	CLogin*	loginDlg = new CLogin;
-	loginDlg->DoModal();
+	int dlgResult = loginDlg->DoModal();
 	delete loginDlg;
 }
 
+void CLobby::AddPlayerInList( TCHAR* player )
+{
+	CListBox *pList;
+	pList = (CListBox *)GetDlgItem( IDC_LOBBY_PLAYERLIST );
+	pList->AddString( player );
+}
+
+void CLobby::DelPlayerInList( TCHAR* player )
+{
+	CListBox *pList;
+	pList = (CListBox *)GetDlgItem( IDC_LOBBY_PLAYERLIST );
+	int index = pList->FindString( 0, player );
+
+	if( index == LB_ERR )
+		return;
+
+	pList->DeleteString( index );
+}

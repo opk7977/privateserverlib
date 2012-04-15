@@ -1,4 +1,5 @@
 #pragma once
+#include "Resource.h"
 
 
 
@@ -13,7 +14,7 @@ protected:
 	virtual ~CRoom();
 
 public:
-	enum { IDD = IDD_ROOM };
+	enum { IDD = IDD_INROOM };
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 #ifndef _WIN32_WCE
@@ -25,6 +26,10 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
+
+public:
+
+
 public:
 	CString m_csTitle;
 

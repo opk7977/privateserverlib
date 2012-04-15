@@ -12,8 +12,6 @@ IMPLEMENT_DYNCREATE(CRoom, CFormView)
 
 CRoom::CRoom()
 	: CFormView(CRoom::IDD)
-	, m_csTitle(_T(""))
-
 {
 
 }
@@ -46,6 +44,7 @@ void CRoom::Dump(CDumpContext& dc) const
 {
 	CFormView::Dump(dc);
 }
+
 #endif
 #endif //_DEBUG
 

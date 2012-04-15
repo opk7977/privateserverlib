@@ -1,4 +1,5 @@
 #pragma once
+#include "resource.h"
 
 
 
@@ -25,6 +26,10 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
+public:
+	void AddPlayerInList( TCHAR* player );
+	void DelPlayerInList( TCHAR* player );
+
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnNetConn();

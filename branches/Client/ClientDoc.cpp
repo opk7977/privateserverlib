@@ -6,6 +6,12 @@
 #include "Client.h"
 
 #include "ClientDoc.h"
+// 
+// #include "MainFrm.h"
+#include "CharMgr.h"
+// 
+// #include "Lobby.h"
+// #include "Room.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -25,7 +31,6 @@ END_MESSAGE_MAP()
 CClientDoc::CClientDoc()
 {
 	// TODO: 여기에 일회성 생성 코드를 추가합니다.
-	Init();
 }
 
 CClientDoc::~CClientDoc()
@@ -39,6 +44,8 @@ BOOL CClientDoc::OnNewDocument()
 
 	// TODO: 여기에 재초기화 코드를 추가합니다.
 	// SDI 문서는 이 문서를 다시 사용합니다.
+
+	Init();
 
 	return TRUE;
 }
@@ -88,17 +95,15 @@ void CClientDoc::Init()
 
 	isConnectToLogin = FALSE;
 	
-	isCheckID = FALSE;
 	CheckID = 0;
 
-	iRecvCreateResult = FALSE;
 	isCreateResult = 0;
 
-	isReturnLogin = FALSE;
 	SessionID = 0;
-	strId = _T("");
+	ZeroMemory( strId, 50 );
 
 	isConnectToLobby = FALSE;
 
+	myRoomNum = 0;
 }
 

@@ -63,8 +63,12 @@ BOOL Network::Reconnect( char* ipAddr, int port )
 	DisConnect();
 
 	//다시 연결
+	Init();
+
 	if( !m_conSock.ConnectSock( ipAddr, port ) )
 		return FALSE;
+
+	Sleep(2);
 
 	SetEvent( m_startWork );
 

@@ -1,25 +1,25 @@
 #include "StdAfx.h"
 #include "RoomMgr.h"
 
-Room::Room()
+RoomObj::RoomObj()
 {
 }
 
-Room::~Room()
+RoomObj::~RoomObj()
 {
 }
 
-void Room::AddPlayer( Character* character )
-{
-
-}
-
-void Room::DelPlayer( Character* character )
+void RoomObj::AddPlayer( Character* character )
 {
 
 }
 
-BOOL Room::PlayerIs( Character* character )
+void RoomObj::DelPlayer( Character* character )
+{
+
+}
+
+BOOL RoomObj::PlayerIs( Character* character )
 {
 	return TRUE;
 }

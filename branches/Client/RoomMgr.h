@@ -4,14 +4,14 @@
 
 class Character;
 
-class Room
+class RoomObj
 {
 private:
 	//방 번호
 	int						m_roomNum;
 
 	//room Title
-	CString					m_Title;
+	TCHAR					m_Title[50];
 
 	//player list
 	std::list<Character*>	m_playerListInRoom;
@@ -20,14 +20,14 @@ private:
 	int						m_playerCount;
 
 public:
-	Room();
-	~Room();
+	RoomObj();
+	~RoomObj();
 
 	inline void SetRoomNum( int num ) { m_roomNum = num; }
 	inline int GetRoomNum() { return m_roomNum; }
 
-	inline void SetRoomTitle( CString title ) { m_Title = title; }
-	inline CString GetRoomTitle() { return m_Title; }
+	inline void SetRoomTitle( TCHAR* title ) { _tcsncpy_s( m_Title, 50, title, _tcslen(title) ); }
+	inline TCHAR* GetRoomTitle() { return m_Title; }
 
 	//
 	void AddPlayer( Character* character );
@@ -53,7 +53,7 @@ private:
 
 private:
 	//방list
-	std::map<int, Room*>	m_mapRoom;
+	std::map<int, RoomObj*>	m_mapRoom;
 
 public:
 	RoomMgr(void);

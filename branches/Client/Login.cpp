@@ -105,6 +105,17 @@ void CLogin::OnBnClickedOk()
 		return;
 	}
 
+	//doc를 받아 둔다.
+	CMDIFrameWnd* pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
+	CMDIChildWnd* pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
+	CClientView* pView = (CClientView*) pChild->GetActiveView();
+	CClientDoc* pDoc = pView->GetDocument();
+
+	if( pDoc != NULL )
+		CopyMemory( pDoc->strId, (TCHAR*)(m_csId.GetString()), m_csId.GetLength()*sizeof(TCHAR) );
+	else
+		MessageBox( _T("CLogin::OnBnClickedOk()_pDoc가 없음"), _T("error"), MB_OK );
+
 	OnOK();
 }
 

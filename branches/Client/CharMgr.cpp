@@ -4,17 +4,23 @@
 #include "ClientDoc.h"
 #include "ClientView.h"
 
+#include "MainFrm.h"
+
+#include "Lobby.h"
+
 
 CharMgr::CharMgr(void) : m_playerCount(0)
 					   , m_itMe(NULL)
+					   , m_pLobby(NULL)
 {
 }
 
 CharMgr::~CharMgr(void)
 {
+	Release();
 }
 
-void CharMgr::AddChar( int sessionId, CString id )
+void CharMgr::AddChar( int sessionId, TCHAR* id )
 {
 	Character* tmpChar = new Character;
 
@@ -31,6 +37,15 @@ void CharMgr::AddChar( int sessionId, CString id )
 		m_itMe = tmpChar;
 
 	m_charList.push_back( tmpChar );
+
+	if( m_pLobby == NULL )
+	{
+		MessageBox( NULL, _T("CharMgr::AddChar()_m_pLobby가 없음"), _T("error"), MB_OK );
+		return;
+	}
+
+	m_pLobby->AddPlayerInList( id );
+	++m_playerCount;
 }
 
 void CharMgr::DelChar( int sessionId )
@@ -40,7 +55,16 @@ void CharMgr::DelChar( int sessionId )
 	if( tmpChar == NULL )
 		return;
 
+	if( m_pLobby == NULL )
+	{
+		MessageBox( NULL, _T("CharMgr::AddChar()_m_pLobby가 없음"), _T("error"), MB_OK );
+		return;
+	}
+	m_pLobby->DelPlayerInList( tmpChar->GetID() );
+
+	delete tmpChar;
 	m_charList.remove( tmpChar );
+	--m_playerCount;
 }
 
 Character* CharMgr::FindChar( int sessionId )
@@ -57,4 +81,21 @@ Character* CharMgr::FindChar( int sessionId )
 	}
 
 	return NULL;
+}
+
+void CharMgr::Release()
+{
+	if( m_charList.empty() )
+		return;
+
+	std::list<Character*>::iterator iter, preIter;
+	iter = m_charList.begin();
+	for( int i=0; i<m_playerCount; ++i )
+	{
+		preIter = iter++;
+
+		delete *preIter;
+		*preIter = 0;
+	}
+	m_charList.clear();
 }

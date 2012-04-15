@@ -103,7 +103,7 @@ enum LOBBY_SERVER
 	SC_ROOM_RESULT_CREATE,
 
 	// server -> client
-	// 접속한 사람들에게 만이 만들어 졌다는 패킷을 보낸다.
+	// 접속한 사람들에게 방이 만들어 졌다는 패킷을 보낸다.
 	// int			-		roomNum
 	// int			-		roomTitle데이터 크기
 	// int			-		roomTitle
@@ -198,5 +198,10 @@ enum LOBBY_SERVER
 	// int			-		문장의 데이터 크기
 	// TCHAR		-		문장
 	SC_ROOM_CHAT,
+
+	// server -> client
+	// player가 접속을 끊으면 알려 준다.
+	// int			-		SessionID;
+	SC_LOBBY_PLAYER_DISCONNECT,
 };
 

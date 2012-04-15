@@ -2,13 +2,13 @@
 #include "Scheduler.h"
 
 #include "PacketQueue.h"
+#include "NetProtocol.h"
+#include "Network.h"
 
-#include "ClientDoc.h"
+//#include "ClientDoc.h"
 #include "ClientView.h"
 
 #include "CharMgr.h"
-
-#include "NetProtocol.h"
 
 unsigned int __stdcall _Schdul( void* pArg )
 {
@@ -35,6 +35,12 @@ void CScheduler::Init()
 
 	m_timer.Init();
 	m_frame = 0.f;
+
+	//doc를 받아 둔다.
+	CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
+	CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
+	CClientView* pView = (CClientView*) pChild->GetActiveView();
+	m_pDoc = pView->GetDocument();
 
 	SetEvent( m_startWork );
 }
@@ -93,6 +99,7 @@ void CScheduler::PacketParsing()
 {
 	switch( m_packet.GetID() )
 	{
+	//==============================================================> LoginSrv
 	case SC_LOGIN_CONNECT_OK:
 		RecvLoginConnectOK();
 		break;
@@ -105,42 +112,41 @@ void CScheduler::PacketParsing()
 	case SC_LOGIN_LOGIN_RESULT:
 		RecvLoginLoginResult();
 		break;
-
+	//==============================================================> LobbySrv
 	case SC_LOBBY_CONNECT_OK:
-		//
+		RecvLobbyConnectOK();
 		break;
 	case SC_LOBBY_OTHER_CHARINFO:
-		//
+		RecvLobbyPlayerInfo();
 		break;
+
+	case SC_LOBBY_PLAYER_DISCONNECT:
+		RecvLobbyPlayerDisconnect();
+		break;
+	//==============================================================> GameSrv
+	default:
+		MessageBox( NULL, _T("무슨 패킷이야 이건?"), _T("?????"), MB_OK );
 	}
 }
 
 //패킷을 처리하는 함수
-//SC_LOGIN_CONNECT_OK
+
+//======================================
+// LoginSrv
+//======================================
 void CScheduler::RecvLoginConnectOK()
 {
-	CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-	CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
-	CClientView* pView = (CClientView*) pChild->GetActiveView();
-	CClientDoc* pDoc = pView->GetDocument();
-
-	if (!pDoc)
+	if (!m_pDoc)
 		return;
 
 	MessageBox( NULL, _T("로그인 서버와 연결되었습니다."), _T("Info"), MB_OK );
 
-	pDoc->isConnectToLogin = TRUE;
+	m_pDoc->isConnectToLogin = TRUE;
 }
 
-//SC_LOGIN_CHECK_ID_RESULT
 void CScheduler::RecvLoginCheckID()
 {
-	CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-	CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
-	CClientView* pView = (CClientView*) pChild->GetActiveView();
-	CClientDoc* pDoc = pView->GetDocument();
-
-	if (!pDoc)
+	if (!m_pDoc)
 		return;
 
 	int result;
@@ -155,19 +161,12 @@ void CScheduler::RecvLoginCheckID()
 		MessageBox( NULL, _T("사용할 수 있는 id입니다."), _T("Good"), MB_OK );
 	}
 
-	pDoc->CheckID = result;
-	pDoc->isCheckID = TRUE;
+	m_pDoc->CheckID = result;
 }
 
-//SC_LOGIN_CREATE_RESULT
 void CScheduler::RecvLoginCreateResult()
 {
-	CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-	CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
-	CClientView* pView = (CClientView*) pChild->GetActiveView();
-	CClientDoc* pDoc = pView->GetDocument();
-
-	if (!pDoc)
+	if (!m_pDoc)
 		return;
 
 	int result;
@@ -182,19 +181,12 @@ void CScheduler::RecvLoginCreateResult()
 		MessageBox( NULL, _T("계정이 생성되었습니다."), _T("Good"), MB_OK );
 	}
 
-	pDoc->isCreateResult = result;
-	pDoc->iRecvCreateResult = TRUE;
+	m_pDoc->isCreateResult = result;
 }
 
-//SC_LOGIN_LOGIN_RESULT
 void CScheduler::RecvLoginLoginResult()
 {
-	CMDIFrameWnd *pFrame = (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-	CMDIChildWnd *pChild = (CMDIChildWnd*) pFrame->GetActiveFrame();
-	CClientView* pView = (CClientView*) pChild->GetActiveView();
-	CClientDoc* pDoc = pView->GetDocument();
-
-	if (!pDoc)
+	if (!m_pDoc)
 		return;
 
 	int result;
@@ -213,10 +205,83 @@ void CScheduler::RecvLoginLoginResult()
 		MessageBox( NULL, _T("로그인에 성공~"), _T("good"), MB_OK );
 	}
 	
-	pDoc->SessionID = result;
-	pDoc->isReturnLogin = TRUE;
+	m_pDoc->SessionID = result;
+
+	if( result > 0 )
+	{
+		int size, port;
+		char ip[20] = {0,};
+		
+		m_packet >> size;
+		m_packet.GetData( ip, size );
+		m_packet >> port;
+
+		if( !GetNetwork.Reconnect( ip, port ) )
+			MessageBox( NULL, _T("연결 실패!"), _T("error"), MB_OK );
+	}
 
 	//로비에 있는 상태로 바꿔준다.
-	pDoc->isSceneState = 1;
+	//m_pDoc->isSceneState = 1;
+}
+
+//======================================
+// LobbySrv
+//======================================
+void CScheduler::RecvLobbyConnectOK()
+{
+	if (!m_pDoc)
+		return;
+
+	MessageBox( NULL, _T("로비 서버와 연결되었습니다."), _T("Info"), MB_OK );
+
+	m_pDoc->isConnectToLogin = FALSE;
+	m_pDoc->isConnectToLobby = TRUE;
+
+	//로비에 있는 상태로 바꿔준다.
+	m_pDoc->isSceneState = 1;
+
+	SPacket sendPacket;
+	sendPacket.SetID( CS_LOBBY_INSERT_LOBBY );
+
+	sendPacket << m_pDoc->SessionID;
+	int size = _tcslen( m_pDoc->strId ) * sizeof(TCHAR);
+	sendPacket << size;
+	sendPacket.PutData( m_pDoc->strId, size );
+	sendPacket << m_pDoc->myRoomNum;
+
+	GetNetwork.SendPacket( &sendPacket );
+}
+
+void CScheduler::RecvLobbyPlayerInfo()
+{
+	if( !m_pDoc )
+		return;
+
+	int count, sessionId, size;
+	TCHAR id[50];
+
+	m_packet >> count;
+
+	for( int i=0; i<count; ++i )
+	{
+		m_packet >> sessionId;
+		m_packet >> size;
+		m_packet.GetData( id, size );
+
+		GetCharMgr.AddChar( sessionId, id );
+	}
+
+}
+
+void CScheduler::RecvLobbyPlayerDisconnect()
+{
+	if( !m_pDoc )
+		return;
+
+	int sessionId;
+
+	m_packet >> sessionId;
+
+	GetCharMgr.DelChar( sessionId );
 }
 
