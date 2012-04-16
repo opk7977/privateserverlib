@@ -23,7 +23,7 @@ private:
 	SOCKET				m_socket;
 	//////////////////////////////////////
 
-private:
+protected:
 	//자신의 iocp핸들값 = map의 키값
 	int					m_iIocpKey;
 

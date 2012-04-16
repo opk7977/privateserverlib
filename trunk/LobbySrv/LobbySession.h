@@ -14,6 +14,7 @@ private:
 	int		m_SessionId;
 	TCHAR	m_tstrId[30];
 	int		m_roomNo;
+	int		m_team;	//0: 공격, 1:수비
 
 public:
 	SDECLARE_DYNAMIC(LobbySession)
@@ -74,10 +75,10 @@ public:
 	BOOL SendRoomInfo();
 
 	//SC_ROOM_RESULT_CREATE
-	BOOL SendResultCreate();
+	BOOL SendResultCreate( int result );
 
 	//SC_LOBBY_OPEN_ROOM
-	BOOL SendOpenRoom();
+	BOOL SendOpenRoom( TCHAR* title, int titleSize );
 
 	//SC_ROOM_RESULT_INSERT
 	BOOL SendResultInsert();

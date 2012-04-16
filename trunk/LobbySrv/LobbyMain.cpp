@@ -1,6 +1,7 @@
 #include "LobbyMain.h"
 #include "Network.h"
 #include "SThreadMgr.h"
+#include "Room.h"
 
 LobbyMain::LobbyMain(void)
 {
@@ -20,6 +21,9 @@ BOOL LobbyMain::Init()
 	//서버 셋팅
 	if( !GetNetwork.SrvSetting( 8900 ) )
 		return FALSE;
+
+	//방 셋팅
+	GetRoomMgr.CreateRoomSpace();
 
 	return TRUE;
 }

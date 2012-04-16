@@ -1,5 +1,4 @@
 #include "LobbyMgr.h"
-//#include "SPacket.h"
 #include "LobbySession.h"
 
 #include "SSynchronize.h"
@@ -75,5 +74,6 @@ void LobbyMgr::MinusUser( LobbySession* _session )
 		SSynchronize sync( m_critical );
 
 		m_listPlayerInLobby.remove( _session );
+		--m_iPlayerCountInLobby;
 	}
 }

@@ -3,6 +3,9 @@
 
 #include "LobbyMgr.h"
 
+#include "Room.h"
+
+
 SIMPLEMENT_DYNAMIC(LobbySession)
 SIMPLEMENT_DYNCREATE(LobbySession)
 
@@ -53,6 +56,9 @@ void LobbySession::PacketParsing( SPacket& packet )
 	case CS_LOBBY_INSERT_LOBBY:
 		RecvInsertLobby( packet );
 		break;
+	case CS_LOBBY_CREATE_ROOM:
+		RecvCreateRoom( packet );
+		break;
 	}
 }
 
@@ -80,6 +86,9 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 	packet.GetData( m_tstrId, size );
 	packet >> m_roomNo;
 
+	//로비list에 나를 추가
+	GetLobbyMgr.AddUser( this );
+
 	//방번호를 확인해서 제 접속인지를 보자
 	if( m_roomNo > 0 )
 	{
@@ -88,17 +97,13 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 		//--------------------------------------
 		//해당 방을 받아 와서 
 		//그 방에 이놈의 세션 번호의 iocp핸들값을 바꿔 준다.
-
-		//return;
 	}
 	//--------------------------------------
 	// 새로 접속
 	//--------------------------------------
-	//로비list에 나를 추가
-	GetLobbyMgr.AddUser( this );
-
+	
 	//방 정보를 보낸다.
-	//SendRoomInfo();
+	SendRoomInfo();
 
 	//그리고 로비의 유저 정보를 보낸다.( 내 정보 포함 )
 	SendOtherCharInfo();
@@ -110,7 +115,35 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 
 void LobbySession::RecvCreateRoom( SPacket& packet )
 {
+	int size;
+	TCHAR title[50];
 
+	packet >> m_roomNo;
+	packet >> size;
+	packet.GetData( title, size );
+
+	if( GetRoomMgr.OpenRoom( m_roomNo, m_SessionId, m_iIocpKey, title ) == NULL )
+	{
+		//방 생성 실패
+		SendResultCreate( -1 );
+		return;
+	}
+
+	//방을 찾고
+	Room* tmpRoom;
+	tmpRoom = GetRoomMgr.FindRoom( m_roomNo );
+
+	//팀 배정받읍시다//
+	m_team = tmpRoom->GetTeam();
+
+	//방만들기 성공
+	SendResultCreate( 1 );
+
+	//모두에게 방이 만들어졌다는 패킷을 보낸다.
+	//SendOpenRoom( title, size );
+
+	//모두에게 내가 방에 들어갔다는 패킷을 보낸다.
+	//SendInsertRoom();
 }
 
 void LobbySession::RecvInsertRoom( SPacket& packet )
@@ -188,17 +221,45 @@ BOOL LobbySession::SendMyCharInfo()
 
 BOOL LobbySession::SendRoomInfo()
 {
-	//아직 없음
-	return TRUE;
-}
-///우선 여까지...///////////////////////////////////////////////////////////////////////
-BOOL LobbySession::SendResultCreate()
-{
+	SPacket sendPacket;
+
+	sendPacket.SetID( SC_LOBBY_ROOMINFO );
+	//방 개수
+	sendPacket << ROOMCOUNT;
+
+	//모든 방 정보를 담는다
+	GetRoomMgr.PackageRoomInfoAll( sendPacket );
+
+	SendPacket( sendPacket );
+
 	return TRUE;
 }
 
-BOOL LobbySession::SendOpenRoom()
+BOOL LobbySession::SendResultCreate( int result )
 {
+	SPacket sendPacket;
+	sendPacket.SetID( SC_ROOM_RESULT_CREATE );
+	sendPacket << result;
+	
+	//결과가 성공이면 팀정보를 넣어 준다
+	if( result > 0 )
+		sendPacket << m_team;
+
+	SendPacket( sendPacket );
+
+	return TRUE;
+}
+
+BOOL LobbySession::SendOpenRoom( TCHAR* title, int titleSize )
+{
+	//방의 정보를 담자
+	SPacket sendPacket;
+	sendPacket.SetID( SC_LOBBY_OPEN_ROOM );
+	sendPacket << m_roomNo;
+	sendPacket.PutData( title, titleSize );
+
+	GetLobbyMgr.SendPacketAllInLobby( sendPacket, this );
+
 	return TRUE;
 }
 
@@ -209,6 +270,13 @@ BOOL LobbySession::SendResultInsert()
 
 BOOL LobbySession::SendInsertRoom()
 {
+	SPacket sendPacket;
+	sendPacket.SetID( SC_LOBBY_INSERT_ROOM );
+	sendPacket << m_SessionId;
+	sendPacket << m_roomNo;
+
+	GetLobbyMgr.SendPacketAllInLobby( sendPacket, this );
+
 	return TRUE;
 }
 
