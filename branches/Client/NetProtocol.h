@@ -86,7 +86,7 @@ enum LOBBY_SERVER
 	// int			-		playerCountInRoom
 	// int			-		RoomTitle데이터의 크기
 	// TCHAR		-		RoomTitle
-	// int			-		stateOfRoom ( ex)0:일반, -1(음수):게임중 )
+	// int			-		stateOfRoom ( ex)0:일반, 1(양수):게임중 )
 	//--------------------------------------> roomCount만큼 반복으로 들어가 있음
 	SC_LOBBY_ROOMINFO,
 
@@ -100,6 +100,7 @@ enum LOBBY_SERVER
 	// server -> client
 	// 방만들기에 대한 결과를 보낸다
 	// int			-		result
+	// int			-		Team	//방생성 실패시 데이터 없다
 	SC_ROOM_RESULT_CREATE,
 
 	// server -> client
@@ -109,6 +110,11 @@ enum LOBBY_SERVER
 	// int			-		roomTitle
 	SC_LOBBY_OPEN_ROOM,
 
+	// server -> client
+	// 접속한 사람들에게 방이 닫혔다는 패킷을 보낸다
+	// int			-		roomNum
+	SC_LOBBY_CLOSE_ROOM,
+
 	// client -> server
 	// 방으로 들어가는 요청을 보내는 함수
 	// int			-		roomNum
@@ -117,6 +123,7 @@ enum LOBBY_SERVER
 	// server -> client
 	// 방에 들어가는 요청이 잘 받아 졌는지 결과를 보내주는 패킷
 	// int			-		result
+	// int			-		Team	//못들어갔으면 데이터 없다
 	SC_ROOM_RESULT_INSERT,
 
 	// server -> client
@@ -184,7 +191,7 @@ enum LOBBY_SERVER
 	// client -> server
 	// 게임 시작으로 인해 로비서버와의 접속을 종료하기 전에 보내는 신호
 	// 데이터 없음
-	CS_ROOM_PLAY,
+	//CS_ROOM_PLAY,
 
 	// client -> server
 	// 채팅을 위해 서버로 쓴글을 알림
@@ -203,5 +210,5 @@ enum LOBBY_SERVER
 	// player가 접속을 끊으면 알려 준다.
 	// int			-		SessionID;
 	SC_LOBBY_PLAYER_DISCONNECT,
-};
 
+};

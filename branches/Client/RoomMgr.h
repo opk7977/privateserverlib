@@ -2,7 +2,12 @@
 
 #include "SServerStd.h"
 
+#define MIN_PLAYER_COUNT 6
+#define MAX_PLAYER_COUNT 8
+
+
 class Character;
+class CLobby;
 
 class RoomObj
 {
@@ -19,26 +24,35 @@ private:
 	//현재 인원
 	int						m_playerCount;
 
+	//방의 상태 0: 일반/ 1: 게임중
+	int						m_roomState;
+
+
 public:
 	RoomObj();
 	~RoomObj();
 
+	void Init();
+
 	inline void SetRoomNum( int num ) { m_roomNum = num; }
 	inline int GetRoomNum() { return m_roomNum; }
 
-	inline void SetRoomTitle( TCHAR* title ) { _tcsncpy_s( m_Title, 50, title, _tcslen(title) ); }
+	void SetRoomTitle( TCHAR* title );
 	inline TCHAR* GetRoomTitle() { return m_Title; }
 
-	//
+	//player관련
 	void AddPlayer( Character* character );
 	void DelPlayer( Character* character );
-	BOOL PlayerIs( Character* character );
 
+	inline void SetRoomState( int state ) { m_roomState = state; }
+	inline int GetRoomState() { return m_roomState; }
+
+	void SetPlayerCount( int count );
 	inline int GetPlayerCount() { return m_playerCount; }
 
+	Character* FindChar( int sessionId );
+
 };
-
-
 
 
 
@@ -56,14 +70,18 @@ private:
 	std::map<int, RoomObj*>	m_mapRoom;
 
 public:
+	//view를 받아 논다
+	CLobby*					m_pLobby;
+
+public:
 	RoomMgr(void);
 	~RoomMgr(void);
 
 	//방생성
 	void CreateRoom();
-
-	void Init( int roomNo );
-	//void 
+	void Release();	
+	
+	RoomObj* FindRoom( int roomNo );
 };
 
 #define GetRoomMgr RoomMgr::GetInstance()

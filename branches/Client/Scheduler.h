@@ -64,14 +64,22 @@ public:
 	void RecvLobbyPlayerInfo();
 
 	//SC_LOBBY_ROOMINFO,
+	void RecvLobbyRoomInfo();
 
 	//SC_ROOM_RESULT_CREATE,
+	void RecvRoomResultCreate();
 
 	//SC_LOBBY_OPEN_ROOM,
+	void RecvLobbyOpenRoom();
+
+	//SC_LOBBY_CLOSE_ROOM
+	void RecvLobbyCloseRoom();
 
 	//SC_ROOM_RESULT_INSERT,
+	void RecvRoomResultInsert();
 
 	//SC_LOBBY_INSERT_ROOM,
+	void RecvLobbyInsertRoom();
 
 	//SC_ROOM_CHAR_INSERT,
 

@@ -28,6 +28,9 @@ public:
 
 	BOOL isConnectToLobby;	//로비 서버에 연결되길 기다릴 변수
 
+	BOOL isRecvResult;
+	int Revcvresult;
+
 	int myRoomNum;
 
 // 작업입니다.

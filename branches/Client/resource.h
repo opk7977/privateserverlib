@@ -9,9 +9,10 @@
 #define IDD_LOGIN                       310
 #define IDD_JOIN                        311
 #define IDR_HTML_JOIN                   312
+#define IDD_DIALOG1                     312
+#define IDD_CREATE_ROOM                 312
 #define IDD_LOBBY                       313
 #define IDD_ROOM                        314
-#define IDD_ROOMOBJ                     314
 #define IDD_INROOM                      314
 #define IDC_JOIN                        1001
 #define IDC_JOIN_ID                     1002
@@ -87,6 +88,7 @@
 #define IDC_ROOM4_PLAYERCOUNT           1057
 #define IDC_PLAYER1                     1058
 #define IDC_PLAYER2                     1059
+#define IDC_EDIT1                       1059
 #define IDC_PLAYER3                     1060
 #define IDC_PLAYER4                     1061
 #define IDC_PLAYER5                     1062
@@ -102,9 +104,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        312
+#define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32779
-#define _APS_NEXT_CONTROL_VALUE         1059
+#define _APS_NEXT_CONTROL_VALUE         1060
 #define _APS_NEXT_SYMED_VALUE           315
 #endif
 #endif

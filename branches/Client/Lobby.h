@@ -1,5 +1,6 @@
 #pragma once
 #include "resource.h"
+#include "afxwin.h"
 
 
 
@@ -34,6 +35,16 @@ public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnNetConn();
 	afx_msg void OnNetLogin();
+
+	CStatic m_RoomTitle[4];
+	CStatic m_RoomPlayerCount[4];
+	CButton m_btnNewRoom[4];
+	CButton m_btnEnterRoom[4];
+
+	afx_msg void OnBnClickedRoom1New();
+	afx_msg void OnBnClickedRoom2New();
+	afx_msg void OnBnClickedRoom3New();
+	afx_msg void OnBnClickedRoom4New();
 };
 
 

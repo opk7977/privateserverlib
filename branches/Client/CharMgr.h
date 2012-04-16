@@ -16,6 +16,9 @@ public:
 	//내가 속한 방(0:로비)
 	int			m_roomNo;
 
+	//나의 팀 정보
+	int			m_Team;
+
 public:
 	Character() {};
 	~Character() {};
@@ -28,6 +31,9 @@ public:
 
 	inline void SetRoomNo( int roomNo ) { m_roomNo = roomNo; }
 	inline int GetRoomNo() { return m_roomNo; }
+
+	inline void SetTeam( int team ) { m_Team = team; }
+	inline int GetTeam() { return m_Team; }
 };
 
 
@@ -66,6 +72,8 @@ public:
 
 	//캐릭터 검색
 	Character* FindChar( int sessionId );
+
+	inline Character* GetMe() { return m_itMe; }
 
 	void Release();
 };

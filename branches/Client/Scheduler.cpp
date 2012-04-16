@@ -9,6 +9,7 @@
 #include "ClientView.h"
 
 #include "CharMgr.h"
+#include "RoomMgr.h"
 
 unsigned int __stdcall _Schdul( void* pArg )
 {
@@ -119,6 +120,25 @@ void CScheduler::PacketParsing()
 	case SC_LOBBY_OTHER_CHARINFO:
 		RecvLobbyPlayerInfo();
 		break;
+	case SC_LOBBY_ROOMINFO:
+		RecvLobbyRoomInfo();
+		break;
+	case SC_ROOM_RESULT_CREATE:
+		RecvRoomResultCreate();
+		break;
+	case SC_LOBBY_OPEN_ROOM:
+		//RecvLobbyOpenRoom();
+		break;
+	//case SC_LOBBY_CLOSE_ROOM:
+		//RecvLobbyCloseRoom();
+		//break;
+	//case SC_ROOM_RESULT_INSERT:
+		//RecvRoomResultInsert();
+		//break;
+	case SC_LOBBY_INSERT_ROOM:
+		//RecvLobbyInsertRoom();
+		break;
+
 
 	case SC_LOBBY_PLAYER_DISCONNECT:
 		RecvLobbyPlayerDisconnect();
@@ -240,6 +260,7 @@ void CScheduler::RecvLobbyConnectOK()
 	//로비에 있는 상태로 바꿔준다.
 	m_pDoc->isSceneState = 1;
 
+	//내 정보를 보낸다.
 	SPacket sendPacket;
 	sendPacket.SetID( CS_LOBBY_INSERT_LOBBY );
 
@@ -254,14 +275,12 @@ void CScheduler::RecvLobbyConnectOK()
 
 void CScheduler::RecvLobbyPlayerInfo()
 {
-	if( !m_pDoc )
-		return;
-
 	int count, sessionId, size;
 	TCHAR id[50];
 
 	m_packet >> count;
 
+	//캐릭터 생성
 	for( int i=0; i<count; ++i )
 	{
 		m_packet >> sessionId;
@@ -273,15 +292,88 @@ void CScheduler::RecvLobbyPlayerInfo()
 
 }
 
+void CScheduler::RecvLobbyRoomInfo()
+{
+	int count, roomid, playerCount, size, state;
+	TCHAR title[50] = {0,};
+
+	m_packet >> count;
+
+	RoomObj* tmpRoom;
+
+	for( int i=0; i<count; ++i )
+	{
+		m_packet >> roomid;
+		m_packet >> playerCount;
+		m_packet >> size;
+		m_packet.GetData( title, size );
+		m_packet >> state;
+
+		tmpRoom = GetRoomMgr.FindRoom( roomid );
+		if( tmpRoom == NULL )
+			continue;
+		tmpRoom->SetPlayerCount( playerCount );
+		tmpRoom->SetRoomTitle( title );
+		tmpRoom->SetRoomState( state );
+	}
+}
+
 void CScheduler::RecvLobbyPlayerDisconnect()
 {
-	if( !m_pDoc )
-		return;
-
 	int sessionId;
 
 	m_packet >> sessionId;
 
 	GetCharMgr.DelChar( sessionId );
+}
+
+void CScheduler::RecvRoomResultCreate()
+{
+	if (!m_pDoc)
+		return;
+
+	int result, team;
+	m_packet >> result;
+
+	//result가 0보다 작으면 방만들기에 실패했음
+	if( result < 0 )
+	{
+		m_pDoc->Revcvresult = result;
+		m_pDoc->isRecvResult = TRUE;
+		return;
+	}
+
+	Character* tmpChar = GetCharMgr.GetMe( );
+	
+	if( tmpChar == NULL )
+	{
+		MessageBox( NULL, _T("나 없는데?"), _T("error"), MB_OK );
+		return;
+	}
+	m_packet >> team;
+	tmpChar->SetTeam( team );
+
+	m_pDoc->Revcvresult = result;
+	m_pDoc->isRecvResult = TRUE;
+}
+
+void CScheduler::RecvLobbyOpenRoom()
+{
+
+}
+
+void CScheduler::RecvLobbyCloseRoom()
+{
+
+}
+
+void CScheduler::RecvRoomResultInsert()
+{
+
+}
+
+void CScheduler::RecvLobbyInsertRoom()
+{
+
 }
 

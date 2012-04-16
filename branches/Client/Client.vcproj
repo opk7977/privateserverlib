@@ -208,7 +208,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\RoomMgr.cpp"
+				RelativePath=".\NewRoom.cpp"
 				>
 			</File>
 			<File
@@ -254,11 +254,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Resource.h"
+				RelativePath=".\NewRoom.h"
 				>
 			</File>
 			<File
-				RelativePath=".\RoomMgr.h"
+				RelativePath=".\Resource.h"
 				>
 			</File>
 			<File
@@ -397,6 +397,14 @@
 			</File>
 			<File
 				RelativePath=".\CharMgr.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RoomMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RoomMgr.h"
 				>
 			</File>
 		</Filter>
