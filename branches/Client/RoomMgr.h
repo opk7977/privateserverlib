@@ -80,6 +80,7 @@ public:
 	//¹æ»ý¼º
 	void CreateRoom();
 	void Release();	
+	void ClearAllRoom();
 	
 	RoomObj* FindRoom( int roomNo );
 };

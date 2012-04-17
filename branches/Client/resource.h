@@ -9,7 +9,6 @@
 #define IDD_LOGIN                       310
 #define IDD_JOIN                        311
 #define IDR_HTML_JOIN                   312
-#define IDD_DIALOG1                     312
 #define IDD_CREATE_ROOM                 312
 #define IDD_LOBBY                       313
 #define IDD_ROOM                        314
@@ -86,15 +85,32 @@
 #define IDC_ROOM_PLAYER08_TEAM2         1057
 #define IDC_ROOM_PLAYER08_READY         1057
 #define IDC_ROOM4_PLAYERCOUNT           1057
-#define IDC_PLAYER1                     1058
-#define IDC_PLAYER2                     1059
 #define IDC_EDIT1                       1059
-#define IDC_PLAYER3                     1060
-#define IDC_PLAYER4                     1061
-#define IDC_PLAYER5                     1062
-#define IDC_PLAYER6                     1063
-#define IDC_PLAYER7                     1064
-#define IDC_PLAYER8                     1065
+#define IDC_PLAYER1_ID                  1060
+#define IDC_PLAYER2_ID                  1061
+#define IDC_PLAYER3_ID                  1062
+#define IDC_PLAYER4_ID                  1063
+#define IDC_PLAYER5_ID                  1064
+#define IDC_PLAYER6_ID                  1065
+#define IDC_PLAYER7_ID                  1066
+#define IDC_PLAYER8_ID                  1067
+#define IDC_PLAYER1_TEAM                1068
+#define IDC_PLAYER2_TEAM                1069
+#define IDC_PLAYER3_TEAM                1070
+#define IDC_PLAYER4_TEAM                1071
+#define IDC_PLAYER5_TEAM                1072
+#define IDC_PLAYER6_TEAM                1073
+#define IDC_PLAYER7_TEAM                1074
+#define IDC_PLAYER8_TEAM                1075
+#define IDC_PLAYER1_READY               1076
+#define IDC_PLAYER2_READY               1077
+#define IDC_PLAYER3_READY               1078
+#define IDC_PLAYER4_READY               1079
+#define IDC_PLAYER5_READY               1080
+#define IDC_PLAYER6_READY               1081
+#define IDC_PLAYER7_READY               1082
+#define IDC_PLAYER8_READY               1083
+#define IDC_BUTTON9                     1084
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_NET_CONN                     32773
@@ -106,7 +122,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32779
-#define _APS_NEXT_CONTROL_VALUE         1060
+#define _APS_NEXT_CONTROL_VALUE         1085
 #define _APS_NEXT_SYMED_VALUE           315
 #endif
 #endif

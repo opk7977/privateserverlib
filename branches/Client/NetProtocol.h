@@ -152,7 +152,7 @@ enum LOBBY_SERVER
 	SC_ROOM_OTHER_CHARINFO,
 
 	// server -> client
-	// 방장이 나가고 다음 방장이 누구인지 보낸다.
+	// 방장이 누구인지 보낸다.
 	// int			-		SessionId
 	SC_ROOM_LEADER,
 

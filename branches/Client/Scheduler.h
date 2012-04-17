@@ -8,6 +8,8 @@
 
 #include "ClientDoc.h"
 
+class CRoom;
+
 class CScheduler : public SSingleton <CScheduler>
 {
 private:
@@ -23,6 +25,9 @@ private:
 	float m_frame;
 
 	CClientDoc* m_pDoc;
+
+public:
+	CRoom*		m_pRoom;
 
 private:
 	CScheduler(void);
@@ -84,6 +89,7 @@ public:
 	//SC_ROOM_CHAR_INSERT,
 
 	//SC_ROOM_OTHER_CHARINFO,
+	void RecvRoomOtherChar();
 
 	//SC_ROOM_LEADER,
 

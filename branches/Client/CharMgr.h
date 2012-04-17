@@ -19,6 +19,7 @@ public:
 	//나의 팀 정보
 	int			m_Team;
 
+
 public:
 	Character() {};
 	~Character() {};
@@ -75,6 +76,10 @@ public:
 
 	inline Character* GetMe() { return m_itMe; }
 
+	//나 빼고 모든 캐릭터 정보를 날린다.
+	void ClearCharacter();
+
+	//모든 정보를 지우고list clear까지
 	void Release();
 };
 

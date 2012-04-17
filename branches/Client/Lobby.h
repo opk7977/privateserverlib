@@ -45,6 +45,11 @@ public:
 	afx_msg void OnBnClickedRoom2New();
 	afx_msg void OnBnClickedRoom3New();
 	afx_msg void OnBnClickedRoom4New();
+
+	afx_msg void OnBnClickedRoom1Insert();
+	afx_msg void OnBnClickedRoom2Insert();
+	afx_msg void OnBnClickedRoom3Insert();
+	afx_msg void OnBnClickedRoom4Insert();
 };
 
 

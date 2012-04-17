@@ -42,8 +42,6 @@ void RoomObj::SetRoomTitle( TCHAR* title )
 	_tcsncpy_s( m_Title, 50, title, _tcslen(title) );
 
 	GetRoomMgr.m_pLobby->m_RoomTitle[m_roomNum-1].SetWindowText( m_Title );
-	GetRoomMgr.m_pLobby->m_btnNewRoom[m_roomNum-1].EnableWindow( TRUE );
-	GetRoomMgr.m_pLobby->m_btnEnterRoom[m_roomNum-1].EnableWindow( FALSE );
 }
 
 void RoomObj::AddPlayer( Character* character )
@@ -82,10 +80,9 @@ void RoomObj::SetPlayerCount( int count )
 	GetRoomMgr.m_pLobby->m_RoomPlayerCount[m_roomNum-1].SetWindowText( tmp );
 
 	if( m_playerCount > 0 )
-	{
-		GetRoomMgr.m_pLobby->m_btnNewRoom[m_roomNum-1].EnableWindow( FALSE );
 		GetRoomMgr.m_pLobby->m_btnEnterRoom[m_roomNum-1].EnableWindow( TRUE );
-	}
+	else
+		GetRoomMgr.m_pLobby->m_btnNewRoom[m_roomNum-1].EnableWindow( TRUE );
 }
 
 Character* RoomObj::FindChar( int sessionId )
@@ -121,7 +118,6 @@ void RoomMgr::CreateRoom()
 	for( int i=1; i<=ROOMCOUNT; ++i )
 	{
 		RoomObj* tmpRoom = new RoomObj;
-		//tmpRoom->Init();
 		tmpRoom->SetRoomNum( i );
 
 		m_mapRoom[i] = tmpRoom;
@@ -136,6 +132,17 @@ void RoomMgr::Release()
 		m_mapRoom[i] = 0;
 	}
 	m_mapRoom.clear();
+}
+
+void RoomMgr::ClearAllRoom()
+{
+	for( int i=1; i<=ROOMCOUNT; ++i )
+	{
+		m_mapRoom[i]->Init();
+
+		GetRoomMgr.m_pLobby->m_btnNewRoom[i-1].EnableWindow( FALSE );
+		GetRoomMgr.m_pLobby->m_btnEnterRoom[i-1].EnableWindow( FALSE );
+	}
 }
 
 RoomObj* RoomMgr::FindRoom( int roomNo )

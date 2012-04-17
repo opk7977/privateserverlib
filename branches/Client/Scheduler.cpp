@@ -11,6 +11,8 @@
 #include "CharMgr.h"
 #include "RoomMgr.h"
 
+#include "Room.h"
+
 unsigned int __stdcall _Schdul( void* pArg )
 {
 	return ((CScheduler*)pArg)->Run();
@@ -132,11 +134,20 @@ void CScheduler::PacketParsing()
 	//case SC_LOBBY_CLOSE_ROOM:
 		//RecvLobbyCloseRoom();
 		//break;
-	//case SC_ROOM_RESULT_INSERT:
-		//RecvRoomResultInsert();
-		//break;
+	case SC_ROOM_RESULT_INSERT:
+		RecvRoomResultInsert();
+		break;
 	case SC_LOBBY_INSERT_ROOM:
 		//RecvLobbyInsertRoom();
+		break;
+	case SC_ROOM_OTHER_CHARINFO:
+		RecvRoomOtherChar();
+		break;
+	case SC_ROOM_CHAR_INSERT:
+		//
+		break;
+	case SC_ROOM_LEADER:
+		//
 		break;
 
 
@@ -343,7 +354,7 @@ void CScheduler::RecvRoomResultCreate()
 		return;
 	}
 
-	Character* tmpChar = GetCharMgr.GetMe( );
+	Character* tmpChar = GetCharMgr.GetMe();
 	
 	if( tmpChar == NULL )
 	{
@@ -369,11 +380,45 @@ void CScheduler::RecvLobbyCloseRoom()
 
 void CScheduler::RecvRoomResultInsert()
 {
+	int result;
+	m_packet >> result;
 
+	m_pDoc->Revcvresult = result;
+	m_pDoc->isRecvResult = TRUE;
 }
 
 void CScheduler::RecvLobbyInsertRoom()
 {
 
+}
+
+//
+
+void CScheduler::RecvRoomOtherChar()
+{
+	if (!m_pDoc)
+		return;
+
+	Character* me = GetCharMgr.GetMe();
+
+	m_pRoom->OpenRoom( m_pDoc->myRoomNum, GetRoomMgr.FindRoom( m_pDoc->myRoomNum )->GetRoomTitle() );
+	m_pRoom->AddPlayer( me->GetSessionID(), me->GetID(), me->GetTeam(), 0 );
+
+	//나는 방으로 들어가게 되니까 로비의 방정보를 모두 지운다
+	GetRoomMgr.ClearAllRoom();
+
+	//캐릭터 정보도 모두 지운다.
+	GetCharMgr.ClearCharacter();
+
+	int count, sessionId, size, team;
+	TCHAR tmpID[30]={0,};
+
+	m_packet >> count;
+
+	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	//여기여기
+	//////////////////////////////////////////////////////////////////////////
 }
 

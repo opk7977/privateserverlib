@@ -83,6 +83,25 @@ Character* CharMgr::FindChar( int sessionId )
 	return NULL;
 }
 
+void CharMgr::ClearCharacter()
+{
+	if( m_charList.empty() )
+		return;
+
+	std::list<Character*>::iterator iter, preIter;
+	iter = m_charList.begin();
+	for( int i=0; i<m_playerCount; ++i )
+	{
+		preIter = iter++;
+
+		m_pLobby->DelPlayerInList( (*preIter)->GetID() );
+
+		delete *preIter;
+		m_charList.erase( preIter );
+	}
+	m_itMe = 0;
+}
+
 void CharMgr::Release()
 {
 	if( m_charList.empty() )

@@ -3,20 +3,23 @@
 
 #include "stdafx.h"
 #include "Client.h"
-#include "Lobby.h"
 
-#include "Network.h"
-#include "Login.h"
-
-#include "Scheduler.h"
-
+#include "MainFrm.h"
 #include "ClientDoc.h"
 #include "ClientView.h"
 
+#include "Lobby.h"
+#include "Room.h"
+
+#include "Network.h"
+#include "Scheduler.h"
 #include "CharMgr.h"
+
+#include "Login.h"
 #include "RoomMgr.h"
 
 #include "NewRoom.h"
+
 
 
 // CLobby
@@ -63,6 +66,10 @@ BEGIN_MESSAGE_MAP(CLobby, CFormView)
 	ON_BN_CLICKED(IDC_ROOM2_NEW, &CLobby::OnBnClickedRoom2New)
 	ON_BN_CLICKED(IDC_ROOM3_NEW, &CLobby::OnBnClickedRoom3New)
 	ON_BN_CLICKED(IDC_ROOM4_NEW, &CLobby::OnBnClickedRoom4New)
+	ON_BN_CLICKED(IDC_ROOM1_INSERT, &CLobby::OnBnClickedRoom1Insert)
+	ON_BN_CLICKED(IDC_ROOM2_INSERT, &CLobby::OnBnClickedRoom2Insert)
+	ON_BN_CLICKED(IDC_ROOM3_INSERT, &CLobby::OnBnClickedRoom3Insert)
+	ON_BN_CLICKED(IDC_ROOM4_INSERT, &CLobby::OnBnClickedRoom4Insert)
 END_MESSAGE_MAP()
 
 
@@ -90,7 +97,7 @@ void CLobby::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	GetScheduler.Init();
+	//GetScheduler.Init();
 	//방을 만들어 둔다
 	GetRoomMgr.CreateRoom();
 
@@ -171,6 +178,9 @@ void CLobby::OnBnClickedRoom1New()
 	CNewRoom* room = new CNewRoom;
 	room->SetRoomNum( 1 );
 
+	CRoom* pRoom = (CRoom*)((CMainFrame*)AfxGetMainWnd())->wndSplitterRow.GetPane( 1, 0 );
+	room->m_pRoom = pRoom;
+
 	room->DoModal();
 
 	delete room;
@@ -181,6 +191,9 @@ void CLobby::OnBnClickedRoom2New()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CNewRoom* room = new CNewRoom;
 	room->SetRoomNum( 2 );
+
+	CRoom* pRoom = (CRoom*)((CMainFrame*)AfxGetMainWnd())->wndSplitterRow.GetPane( 1, 0 );
+	room->m_pRoom = pRoom;
 
 	room->DoModal();
 
@@ -193,6 +206,9 @@ void CLobby::OnBnClickedRoom3New()
 	CNewRoom* room = new CNewRoom;
 	room->SetRoomNum( 3 );
 
+	CRoom* pRoom = (CRoom*)((CMainFrame*)AfxGetMainWnd())->wndSplitterRow.GetPane( 1, 0 );
+	room->m_pRoom = pRoom;
+
 	room->DoModal();
 
 	delete room;
@@ -204,7 +220,150 @@ void CLobby::OnBnClickedRoom4New()
 	CNewRoom* room = new CNewRoom;
 	room->SetRoomNum( 4 );
 
+	CRoom* pRoom = (CRoom*)((CMainFrame*)AfxGetMainWnd())->wndSplitterRow.GetPane( 1, 0 );
+	room->m_pRoom = pRoom;
+
 	room->DoModal();
 
 	delete room;
+}
+
+void CLobby::OnBnClickedRoom1Insert()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CClientDoc* pDoc = (CClientDoc*)GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
+
+	SPacket sendPacket;
+
+	sendPacket.SetID( CS_LOBBY_INSERT_ROOM );
+	sendPacket << 1;
+
+	int result = GetNetwork.SendPacket( &sendPacket );
+
+	if( result != sendPacket.GetPacketSize() )
+	{
+		MessageBox( _T("CLobby::OnBnClickedRoom1Insert()\n전송크기가 다른데?"), _T("error"), MB_OK );
+	}
+
+	pDoc->isRecvResult = FALSE;
+	while( pDoc->isRecvResult )
+	{
+	}
+
+	if( pDoc->Revcvresult < 0 )
+	{
+		MessageBox( _T("방입장 실퍠!"), _T("info"), MB_OK );
+		return;
+	}
+	MessageBox( _T("방으로 입장\n방 정보를 받아 옵니다."), _T("info"), MB_OK );
+
+	pDoc->myRoomNum = 1;
+}
+
+void CLobby::OnBnClickedRoom2Insert()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CClientDoc* pDoc = (CClientDoc*)GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
+
+	SPacket sendPacket;
+
+	sendPacket.SetID( CS_LOBBY_INSERT_ROOM );
+	sendPacket << 2;
+
+	int result = GetNetwork.SendPacket( &sendPacket );
+
+	if( result != sendPacket.GetPacketSize() )
+	{
+		MessageBox( _T("CLobby::OnBnClickedRoom2Insert()\n전송크기가 다른데?"), _T("error"), MB_OK );
+	}
+
+	pDoc->isRecvResult = FALSE;
+	while( pDoc->isRecvResult )
+	{
+	}
+
+	if( pDoc->Revcvresult < 0 )
+	{
+		MessageBox( _T("방입장 실퍠!"), _T("info"), MB_OK );
+		return;
+	}
+	MessageBox( _T("방으로 입장\n방 정보를 받아 옵니다."), _T("info"), MB_OK );
+
+	pDoc->myRoomNum = 2;
+}
+
+void CLobby::OnBnClickedRoom3Insert()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CClientDoc* pDoc = (CClientDoc*)GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
+
+	SPacket sendPacket;
+
+	sendPacket.SetID( CS_LOBBY_INSERT_ROOM );
+	sendPacket << 3;
+
+	int result = GetNetwork.SendPacket( &sendPacket );
+
+	if( result != sendPacket.GetPacketSize() )
+	{
+		MessageBox( _T("CLobby::OnBnClickedRoom3Insert()\n전송크기가 다른데?"), _T("error"), MB_OK );
+	}
+
+	pDoc->isRecvResult = FALSE;
+	while( pDoc->isRecvResult )
+	{
+	}
+
+	if( pDoc->Revcvresult < 0 )
+	{
+		MessageBox( _T("방입장 실퍠!"), _T("info"), MB_OK );
+		return;
+	}
+	MessageBox( _T("방으로 입장\n방 정보를 받아 옵니다."), _T("info"), MB_OK );
+
+	pDoc->myRoomNum = 3;
+}
+
+void CLobby::OnBnClickedRoom4Insert()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CClientDoc* pDoc = (CClientDoc*)GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
+
+	SPacket sendPacket;
+
+	sendPacket.SetID( CS_LOBBY_INSERT_ROOM );
+	sendPacket << 4;
+
+	int result = GetNetwork.SendPacket( &sendPacket );
+
+	if( result != sendPacket.GetPacketSize() )
+	{
+		MessageBox( _T("CLobby::OnBnClickedRoom4Insert()\n전송크기가 다른데?"), _T("error"), MB_OK );
+	}
+
+	pDoc->isRecvResult = FALSE;
+	while( pDoc->isRecvResult )
+	{
+	}
+
+	if( pDoc->Revcvresult < 0 )
+	{
+		MessageBox( _T("방입장 실퍠!"), _T("info"), MB_OK );
+		return;
+	}
+	MessageBox( _T("방으로 입장\n방 정보를 받아 옵니다."), _T("info"), MB_OK );
+
+	pDoc->myRoomNum = 4;
 }
