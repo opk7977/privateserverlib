@@ -2,6 +2,7 @@
 #include "LobbyProtocol.h"
 
 #include "LobbyMgr.h"
+#include "SLogger.h"
 
 #include "Room.h"
 
@@ -28,17 +29,32 @@ void LobbySession::OnCreate()
 
 void LobbySession::OnDestroy()
 {
-	if( !IsPlayNow )
+	if( m_roomNo == 0 )
 	{
-		//세션의 IsPlayNow가 FALSE이면 그냥 다 지워 준다
-		if( m_roomNo == 0 )			//lobby에 있는 사람이면
-			GetLobbyMgr.MinusUser( this );
-		//else
-			//
-		
+		//로비에 있던 애면 그냥 로비에서 지워주면 됨
+		GetLobbyMgr.MinusUser( this );
 	}
-	//else
-		//세션의 IsPlayNow가 TRUE이면 방에 있는 list는 지우면 안된다.
+	else
+	{
+		//방에 있던 애이고
+		if( !IsPlayNow )
+		{
+			//게임중이 아니면
+			Room* tmpRoom = GetRoomMgr.FindRoom( m_roomNo );
+			if( tmpRoom == NULL )
+			{
+				GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::OnDestroy()\n방으 존재하지 않습니다.\n\n") );
+				return;
+			}
+			if( !tmpRoom->DelPlayerInRoom( m_SessionId ) )
+				GetRoomMgr.CloseRoom( m_roomNo );
+		}
+		else
+		{
+			//게임시작으로 인한 접속 종료이면
+			//방에 있는 list는 지우면 안된다.
+		}
+	}
 
 	//모두에게 나간것을 알려줘야 한다
 	SendPlayerDisconnect();
@@ -98,10 +114,6 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 		//해당 방을 받아 와서 
 		//그 방에 이놈의 세션 번호의 iocp핸들값을 바꿔 준다.
 	}
-	//--------------------------------------
-	// 새로 접속
-	//--------------------------------------
-	
 	//방 정보를 보낸다.
 	SendRoomInfo();
 
@@ -128,6 +140,9 @@ void LobbySession::RecvCreateRoom( SPacket& packet )
 		SendResultCreate( -1 );
 		return;
 	}
+
+	//방으로 들어갔으니 로비에서는 지워 준다
+	GetLobbyMgr.MinusUser( this );
 
 	//방을 찾고
 	Room* tmpRoom;
@@ -322,7 +337,15 @@ BOOL LobbySession::SendPlayerDisconnect()
 	sendPacket.SetID( SC_LOBBY_PLAYER_DISCONNECT );
 	sendPacket << m_SessionId;
 
-	GetLobbyMgr.SendPacketAllInLobby(sendPacket, this );
+	if( m_roomNo == 0 )
+		GetLobbyMgr.SendPacketAllInLobby(sendPacket, this );
+	else
+	{
+		Room* tmpRoom = GetRoomMgr.FindRoom( m_roomNo );
+		if( tmpRoom == NULL )
+			return FALSE;
+		tmpRoom->SendPacketAllInRoom( sendPacket, this );
+	}
 
 	return TRUE;
 }

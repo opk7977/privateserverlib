@@ -51,7 +51,7 @@ public:
 
 
 	//모든 세션에게 동일한 패킷 전송
-	void SendAllSession( SPacket packet );
+	void SendAllSession( SPacket &packet, SSession* mySession = NULL );
 
 	//모든 동적할당 해제
 	void Release();

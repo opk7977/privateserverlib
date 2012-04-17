@@ -9,6 +9,7 @@
 
 #define ROOMCOUNT		4
 
+class LobbySession;
 
 class Room : public SServerObj
 {
@@ -90,7 +91,7 @@ public:
 	//--------------------------------------
 	void PackageRoomInfo( SPacket &packet );
 	//방에 있는 모든 이에게 packet을 보낸다.
-	void SendPacketAllInRoom( SPacket &packet );
+	void SendPacketAllInRoom( SPacket &packet, LobbySession* mySession );
 };
 
 //////////////////////////////////////////////////////////////////////////

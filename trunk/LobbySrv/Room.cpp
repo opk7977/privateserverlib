@@ -119,7 +119,7 @@ void Room::PackageRoomInfo( SPacket &packet )
 	packet << m_isPlay;
 }
 
-void Room::SendPacketAllInRoom( SPacket &packet )
+void Room::SendPacketAllInRoom( SPacket &packet, LobbySession* mySession )
 {
 	LobbySession* tmpSession;
 
@@ -127,6 +127,9 @@ void Room::SendPacketAllInRoom( SPacket &packet )
 	{
 		tmpSession = (LobbySession*)GetSessionMgr.GetSession( m_mapPlayerlist[i] );
 		if( tmpSession == NULL )
+			continue;
+
+		if( tmpSession == mySession )
 			continue;
 
 		tmpSession->SendPacket( packet );
