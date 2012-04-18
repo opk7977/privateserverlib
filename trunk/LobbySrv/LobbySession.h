@@ -9,10 +9,13 @@ private:
 	BOOL	IsPlayNow;
 
 	//--------------------------------------
-	// 유저 정보
+	// 유저정보
 	//--------------------------------------
 	int		m_SessionId;
 	TCHAR	m_tstrId[30];
+	//--------------------------------------
+	// 방정보
+	//--------------------------------------
 	int		m_roomNo;
 	int		m_team;	//0: 공격, 1:수비
 
@@ -27,12 +30,15 @@ public:
 	void OnCreate();
 	void OnDestroy();
 
+	//정보들 초기화
+	void clear();
+
 	void PacketParsing( SPacket& packet );
 
 	//======================================
 	// 내 정보를 패킷에 담는 함수
 	//======================================
-	void PackageMyInfo( SPacket& packet );
+	void PackageMyInfo( SPacket& packet, BOOL isTeam = FALSE );
 
 	//======================================
 	// 받은 패킷 처리 함수
@@ -49,7 +55,7 @@ public:
 	//CS_ROOM_OUT_ROOM
 	void RecvOutRoom();
 
-	//CS_ROOM_READY
+	//CS_ROOM_CHAR_READY
 	void RecvReady( SPacket& packet );
 
 	//CS_ROOM_TEAM_CHANGE
@@ -81,19 +87,18 @@ public:
 	BOOL SendOpenRoom( TCHAR* title, int titleSize );
 
 	//SC_ROOM_RESULT_INSERT
-	BOOL SendResultInsert();
+	BOOL SendResultInsert( int result );
 
 	//SC_LOBBY_INSERT_ROOM
 	BOOL SendInsertRoom();
 
-	//SC_ROOM_CHAR_INSERT
-	BOOL SendCharInsert();
-
 	//SC_ROOM_OTHER_CHARINFO
 	BOOL SendRoomOtherCharInfo();
+	BOOL SendRoomMyInfoToOtherChar();
 
 	//SC_ROOM_LEADER
 	BOOL SendRoomLeader();
+	BOOL SendRoomLeaderToAll();
 
 	//SC_ROOM_CHAR_OUT
 	BOOL SendRoomCharOut();
@@ -105,7 +110,7 @@ public:
 	BOOL SendRoomTeamChange();
 
 	//SC_ROOM_CHAT
-	BOOL SendRoomChat();
+	BOOL SendChat( TCHAR* chat );
 
 	//SC_LOBBY_PLAYER_DISCONNECT
 	BOOL SendPlayerDisconnect();

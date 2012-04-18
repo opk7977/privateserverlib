@@ -60,24 +60,26 @@ void Room::SetLeader( int sessionId )
 	m_leader = sessionId;
 }
 
-void Room::SetPlayerIndex( int sessionId, int Index )
+void Room::SetPlayerIndex( int sessionId, int iocpKey )
 {
 	//존재하지 않으면 돌아 간다.
 	if( m_mapPlayerlist.find(sessionId) == m_mapPlayerlist.end() )
 		return;
 
-	m_mapPlayerlist[sessionId] = Index;
+	m_mapPlayerlist[sessionId] = iocpKey;
 }
 
-void Room::AddPlayerInRoom( int sessionId, int index )
+int Room::AddPlayerInRoom( int sessionId, int iocpKey )
 {
 	//존재하면 돌아 간다.
 	if( m_mapPlayerlist.find(sessionId) != m_mapPlayerlist.end() )
-		return;
+		return -1;
 
-	m_mapPlayerlist[sessionId] = index;
+	m_mapPlayerlist[sessionId] = iocpKey;
 
 	++m_nowPleyrCount;
+
+	return GetTeam();
 }
 
 BOOL Room::DelPlayerInRoom( int sessionId )
@@ -110,6 +112,22 @@ void Room::TeamCount( int team, BOOL isCountUp /*= TRUE */ )
 		isCountUp == TRUE ? ++m_DefenceTeam : --m_DefenceTeam;
 }
 
+void Room::TeamChange( int basicTeam )
+{
+	if( basicTeam == 0 )
+	{
+		//공격에서 수비로
+		++m_DefenceTeam;
+		--m_AttectTeam;
+	}
+	else
+	{
+		//수비에서 공격으로
+		++m_AttectTeam;
+		--m_DefenceTeam;
+	}
+}
+
 void Room::PackageRoomInfo( SPacket &packet )
 {
 	packet << m_nowPleyrCount;
@@ -119,13 +137,15 @@ void Room::PackageRoomInfo( SPacket &packet )
 	packet << m_isPlay;
 }
 
-void Room::SendPacketAllInRoom( SPacket &packet, LobbySession* mySession )
+void Room::SendPacketAllInRoom( SPacket &packet, LobbySession* mySession /*= NULL*/ )
 {
 	LobbySession* tmpSession;
 
-	for( int i=1; i<=m_nowPleyrCount; ++i )
+	std::map<int, int>::iterator iter;
+	iter = m_mapPlayerlist.begin();
+	for( ; iter != m_mapPlayerlist.end(); ++iter )
 	{
-		tmpSession = (LobbySession*)GetSessionMgr.GetSession( m_mapPlayerlist[i] );
+		tmpSession = (LobbySession*)GetSessionMgr.GetSession( iter->second );
 		if( tmpSession == NULL )
 			continue;
 
@@ -136,18 +156,37 @@ void Room::SendPacketAllInRoom( SPacket &packet, LobbySession* mySession )
 	}
 }
 
+void Room::PackageAllPlayerInRoom( SPacket &packet )
+{
+	//우선 인원수를 담고
+	packet << m_nowPleyrCount;
+
+	LobbySession* tmpSession;
+
+	std::map<int, int>::iterator iter;
+	iter = m_mapPlayerlist.begin();
+	for( ; iter != m_mapPlayerlist.end(); ++iter )
+	{
+		tmpSession = (LobbySession*)GetSessionMgr.GetSession( iter->second );
+		if( tmpSession == NULL )
+			continue;
+
+		tmpSession->PackageMyInfo( packet, TRUE );
+	}
+}
+
 int Room::GetTeam()
 {
 	//두 팀이 같은 인원이면 우선권으로 공격팀에 배정된다.
 	if( m_AttectTeam > m_DefenceTeam )
 	{
 		++m_DefenceTeam;
-		return 0;
+		return 1;
 	}
 	else
 	{
 		++m_AttectTeam;
-		return 1;
+		return 0;
 	}
 }
 
@@ -186,18 +225,18 @@ void RoomMgr::Release()
 	m_mapRoomlist.clear();
 }
 
-BOOL RoomMgr::OpenRoom( int roomNum, int SessionID, int iocpHandle, TCHAR* title )
+int RoomMgr::OpenRoom( int roomNum, int SessionID, int iocpHandle, TCHAR* title )
 {
 	Room* tmpRoom = FindRoom( roomNum );
 
 	if( tmpRoom == NULL )
-		return FALSE;
+		return -1;
 
 	tmpRoom->SetTitle( title );
-	tmpRoom->AddPlayerInRoom( SessionID, iocpHandle );
+	int team = tmpRoom->AddPlayerInRoom( SessionID, iocpHandle );
 	tmpRoom->SetLeader( SessionID );
 
-	return TRUE;
+	return team;
 }
 
 void RoomMgr::CloseRoom( int roomNum )

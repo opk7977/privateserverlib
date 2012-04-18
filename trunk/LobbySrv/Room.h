@@ -63,10 +63,11 @@ public:
 	inline int GetReadyCount() { return m_readyCount; }
 	//리더 설정
 	void SetLeader( int sessionId );
+	int GetLeader() { return m_leader; }
 	//방에 들어있는 player의 핸들값을 변경해 준다
-	void SetPlayerIndex( int sessionId, int Index );
-	//player추가
-	void AddPlayerInRoom( int sessionId, int index );
+	void SetPlayerIndex( int sessionId, int iocpKey );
+	//player추가( 성공하면 배정된 팀번호를 return한다 )
+	int AddPlayerInRoom( int sessionId, int iocpKey );
 	//player제거
 	// return 값이 FALSE이면 방에 사람이 모두 나갔다는 뜻이다.
 	BOOL DelPlayerInRoom( int sessionId );
@@ -80,6 +81,8 @@ public:
 	// isCount 가 TRUE : +
 	//			  FALSE: -
 	void TeamCount( int team, BOOL isCountUp = TRUE );
+	//바뀌기 전의 팀을 넘겨 준다
+	void TeamChange( int basicTeam );
 	//팀을 할당 받음
 	//0 : 공격
 	//1 : 수비
@@ -89,9 +92,12 @@ public:
 	//--------------------------------------
 	// 전송
 	//--------------------------------------
+	//방 자신의 정보를 넣는다.
 	void PackageRoomInfo( SPacket &packet );
+	//방에 있는 모든 이의 정보를 packet에 넣는다
+	void PackageAllPlayerInRoom( SPacket &packet );
 	//방에 있는 모든 이에게 packet을 보낸다.
-	void SendPacketAllInRoom( SPacket &packet, LobbySession* mySession );
+	void SendPacketAllInRoom( SPacket &packet, LobbySession* mySession = NULL );
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -112,7 +118,7 @@ public:
 	void CreateRoomSpace();
 	void Release();
 
-	BOOL OpenRoom( int roomNum, int SessionID, int iocpHandle, TCHAR* title );
+	int OpenRoom( int roomNum, int SessionID, int iocpHandle, TCHAR* title );
 	void CloseRoom( int roomNum );
 
 	Room* FindRoom( int roomNum );
