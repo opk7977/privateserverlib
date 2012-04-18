@@ -66,6 +66,7 @@ enum LOBBY_SERVER
 	// int			-		id의 데이터 크기
 	// TCHAR		-		id
 	// int			-		RoomNum( 없다면 0을 보낸다 )
+	// int			-		Team( RoomMum이 없으면 team정보는 없다 )
 	CS_LOBBY_INSERT_LOBBY,
 
 	// server -> client
@@ -133,14 +134,6 @@ enum LOBBY_SERVER
 	SC_LOBBY_INSERT_ROOM,
 
 	// server -> client
-	// 방에 있는 사람들에게 방에 들어온 사람에 대한 정보를 보낸다.
-	// int			-		SessionID
-	// int			-		id데이터의 크기
-	// TCHAR		-		id
-	// int			-		Team
-	SC_ROOM_CHAR_INSERT,
-
-	// server -> client
 	// 방에 있는 사람들의 정보를 받음
 	// int			-		playerCount
 	//--------------------------------------
@@ -166,10 +159,15 @@ enum LOBBY_SERVER
 	// int			-		SessionId
 	SC_ROOM_CHAR_OUT,
 
+	// server -> client
+	// 로비에 있는 사람들에게 방에 사람 수가 줄었다는 것을 알림
+	// int			-		roomNum
+	SC_LOBBY_ROOMPLAYER_COUNTDOWN,
+
 	// client -> server
 	// ready상태를 변경하고 상태를 서버로 보냄
 	// int			-		ready상태값
-	CS_ROOM_READY,
+	CS_ROOM_CHAR_READY,
 
 	// server -> client
 	// 바뀐 ready상태를 방의 유저들에게 알림
@@ -197,14 +195,14 @@ enum LOBBY_SERVER
 	// 채팅을 위해 서버로 쓴글을 알림
 	// int			-		문장의 데이터 크기
 	// TCHAR		-		문장
-	CS_ROOM_CHAT,
+	CS_LOBBY_CHAT,
 
 	// server -> client
 	// 채팅문장을 알림
-	// int			-		SessionID
+	// roomNum		-		RoomNum ( 로비라면 0 )
 	// int			-		문장의 데이터 크기
 	// TCHAR		-		문장
-	SC_ROOM_CHAT,
+	SC_LOBBY_CHAT,
 
 	// server -> client
 	// player가 접속을 끊으면 알려 준다.

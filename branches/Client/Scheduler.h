@@ -86,20 +86,26 @@ public:
 	//SC_LOBBY_INSERT_ROOM,
 	void RecvLobbyInsertRoom();
 
-	//SC_ROOM_CHAR_INSERT,
-
 	//SC_ROOM_OTHER_CHARINFO,
 	void RecvRoomOtherChar();
 
 	//SC_ROOM_LEADER,
+	void RecvRoomLeader();
 
 	//SC_ROOM_CHAR_OUT,
+	void RecvRoomCharOut();
+
+	//SC_LOBBY_ROOMPLAYER_COUNTDOWN,
+	void RecvRoomPlayerCountDown();
 
 	//SC_ROOM_CHAR_READY,
+	void RecvCharReady();
 
 	//SC_ROOM_TEAM_CHANGE,
+	void RecvTeamChange();
 
-	//SC_ROOM_CHAT,
+	//SC_LOBBY_CHAT,
+	void RecvLobbyChat();
 
 	//SC_LOBBY_PLAYER_DISCONNECT,
 	void RecvLobbyPlayerDisconnect();

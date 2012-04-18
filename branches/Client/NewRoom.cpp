@@ -111,6 +111,8 @@ void CNewRoom::OnBnClickedOk()
 
 	m_pRoom->OpenRoom( m_roomNum, (TCHAR*)(m_RoomTitle.GetString()) );
 	m_pRoom->AddPlayer( me->GetSessionID(), me->GetID(), me->GetTeam(), 0 );
+	m_pRoom->SetMe( me->GetSessionID() );
+	m_pRoom->SetLeader( me->GetSessionID() );
 
 	//나는 방으로 들어가게 되니까 로비의 방정보를 모두 지운다
 	GetRoomMgr.ClearAllRoom();

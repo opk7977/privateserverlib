@@ -129,7 +129,7 @@ void CScheduler::PacketParsing()
 		RecvRoomResultCreate();
 		break;
 	case SC_LOBBY_OPEN_ROOM:
-		//RecvLobbyOpenRoom();
+		RecvLobbyOpenRoom();
 		break;
 	//case SC_LOBBY_CLOSE_ROOM:
 		//RecvLobbyCloseRoom();
@@ -138,19 +138,30 @@ void CScheduler::PacketParsing()
 		RecvRoomResultInsert();
 		break;
 	case SC_LOBBY_INSERT_ROOM:
-		//RecvLobbyInsertRoom();
+		RecvLobbyInsertRoom();
 		break;
 	case SC_ROOM_OTHER_CHARINFO:
 		RecvRoomOtherChar();
 		break;
-	case SC_ROOM_CHAR_INSERT:
-		//
-		break;
+
 	case SC_ROOM_LEADER:
-		//
+		RecvRoomLeader();
 		break;
-
-
+	case SC_ROOM_CHAR_OUT:
+		RecvRoomCharOut();
+		break;
+	case SC_LOBBY_ROOMPLAYER_COUNTDOWN:
+		RecvRoomPlayerCountDown();
+		break;
+	case SC_ROOM_CHAR_READY:
+		RecvCharReady();
+		break;
+	case SC_ROOM_TEAM_CHANGE:
+		RecvTeamChange();
+		break;
+	case SC_LOBBY_CHAT:
+		RecvLobbyChat();
+		break;
 	case SC_LOBBY_PLAYER_DISCONNECT:
 		RecvLobbyPlayerDisconnect();
 		break;
@@ -358,7 +369,7 @@ void CScheduler::RecvRoomResultCreate()
 	
 	if( tmpChar == NULL )
 	{
-		MessageBox( NULL, _T("나 없는데?"), _T("error"), MB_OK );
+		MessageBox( NULL, _T("CScheduler::RecvRoomResultCreate()\n나 없는데?"), _T("error"), MB_OK );
 		return;
 	}
 	m_packet >> team;
@@ -370,7 +381,18 @@ void CScheduler::RecvRoomResultCreate()
 
 void CScheduler::RecvLobbyOpenRoom()
 {
+	int roomNum, size;
+	TCHAR title[50];
 
+	m_packet >> roomNum;
+	m_packet >> size;
+	m_packet.GetData( title, size );
+
+	RoomObj* tmpRoom = GetRoomMgr.FindRoom( roomNum );
+	if( tmpRoom == NULL )
+		MessageBox( NULL, _T("CScheduler::RecvLobbyOpenRoom()\n방 없는데?"), _T("error"), MB_OK );
+
+	tmpRoom->SetRoomTitle( title );
 }
 
 void CScheduler::RecvLobbyCloseRoom()
@@ -380,45 +402,183 @@ void CScheduler::RecvLobbyCloseRoom()
 
 void CScheduler::RecvRoomResultInsert()
 {
+	if( !m_pDoc )
+		return;
+
+	if( !m_pRoom )
+		return;
+
 	int result;
 	m_packet >> result;
 
 	m_pDoc->Revcvresult = result;
 	m_pDoc->isRecvResult = TRUE;
-}
 
-void CScheduler::RecvLobbyInsertRoom()
-{
 
-}
+	while( m_pDoc->myRoomNum <= 0 )
+	{
+		//방 번호가 설정될때까지 잠시 대기
+	}
 
-//
-
-void CScheduler::RecvRoomOtherChar()
-{
-	if (!m_pDoc)
-		return;
-
-	Character* me = GetCharMgr.GetMe();
+	//Character* me = GetCharMgr.GetMe();
 
 	m_pRoom->OpenRoom( m_pDoc->myRoomNum, GetRoomMgr.FindRoom( m_pDoc->myRoomNum )->GetRoomTitle() );
-	m_pRoom->AddPlayer( me->GetSessionID(), me->GetID(), me->GetTeam(), 0 );
+	
+// 	m_pRoom->SetMe( me->GetSessionID() );
+// 	m_pRoom->SetLeader( me->GetSessionID() );
+
+	//m_pRoom->AddPlayer( me->GetSessionID(), me->GetID(), me->GetTeam(), 0 );
 
 	//나는 방으로 들어가게 되니까 로비의 방정보를 모두 지운다
 	GetRoomMgr.ClearAllRoom();
 
 	//캐릭터 정보도 모두 지운다.
 	GetCharMgr.ClearCharacter();
+}
+
+void CScheduler::RecvLobbyInsertRoom()
+{
+	int roomNum, sessionID;
+
+	m_packet >> sessionID;
+	m_packet >> roomNum;
+
+	RoomObj* tmpRoom = GetRoomMgr.FindRoom( roomNum );
+	if( tmpRoom == NULL )
+		MessageBox( NULL, _T("CScheduler::RecvLobbyOpenRoom()\n방 없는데?"), _T("error"), MB_OK );
+
+	tmpRoom->AddPlayer();
+
+	//캐릭터 정보를 지운다
+	GetCharMgr.DelChar( sessionID );
+}
+
+//
+
+void CScheduler::RecvRoomOtherChar()
+{
+	if(!m_pDoc)
+		return;
+
+	if(!m_pRoom)
+		return;
 
 	int count, sessionId, size, team;
 	TCHAR tmpID[30]={0,};
 
 	m_packet >> count;
 
-	//////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////
-	//여기여기
-	//////////////////////////////////////////////////////////////////////////
+	for( int i=0; i<count; ++i )
+	{
+		m_packet >> sessionId;
+		m_packet >> size;
+		m_packet.GetData( tmpID, size );
+		m_packet >> team;
+
+		m_pRoom->AddPlayer( sessionId, tmpID, team, 0 );
+	}
+
+	if( m_pRoom->m_itMe == NULL )
+	{
+		m_pRoom->SetMe( m_pDoc->SessionID );
+	}
 }
 
+void CScheduler::RecvRoomLeader()
+{
+	if( !m_pRoom )
+		return;
+
+	int leader;
+	
+	m_packet >> leader;
+
+	m_pRoom->SetLeader( leader );
+}
+
+void CScheduler::RecvRoomCharOut()
+{
+	if( !m_pRoom )
+		return;
+
+	int sessionid;
+	
+	m_packet >> sessionid;
+
+	m_pRoom->DelPlayer( sessionid );
+}
+
+void CScheduler::RecvRoomPlayerCountDown()
+{
+	int room;
+
+	m_packet >> room;
+
+	RoomObj* tmpRoom = GetRoomMgr.FindRoom( room );
+	if( tmpRoom == NULL )
+	{
+		MessageBox( NULL, _T("CScheduler::RecvRoomPlayerCountDown()\n방 정보를 받아오지 못함"), _T("error"), MB_OK );
+		return;
+	}
+	tmpRoom->DelPlayer();
+}
+
+void CScheduler::RecvCharReady()
+{
+	if( !m_pRoom )
+		return;
+
+	int sessionId, ready;
+	
+	m_packet >> sessionId;
+	m_packet >> ready;
+
+	RoomPlayer* tmpPlayer =	m_pRoom->FindChar( sessionId );
+	if( tmpPlayer == NULL )
+		return;
+
+	tmpPlayer->SetReady( ready );
+	(m_pRoom->m_player_Ready[tmpPlayer->GetRoomSortNo()]).SetWindowText( m_pRoom->ReadyString[ready].GetString() );
+}
+
+void CScheduler::RecvTeamChange()
+{
+	if( !m_pRoom )
+		return;
+
+	int sessionId, team;
+
+	m_packet >> sessionId;
+	m_packet >> team;
+
+	RoomPlayer* tmpPlayer =	m_pRoom->FindChar( sessionId );
+	if( tmpPlayer == NULL )
+		return;
+
+	tmpPlayer->SetTeam( team );
+	(m_pRoom->m_player_Team[tmpPlayer->GetRoomSortNo()]).SetWindowText( m_pRoom->TeamString[team].GetString() );
+}
+
+void CScheduler::RecvLobbyChat()
+{
+	if( !m_pRoom )
+		return;
+
+	int roomNum, size;
+	TCHAR chatText[100]={0,};
+
+	m_packet >> roomNum;
+	m_packet >> size;
+	m_packet.GetData( chatText, size );
+
+	if( roomNum == 0 )
+	{
+		//로비에있는 채팅 창에 적음
+	}
+	else
+	{
+		//방에 있는 채팅창
+		m_pRoom->m_ctrl_ChatView.SetWindowText( chatText );
+	}
+	
+}

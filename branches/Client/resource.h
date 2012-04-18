@@ -110,7 +110,8 @@
 #define IDC_PLAYER6_READY               1081
 #define IDC_PLAYER7_READY               1082
 #define IDC_PLAYER8_READY               1083
-#define IDC_BUTTON9                     1084
+#define IDC_PLAYER1_READY2              1084
+#define IDC_ROOM_LEADER                 1085
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_NET_CONN                     32773
@@ -122,7 +123,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32779
-#define _APS_NEXT_CONTROL_VALUE         1085
+#define _APS_NEXT_CONTROL_VALUE         1086
 #define _APS_NEXT_SYMED_VALUE           315
 #endif
 #endif

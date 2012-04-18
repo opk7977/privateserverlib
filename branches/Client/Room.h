@@ -2,8 +2,16 @@
 #include "Resource.h"
 #include "afxwin.h"
 
+// TCHAR TeamString[2][4] = { {_T("Att")}, {_T("Def")} };
+// TCHAR ReadyString[2][6] = { {_T("Ready")}, {_T("Non")} };
+
 class RoomPlayer
 {
+public:
+	//TCHAR TeamString[2][4] = { {Att}, {Def} };
+	//TCHAR ReadyString[2][6] = { {ready}, {Non} };
+	
+
 private:
 	int		roomsortNo;
 	int		sessionID;
@@ -24,7 +32,7 @@ public:
 	void SetSessionID( int _id ) { sessionID = _id; }
 	int GetSessionID() { return sessionID; }
 	
-	void SetMyID( TCHAR* _id ) { _tcsncpy_s( myID, 30, _id, _tclen( _id ) ); }
+	void SetMyID( TCHAR* _id ) { _tcsncpy_s( myID, 30, _id, _tcslen( _id ) ); }
 	TCHAR* GetMyID() { return myID; }
 
 	void SetTeam( int team ) { myTeam = team; }
@@ -74,14 +82,23 @@ public:
 	int							m_AttTeamCount;
 	int							m_DefTeamCount;
 
+public:
 	//³ª
 	RoomPlayer*					m_itMe;
 	//¸®´õ
 	RoomPlayer*					m_leader;
 
+// 	const TCHAR* TeamString[2] = { _T("Att"), _T("Def") };
+// 	const TCHAR* ReadyString[2] = { _T("Non"), _T("Ready") };
+	CString TeamString[2];
+	CString ReadyString[2];
+
 public:
 	void CreateCharSpace();
 	void Release();
+
+	void SetMe( int sessionId );
+	void SetLeader( int sessionId );
 
 	void OpenRoom( int roomNo, TCHAR* title );
 	void CloseRoom();
@@ -92,12 +109,15 @@ public:
 	void ChangeReady( int sessionId, int ready );
 	void ChangeTeam( int sessionId, int team );
 
+	RoomPlayer* FindChar( int sessionId );
+
 public:
 	CStatic m_csTitle;
 
 	CStatic m_player_ID[8];
 	CStatic m_player_Team[8];
 	CStatic m_player_Ready[8];
+	CStatic m_roomLeader;
 
 	CButton m_btn_changeTeam;
 	CButton m_btn_Ready;
@@ -106,6 +126,12 @@ public:
 
 	CString m_chatEdit;
 	CEdit m_control_chatEdit;
+	CEdit m_ctrl_ChatView;
+
+	virtual void OnInitialUpdate();
+	afx_msg void OnBnClickedChatSend();
+	afx_msg void OnBnClickedChangeTeam();
+	afx_msg void OnBnClickedReady();
 };
 
 

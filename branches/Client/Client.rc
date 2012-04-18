@@ -229,6 +229,8 @@ BEGIN
     GROUPBOX        "player6",IDC_STATIC,238,29,35,55
     GROUPBOX        "player7",IDC_STATIC,276,29,35,55
     GROUPBOX        "player8",IDC_STATIC,314,29,35,55
+    LTEXT           "empty",IDC_ROOM_LEADER,359,72,34,8
+    LTEXT           "πÊ¿Â",IDC_STATIC,359,60,15,8
 END
 
 IDD_CREATE_ROOM DIALOGEX 0, 0, 316, 65

@@ -7,8 +7,8 @@
 
 RoomObj::RoomObj()
 {
-	if( !m_playerListInRoom.empty() )
-		m_playerListInRoom.clear();
+// 	if( !m_playerListInRoom.empty() )
+// 		m_playerListInRoom.clear();
 
 	m_playerCount = 0;
 
@@ -24,9 +24,10 @@ void RoomObj::Init()
 	_tcsncpy_s( m_Title, 50, _T("empty room"), 10 );
 	//방타이틀을 바꿔 준다.
 	GetRoomMgr.m_pLobby->m_RoomTitle[m_roomNum-1].SetWindowText( m_Title );
+	GetRoomMgr.m_pLobby->m_RoomPlayerCount[m_roomNum-1].SetWindowText( _T("0") );
 
-	if( !m_playerListInRoom.empty() )
-		m_playerListInRoom.clear();
+// 	if( !m_playerListInRoom.empty() )
+// 		m_playerListInRoom.clear();
 
 	m_playerCount = 0;
 
@@ -44,12 +45,18 @@ void RoomObj::SetRoomTitle( TCHAR* title )
 	GetRoomMgr.m_pLobby->m_RoomTitle[m_roomNum-1].SetWindowText( m_Title );
 }
 
-void RoomObj::AddPlayer( Character* character )
+void RoomObj::AddPlayer(/* Character* character */)
 {
 	if( m_playerCount >= MAX_PLAYER_COUNT )
 		return;
 
-	m_playerListInRoom.push_back( character );
+	/*m_playerListInRoom.push_back( character );*/
+	if( m_playerCount == 0)		//원래가 0이었으면 control들을 바꿔줘야 함
+	{
+		GetRoomMgr.m_pLobby->m_btnNewRoom[m_roomNum-1].EnableWindow( FALSE );
+		GetRoomMgr.m_pLobby->m_btnEnterRoom[m_roomNum-1].EnableWindow( TRUE );
+	}
+
 	++m_playerCount;
 
 	TCHAR tmp[5];
@@ -58,12 +65,12 @@ void RoomObj::AddPlayer( Character* character )
 	GetRoomMgr.m_pLobby->m_RoomPlayerCount[m_roomNum-1].SetWindowText( tmp );
 }
 
-void RoomObj::DelPlayer( Character* character )
+void RoomObj::DelPlayer( /*Character* character */)
 {
-	if( m_playerListInRoom.empty() )
+	if( m_playerCount <= 0 )
 		return;
 
-	m_playerListInRoom.remove( character );
+	/*m_playerListInRoom.remove( character );*/
 	--m_playerCount;
 
 	TCHAR tmp[5];
@@ -85,21 +92,39 @@ void RoomObj::SetPlayerCount( int count )
 		GetRoomMgr.m_pLobby->m_btnNewRoom[m_roomNum-1].EnableWindow( TRUE );
 }
 
-Character* RoomObj::FindChar( int sessionId )
-{
-	if( m_playerListInRoom.empty() )
-		return NULL;
-
-	std::list<Character*>::iterator iter;
-	iter = m_playerListInRoom.begin();
-	for( ; iter != m_playerListInRoom.end(); ++iter )
-	{
-		if( (*iter)->GetSessionID() == sessionId )
-			return (*iter);
-	}
-
-	return NULL;
-}
+// void RoomObj::PlayerCountUp()
+// {
+// 	TCHAR tmp[5];
+// 	wsprintf( tmp, _T("%d"), ++m_playerCount ); 
+// 	GetRoomMgr.m_pLobby->m_RoomPlayerCount[m_roomNum-1].SetWindowText( tmp );
+// 
+// 	if( m_playerCount > 0 )
+// 	{
+// 		GetRoomMgr.m_pLobby->m_btnNewRoom[m_roomNum-1].EnableWindow( FALSE );
+// 		GetRoomMgr.m_pLobby->m_btnEnterRoom[m_roomNum-1].EnableWindow( TRUE );
+// 	}
+// 	else
+// 	{
+// 		GetRoomMgr.m_pLobby->m_btnNewRoom[m_roomNum-1].EnableWindow( TRUE );
+// 		GetRoomMgr.m_pLobby->m_btnEnterRoom[m_roomNum-1].EnableWindow( FALSE );
+// 	}
+// }
+// 
+// Character* RoomObj::FindChar( int sessionId )
+// {
+// 	if( m_playerListInRoom.empty() )
+// 		return NULL;
+// 
+// 	std::list<Character*>::iterator iter;
+// 	iter = m_playerListInRoom.begin();
+// 	for( ; iter != m_playerListInRoom.end(); ++iter )
+// 	{
+// 		if( (*iter)->GetSessionID() == sessionId )
+// 			return (*iter);
+// 	}
+// 
+// 	return NULL;
+// }
 
 //////////////////////////////////////////////////////////////////////////
 

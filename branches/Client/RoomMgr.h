@@ -19,7 +19,7 @@ private:
 	TCHAR					m_Title[50];
 
 	//player list
-	std::list<Character*>	m_playerListInRoom;
+	//std::list<Character*>	m_playerListInRoom;
 
 	//현재 인원
 	int						m_playerCount;
@@ -41,16 +41,17 @@ public:
 	inline TCHAR* GetRoomTitle() { return m_Title; }
 
 	//player관련
-	void AddPlayer( Character* character );
-	void DelPlayer( Character* character );
+	void AddPlayer(/* Character* character*/ );
+	void DelPlayer(/* Character* character */);
 
 	inline void SetRoomState( int state ) { m_roomState = state; }
 	inline int GetRoomState() { return m_roomState; }
 
 	void SetPlayerCount( int count );
+	//void PlayerCountUp();
 	inline int GetPlayerCount() { return m_playerCount; }
 
-	Character* FindChar( int sessionId );
+	//Character* FindChar( int sessionId );
 
 };
 

@@ -249,7 +249,7 @@ void CLobby::OnBnClickedRoom1Insert()
 	}
 
 	pDoc->isRecvResult = FALSE;
-	while( pDoc->isRecvResult )
+	while( !pDoc->isRecvResult )
 	{
 	}
 
@@ -284,7 +284,7 @@ void CLobby::OnBnClickedRoom2Insert()
 	}
 
 	pDoc->isRecvResult = FALSE;
-	while( pDoc->isRecvResult )
+	while( !pDoc->isRecvResult )
 	{
 	}
 
@@ -319,7 +319,7 @@ void CLobby::OnBnClickedRoom3Insert()
 	}
 
 	pDoc->isRecvResult = FALSE;
-	while( pDoc->isRecvResult )
+	while( !pDoc->isRecvResult )
 	{
 	}
 
@@ -354,7 +354,7 @@ void CLobby::OnBnClickedRoom4Insert()
 	}
 
 	pDoc->isRecvResult = FALSE;
-	while( pDoc->isRecvResult )
+	while( !pDoc->isRecvResult )
 	{
 	}
 
