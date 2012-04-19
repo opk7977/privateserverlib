@@ -64,6 +64,7 @@ public:
 	//리더 설정
 	void SetLeader( int sessionId );
 	int GetLeader() { return m_leader; }
+	int ChangeLeader();
 	//방에 들어있는 player의 핸들값을 변경해 준다
 	void SetPlayerIndex( int sessionId, int iocpKey );
 	//player추가( 성공하면 배정된 팀번호를 return한다 )
@@ -109,6 +110,9 @@ private:
 
 private:
 	std::map<int, Room*>			m_mapRoomlist;
+
+	//동기화 용
+	SServerObj*						m_critical;
 
 private:
 	RoomMgr();

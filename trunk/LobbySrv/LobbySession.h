@@ -30,6 +30,8 @@ public:
 	void OnCreate();
 	void OnDestroy();
 
+	int GetSessionID() const { return m_SessionId; }
+
 	//정보들 초기화
 	void clear();
 
@@ -84,7 +86,10 @@ public:
 	BOOL SendResultCreate( int result );
 
 	//SC_LOBBY_OPEN_ROOM
-	BOOL SendOpenRoom( TCHAR* title, int titleSize );
+	BOOL SendOpenRoom( int room, TCHAR* title, int titleSize );
+
+	//SC_LOBBY_CLOSE_ROOM
+	BOOL SendCloseRoom( int roomNum );
 
 	//SC_ROOM_RESULT_INSERT
 	BOOL SendResultInsert( int result );
@@ -98,7 +103,7 @@ public:
 
 	//SC_ROOM_LEADER
 	BOOL SendRoomLeader();
-	BOOL SendRoomLeaderToAll();
+	BOOL SendRoomLeaderToAll( int leader );
 
 	//SC_ROOM_CHAR_OUT
 	BOOL SendRoomCharOut();

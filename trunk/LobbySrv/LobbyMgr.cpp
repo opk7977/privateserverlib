@@ -51,6 +51,8 @@ void LobbyMgr::PackageDataAllInLobby( SPacket& packet )
 	{
 		SSynchronize sync( m_critical );
 
+		packet << m_iPlayerCountInLobby;
+
 		std::list<LobbySession*>::iterator iter = m_listPlayerInLobby.begin();
 
 		for( ; iter != m_listPlayerInLobby.end(); ++iter )

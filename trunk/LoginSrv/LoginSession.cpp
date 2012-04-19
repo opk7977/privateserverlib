@@ -138,7 +138,7 @@ BOOL LoginSession::SendLoginResult( int result )
 		//result값이 양수(session)값이면
 		//ip주소와 port번호를 넣어 준다.
 		
-		char ipAddr[20] = "192.168.0.70";
+		char ipAddr[20] = "192.168.0.56";
 
 		sendPacket << (int)(strlen( ipAddr ));
 		sendPacket.PutData( ipAddr, strlen( ipAddr ) );
