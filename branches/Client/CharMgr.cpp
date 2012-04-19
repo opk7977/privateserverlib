@@ -100,6 +100,7 @@ void CharMgr::ClearCharacter()
 		m_charList.erase( preIter );
 	}
 	m_itMe = 0;
+	m_playerCount = 0;
 }
 
 void CharMgr::Release()

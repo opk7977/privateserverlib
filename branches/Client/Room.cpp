@@ -87,6 +87,7 @@ BEGIN_MESSAGE_MAP(CRoom, CFormView)
 	ON_BN_CLICKED(IDC_CHAT_SEND, &CRoom::OnBnClickedChatSend)
 	ON_BN_CLICKED(IDC_CHANGE_TEAM, &CRoom::OnBnClickedChangeTeam)
 	ON_BN_CLICKED(IDC_READY, &CRoom::OnBnClickedReady)
+	ON_BN_CLICKED(IDC_OUT_ROOM, &CRoom::OnBnClickedOutRoom)
 END_MESSAGE_MAP()
 
 
@@ -160,6 +161,32 @@ void CRoom::OnBnClickedReady()
 		MessageBox( _T("CRoom::OnBnClickedChangeTeam()\n보낸 data크기가 다른데?"), _T("error"), MB_OK );
 }
 
+void CRoom::OnBnClickedOutRoom()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	// 우선 방을 나가는 패킷을 보낸다.
+	SPacket packet;
+	packet.SetID(CS_ROOM_OUT_ROOM);
+	if( GetNetwork.SendPacket( &packet ) != packet.GetPacketSize() )
+		MessageBox( _T("CRoom::OnBnClickedOutRoom()\n1. 보낸 data크기가 다른데?"), _T("error"), MB_OK );
+
+	// 로비로 접속하는 패킷을 보낸다.
+	packet.PacketClear();
+	packet.SetID( CS_LOBBY_INSERT_LOBBY );
+	packet << m_itMe->GetSessionID();
+	int size = _tcslen( m_itMe->GetMyID() ) * sizeof(TCHAR);
+	packet << size;
+	packet.PutData( m_itMe->GetMyID(), size );
+	packet << 0;		//로비의 정보를 받아야 하니까!
+
+	if( GetNetwork.SendPacket( &packet ) != packet.GetPacketSize() )
+		MessageBox( _T("CRoom::OnBnClickedOutRoom()\n2. 보낸 data크기가 다른데?"), _T("error"), MB_OK );
+
+	// 방을 모두 초기화 해 주고
+	CloseRoom();
+}
+
 //==============================================================
 
 void CRoom::CreateCharSpace()
@@ -169,7 +196,7 @@ void CRoom::CreateCharSpace()
 	m_leader = NULL;
 	m_playerCount = m_AttTeamCount = m_DefTeamCount = 0;
 
-	for( int i=0; i<6; ++i )
+	for( int i=0; i<8; ++i )
 	{
 		RoomPlayer* tmpPlayer = new RoomPlayer;
 		tmpPlayer->Init();
@@ -184,7 +211,7 @@ void CRoom::Release()
 	if( m_mapPlayer.empty() )
 		return;
 
-	for( int i=0; i<6; ++i )
+	for( int i=0; i<8; ++i )
 	{
 		delete m_mapPlayer[i];
 	}
@@ -200,7 +227,7 @@ void CRoom::OpenRoom( int roomNo, TCHAR* title  )
 	m_csTitle.SetWindowText( tmpTitle );
 
 	//캐릭터 공간을 초기화
-	for( int i=0; i<6; ++i )
+	for( int i=0; i<8; ++i )
 	{
 		m_mapPlayer[i]->Init();
 	}
@@ -219,20 +246,29 @@ void CRoom::CloseRoom()
 {
 	m_csTitle.SetWindowText( _T("") );
 
-	for( int i=0; i<6; ++i )
+	//캐릭터 공간을 초기화
+	for( int i=0; i<8; ++i )
+	{
+		m_mapPlayer[i]->Init();
+	}
+
+	for( int i=0; i<8; ++i )
 	{
 		m_player_ID[i].SetWindowText( _T("empty") );
 		m_player_Team[i].SetWindowText( _T("empty") );
 		m_player_Ready[i].SetWindowText( _T("empty") );
-		m_roomLeader.SetWindowText( _T("empty") );
 	}
+	m_roomLeader.SetWindowText( _T("empty") );
 
 	m_btn_changeTeam.EnableWindow( FALSE );
 	m_btn_Ready.EnableWindow( FALSE );
 	m_btn_outRoom.EnableWindow( FALSE );
 	m_btn_chatSend.EnableWindow( FALSE );
 
+	m_ctrl_ChatView.SetWindowText( _T("") );
 	m_control_chatEdit.EnableWindow( FALSE );
+
+	m_playerCount = m_AttTeamCount = m_DefTeamCount = 0;
 }
 
 void CRoom::AddPlayer( int sessionId, TCHAR* ID, int team, int ready )

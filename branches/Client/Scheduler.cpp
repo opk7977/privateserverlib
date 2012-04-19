@@ -131,9 +131,9 @@ void CScheduler::PacketParsing()
 	case SC_LOBBY_OPEN_ROOM:
 		RecvLobbyOpenRoom();
 		break;
-	//case SC_LOBBY_CLOSE_ROOM:
-		//RecvLobbyCloseRoom();
-		//break;
+	case SC_LOBBY_CLOSE_ROOM:
+		RecvLobbyCloseRoom();
+		break;
 	case SC_ROOM_RESULT_INSERT:
 		RecvRoomResultInsert();
 		break;
@@ -390,14 +390,27 @@ void CScheduler::RecvLobbyOpenRoom()
 
 	RoomObj* tmpRoom = GetRoomMgr.FindRoom( roomNum );
 	if( tmpRoom == NULL )
+	{
 		MessageBox( NULL, _T("CScheduler::RecvLobbyOpenRoom()\n规 绝绰单?"), _T("error"), MB_OK );
+		return;
+	}
 
 	tmpRoom->SetRoomTitle( title );
 }
 
 void CScheduler::RecvLobbyCloseRoom()
 {
+	int room;
+	m_packet >> room;
 
+	RoomObj* tmpRoom = GetRoomMgr.FindRoom( room );
+	if( tmpRoom == NULL )
+	{
+		MessageBox( NULL, _T("CScheduler::RecvLobbyCloseRoom()\n规 绝绰单?"), _T("error"), MB_OK );
+		return;
+	}
+
+	tmpRoom->Init();
 }
 
 void CScheduler::RecvRoomResultInsert()

@@ -129,9 +129,11 @@ public:
 	CEdit m_ctrl_ChatView;
 
 	virtual void OnInitialUpdate();
+
 	afx_msg void OnBnClickedChatSend();
 	afx_msg void OnBnClickedChangeTeam();
 	afx_msg void OnBnClickedReady();
+	afx_msg void OnBnClickedOutRoom();
 };
 
 
