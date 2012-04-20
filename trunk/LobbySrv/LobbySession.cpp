@@ -153,6 +153,17 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 		packet >> m_roomNo;
 	}
 
+#ifdef _DEBUG 
+	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::RecvInsertLobby()\n")
+													_T("sessionID : %d\n")
+													_T("ID : %s\n")
+													_T("Room : %d\n\n")
+													, m_SessionId
+													, m_tstrId
+													, m_roomNo );
+
+#endif
+
 	//방번호를 확인해서 제 접속인지를 보자
 	if( m_roomNo > 0 )
 	{
@@ -187,16 +198,7 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 		SendMyCharInfo();
 	}
 
-#ifdef _DEBUG 
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::RecvInsertLobby()\n")
-												_T("sessionID : %d\n")
-												_T("ID : %s\n")
-												_T("Room : %d\n\n")
-												, m_SessionId
-												, m_tstrId
-												, m_roomNo );
 
-#endif
 }
 
 void LobbySession::RecvCreateRoom( SPacket& packet )
@@ -237,8 +239,8 @@ void LobbySession::RecvCreateRoom( SPacket& packet )
 	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::RecvCreateRoom()\n")
 												_T("sessionID : %d\n")
 												_T("ID : %s\n")
-												_T("Room : %d\n\n")
-												_T("RoomTitle : %s")
+												_T("Room : %d")
+												_T("RoomTitle : %s\n\n")
 												, m_SessionId
 												, m_tstrId
 												, m_roomNo
@@ -282,7 +284,7 @@ void LobbySession::RecvInsertRoom( SPacket& packet )
 	//우선 들어가기에 성공했다는 패킷을 보낸다
 	SendResultInsert( 1 );
 
-	//로비에 방에 사람이 들어갔다는 것을 알린다.
+	//로비로 방에 사람이 들어갔다는 것을 알린다.
 	SendInsertRoom();
 
 	//그리고 방에 있는 사람들에게 내 정보를 보낸다.
@@ -448,9 +450,6 @@ BOOL LobbySession::SendOtherCharInfo()
 	sendPacket.PacketClear();
 	sendPacket.SetID( SC_LOBBY_OTHER_CHARINFO );
 
-// 	//현재 lobby에 있는 인원의 수를 담고
-// 	sendPacket << (int)GetLobbyMgr.GetPlayerCount();
-
 	//정보를 다 담고
 	GetLobbyMgr.PackageDataAllInLobby( sendPacket );
 
@@ -468,7 +467,7 @@ BOOL LobbySession::SendOtherCharInfo()
 	}
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::RecvChat()\n")
+	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendOtherCharInfo()\n")
 												_T("[To. %s] 전송되었습니다.\n\n")
 												, m_tstrId);
 
