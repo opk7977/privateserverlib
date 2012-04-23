@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="LobbySrv"
-	ProjectGUID="{5F805C17-00F7-4EEB-A000-A4307B30AC03}"
-	RootNamespace="LobbySrv"
+	Name="GameSrv"
+	ProjectGUID="{1CCE7B99-F19D-4F46-A47E-D0106BBA3A8C}"
+	RootNamespace="GameSrv"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="../output/LobbySrv"
-			IntermediateDirectory="../output/LobbySrv"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
@@ -41,7 +41,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,9 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SegServer.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="../lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -92,8 +89,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="../Release/LobbySrv"
-			IntermediateDirectory="../Release/LobbySrv"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -117,7 +114,6 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="../Rinclude"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -136,9 +132,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SegServer.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="../Rlib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -177,15 +171,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\CheckDB.cpp"
+				RelativePath=".\GameSession.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\LobbyMain.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LobbySession.cpp"
+				RelativePath=".\GameSrvMain.cpp"
 				>
 			</File>
 			<File
@@ -197,11 +187,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SrvNet.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\WinMgr.cpp"
+				RelativePath=".\winMgr.cpp"
 				>
 			</File>
 		</Filter>
@@ -211,19 +197,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\CheckDB.h"
+				RelativePath=".\GameProtocol.h"
 				>
 			</File>
 			<File
-				RelativePath=".\LobbyMain.h"
+				RelativePath=".\GameSession.h"
 				>
 			</File>
 			<File
-				RelativePath=".\LobbyProtocol.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LobbySession.h"
+				RelativePath=".\GameSrvMain.h"
 				>
 			</File>
 			<File
@@ -231,11 +213,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SrvNet.h"
-				>
-			</File>
-			<File
-				RelativePath=".\WinMgr.h"
+				RelativePath=".\winMgr.h"
 				>
 			</File>
 		</Filter>
@@ -244,30 +222,6 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-		</Filter>
-		<Filter
-			Name="Lobby"
-			>
-			<File
-				RelativePath=".\LobbyMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LobbyMgr.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Room"
-			>
-			<File
-				RelativePath=".\Room.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Room.h"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

@@ -1,8 +1,75 @@
 #include "Room.h"
 #include "LobbySession.h"
 #include "SSessionMgr.h"
+#include "SLogger.h"
 
 /*#include "SSynchronize.h"*/
+
+RoomChar::RoomChar()
+{
+	Init();
+}
+
+RoomChar::RoomChar( const RoomChar& p )
+{
+	m_iocpKey = p.m_iocpKey;
+	m_charTeam = p.m_charTeam;
+	m_ready = p.m_ready;
+	_tcsncpy_s( m_charID, 50, p.m_charID, _tcslen(p.m_charID) );
+}
+
+RoomChar::~RoomChar()
+{
+}
+
+void RoomChar::Init()
+{
+	m_iocpKey = 0;
+	ZeroMemory( m_charID, 50 );
+	m_charTeam = m_ready = -1;
+}
+
+void RoomChar::SetIocp( int key )
+{
+	m_iocpKey = key;
+}
+
+int RoomChar::GetIocp()
+{
+	return m_iocpKey;
+}
+
+void RoomChar::SetID( TCHAR *uId )
+{
+	_tcsncpy_s( m_charID, 50, uId, _tcslen(uId) );
+}
+
+TCHAR* RoomChar::GetID()
+{
+	return m_charID;
+}
+
+void RoomChar::SetTeam( int team )
+{
+	m_charTeam = team;
+}
+
+int RoomChar::GetTeam()
+{
+	return m_charTeam;
+}
+
+void RoomChar::SetReady( int ready )
+{
+	m_ready = ready;
+}
+
+int RoomChar::GetReady()
+{
+	return m_ready;
+}
+
+
 
 //Room
 
@@ -19,9 +86,10 @@ void Room::Init()
 	{
 		SSynchronize Sync( this );
 
-		m_mapPlayerlist.clear();
+		//m_mapPlayerlist.clear();
+		m_mapPlayer.clear();
 
-		m_nowPleyrCount = 0;
+		m_nowPleyrCount = m_readyCount = 0;
 		m_leader = 0;
 
 		m_isPlay = FALSE;
@@ -76,7 +144,7 @@ int Room::ChangeLeader()
 	{
 		SSynchronize Sync( this );
 
-		LobbySession* tmpSession = (LobbySession*)GetSessionMgr.GetSession( m_mapPlayerlist.begin()->second );
+		LobbySession* tmpSession = (LobbySession*)GetSessionMgr.GetSession( (m_mapPlayer.begin()->second).GetIocp() );
 		if( tmpSession == NULL )
 			return -1;
 
@@ -86,34 +154,42 @@ int Room::ChangeLeader()
 	}
 }
 
-void Room::SetPlayerIndex( int sessionId, int iocpKey )
+void Room::SetPlayerIocp( int sessionId, int iocpKey )
 {
 	{
 		SSynchronize Sync( this );
 
 		//존재하지 않으면 돌아 간다.
-		if( m_mapPlayerlist.find(sessionId) == m_mapPlayerlist.end() )
+		if( m_mapPlayer.find(sessionId) == m_mapPlayer.end() )
 			return;
 
-		m_mapPlayerlist[sessionId] = iocpKey;
+		m_mapPlayer[sessionId].SetIocp( iocpKey );
 	}
 }
 
-int Room::AddPlayerInRoom( int sessionId, int iocpKey )
+int Room::AddPlayerInRoom( int sessionId, int iocpKey, TCHAR* charID )
 {
+	RoomChar tmpChar;
+
 	{
 		SSynchronize Sync( this );
 
 		//존재하면 돌아 간다.
-		if( m_mapPlayerlist.find(sessionId) != m_mapPlayerlist.end() )
+		if( m_mapPlayer.find(sessionId) != m_mapPlayer.end() )
 			return -1;
 
-		m_mapPlayerlist[sessionId] = iocpKey;
+		//RoomChar tmpChar;
+		tmpChar.SetIocp( iocpKey );
+		tmpChar.SetID( charID );
+		tmpChar.SetTeam( GetTeam() );
+		tmpChar.SetReady(0);
+
+		m_mapPlayer[sessionId] = tmpChar;
 
 		++m_nowPleyrCount;
 	}
 
-	return GetTeam();
+	return tmpChar.GetTeam();
 }
 
 BOOL Room::DelPlayerInRoom( int sessionId )
@@ -121,10 +197,10 @@ BOOL Room::DelPlayerInRoom( int sessionId )
 	SSynchronize Sync( this );
 
 	//존재하지 않으면 돌아 간다.
-	if( m_mapPlayerlist.find(sessionId) == m_mapPlayerlist.end() )
+	if( m_mapPlayer.find(sessionId) == m_mapPlayer.end() )
 		return TRUE;
 
-	m_mapPlayerlist.erase( sessionId );
+	m_mapPlayer.erase( sessionId );
 
 	if( --m_nowPleyrCount <= 0 )
 		return FALSE;
@@ -132,41 +208,55 @@ BOOL Room::DelPlayerInRoom( int sessionId )
 	return TRUE;
 }
 
-void Room::ChangeReadyState( BOOL isReady /*= TRUE */ )
+int Room::ChangeReadyState( int sessionId )
 {
 	SSynchronize Sync( this );
 
-	if( isReady )
-		++m_readyCount;
-	else
-		--m_readyCount;
-}
-
-void Room::TeamCount( int team, BOOL isCountUp /*= TRUE */ )
-{
-	SSynchronize Sync( this );
-
-	if( team == 0 )
-		isCountUp == TRUE ? ++m_AttectTeam : --m_AttectTeam;
-	else
-		isCountUp == TRUE ? ++m_DefenceTeam : --m_DefenceTeam;
-}
-
-void Room::TeamChange( int basicTeam )
-{
-	SSynchronize Sync( this );
-
-	if( basicTeam == 0 )
+	if( m_mapPlayer.find( sessionId ) == m_mapPlayer.end() )
 	{
-		//공격에서 수비로
-		++m_DefenceTeam;
-		--m_AttectTeam;
+		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("Room::ChangeReadyState()\n캐릭터 정보가 없습니다.\n\n") );
+		return -1;
+	}
+
+	if( m_mapPlayer[sessionId].GetReady() == 0 )
+	{
+		m_mapPlayer[sessionId].SetReady( 1 );
+
+		if( ++m_readyCount > MAX_PLAYER_COUNT )
+			GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("Room::ChangeReadyState()\n레디 인원이 최대 인원은 넘었습니다.\n\n") );
 	}
 	else
 	{
-		//수비에서 공격으로
+		m_mapPlayer[sessionId].SetReady( 0 );
+
+		if( --m_readyCount < 0 )
+			GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("Room::ChangeReadyState()\n레디 인원이 0보다 적습니다.\n\n") );
+	}
+
+	return m_mapPlayer[sessionId].GetReady();
+}
+
+int Room::TeamChange( int sessionID )
+{
+	SSynchronize Sync( this );
+
+	//존재하지 않으면 돌아 간다.
+	if( m_mapPlayer.find(sessionID) == m_mapPlayer.end() )
+		return -1;
+
+	if( m_mapPlayer[sessionID].GetTeam() == 0 )
+	{
+		m_mapPlayer[sessionID].SetTeam( 1 );
+		--m_AttectTeam;
+		++m_DefenceTeam;
+		return 1;
+	}
+	else
+	{
+		m_mapPlayer[sessionID].SetTeam( 0 );
 		++m_AttectTeam;
 		--m_DefenceTeam;
+		return 0;
 	}
 }
 
@@ -186,11 +276,12 @@ void Room::SendPacketAllInRoom( SPacket &packet, LobbySession* mySession /*= NUL
 	SSynchronize Sync( this );
 
 	LobbySession* tmpSession;
-	std::map<int, int>::iterator iter;
-	iter = m_mapPlayerlist.begin();
-	for( ; iter != m_mapPlayerlist.end(); ++iter )
+	std::map<int, RoomChar>::iterator iter;
+	iter = m_mapPlayer.begin();
+	for( ; iter != m_mapPlayer.end(); ++iter )
 	{
-		tmpSession = (LobbySession*)GetSessionMgr.GetSession( iter->second );
+		tmpSession = (LobbySession*)GetSessionMgr.GetSession( (iter->second).GetIocp() );
+
 		if( tmpSession == NULL )
 			continue;
 
@@ -210,15 +301,18 @@ void Room::PackageAllPlayerInRoom( SPacket &packet )
 
 	LobbySession* tmpSession;
 
-	std::map<int, int>::iterator iter;
-	iter = m_mapPlayerlist.begin();
-	for( ; iter != m_mapPlayerlist.end(); ++iter )
+	std::map<int, RoomChar>::iterator iter;
+	iter = m_mapPlayer.begin();
+	for( ; iter != m_mapPlayer.end(); ++iter )
 	{
-		tmpSession = (LobbySession*)GetSessionMgr.GetSession( iter->second );
+		tmpSession = (LobbySession*)GetSessionMgr.GetSession( (iter->second).GetIocp() );
 		if( tmpSession == NULL )
 			continue;
 
-		tmpSession->PackageMyInfo( packet, TRUE );
+		tmpSession->PackageMyInfo( packet );
+
+		packet << (iter->second).GetTeam();
+		packet << (iter->second).GetReady();
 	}
 }
 
@@ -275,25 +369,22 @@ void RoomMgr::Release()
 	m_mapRoomlist.clear();
 }
 
-int RoomMgr::OpenRoom( int roomNum, int SessionID, int iocpHandle, TCHAR* title )
+Room* RoomMgr::OpenRoom( int roomNum, TCHAR* title )
 {
 	SSynchronize Sync( m_critical );
 
 	Room* tmpRoom = FindRoom( roomNum );
 
 	if( tmpRoom == NULL )
-		return -1;
+		return NULL;
 
 	//이미 생성되어 있으면 되돌아 간다
 	if( tmpRoom->IsOpen() )
-		return -1;
+		return NULL;
 
 	tmpRoom->SetTitle( title );
-	int team = tmpRoom->AddPlayerInRoom( SessionID, iocpHandle );
-	tmpRoom->SetLeader( SessionID );
 
-	return team;
-
+	return tmpRoom;
 }
 
 void RoomMgr::CloseRoom( int roomNum )

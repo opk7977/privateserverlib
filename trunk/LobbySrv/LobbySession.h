@@ -40,11 +40,23 @@ public:
 	//======================================
 	// 내 정보를 패킷에 담는 함수
 	//======================================
-	void PackageMyInfo( SPacket& packet, BOOL isTeam = FALSE );
+	void PackageMyInfo( SPacket& packet/*, BOOL isTeam = FALSE*/ );
 
 	//======================================
 	// 받은 패킷 처리 함수
 	//======================================
+	//--------------------------------------
+	// server와의 커뮤니케이션
+	//--------------------------------------
+	//GL_CONNECT_SERVER
+	void RecvConnectServer();
+
+	//GL_PLAYER_DISCONNECT
+	void RecvPlayerDiconnectInGame( SPacket& packet );
+
+	//--------------------------------------
+	// client와의 커뮤니케이션
+	//--------------------------------------
 	//CS_LOBBY_INSERT_LOBBY
 	void RecvInsertLobby( SPacket& packet );
 
@@ -72,6 +84,15 @@ public:
 	//======================================
 	// 보내는 패킷 생성함수
 	//======================================
+	//--------------------------------------
+	// server와의 커뮤니케이션
+	//--------------------------------------
+	//LG_START_GAME
+	BOOL SendCreateGameProc();
+
+	//--------------------------------------
+	// client와의 커뮤니케이션
+	//--------------------------------------
 	//SC_LOBBY_CONNECT_OK
 	//함수 필요 없음!
 
@@ -109,7 +130,7 @@ public:
 	BOOL SendRoomCharOut();
 
 	//SC_ROOM_CHAR_READY
-	BOOL SendRoomCharReady();
+	BOOL SendRoomCharReady( int ready );
 
 	//SC_ROOM_TEAM_CHANGE
 	BOOL SendRoomTeamChange();

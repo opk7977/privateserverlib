@@ -2,11 +2,16 @@
 
 enum SERVER_TO_SERVER
 {
+	// gameSrv -> lobbySrv
+	// 게임서버가 로비서버로 자신이 게임서버라는 것을 알린다
+	// 데이터 없음
+	GL_CONNECT_SERVER = 100,
+
 	// lobbySrv -> gameSrv
 	// 방의 유저들이 게임을 시작하게 되어 게임서버의 준비상태를 명령
 	// int			-		roomNo
 	// int			-		playerCount
-	LG_START_GAME = 100,
+	LG_START_GAME,
 
 	// gameSrv -> lobbySrv
 	// 게임서버에서 접속을 끊어버린 player에 대한 처리
@@ -25,10 +30,7 @@ enum LOBBY_SERVER
 	// client -> server
 	// 로비에 접속하면서 자신의 정보를 보내며 다른 정보를 요청하는 패킷
 	// int			-		SessionId
-	// int			-		id의 데이터 크기
-	// TCHAR		-		id
 	// int			-		RoomNum( 없다면 0을 보낸다 )
-	// int			-		Team( RoomMum이 없으면 team정보는 없다 )
 	CS_LOBBY_INSERT_LOBBY,
 
 	// server -> client
@@ -103,6 +105,7 @@ enum LOBBY_SERVER
 	// int			-		id데이터의 크기
 	// TCHAR		-		id
 	// int			-		Team
+	// int			-		Ready
 	//--------------------------------------> playerCount만큼 반복
 	SC_ROOM_OTHER_CHARINFO,
 

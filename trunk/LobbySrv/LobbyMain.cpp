@@ -1,7 +1,8 @@
 #include "LobbyMain.h"
 #include "Network.h"
-#include "SThreadMgr.h"
+/*#include "SThreadMgr.h"*/
 #include "Room.h"
+#include "CheckDB.h"
 
 LobbyMain::LobbyMain(void)
 {
@@ -25,10 +26,13 @@ BOOL LobbyMain::Init()
 	//방 셋팅
 	GetRoomMgr.CreateRoomSpace();
 
+	//DB연결
+	if( !GetDB.Init( _T("GameAccount.mdb")) )
+		return FALSE;
+
 	return TRUE;
 }
 
 void LobbyMain::Release()
 {
-
 }
