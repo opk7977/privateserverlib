@@ -115,6 +115,7 @@ void CScheduler::PacketParsing()
 	case SC_LOGIN_LOGIN_RESULT:
 		RecvLoginLoginResult();
 		break;
+
 	//==============================================================> LobbySrv
 	case SC_LOBBY_CONNECT_OK:
 		RecvLobbyConnectOK();
@@ -143,7 +144,6 @@ void CScheduler::PacketParsing()
 	case SC_ROOM_OTHER_CHARINFO:
 		RecvRoomOtherChar();
 		break;
-
 	case SC_ROOM_LEADER:
 		RecvRoomLeader();
 		break;
@@ -165,7 +165,10 @@ void CScheduler::PacketParsing()
 	case SC_LOBBY_PLAYER_DISCONNECT:
 		RecvLobbyPlayerDisconnect();
 		break;
+
 	//==============================================================> GameSrv
+
+	//==============================================================> Error
 	default:
 		MessageBox( NULL, _T("무슨 패킷이야 이건?"), _T("?????"), MB_OK );
 	}
@@ -287,9 +290,9 @@ void CScheduler::RecvLobbyConnectOK()
 	sendPacket.SetID( CS_LOBBY_INSERT_LOBBY );
 
 	sendPacket << m_pDoc->SessionID;
-	int size = _tcslen( m_pDoc->strId ) * sizeof(TCHAR);
-	sendPacket << size;
-	sendPacket.PutData( m_pDoc->strId, size );
+// 	int size = _tcslen( m_pDoc->strId ) * sizeof(TCHAR);
+// 	sendPacket << size;
+// 	sendPacket.PutData( m_pDoc->strId, size );
 	sendPacket << m_pDoc->myRoomNum;
 
 	GetNetwork.SendPacket( &sendPacket );
@@ -476,7 +479,7 @@ void CScheduler::RecvRoomOtherChar()
 	if(!m_pRoom)
 		return;
 
-	int count, sessionId, size, team;
+	int count, sessionId, size, team, ready;
 	TCHAR tmpID[30]={0,};
 
 	m_packet >> count;
@@ -487,8 +490,9 @@ void CScheduler::RecvRoomOtherChar()
 		m_packet >> size;
 		m_packet.GetData( tmpID, size );
 		m_packet >> team;
+		m_packet >> ready;
 
-		m_pRoom->AddPlayer( sessionId, tmpID, team, 0 );
+		m_pRoom->AddPlayer( sessionId, tmpID, team, ready );
 	}
 
 	if( m_pRoom->m_itMe == NULL )

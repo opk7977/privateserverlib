@@ -63,10 +63,7 @@ enum LOBBY_SERVER
 	// client -> server
 	// 로비에 접속하면서 자신의 정보를 보내며 다른 정보를 요청하는 패킷
 	// int			-		SessionId
-	// int			-		id의 데이터 크기
-	// TCHAR		-		id
 	// int			-		RoomNum( 없다면 0을 보낸다 )
-	// int			-		Team( RoomMum이 없으면 team정보는 없다 )
 	CS_LOBBY_INSERT_LOBBY,
 
 	// server -> client
@@ -141,6 +138,7 @@ enum LOBBY_SERVER
 	// int			-		id데이터의 크기
 	// TCHAR		-		id
 	// int			-		Team
+	// int			-		Ready
 	//--------------------------------------> playerCount만큼 반복
 	SC_ROOM_OTHER_CHARINFO,
 
@@ -166,7 +164,7 @@ enum LOBBY_SERVER
 
 	// client -> server
 	// ready상태를 변경하고 상태를 서버로 보냄
-	// int			-		ready상태값
+	// 데이터 없음
 	CS_ROOM_CHAR_READY,
 
 	// server -> client

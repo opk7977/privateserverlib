@@ -155,7 +155,7 @@ void CRoom::OnBnClickedReady()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	SPacket packet;
 	packet.SetID( CS_ROOM_CHAR_READY );
-	packet << (int)( m_itMe->GetReady() ? 0 : 1 );
+	//packet << (int)( m_itMe->GetReady() ? 0 : 1 );
 
 	if( GetNetwork.SendPacket( &packet ) != packet.GetPacketSize() )
 		MessageBox( _T("CRoom::OnBnClickedChangeTeam()\n보낸 data크기가 다른데?"), _T("error"), MB_OK );
@@ -175,9 +175,9 @@ void CRoom::OnBnClickedOutRoom()
 	packet.PacketClear();
 	packet.SetID( CS_LOBBY_INSERT_LOBBY );
 	packet << m_itMe->GetSessionID();
-	int size = _tcslen( m_itMe->GetMyID() ) * sizeof(TCHAR);
-	packet << size;
-	packet.PutData( m_itMe->GetMyID(), size );
+// 	int size = _tcslen( m_itMe->GetMyID() ) * sizeof(TCHAR);
+// 	packet << size;
+// 	packet.PutData( m_itMe->GetMyID(), size );
 	packet << 0;		//로비의 정보를 받아야 하니까!
 
 	if( GetNetwork.SendPacket( &packet ) != packet.GetPacketSize() )
