@@ -1,6 +1,7 @@
 #include "WinMgr.h"
-//#include "LobbyMain.h"
+#include "GameSrvMain.h"
 #include "SLogger.h"
+#include "DataLeader.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdParam, int nCmdShow )
 {
@@ -13,9 +14,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		return 0;
 	}
 
+	//데이터 부터 셋팅 하자
+	if( !GetData.DataSetting() )
+		return -1;
 
-// 	LobbyMain  myMain;
-// 	myMain.Init();
+	// 	GameSrvMain  myMain;
+	// 	myMain.Init();
 
 
 	MSG Message;

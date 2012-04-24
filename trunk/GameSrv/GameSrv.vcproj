@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="../output/GameSrv"
+			IntermediateDirectory="../output/GameSrv"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
@@ -41,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="../include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -60,7 +61,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="SegServer.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="../lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -89,8 +92,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="../Release/GameSrv"
+			IntermediateDirectory="../Release/GameSrv"
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -114,6 +117,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="../Rinclude"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -132,7 +136,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="SegClient.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="../Rlib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -171,7 +177,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\GameSession.cpp"
+				RelativePath=".\DataLeader.cpp"
 				>
 			</File>
 			<File
@@ -182,14 +188,6 @@
 				RelativePath=".\main.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\Network.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\winMgr.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="庆歹 颇老"
@@ -197,19 +195,65 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\GameProtocol.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GameSession.h"
+				RelativePath=".\DataLeader.h"
 				>
 			</File>
 			<File
 				RelativePath=".\GameSrvMain.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="府家胶 颇老"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
+		</Filter>
+		<Filter
+			Name="Character"
+			>
+			<File
+				RelativePath=".\CharMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CharMgr.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Network"
+			>
+			<File
+				RelativePath=".\GameProtocol.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Network.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\Network.h"
+				>
+			</File>
+			<Filter
+				Name="Session"
+				>
+				<File
+					RelativePath=".\GameSession.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\GameSession.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Window"
+			>
+			<File
+				RelativePath=".\winMgr.cpp"
 				>
 			</File>
 			<File
@@ -218,9 +262,31 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="府家胶 颇老"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			Name="GameMgr"
+			>
+			<File
+				RelativePath=".\GameMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GameMgr.h"
+				>
+			</File>
+			<Filter
+				Name="GameProcess"
+				>
+				<File
+					RelativePath=".\GameProc.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\GameProc.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Data"
 			>
 		</Filter>
 	</Files>

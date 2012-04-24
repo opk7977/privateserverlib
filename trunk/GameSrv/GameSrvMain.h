@@ -1,5 +1,9 @@
 #pragma once
 
+#include "SServerStd.h"
+
+#define SessionSpace	100
+
 class GameSrvMain
 {
 public:

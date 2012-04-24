@@ -177,31 +177,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\CheckDB.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\LobbyMain.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\LobbySession.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\main.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Network.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SrvNet.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\WinMgr.cpp"
 				>
 			</File>
 		</Filter>
@@ -211,31 +191,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\CheckDB.h"
-				>
-			</File>
-			<File
 				RelativePath=".\LobbyMain.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LobbyProtocol.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LobbySession.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Network.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SrvNet.h"
-				>
-			</File>
-			<File
-				RelativePath=".\WinMgr.h"
 				>
 			</File>
 		</Filter>
@@ -266,6 +222,70 @@
 			</File>
 			<File
 				RelativePath=".\Room.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Network"
+			>
+			<File
+				RelativePath=".\LobbyProtocol.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Network.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Network.h"
+				>
+			</File>
+			<Filter
+				Name="Session"
+				>
+				<File
+					RelativePath=".\LobbySession.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LobbySession.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ToSrv"
+				>
+				<File
+					RelativePath=".\SrvNet.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SrvNet.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Window"
+			>
+			<File
+				RelativePath=".\WinMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WinMgr.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="DataBase"
+			>
+			<File
+				RelativePath=".\CheckDB.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CheckDB.h"
 				>
 			</File>
 		</Filter>

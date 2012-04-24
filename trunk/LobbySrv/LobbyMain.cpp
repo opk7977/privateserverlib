@@ -16,7 +16,7 @@ LobbyMain::~LobbyMain(void)
 BOOL LobbyMain::Init()
 {
 	//서버 초기화
-	if( !GetNetwork.Init( 100 ) )
+	if( !GetNetwork.Init( BASIC_SESSIONSPACE ) )
 		return FALSE;
 
 	//서버 셋팅

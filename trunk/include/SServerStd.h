@@ -19,6 +19,7 @@
 #define ASYNCFLAG_SEND				0x01
 #define ASYNCFLAG_RECEIVE			0x02
 
+#define BASIC_SESSIONSPACE			100
 
 // ΩÃ±€≈œ ≈€«√∏¥
 //----------------------------------------------------
