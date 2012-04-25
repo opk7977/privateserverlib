@@ -8,12 +8,13 @@ class SThread : public SServerObj
 {
 private:
 	//쓰레드의 id값
-	DWORD	m_iThread;
+	//DWORD	m_iThread;
+	unsigned int	m_iThread;
 	//쓰레드가 동작하는가에 대한 flag값
-	BOOL	m_bIsStart;
+	BOOL			m_bIsStart;
 
 	//쓰레드 핸들값
-	HANDLE	m_handleThread;
+	HANDLE			m_handleThread;
 
 public:
 	SThread(void);
@@ -41,7 +42,7 @@ private:
 	//Mgr에서 매개변수로 클래스 자신을 넘겨주어
 	//각 클래스의 Run함수를 호출하도록 한다.
 	//--------------------------------------------------------
-	static DWORD __stdcall HandleRunner( LPVOID parameter );
+	static unsigned int __stdcall HandleRunner( LPVOID parameter );
 };
 
 #endif

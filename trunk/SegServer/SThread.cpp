@@ -30,7 +30,7 @@ void SThread::BeginThread()
 	m_bIsStart = TRUE;
 }
 
-DWORD __stdcall SThread::HandleRunner( LPVOID parameter )
+unsigned int __stdcall SThread::HandleRunner( LPVOID parameter )
 {
 	//Mgr에서 this포인터로 받은 클래스를 시행 시키면
 	//해당 클래스의 HandleRunner함수가 발동하고

@@ -54,10 +54,12 @@ BOOL SThreadMgr::EndAllThread()
 	return TRUE;
 }
 
-HANDLE SThreadMgr::Create( LPTHREAD_START_ROUTINE startAddress, LPVOID parameter, DWORD* threadID )
+//HANDLE SThreadMgr::Create( LPTHREAD_START_ROUTINE startAddress, LPVOID parameter, DWORD* threadID )
+HANDLE SThreadMgr::Create( LPVOID startAddress, LPVOID parameter, unsigned int *threadID )
 {
 	HANDLE threadHandle;
-	threadHandle = CreateThread( 0, 0, startAddress, parameter, 0, threadID );
+	threadHandle = (HANDLE)_beginthreadex( NULL, 0, (unsigned int(__stdcall*)(void*))startAddress, parameter, 0, threadID );
+	//threadHandle = CreateThread( 0, 0, startAddress, parameter, 0, threadID );
 
 	m_listThread.push_back( threadHandle );
 
