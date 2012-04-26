@@ -2,19 +2,37 @@
 
 #include "SSessionObj.h"
 
+class CharObj;
+class GameProc;
+
 class GameSession : public SSessionObj
 {
 public:
 	SDECLARE_DYNAMIC(GameSession)
 	SDECLARE_DYNCREATE(GameSession)
 
+private:
+	//내 정보
+	CharObj*			m_myCharInfo;
+	//내 게임 프로세스(방)
+	GameProc*			m_myGameProc;
+
+	//게임을 끝낸건가?(로비로 간것이 아니다)
+	BOOL				isEndGame;
+
 public:
 	GameSession(void);
 	~GameSession(void);
 
+	void Init();
+
 	void OnCreate();
 	void OnDestroy();
 
+	//내 정보를 담는다
+	void PackageMyInfo( SPacket& packet );
+
+	//패킷 처리
 	void PacketParsing( SPacket& packet );
 
 	//======================================
@@ -29,6 +47,7 @@ public:
 	// client와의 커뮤니케이션
 	//--------------------------------------
 	//CS_GAME_INGAME
+	void RecvInGame( SPacket &packet );
 
 	//CS_GAME_MOVE_CHAR
 
@@ -59,8 +78,11 @@ public:
 	// client와의 커뮤니케이션
 	//--------------------------------------
 	//SC_GAME_CONNECT_OK
+	//함수 없음
 
 	//SC_GAME_CHARINFO_INGAME
+	BOOL SendOtherCharInfoToMe();				//게임내에 접속한 사람들의 정보를 받는다
+	BOOL SendMyCharInfoToInGamePlayer();		//게임내의 사람들에게 내 정보를 보낸다
 
 	//SC_GAME_START_GAME
 
@@ -91,5 +113,6 @@ public:
 	//SC_GAME_CHAR_GOTO_LOBBY
 
 	//SC_GAME_CHAR_DISCONNECT
+	BOOL SendCharDisconnect();
 
 };

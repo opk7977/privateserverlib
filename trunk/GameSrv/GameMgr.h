@@ -17,9 +17,12 @@ public:
 	~GameMgr(void);
 
 	//맨처음 게임proc을 생성해 준다
-	BOOL CreateGameProc( int count );
+	void CreateGameProc( int count );
 	void Release();
 
 	GameProc* FindGame( int roomNum );
 
 };
+
+#define GetGameMgr GameMgr::GetInstance()
+

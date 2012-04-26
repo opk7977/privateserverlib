@@ -1,4 +1,5 @@
 #include "GameMgr.h"
+#include "GameProc.h"
 
 GameMgr::GameMgr(void)
 {
@@ -8,7 +9,7 @@ GameMgr::~GameMgr(void)
 {
 }
 
-BOOL GameMgr::CreateGameProc( int count )
+void GameMgr::CreateGameProc( int count )
 {
 	//입력받은 수만큼 게임 proc이 생성된다
 	for( int i=1; i<=count; ++i )
@@ -28,7 +29,7 @@ void GameMgr::Release()
 	for( ; iter != m_mapGameRoom.end() ; )
 	{
 		iterPre = iter++;
-		delete iterPre;
+		delete iterPre->second;
 	}
 	m_mapGameRoom.clear();
 }

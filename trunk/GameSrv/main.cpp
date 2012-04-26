@@ -18,8 +18,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	if( !GetData.DataSetting() )
 		return -1;
 
-	// 	GameSrvMain  myMain;
-	// 	myMain.Init();
+	GameSrvMain  myMain;
+	myMain.Init();
 
 
 	MSG Message;

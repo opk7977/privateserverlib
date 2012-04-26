@@ -24,7 +24,7 @@ BOOL DataLeader::DataSetting()
 		return FALSE;
 
 	char text[256] = {0,};
-	char tmpNum[5] = {0,};
+	char tmpNum[10] = {0,};
 
 	//======================================
 	// 방갯수를 받아 온다
@@ -33,7 +33,7 @@ BOOL DataLeader::DataSetting()
 	fgets( text, 256, fp );
 	//4
 	fgets( text, 256, fp );
-	sscanf_s( text, "%s", tmpNum, 5 );
+	sscanf_s( text, "%s", tmpNum, 10 );
 	RoomCount = atoi( tmpNum );
 
 	//======================================
@@ -43,7 +43,7 @@ BOOL DataLeader::DataSetting()
 	fgets( text, 256, fp );
 	//192.168.0.56	7900
 	fgets( text, 256, fp );
-	sscanf_s( text, "%s %s", GameSrvIP, 15, tmpNum, 5 );
+	sscanf_s( text, "%s %s", GameSrvIP, 15, tmpNum, 10 );
 	GameSrvProtNum = atoi( tmpNum );
 
 	//======================================
@@ -53,8 +53,18 @@ BOOL DataLeader::DataSetting()
 	fgets( text, 256, fp );
 	//192.168.0.56	8900
 	fgets( text, 256, fp );
-	sscanf_s( text, "%s %s", LobbySrvIP, 15, tmpNum, 5 );
+	sscanf_s( text, "%s %s", LobbySrvIP, 15, tmpNum, 10 );
 	LobbySrvPortNum = atoi( tmpNum );
+
+	//======================================
+	// 게임 play 시간
+	//======================================
+	//<<게임 play시간(초단위)>>
+	fgets( text, 256, fp );
+	//300
+	fgets( text, 256, fp );
+	sscanf_s( text, "%s", tmpNum, 10 );
+	GamePlaySec = atoi( tmpNum );
 
 	fclose( fp );
 

@@ -210,18 +210,6 @@
 			>
 		</Filter>
 		<Filter
-			Name="Character"
-			>
-			<File
-				RelativePath=".\CharMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CharMgr.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Network"
 			>
 			<File
@@ -288,6 +276,42 @@
 		<Filter
 			Name="Data"
 			>
+		</Filter>
+		<Filter
+			Name="Object"
+			>
+			<File
+				RelativePath=".\GameObj.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GameObj.h"
+				>
+			</File>
+			<Filter
+				Name="Character"
+				>
+				<File
+					RelativePath=".\CharMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CharMgr.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Item"
+				>
+				<File
+					RelativePath=".\ItemMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ItemMgr.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

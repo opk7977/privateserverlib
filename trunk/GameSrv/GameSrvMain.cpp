@@ -1,9 +1,14 @@
 #include "GameSrvMain.h"
-#include "Network.h"
+
 #include "DataLeader.h"
 
-//GameProc
+#include "Network.h"
+#include "GameMgr.h"
 
+//test////////////////////////////////////////////////////////////////////
+#include "GameProc.h"
+#include "CharMgr.h"
+//////////////////////////////////////////////////////////////////////////
 
 GameSrvMain::GameSrvMain(void)
 {
@@ -24,7 +29,66 @@ BOOL GameSrvMain::Init()
 	if( !GetNetwork.SrvSetting( GetData.GameSrvProtNum ) )
 		return FALSE;
 
+	//캐릭터 공간 셋팅
+	GetCharMgr.Init();
+
 	//게임proc셋팅
+	GetGameMgr.CreateGameProc( GetData.RoomCount );
+
+
+	//test////////////////////////////////////////////////////////////////////
+	//1번 방을 열어 놓는다////////////////////////////////////////////////////
+	GameProc* tmpGame = GetGameMgr.FindGame( 1 );
+	tmpGame->StartGame( 8 );
+	//첫번째 캐릭터 수동 입력/////////////////////////////////////////////////
+	CharObj* tmpChar = GetCharMgr.GetCharSpace();
+	tmpChar->SetIndexId( 1 );
+	tmpChar->SetID( _T("seol") );
+	tmpChar->SetTeam( SRV_CHAR_TEAM_ATT );
+	tmpChar->SetState( SRV_CHAR_STATE_STAND );
+	tmpChar->SetPosition( 1.f, 0.f, 1.f );
+	tmpChar->SetDirection( 0.f, 0.f, 1.f );
+	//두번째 캐릭터 수동 입력/////////////////////////////////////////////////
+	tmpChar = GetCharMgr.GetCharSpace();
+	tmpChar->SetIndexId( 2 );
+	tmpChar->SetID( _T("shin1") );
+	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
+	tmpChar->SetState( SRV_CHAR_STATE_STAND );
+	tmpChar->SetPosition( 5.f, 0.f, 5.f );
+	tmpChar->SetDirection( 0.f, 0.f, 1.f );
+	//세번째 캐릭터 수동 입력/////////////////////////////////////////////////
+	tmpChar = GetCharMgr.GetCharSpace();
+	tmpChar->SetIndexId( 3 );
+	tmpChar->SetID( _T("kang") );
+	tmpChar->SetTeam( SRV_CHAR_TEAM_ATT );
+	tmpChar->SetState( SRV_CHAR_STATE_STAND );
+	tmpChar->SetPosition( 10.f, 0.f, 10.f );
+	tmpChar->SetDirection( 0.f, 0.f, 1.f );
+	//네번째 캐릭터 수동 입력/////////////////////////////////////////////////
+	tmpChar = GetCharMgr.GetCharSpace();
+	tmpChar->SetIndexId( 4 );
+	tmpChar->SetID( _T("Shin2") );
+	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
+	tmpChar->SetState( SRV_CHAR_STATE_STAND );
+	tmpChar->SetPosition( 10.f, 0.f, 10.f );
+	tmpChar->SetDirection( 0.f, 0.f, 1.f );
+	//다섯번째 캐릭터 수동 입력///////////////////////////////////////////////
+	tmpChar = GetCharMgr.GetCharSpace();
+	tmpChar->SetIndexId( 5 );
+	tmpChar->SetID( _T("Ha") );
+	tmpChar->SetTeam( SRV_CHAR_TEAM_ATT );
+	tmpChar->SetState( SRV_CHAR_STATE_STAND );
+	tmpChar->SetPosition( 15.f, 0.f, 15.f );
+	tmpChar->SetDirection( 0.f, 0.f, 1.f );
+	//여섯번째 캐릭터 수동 입력///////////////////////////////////////////////
+	tmpChar = GetCharMgr.GetCharSpace();
+	tmpChar->SetIndexId( 6 );
+	tmpChar->SetID( _T("Lee") );
+	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
+	tmpChar->SetState( SRV_CHAR_STATE_STAND );
+	tmpChar->SetPosition( 20.f, 0.f, 20.f );
+	tmpChar->SetDirection( 0.f, 0.f, 1.f );
+	//////////////////////////////////////////////////////////////////////////
 	
 	return TRUE;
 }
