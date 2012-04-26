@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestPipeClient", "TestPipeC
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcproj", "{762569EA-04BE-474D-9F6A-65AEFF3714E5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClientForGameSrvTest", "ClientForGameSrvTest\ClientForGameSrvTest.vcproj", "{16FB8901-881B-4010-A10B-4422B2BF40BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -55,6 +57,10 @@ Global
 		{762569EA-04BE-474D-9F6A-65AEFF3714E5}.Debug|Win32.Build.0 = Debug|Win32
 		{762569EA-04BE-474D-9F6A-65AEFF3714E5}.Release|Win32.ActiveCfg = Release|Win32
 		{762569EA-04BE-474D-9F6A-65AEFF3714E5}.Release|Win32.Build.0 = Release|Win32
+		{16FB8901-881B-4010-A10B-4422B2BF40BB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{16FB8901-881B-4010-A10B-4422B2BF40BB}.Debug|Win32.Build.0 = Debug|Win32
+		{16FB8901-881B-4010-A10B-4422B2BF40BB}.Release|Win32.ActiveCfg = Release|Win32
+		{16FB8901-881B-4010-A10B-4422B2BF40BB}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
