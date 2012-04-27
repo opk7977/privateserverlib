@@ -1,5 +1,5 @@
 #include "WinMgr.h"
-#include "Network.h"
+#include "SNetwork.h"
 #include "Scheduler.h"
 
 void Init();

@@ -1,8 +1,8 @@
 #include "Scheduler.h"
 
-#include "PacketQueue.h"
+#include "SPacketQueue.h"
 #include "NetProtocol.h"
-#include "Network.h"
+#include "SNetwork.h"
 
 unsigned int __stdcall _Schdul( void* pArg )
 {
@@ -65,15 +65,9 @@ void CScheduler::PacketProcess()
 	if( count > 30 )
 		count = 30;
 
-	char* tmpBuf;
-
 	for( int i=0; i<count; ++i )
 	{
-		tmpBuf = GetPacketQ.GetPacket();
-		if( tmpBuf == NULL )
-			return;
-
-		m_packet.CopyToPacket( tmpBuf, PACKETDATA_SIZE );
+		GetPacketQ.GetPacket( m_packet );
 
 		//패킷 처리
 		PacketParsing();
@@ -96,6 +90,10 @@ void CScheduler::PacketParsing()
 	case SC_GAME_CHARINFO_INGAME:
 		RecvGameCharInfoInGame();
 		break;
+	case SC_GAME_MOVE_CHAR:
+		RecvGameMoveChar();
+		break;
+
 	//==============================================================> GameSrv
 
 	//==============================================================> Error
@@ -146,9 +144,13 @@ void CScheduler::RecvGameConnectOK()
 
 void CScheduler::RecvGameCharInfoInGame()
 {
-	int a = 10;
+	MessageBox( NULL, _T("캐릭터 정보를 받았습니다."), _T("정보"), MB_OK );
 }
 
+void CScheduler::RecvGameMoveChar()
+{
+	MessageBox( NULL, _T("캐릭터 이동정보를 받았습니다"), _T("정보"), MB_OK );
+}
 
 
 

@@ -1,23 +1,20 @@
-#include "Network.h"
+#include "SNetwork.h"
 #include "SLogger.h"
-#include "PacketQueue.h"
+#include "SPacketQueue.h"
 
-//쓰레드 전역 함수
-unsigned int __stdcall _RecvRunc( void* pArg )
-{
-	return ((Network*)pArg)->RecvEvent();
-}
-
-Network::Network(void) : m_iThread(0)
+SNetwork::SNetwork(void)
 {
 }
 
-Network::~Network(void)
+SNetwork::~SNetwork(void)
 {
 	Release();
+
+	//쓰레드가 죽길 기다린다.
+	WaitForSingleObject( GetThreadHandle(), 1000 );
 }
 
-BOOL Network::Init( BOOL isNon /*= TRUE */ )
+BOOL SNetwork::Init( BOOL isNon /*= TRUE */ )
 {
 	if( !m_conSock.Init() )
 		return FALSE;
@@ -34,29 +31,27 @@ BOOL Network::Init( BOOL isNon /*= TRUE */ )
 	return TRUE;
 }
 
-void Network::Release()
+void SNetwork::Release()
 {
-	ResetEvent( m_startWork );
+	ResetEvent( m_hStartEvent );
 	m_conSock.Release();
 }
 
-BOOL Network::ConnectToSrv( char* ipAddr, int port )
+BOOL SNetwork::ConnectToSrv( char* ipAddr, int port )
 {
-	m_startWork = ::CreateEvent( NULL, TRUE, FALSE, NULL);
+	m_hStartEvent = ::CreateEvent( NULL, TRUE, FALSE, NULL);
 
-	m_recvThread = (HANDLE)_beginthreadex( NULL, 0, &::_RecvRunc, (void*)this, 0, &m_iThread );
-	if( !m_recvThread )
-		return FALSE;
+	BeginThread();
 
 	if( !m_conSock.ConnectSock( ipAddr, port ) )
 		return FALSE;
 
-	SetEvent( m_startWork );
+	SetEvent( m_hStartEvent );
 
 	return TRUE;
 }
 
-BOOL Network::Reconnect( char* ipAddr, int port )
+BOOL SNetwork::ReConnect( char* ipAddr, int port )
 {
 	//우선 연결 끊고
 	DisConnect();
@@ -69,18 +64,18 @@ BOOL Network::Reconnect( char* ipAddr, int port )
 
 	Sleep(2);
 
-	SetEvent( m_startWork );
+	SetEvent( m_hStartEvent );
 
-	return TRUE;	
+	return TRUE;
 }
 
-void Network::DisConnect()
+void SNetwork::DisConnect()
 {
-	ResetEvent( m_startWork );
+	ResetEvent( m_hStartEvent );
 	m_conSock.Release();
 }
 
-unsigned int Network::RecvEvent()
+BOOL SNetwork::Run()
 {
 	const int tmpbufSize = 512;
 
@@ -95,7 +90,7 @@ unsigned int Network::RecvEvent()
 	{
 		Sleep( 10 );
 
-		WaitForSingleObject( m_startWork, INFINITE );
+		WaitForSingleObject( m_hStartEvent, INFINITE );
 		retval = recv( m_conSock.GetSocket(), tmpbuf, tmpbufSize, 0 );
 
 		if( retval == SOCKET_ERROR )
@@ -146,10 +141,10 @@ unsigned int Network::RecvEvent()
 			}
 		}
 	}
-	return 0;
+	return TRUE;
 }
 
-int Network::SendPacket( SPacket* packet )
+int SNetwork::SendPacket( SPacket* packet )
 {
 	int retval = send( m_conSock.GetSocket(), packet->GetDataBufferPtr(), packet->GetPacketSize(), 0 );
 

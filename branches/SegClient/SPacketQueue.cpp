@@ -1,20 +1,21 @@
-#include "PacketQueue.h"
+#include "SPacketQueue.h"
+#include "SPacket.h"
 
-PacketQueue::PacketQueue(void) : m_iReadPos(0)
-							   , m_iWritePos(0)
-							   , m_iDataCount(0)
+SPacketQueue::SPacketQueue(void)
+: m_iReadPos(0)
+, m_iWritePos(0)
+, m_iDataCount(0)
 {
-	//공간 할당해 주고
+	//공간 할당 해 준다
 	m_vecPacketPool.resize( VECBUFFER_SIZE );
+	m_vecPacketSize.resize( VECBUFFER_SIZE );
 
-	//각각의 공간에 버퍼를 할당해 준다
+	//각 공간에 버퍼 할당
 	for( int i=0; i<VECBUFFER_SIZE; ++i )
-	{
 		m_vecPacketPool[i] = new char[PACKETDATA_SIZE];
-	}
 }
 
-PacketQueue::~PacketQueue(void)
+SPacketQueue::~SPacketQueue(void)
 {
 	for( int i=0; i<VECBUFFER_SIZE; ++i )
 	{
@@ -23,9 +24,10 @@ PacketQueue::~PacketQueue(void)
 	}
 
 	m_vecPacketPool.clear();
+	m_vecPacketSize.clear();
 }
 
-BOOL PacketQueue::PutPacket( char* buf, int dataSize )
+BOOL SPacketQueue::PutPacket( char* buf, int dataSize )
 {
 	//꽉 찼으면 이제 그만..
 	if( m_iDataCount >= VECBUFFER_SIZE )
@@ -37,6 +39,8 @@ BOOL PacketQueue::PutPacket( char* buf, int dataSize )
 
 	//데이터를 담는다.
 	CopyMemory( m_vecPacketPool[m_iWritePos], buf, dataSize );
+	//데이터 크기를 받아 놓는다.
+	m_vecPacketSize[m_iWritePos] = dataSize;
 
 	//넣어진 data의 개수를 증가시킨다.
 	++m_iDataCount;
@@ -48,16 +52,19 @@ BOOL PacketQueue::PutPacket( char* buf, int dataSize )
 	return TRUE;
 }
 
-char* PacketQueue::GetPacket()
+BOOL SPacketQueue::GetPacket( SPacket& packet )
 {
 	//읽어갈 data가 없으면 하지 않음
 	if( m_iDataCount <= 0 )
-		return NULL;
+		return FALSE;
 
-	return m_vecPacketPool[m_iReadPos];
+	//패킷으로 복사
+	packet.CopyToPacket( m_vecPacketPool[m_iReadPos], m_vecPacketSize[m_iReadPos] );
+
+	return TRUE;
 }
 
-void PacketQueue::MoveReadPos()
+void SPacketQueue::MoveReadPos()
 {
 	//처리가 끝난 데이터를 줄여 주고
 	--m_iDataCount;
@@ -67,7 +74,7 @@ void PacketQueue::MoveReadPos()
 		m_iReadPos = 0;
 }
 
-int PacketQueue::GetDataCount()
+int SPacketQueue::GetDataCount()
 {
 	return m_iDataCount;
 }

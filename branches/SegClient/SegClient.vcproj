@@ -151,15 +151,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\SDump.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SInput.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\SLogger.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SNetwork.cpp"
 				>
 			</File>
 			<File
@@ -168,6 +164,10 @@
 			</File>
 			<File
 				RelativePath=".\SPacket.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SPacketQueue.cpp"
 				>
 			</File>
 			<File
@@ -205,15 +205,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\SDump.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SInput.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SLogger.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SNetwork.h"
 				>
 			</File>
 			<File
@@ -225,7 +221,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SProtocol.h"
+				RelativePath=".\SPacketQueue.h"
 				>
 			</File>
 			<File

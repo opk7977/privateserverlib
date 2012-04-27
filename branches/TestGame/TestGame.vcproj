@@ -181,6 +181,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SInput.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\WinMgr.cpp"
 				>
 			</File>
@@ -196,6 +200,10 @@
 			</File>
 			<File
 				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SInput.h"
 				>
 			</File>
 			<File

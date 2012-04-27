@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include "SDump.h"
-
 class CSampleDemoGameView : public CView
 {
 protected: // serialization에서만 만들어집니다.
@@ -29,8 +27,6 @@ private:
 	//timer에서 갱실될 fram
 	int			frame;
 	
-	//덤프
-	SDump		m_dump;
 
 public:
 	//--------------------------------------

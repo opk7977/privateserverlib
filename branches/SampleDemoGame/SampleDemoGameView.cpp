@@ -41,7 +41,6 @@ CSampleDemoGameView::CSampleDemoGameView() : pOldBit(0)
 
 CSampleDemoGameView::~CSampleDemoGameView()
 {
-	m_dump.End();
 }
 
 BOOL CSampleDemoGameView::PreCreateWindow(CREATESTRUCT& cs)
@@ -113,8 +112,6 @@ void CSampleDemoGameView::OnInitialUpdate()
 	CView::OnInitialUpdate();
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	//덤프 시작
-	m_dump.Begin();
 
 	//우선 화면은 셋팅해 주고
 	BeginScene();

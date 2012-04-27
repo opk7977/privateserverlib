@@ -55,6 +55,7 @@ public:
 	//SC_GAME_START_GAME
 
 	//SC_GAME_MOVE_CHAR
+	void RecvGameMoveChar();
 
 	//SC_GAME_ATTECT
 

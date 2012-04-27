@@ -205,26 +205,10 @@
 				RelativePath=".\NetProtocol.h"
 				>
 			</File>
-			<File
-				RelativePath=".\Network.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Network.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Packet"
 			>
-			<File
-				RelativePath=".\PacketQueue.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\PacketQueue.h"
-				>
-			</File>
 			<File
 				RelativePath=".\Scheduler.cpp"
 				>
