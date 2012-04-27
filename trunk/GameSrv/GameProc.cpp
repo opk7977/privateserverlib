@@ -6,7 +6,6 @@
 
 GameProc::GameProc(void)
 {
-	m_critical = new SServerObj;
 	m_hStartGame = ::CreateEvent( NULL, TRUE, FALSE, NULL );
 	Init();
 }
@@ -32,7 +31,6 @@ void GameProc::Init()
 
 void GameProc::Release()
 {
-	delete m_critical;
 }
 
 BOOL GameProc::Run()
@@ -101,7 +99,7 @@ void GameProc::AddPlayer( GameSession* player )
 	}
 
 	{
-		SSynchronize sync( m_critical );
+		SSynchronize sync( this );
 
 		m_listPlayer.push_back( player );
 		++m_inGamePlayerCount;
@@ -119,7 +117,7 @@ void GameProc::DelPlayer( GameSession* player )
 	std::list<GameSession*>::iterator	iter, iterPre;
 
 	{
-		SSynchronize sync( m_critical );
+		SSynchronize sync( this );
 
 		iter = m_listPlayer.begin();
 		for( ; iter != m_listPlayer.end(); )
@@ -141,7 +139,7 @@ void GameProc::SendAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL */
 	std::list<GameSession*>::iterator	iter;
 
 	{
-		SSynchronize sync( m_critical );
+		SSynchronize sync( this );
 
 		iter = m_listPlayer.begin();
 		for( ; iter != m_listPlayer.end(); ++iter )
@@ -159,7 +157,7 @@ void GameProc::PackageAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL
 	std::list<GameSession*>::iterator	iter;
 
 	{
-		SSynchronize sync( m_critical );
+		SSynchronize sync( this );
 
 		//몇명있는지 우선 담고
 		packet << m_inGamePlayerCount;

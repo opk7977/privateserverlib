@@ -7,8 +7,7 @@
 #include "Room.h"
 #include "CheckDB.h"
 
-/*#include "SSynchronize.h"*/
-
+#include "SrvNet.h"
 
 SIMPLEMENT_DYNAMIC(LobbySession)
 SIMPLEMENT_DYNCREATE(LobbySession)
@@ -97,7 +96,7 @@ void LobbySession::PacketParsing( SPacket& packet )
 	{
 	//==============================================================> GameSrv
 	case GL_CONNECT_SERVER:
-		//RecvConnectServer();
+		RecvConnectServer();
 		break;
 	case GL_PLAYER_DISCONNECT:
 		//RecvPlayerDiconnectInGame( packet );
@@ -143,7 +142,14 @@ void LobbySession::PackageMyInfo( SPacket& packet/*, BOOL isTeam*/ /*= FALSE*/ )
 
 void LobbySession::RecvConnectServer()
 {
-
+	if( GetSrvNet.GetSession() != NULL )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LobbySession::RecvConnectServer()\n서버설정이 이미 끝났습니다. 넌 누구냐...\n\n") );
+		return;
+	}
+	//내가 서버다!!
+	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::RecvConnectServer()\n게임서버와 연결되었습니다.\n\n") );
+	GetSrvNet.SetSession( this );
 }
 
 void LobbySession::RecvPlayerDiconnectInGame( SPacket& packet )

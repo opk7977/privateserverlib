@@ -34,6 +34,9 @@ BOOL Network::SrvSetting( int port )
 {
 	if( !m_accept.SetAcceptor( port ) )
 		return FALSE;
+
+	//로비서버와 연결한다.
+
 	
 	return TRUE;
 }

@@ -236,6 +236,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="ToSrv"
+				>
+				<File
+					RelativePath=".\SrvNet.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SrvNet.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Window"

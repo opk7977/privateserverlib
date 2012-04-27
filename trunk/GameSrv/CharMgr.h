@@ -51,6 +51,7 @@ public:
 	inline int GetState() { return m_State; }
 
 	inline void SetDirection( float x, float y, float z ) { m_Direction.SetElement( x, y, z ); }
+	inline void SetDirection( POINT3 dir ) { m_Direction = dir; }
 	inline POINT3 GetDirection() { return m_Direction; }
 	inline float GetDirX() { return m_Direction.m_X; }
 	inline float GetDirY() { return m_Direction.m_Y; }

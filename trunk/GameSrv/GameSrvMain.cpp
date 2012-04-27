@@ -3,6 +3,8 @@
 #include "DataLeader.h"
 
 #include "Network.h"
+#include "SrvNet.h"
+
 #include "GameMgr.h"
 
 //test////////////////////////////////////////////////////////////////////
@@ -28,6 +30,10 @@ BOOL GameSrvMain::Init()
 	//서버 셋팅
 	if( !GetNetwork.SrvSetting( GetData.GameSrvProtNum ) )
 		return FALSE;
+
+	//로비서버와 접속
+// 	if( !GetSrvNet.ConnectToSrv( GetData.LobbySrvIP, GetData.LobbySrvPortNum ) )
+// 		return FALSE;
 
 	//캐릭터 공간 셋팅
 	GetCharMgr.Init();

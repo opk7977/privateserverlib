@@ -33,7 +33,7 @@ public:
 	BOOL SetNonBlkSock();
 
 	//클라 소켓을 위한 connect함수
-	BOOL ConnectSock( char* ipAddr, int port );
+	BOOL ConnectSock( char* ipAddr, int port, SOCKADDR *sAddr = NULL );
 
 	//서버 소켓을 위한 bind함수
 	BOOL BindSocket( int port );

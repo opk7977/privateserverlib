@@ -47,6 +47,7 @@ public:
 	int GetIndexId() { return m_iId; }
 
 	void SetPosition( float x, float y, float z ) { m_Position.SetElement( x, y, z ); }
+	void SetPosition( POINT3 pos ) { m_Position = pos; }
 	POINT3 GetPosition() { return m_Position; }
 	float GetPosX() { return m_Position.m_X; }
 	float GetPosY() { return m_Position.m_Y; }

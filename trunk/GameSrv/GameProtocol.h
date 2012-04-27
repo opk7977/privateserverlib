@@ -20,6 +20,12 @@ enum SERVER_TO_SERVER
 	GL_PLAYER_DISCONNECT,
 };
 
+enum LOBBY_SERVER
+{
+	//로비서버와의 연결을 확인
+	SC_LOBBY_CONNECT_OK = 200,
+};
+
 enum GAME_SERVER
 {
 	// server -> client

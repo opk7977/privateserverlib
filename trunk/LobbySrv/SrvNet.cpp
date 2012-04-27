@@ -10,11 +10,6 @@ SrvNet::~SrvNet(void)
 {
 }
 
-void SrvNet::SetSession( LobbySession* session )
-{
-	m_GameSrv = session;
-}
-
 BOOL SrvNet::SendToGameServer( SPacket &packet )
 {
 	if( m_GameSrv == NULL )

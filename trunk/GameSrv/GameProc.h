@@ -9,8 +9,6 @@ class SPacket;
 class GameProc : public SThread
 {
 private:
-	SServerObj				*m_critical;
-private:
 	// 게임을 하고 있는 player list
 	std::list<GameSession*>	m_listPlayer;
 

@@ -6,6 +6,8 @@
 #include "GameMgr.h"
 #include "GameProc.h"
 
+#include "SrvNet.h"
+
 
 SIMPLEMENT_DYNAMIC(GameSession)
 SIMPLEMENT_DYNCREATE(GameSession)
@@ -84,9 +86,15 @@ void GameSession::PacketParsing( SPacket& packet )
 {
 	switch( packet.GetID() )
 	{
+	case SC_LOBBY_CONNECT_OK:
+		RecvLobbyConnectOK();
+		break;
 	//==============================================================> LobbySrv
 	case CS_GAME_INGAME:
 		RecvInGame( packet );
+		break;
+	case CS_GAME_MOVE_CHAR:
+		RecvMoveChar( packet );
 		break;
 	//==============================================================> Client
 	default:
@@ -100,6 +108,18 @@ void GameSession::PacketParsing( SPacket& packet )
 //--------------------------------------
 // Lobby Srv와의 커뮤니케이션
 //--------------------------------------
+void GameSession::RecvLobbyConnectOK()
+{
+	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::RecvLobbyConnectOK()\n로비서버와 연결에 성공하였습니다\n\n") );
+
+	GetSrvNet.SetSession( this );
+
+	SPacket sendPacket;
+	sendPacket.SetID( GL_CONNECT_SERVER );
+
+	GetSrvNet.SendToLobbyServer( sendPacket );
+}
+
 
 //--------------------------------------
 // Client와의 커뮤니케이션
@@ -141,6 +161,36 @@ void GameSession::RecvInGame( SPacket &packet )
 	SendMyCharInfoToInGamePlayer();
 }
 
+void GameSession::RecvMoveChar( SPacket &packet )
+{
+	int state;
+	POINT3 pos, dir;
+	packet >> state;
+	//위치
+	packet >> pos.m_X;
+	packet >> pos.m_Y;
+	packet >> pos.m_Z;
+	//방향
+	packet >> dir.m_X;
+	packet >> dir.m_Y;
+	packet >> dir.m_Z;
+
+	{
+		SSynchronize sync( m_myCharInfo );
+
+		if( m_myCharInfo == NULL )
+		{
+			GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::RecvMoveChar()\n캐릭터 설정에 문제가 있습니다.\n\n") );
+			return;
+		}
+
+		m_myCharInfo->SetState( state );
+		m_myCharInfo->SetPosition( pos );
+		m_myCharInfo->SetDirection( dir );
+	}
+
+	SendMoveChar();
+}
 
 //======================================
 // 보내는 패킷 처리
@@ -203,6 +253,35 @@ BOOL GameSession::SendCharDisconnect()
 		return FALSE;
 
 	//나는 이미 빠져 있으니 모두에게 보내도 된다.
+	m_myGameProc->SendAllPlayerInGame( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendMoveChar()
+{
+	SPacket sendPacket;
+	sendPacket.SetID( SC_GAME_MOVE_CHAR );
+
+	{
+		SSynchronize sync( m_myCharInfo );
+
+		sendPacket << m_myCharInfo->GetIndexId();
+		sendPacket << m_myCharInfo->GetState();
+		sendPacket << m_myCharInfo->GetPosX();
+		sendPacket << m_myCharInfo->GetPosY();
+		sendPacket << m_myCharInfo->GetPosZ();
+		sendPacket << m_myCharInfo->GetDirX();
+		sendPacket << m_myCharInfo->GetDirY();
+		sendPacket << m_myCharInfo->GetDirZ();
+	}
+
+	if( m_myGameProc == NULL )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::SendMoveChar()\n방정보에 문제가 있습니다.\n\n") );
+		return FALSE;
+	}
+
 	m_myGameProc->SendAllPlayerInGame( sendPacket );
 
 	return TRUE;

@@ -41,6 +41,9 @@ public:
 	//--------------------------------------
 	// lobby 서버와의 커뮤니케이션
 	//--------------------------------------
+	//SC_LOBBY_CONNECT_OK
+	void RecvLobbyConnectOK();
+
 	//LG_START_GAME
 
 	//--------------------------------------
@@ -50,6 +53,7 @@ public:
 	void RecvInGame( SPacket &packet );
 
 	//CS_GAME_MOVE_CHAR
+	void RecvMoveChar( SPacket &packet );
 
 	//CS_GAME_ATTECT
 
@@ -87,6 +91,7 @@ public:
 	//SC_GAME_START_GAME
 
 	//SC_GAME_MOVE_CHAR
+	BOOL SendMoveChar();
 
 	//SC_GAME_ATTECT
 

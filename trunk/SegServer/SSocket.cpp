@@ -85,7 +85,7 @@ BOOL SSocket::SetNonBlkSock()
 	return TRUE;
 }
 
-BOOL SSocket::ConnectSock( char* ipAddr, int port )
+BOOL SSocket::ConnectSock( char* ipAddr, int port, SOCKADDR *sAddr /*= NULL */ )
 {
 	SOCKADDR_IN sockAddr;
 
@@ -94,6 +94,11 @@ BOOL SSocket::ConnectSock( char* ipAddr, int port )
 	sockAddr.sin_family			= AF_INET;
 	sockAddr.sin_addr.s_addr	= inet_addr( ipAddr );
 	sockAddr.sin_port			= htons( port );
+	
+	if( sAddr != NULL )
+		CopyMemory( sAddr, (SOCKADDR*)&sockAddr, sizeof(*sAddr) );
+		//sAddr = (SOCKADDR*)&sockAddr;
+
 
 	//연결한다.
 	//if( connect( m_socket, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR) ) == SOCKET_ERROR )
