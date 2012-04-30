@@ -5,7 +5,8 @@
 #include "Client.h"
 #include "NewRoom.h"
 
-#include "Network.h"
+#include "SNetwork.h"
+#include "NetProtocol.h"
 
 #include "ClientDoc.h"
 #include "ClientView.h"

@@ -143,7 +143,7 @@ enum LOBBY_SERVER
 	SC_ROOM_OTHER_CHARINFO,
 
 	// server -> client
-	// 방장이 누구인지 보낸다.
+	// 방장이 나가고 다음 방장이 누구인지 보낸다.
 	// int			-		SessionId
 	SC_ROOM_LEADER,
 
@@ -164,7 +164,7 @@ enum LOBBY_SERVER
 
 	// client -> server
 	// ready상태를 변경하고 상태를 서버로 보냄
-	// 데이터 없음
+	// int			-		ready상태값
 	CS_ROOM_CHAR_READY,
 
 	// server -> client
@@ -185,11 +185,6 @@ enum LOBBY_SERVER
 	SC_ROOM_TEAM_CHANGE,
 
 	// client -> server
-	// 게임 시작으로 인해 로비서버와의 접속을 종료하기 전에 보내는 신호
-	// 데이터 없음
-	//CS_ROOM_PLAY,
-
-	// client -> server
 	// 채팅을 위해 서버로 쓴글을 알림
 	// int			-		문장의 데이터 크기
 	// TCHAR		-		문장
@@ -197,10 +192,32 @@ enum LOBBY_SERVER
 
 	// server -> client
 	// 채팅문장을 알림
-	// roomNum		-		RoomNum ( 로비라면 0 )
+	// int			-		RoomNum ( 로비라면 0 )
 	// int			-		문장의 데이터 크기
 	// TCHAR		-		문장
 	SC_LOBBY_CHAT,
+
+	// client -> server
+	// 방장이 게임을 시작하려고 알리는 패킷
+	// 데어터 없음
+	CS_ROOM_START,
+
+	// server -> client
+	// 게임을 시작할 수 있는지에 대한 결과
+	// BOOL			-		결과값
+	SC_ROOM_START_RESULT,
+
+	// server -> client
+	// 게임 시작을 클라에게 알린다.
+	// int			-		ip데이터크기
+	// TCHAR		-		ip
+	// int			-		port번호
+	SC_ROOM_GAME_START,
+
+	// server -> client
+	// 로비에 있는 player들에게 게임이 시작된 방의 번호를 알린다
+	// int			-		방번호
+	SC_LOBBY_GAME_START,
 
 	// server -> client
 	// player가 접속을 끊으면 알려 준다.

@@ -8,7 +8,7 @@
 #include "ClientDoc.h"
 #include "ClientView.h"
 
-#include "Network.h"
+#include "SNetwork.h"
 #include "Login.h"
 
 #include "Scheduler.h"

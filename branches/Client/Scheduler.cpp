@@ -1,9 +1,9 @@
 #include "StdAfx.h"
 #include "Scheduler.h"
 
-#include "PacketQueue.h"
+#include "SNetwork.h"
+#include "SPacketQueue.h"
 #include "NetProtocol.h"
-#include "Network.h"
 
 //#include "ClientDoc.h"
 #include "ClientView.h"
@@ -80,21 +80,15 @@ void CScheduler::PacketProcess()
 	if( count > 30 )
 		count = 30;
 
-	char* tmpBuf;
-
 	for( int i=0; i<count; ++i )
 	{
-		tmpBuf = GetPacketQ.GetPacket();
-		if( tmpBuf == NULL )
-			return;
-
-		m_packet.CopyToPacket( tmpBuf, PACKETDATA_SIZE );
+		GetPacketQ.GetPacket( m_packet );
 
 		//패킷 처리
 		PacketParsing();
 
 		//처리가 끝나고 위치를 이동한다.
-		GetPacketQ.MoveReadPos();
+		//GetPacketQ.MoveReadPos();
 	}
 }
 
@@ -237,13 +231,21 @@ void CScheduler::RecvLoginLoginResult()
 	int result;
 	m_packet >> result;
 
-	if( result < 0 )
+	if( result == -1 )
 	{
 		MessageBox( NULL, _T("존재하지 않는 id입니다."), _T("error"), MB_OK | MB_ICONERROR );
 	}
-	if( result == 0 )
+	else if( result == 0 )
 	{
 		MessageBox( NULL, _T("password가 틀립니다."), _T("error"), MB_OK | MB_ICONERROR );
+	}
+	else if( result == -5 )
+	{
+		MessageBox( NULL, _T("이미 로그인된 ID입니다."), _T("error"), MB_OK | MB_ICONERROR );
+	}
+	else if( result == -10 )
+	{
+		MessageBox( NULL, _T("서버 오류입니다."), _T("error"), MB_OK | MB_ICONERROR );
 	}
 	else
 	{
@@ -261,7 +263,7 @@ void CScheduler::RecvLoginLoginResult()
 		m_packet.GetData( ip, size );
 		m_packet >> port;
 
-		if( !GetNetwork.Reconnect( ip, port ) )
+		if( !GetNetwork.ReConnect( ip, port ) )
 			MessageBox( NULL, _T("연결 실패!"), _T("error"), MB_OK );
 	}
 

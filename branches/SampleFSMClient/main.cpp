@@ -123,7 +123,8 @@ BOOL Init()
 		return FALSE;
 
 	//서버와의 연결
-	if( !g_net.ConnectSrv( "192.168.0.70", 8900 ) )
+	if( !g_net.ConnectSrv( "192.168.0.56", 8900 ) )
+	//if( !g_net.ConnectSrv( "127.0.0.1", 8900 ) )
 		return FALSE;
 
 	//시간 초기화 하고

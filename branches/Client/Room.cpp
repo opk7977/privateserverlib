@@ -7,7 +7,8 @@
 
 #include "Scheduler.h"
 
-#include "Network.h"
+#include "SNetwork.h"
+#include "NetProtocol.h"
 
 // CString RoomPlayer::TeamString[2] = { {_T("Att")}, {_T("Def")} };
 // CString RoomPlayer::ReadyString[2] = { {_T("Non")}, {_T("Ready")} };

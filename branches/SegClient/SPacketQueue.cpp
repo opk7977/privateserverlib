@@ -61,6 +61,8 @@ BOOL SPacketQueue::GetPacket( SPacket& packet )
 	//패킷으로 복사
 	packet.CopyToPacket( m_vecPacketPool[m_iReadPos], m_vecPacketSize[m_iReadPos] );
 
+	MoveReadPos();
+
 	return TRUE;
 }
 
