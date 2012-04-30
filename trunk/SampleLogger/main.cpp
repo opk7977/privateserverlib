@@ -5,6 +5,8 @@ void main()
 {
 	int count = 0;
 
+	GetLogger.Create( "SampleLogger" );
+
 	while(1)
 	{
 		Sleep( (int)(rand()%1000) );

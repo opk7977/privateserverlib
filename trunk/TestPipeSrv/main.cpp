@@ -1,6 +1,8 @@
 #include "SWindow.h"
 #include "Pipe.h"
 
+#include "SLogger.h"
+
 
 BOOL Init();
 void Relase();
@@ -15,6 +17,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	SWindow window;
 	if( !window.CreateWindows( hInstance, _T("Try"), _T("TestPipeSrv"), hWnd, 800, 600, nCmdShow ) )
 		return 0;
+
+	//로그초기화
+	GetLogger.Create( "TestPipeSrv" );
 
 	//Setting
 	if( !Init() )

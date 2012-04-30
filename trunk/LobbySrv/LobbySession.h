@@ -81,6 +81,8 @@ public:
 	//CS_ROOM_CHAT
 	void RecvChat( SPacket& packet );
 
+	//CS_ROOM_START
+
 	//======================================
 	// 보내는 패킷 생성함수
 	//======================================
@@ -137,6 +139,12 @@ public:
 
 	//SC_ROOM_CHAT
 	BOOL SendChat( TCHAR* chat );
+
+	//SC_ROOM_START_RESULT
+
+	//SC_ROOM_GAME_START
+
+	//SC_LOBBY_GAME_START
 
 	//SC_LOBBY_PLAYER_DISCONNECT
 	BOOL SendPlayerDisconnect();

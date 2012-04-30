@@ -13,7 +13,7 @@ SLogger::SLogger(void) : m_fileCount(0)
 	InitializeCriticalSection( m_logCritical );
 
 	//기본적으로 사용될 파일 하나를 생성
-	Create( "Server" );
+	//Create( "Server" );
 
 	//한글을 입력되게 선언해 줘야 한다!!!!!!!
 	_tsetlocale(LC_ALL, _T("Korean")); 

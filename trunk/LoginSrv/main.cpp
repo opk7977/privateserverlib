@@ -1,6 +1,9 @@
 #include "WinMgr.h"
 #include "LoginMain.h"
 
+#include "DataLeader.h"
+#include "SLogger.h"
+
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdParam, int nCmdShow )
 {
 	HWND hWnd;
@@ -8,6 +11,13 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	WinMgr window;
 	if( !window.CreateWindows( hInstance, _T("Login"), _T("LoginSrv"), hWnd, 800, 600, nCmdShow ) )
 		return 0;
+
+	//로그초기화
+	GetLogger.Create( "LoginSrv" );
+
+	//데이터 부터 셋팅 하자
+	if( !GetDocument.DataSetting() )
+		return -1;
 
 
 	LoginMain lMain;

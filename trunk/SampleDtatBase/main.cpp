@@ -27,6 +27,9 @@ void main()
 	//한글을 입력되게 선언해 줘야 한다!!!!!!!
 	//_tsetlocale(LC_ALL, _T("Korean")); 
 
+	//로그초기화
+	GetLogger.Create( "SampleDtatBase" );
+
 	SampleQuery query;
 
 	//연결 초기화/////////////////////////////////////////////////////////////

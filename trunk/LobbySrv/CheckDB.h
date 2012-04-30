@@ -21,6 +21,12 @@ public:
 
 	//sessionId로 userID를 받아 간다
 	void GetData( int in_sessionId, TCHAR* out_ID );
+
+	//성공실패
+	BOOL UpdateLogin( int sessionId, BOOL isLogin = TRUE );
+
+	//음수:오류/ 0:로그인안되어 있음/ 1:로그인되어있음
+	int IsLogin( int sessionID );
 };
 
 #define GetDB CheckDB::GetInstance()

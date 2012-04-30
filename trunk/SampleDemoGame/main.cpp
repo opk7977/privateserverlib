@@ -2,6 +2,7 @@
 #include "STime.h"
 
 #include "WinMgr.h"
+#include "SLogger.h"
 
 #include "CharacterMgr.h"
 #include "Network.h"
@@ -71,6 +72,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		return 0;
 	
 	ShowWindow( hWnd, nCmdShow );
+
+	//로그초기화
+	GetLogger.Create( "SampleDemoGameSrv" );
 
 	MSG Message;
 

@@ -36,6 +36,9 @@ void LobbySession::OnDestroy()
 		//로비에 있던 애면 그냥 로비에서 지워주면 됨
 		GetLobbyMgr.MinusUser( this );
 
+		//DB에 있는 애를 Logout 체크해준다
+		GetDB.UpdateLogin( m_SessionId, FALSE );
+
 		SendPlayerDisconnect();
 	}
 	else if( m_roomNo > 0 )
@@ -50,6 +53,10 @@ void LobbySession::OnDestroy()
 				GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::OnDestroy()\n방으 존재하지 않습니다.\n\n") );
 				return;
 			}
+
+			//DB에 있는 애를 Logout 체크해준다
+			GetDB.UpdateLogin( m_SessionId, FALSE );
+
 			//방에서 지워 준다
 			if( !tmpRoom->DelPlayerInRoom( m_SessionId ) )
 			{
@@ -66,7 +73,11 @@ void LobbySession::OnDestroy()
 		//게임시작으로 인한 접속 종료이면
 		//방에 있는 list를 지우면 안된다.
 	}
-	//m_roomNo이 0보다 작은 경우는 Srv들인경우이다....
+	else
+	{
+		//m_roomNo이 0보다 작은 경우는 Srv들인경우이다....
+		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::OnDestroy()\n 게임 서버와의 연결을 끊습니다.\n\n") );
+	}
 	//그냥 지워주면 된다.
 
 	//session clear
@@ -99,7 +110,7 @@ void LobbySession::PacketParsing( SPacket& packet )
 		RecvConnectServer();
 		break;
 	case GL_PLAYER_DISCONNECT:
-		//RecvPlayerDiconnectInGame( packet );
+		RecvPlayerDiconnectInGame( packet );
 		break;
 
 	//==============================================================> Client
@@ -123,6 +134,9 @@ void LobbySession::PacketParsing( SPacket& packet )
 		break;
 	case CS_LOBBY_CHAT:
 		RecvChat( packet );
+		break;
+	case CS_ROOM_START:
+		//
 		break;
 	}
 }
@@ -148,12 +162,29 @@ void LobbySession::RecvConnectServer()
 		return;
 	}
 	//내가 서버다!!
+	//서버는 방번호를 -1로 통일
+	m_roomNo = -1;
+
 	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::RecvConnectServer()\n게임서버와 연결되었습니다.\n\n") );
 	GetSrvNet.SetSession( this );
 }
 
 void LobbySession::RecvPlayerDiconnectInGame( SPacket& packet )
 {
+	int room, session;
+	packet >> room;
+	packet >> session;
+
+	//방에서 사람을 지워 주고
+	Room* tmpRoom = GetRoomMgr.FindRoom( room );
+	if( tmpRoom == NULL )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::OnDestroy()\n방으 존재하지 않습니다.\n\n") );
+		return;
+	}
+	tmpRoom->DelPlayerInRoom( session );
+
+	//로비에 있는 사람들에게 1명 나갔다는 표시만 보내준다.
 
 }
 

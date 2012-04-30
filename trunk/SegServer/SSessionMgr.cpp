@@ -119,7 +119,7 @@ SServerObj* SSessionMgr::GetSession( int index )
 	return newSession;
 }
 
-void SSessionMgr::SendAllSession( SPacket &packet, SSession* mySession/* = NULL*/ )
+void SSessionMgr::SendAllSession( SPacket &packet )
 {
 	//우선 세션이 비어 있다면 그냥 돌아 간다
 	if( m_playerList.Size() <= 0 )
@@ -132,8 +132,8 @@ void SSessionMgr::SendAllSession( SPacket &packet, SSession* mySession/* = NULL*
 		for( ; !m_playerList.IsEnd(iter); ++iter )
 		{
 			//나를 넘겼다면 나에겐 보내지 않는다.
-			if( (*iter) == mySession->GetKey() )
-				continue;
+// 			if( (*iter) == mySession->GetKey() )
+// 				continue;
 
 			//모든 세션에 패킷을 보낸다.
 			tmpSession = (SSession*)m_sessionMap.PeekObj((*iter));

@@ -1,8 +1,9 @@
 #include "LobbyMain.h"
 #include "Network.h"
-/*#include "SThreadMgr.h"*/
 #include "Room.h"
 #include "CheckDB.h"
+
+#include "DataLeader.h"
 
 LobbyMain::LobbyMain(void)
 {
@@ -16,11 +17,11 @@ LobbyMain::~LobbyMain(void)
 BOOL LobbyMain::Init()
 {
 	//서버 초기화
-	if( !GetNetwork.Init( BASIC_SESSIONSPACE ) )
+	if( !GetNetwork.Init( GetData.SessionCount ) )
 		return FALSE;
 
 	//서버 셋팅
-	if( !GetNetwork.SrvSetting( 8900 ) )
+	if( !GetNetwork.SrvSetting( GetData.LobbySrvPortNum ) )
 		return FALSE;
 
 	//방 셋팅

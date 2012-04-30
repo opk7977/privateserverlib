@@ -11,6 +11,17 @@
 
 #define ROOMCOUNT		4
 
+enum ROOM_TEAM
+{
+	ROOM_TEAM_ATT	=	0,
+	ROOM_TEAM_DEF,
+};
+enum ROOM_READY
+{
+	ROOM_READY_NON	=	0,
+	ROOM_READY_OK,
+};
+
 class LobbySession;
 
 class RoomChar /*: public SServerObj*/

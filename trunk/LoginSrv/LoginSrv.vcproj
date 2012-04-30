@@ -177,7 +177,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\LoginDB.cpp"
+				RelativePath=".\DataLeader.cpp"
 				>
 			</File>
 			<File
@@ -185,19 +185,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\LoginSession.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\main.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Network.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\winMgr.cpp"
 				>
 			</File>
 		</Filter>
@@ -207,27 +195,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\LoginDB.h"
+				RelativePath=".\DataLeader.h"
 				>
 			</File>
 			<File
 				RelativePath=".\LoginMain.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LoginProtocol.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LoginSession.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Network.h"
-				>
-			</File>
-			<File
-				RelativePath=".\winMgr.h"
 				>
 			</File>
 		</Filter>
@@ -236,6 +208,58 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+		</Filter>
+		<Filter
+			Name="Network"
+			>
+			<File
+				RelativePath=".\LoginProtocol.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Network.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Network.h"
+				>
+			</File>
+			<Filter
+				Name="Session"
+				>
+				<File
+					RelativePath=".\LoginSession.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LoginSession.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Dtatbase"
+			>
+			<File
+				RelativePath=".\LoginDB.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LoginDB.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Window"
+			>
+			<File
+				RelativePath=".\winMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\winMgr.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

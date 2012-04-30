@@ -37,6 +37,12 @@ public:
 	//  0 : pw가 다릅니다
 	//  n : 쿼리 성공으로 나온 CharacterIndex ID
 	int TryLogin( TCHAR* tstrID, TCHAR* tstrPW );
+
+	//계정의 상태를 로그인상태 혹은 로그아웃 상태로 바꾼다
+	BOOL UpdateLogin( int sessionId, BOOL isLogin = TRUE );
+
+	//계정의 로그인상태를 받아 온다
+	int IsLogin( int sessionID );
 };
 
 #define GetDBMgr LoginDB::GetInstance()

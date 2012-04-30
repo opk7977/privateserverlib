@@ -3,10 +3,13 @@
 #include "LoginDB.h"
 #include "SLogger.h"
 
+#include "DataLeader.h"
+
 SIMPLEMENT_DYNAMIC(LoginSession)
 SIMPLEMENT_DYNCREATE(LoginSession)
 
 LoginSession::LoginSession(void)
+: isLogin(FALSE)
 {
 }
 
@@ -20,6 +23,10 @@ void LoginSession::OnCreate()
 
 	//연결에 성공했다는 packet을 보낸다.
 	SendPacket( SC_LOGIN_CONNECT_OK );
+}
+
+void LoginSession::OnDestroy()
+{
 }
 
 //--------------------------------------------------------------
@@ -90,9 +97,33 @@ void LoginSession::RecvTryLogin( SPacket& packet )
 	packet >> tstrSize;
 	packet.GetData( tstrPW, tstrSize );
 
-	int result = GetDBMgr.TryLogin( tstrID, tstrPW );
+	int sessionId = GetDBMgr.TryLogin( tstrID, tstrPW );
 
-	SendLoginResult( result );
+	if( sessionId > 0 )
+	{
+		//로그인은 체크됬으니 중복인지 확인한다
+		int retval = GetDBMgr.IsLogin( sessionId );
+
+		if( retval < 0 )
+		{
+			//오류
+			GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LoginSession::RecvTryLogin()\nIsLogin쿼리 실패, 쿼리문을 다시 확인하세요\n\n") );
+			sessionId = retval;
+		}
+		else if( retval > 0 )
+		{
+			//이미 로그인되어 있음
+			sessionId = -5;
+		}
+		// 그냥 로그인 됨
+	}
+	else if( sessionId < 0 )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LoginSession::RecvTryLogin()\nTryLogin쿼리 실패, 쿼리문을 다시 확인하세요\n\n") );
+	}
+
+
+	SendLoginResult( sessionId );
 }
 
 //==============================================================
@@ -136,13 +167,18 @@ BOOL LoginSession::SendLoginResult( int result )
 	if( result > 0 )
 	{
 		//result값이 양수(session)값이면
+
+		//로그인 처리
+		//DB에 표시
+		GetDBMgr.UpdateLogin( result );
+
 		//ip주소와 port번호를 넣어 준다.
-		
-		char ipAddr[20] = "192.168.0.56";
+		char ipAddr[20]={0,};
+		CopyMemory( ipAddr, GetDocument.LobbySrvIP, 15 );
 
 		sendPacket << (int)(strlen( ipAddr ));
 		sendPacket.PutData( ipAddr, strlen( ipAddr ) );
-		sendPacket << 8900;		//포트번호
+		sendPacket << GetDocument.LobbySrvPortNum;		//포트번호
 	}
 
 	if( SendPacket( sendPacket ) == sendPacket.GetPacketSize() )

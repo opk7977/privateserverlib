@@ -2,6 +2,8 @@
 #include "Network.h"
 #include "GProcMgr.h"
 
+#include "SLogger.h"
+
 
 void Init();
 void Relase();
@@ -13,6 +15,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
  	WinMgr window;
 	if( !window.CreateWindows( hInstance, _T("Try"), _T("TestGameSrv"), hWnd, 800, 600, nCmdShow ) )
 		return 0;
+
+	//로그초기화
+	GetLogger.Create( "TestGameSrv" );
 
 	//Setting
 	Init();

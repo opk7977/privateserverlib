@@ -7,6 +7,8 @@
 #include "Network.h"
 #include "SDump.h"
 
+#include "SLogger.h"
+
 
 LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 
@@ -55,6 +57,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		return 0;
 	
 	ShowWindow( hWnd, nCmdShow );
+
+	//로그 초기화
+	GetLogger.Create( "SampleFSMServer" );
 
 	MSG Message;
 

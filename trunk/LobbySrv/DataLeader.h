@@ -33,7 +33,7 @@ public:
 
 
 	//--------------------------------------------------------------
-
+	
 };
 
 #define GetData DataLeader::GetInstance()

@@ -24,7 +24,7 @@ GameSrvMain::~GameSrvMain(void)
 BOOL GameSrvMain::Init()
 {
 	//서버 초기화
-	if( !GetNetwork.Init( BASIC_SESSIONSPACE ) )
+	if( !GetNetwork.Init( GetData.SessionCount ) )
 		return FALSE;
 
 	//서버 셋팅

@@ -182,7 +182,7 @@ int Room::AddPlayerInRoom( int sessionId, int iocpKey, TCHAR* charID )
 		tmpChar.SetIocp( iocpKey );
 		tmpChar.SetID( charID );
 		tmpChar.SetTeam( GetTeam() );
-		tmpChar.SetReady(0);
+		tmpChar.SetReady(ROOM_READY_NON);
 
 		m_mapPlayer[sessionId] = tmpChar;
 
@@ -197,8 +197,17 @@ BOOL Room::DelPlayerInRoom( int sessionId )
 	SSynchronize Sync( this );
 
 	//존재하지 않으면 돌아 간다.
-	if( m_mapPlayer.find(sessionId) == m_mapPlayer.end() )
+	std::map<int, RoomChar>::iterator iter;
+	iter = m_mapPlayer.find(sessionId);
+
+	if( iter == m_mapPlayer.end() )
 		return TRUE;
+
+	//team에 대한 count를 줄어 준다
+	if( iter->second.GetTeam() == ROOM_TEAM_ATT )
+		--m_AttectTeam;
+	else
+		--m_DefenceTeam;
 
 	m_mapPlayer.erase( sessionId );
 
@@ -218,16 +227,16 @@ int Room::ChangeReadyState( int sessionId )
 		return -1;
 	}
 
-	if( m_mapPlayer[sessionId].GetReady() == 0 )
+	if( m_mapPlayer[sessionId].GetReady() == ROOM_READY_NON )
 	{
-		m_mapPlayer[sessionId].SetReady( 1 );
+		m_mapPlayer[sessionId].SetReady( ROOM_READY_OK );
 
 		if( ++m_readyCount > MAX_PLAYER_COUNT )
 			GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("Room::ChangeReadyState()\n레디 인원이 최대 인원은 넘었습니다.\n\n") );
 	}
 	else
 	{
-		m_mapPlayer[sessionId].SetReady( 0 );
+		m_mapPlayer[sessionId].SetReady( ROOM_READY_NON );
 
 		if( --m_readyCount < 0 )
 			GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("Room::ChangeReadyState()\n레디 인원이 0보다 적습니다.\n\n") );
@@ -244,19 +253,19 @@ int Room::TeamChange( int sessionID )
 	if( m_mapPlayer.find(sessionID) == m_mapPlayer.end() )
 		return -1;
 
-	if( m_mapPlayer[sessionID].GetTeam() == 0 )
+	if( m_mapPlayer[sessionID].GetTeam() == ROOM_TEAM_ATT )
 	{
-		m_mapPlayer[sessionID].SetTeam( 1 );
+		m_mapPlayer[sessionID].SetTeam( ROOM_TEAM_DEF );
 		--m_AttectTeam;
 		++m_DefenceTeam;
-		return 1;
+		return ROOM_TEAM_DEF;
 	}
 	else
 	{
-		m_mapPlayer[sessionID].SetTeam( 0 );
+		m_mapPlayer[sessionID].SetTeam( ROOM_TEAM_ATT );
 		++m_AttectTeam;
 		--m_DefenceTeam;
-		return 0;
+		return ROOM_TEAM_ATT;
 	}
 }
 
@@ -324,12 +333,12 @@ int Room::GetTeam()
 	if( m_AttectTeam > m_DefenceTeam )
 	{
 		++m_DefenceTeam;
-		return 1;
+		return ROOM_TEAM_DEF;
 	}
 	else
 	{
 		++m_AttectTeam;
-		return 0;
+		return ROOM_TEAM_ATT;
 	}
 }
 

@@ -36,6 +36,6 @@ public:
 
 };
 
-#define GetData DataLeader::GetInstance()
+#define GetDocument DataLeader::GetInstance()
 
 

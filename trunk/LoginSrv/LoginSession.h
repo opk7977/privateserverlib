@@ -9,11 +9,15 @@ public:
 	SDECLARE_DYNAMIC(LoginSession)
 	SDECLARE_DYNCREATE(LoginSession)
 
+private:
+	BOOL		isLogin;
+
 public:
 	LoginSession(void);
 	~LoginSession(void);
 
 	void OnCreate();
+	void OnDestroy();
 
 	void PacketParsing( SPacket& packet );
 
