@@ -62,7 +62,7 @@ BOOL SNetwork::ReConnect( char* ipAddr, int port )
 	if( !m_conSock.ConnectSock( ipAddr, port ) )
 		return FALSE;
 
-	Sleep(2);
+	Sleep(1);
 
 	SetEvent( m_hStartEvent );
 
@@ -88,9 +88,10 @@ BOOL SNetwork::Run()
 
 	while(1)
 	{
-		Sleep( 10 );
+		Sleep( 1 );
 
 		WaitForSingleObject( m_hStartEvent, INFINITE );
+
 		retval = recv( m_conSock.GetSocket(), tmpbuf, tmpbufSize, 0 );
 
 		if( retval == SOCKET_ERROR )
@@ -99,7 +100,7 @@ BOOL SNetwork::Run()
 
 			if( errorCode != WSAEWOULDBLOCK )
 			{
-				GetLogger.ErrorLog( errorCode, _T("[Network::RecvEvent()] ") );
+				GetLogger.ErrorLog( errorCode, _T("[SNetwork::Run()] ") );
 				return FALSE;
 			}
 		}
