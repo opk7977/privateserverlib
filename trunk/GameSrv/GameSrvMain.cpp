@@ -32,8 +32,8 @@ BOOL GameSrvMain::Init()
 		return FALSE;
 
 	//로비서버와 접속
-// 	if( !GetSrvNet.ConnectToSrv( GetData.LobbySrvIP, GetData.LobbySrvPortNum ) )
-// 		return FALSE;
+	if( !GetSrvNet.ConnectToSrv( GetData.LobbySrvIP, GetData.LobbySrvPortNum ) )
+		return FALSE;
 
 	//캐릭터 공간 셋팅
 	GetCharMgr.Init();

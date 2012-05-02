@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="LobbySrv"
-	ProjectGUID="{5F805C17-00F7-4EEB-A000-A4307B30AC03}"
+	ProjectGUID="{FBAD751E-0510-4060-A019-4A52041342B9}"
 	RootNamespace="LobbySrv"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
@@ -181,6 +181,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LobbyChar.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\LobbyMain.cpp"
 				>
 			</File>
@@ -199,6 +203,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LobbyChar.h"
+				>
+			</File>
+			<File
 				RelativePath=".\LobbyMain.h"
 				>
 			</File>
@@ -210,14 +218,14 @@
 			>
 		</Filter>
 		<Filter
-			Name="Lobby"
+			Name="Window"
 			>
 			<File
-				RelativePath=".\LobbyMgr.cpp"
+				RelativePath=".\winMgr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\LobbyMgr.h"
+				RelativePath=".\winMgr.h"
 				>
 			</File>
 		</Filter>
@@ -274,19 +282,19 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Window"
+			Name="Lobby"
 			>
 			<File
-				RelativePath=".\WinMgr.cpp"
+				RelativePath=".\LobbyMgr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\WinMgr.h"
+				RelativePath=".\LobbyMgr.h"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="DataBase"
+			Name="Database"
 			>
 			<File
 				RelativePath=".\CheckDB.cpp"

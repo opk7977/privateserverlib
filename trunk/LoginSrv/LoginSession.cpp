@@ -27,6 +27,7 @@ void LoginSession::OnCreate()
 
 void LoginSession::OnDestroy()
 {
+	SSession::OnDestroy();
 }
 
 //--------------------------------------------------------------
@@ -117,7 +118,7 @@ void LoginSession::RecvTryLogin( SPacket& packet )
 		}
 		// 그냥 로그인 됨
 	}
-	else if( sessionId < 0 )
+	else if( sessionId < -1 )
 	{
 		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LoginSession::RecvTryLogin()\nTryLogin쿼리 실패, 쿼리문을 다시 확인하세요\n\n") );
 	}

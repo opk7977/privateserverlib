@@ -1,9 +1,14 @@
 #pragma once
 
 // #include "SServerObj.h"
-#include "SPacket.h"
+/*#include "SPacket.h"*/
+/*#include "SIndexQueue.h"*/
 
-// #include "SIndexQueue.h"
+
+class SPacket;
+class LobbyChar;
+class LobbySession;
+
 
 //방의 정원
 #define MIN_PLAYER_COUNT 6
@@ -11,59 +16,26 @@
 
 #define ROOMCOUNT		4
 
-enum ROOM_TEAM
-{
-	ROOM_TEAM_ATT	=	0,
-	ROOM_TEAM_DEF,
-};
-enum ROOM_READY
-{
-	ROOM_READY_NON	=	0,
-	ROOM_READY_OK,
-};
-
-class LobbySession;
-
-class RoomChar /*: public SServerObj*/
-{
-private:
-	int		m_iocpKey;
-	TCHAR	m_charID[50];
-	int		m_charTeam;
-	int		m_ready;
-
-public:
-	RoomChar();
-	RoomChar( const RoomChar& p );
-	~RoomChar();
-
-	void Init();
-
-	void SetIocp( int key );
-	int GetIocp();
-
-	void SetID( TCHAR *uId );
-	TCHAR* GetID();
-
-	void SetTeam( int team );
-	int GetTeam();
-
-	void SetReady( int ready );
-	int GetReady();
-};
-
-
+// enum ROOM_TEAM
+// {
+// 	ROOM_TEAM_ATT	=	0,
+// 	ROOM_TEAM_DEF,
+// };
+// enum ROOM_READY
+// {
+// 	ROOM_READY_NON	=	0,
+// 	ROOM_READY_OK,
+// };
 
 class Room : public SServerObj
 {
 private:
-	std::map<int, RoomChar>	m_mapPlayer;
-	//<sessionId, MgrIndex(IOCP에 등록된 핸들 값)>
-	//std::map<int, int>			m_mapPlayerlist;
+	std::list<LobbyChar*>		m_listPlayer;
 
 	int							m_nowPleyrCount;		//현재 들어와 있는 사람들의 수
 	int							m_readyCount;			//준비상태의 캐릭터 수
-	int							m_leader;				//방장의 세션 번호
+
+	LobbyChar*					m_leader;				//방장의 세션 번호
 
 	BOOL						m_visible;				//방이 만들어져 있는 방인지?
 	BOOL						m_isPlay;				//현재 게임중인 방인지
@@ -105,39 +77,48 @@ public:
 	inline int GetPlayerCount() { return m_nowPleyrCount; }
 	//ready상태의 인원 확인
 	inline int GetReadyCount() { return m_readyCount; }
+
 	//리더 설정
-	void SetLeader( int sessionId );
-	int GetLeader() { return m_leader; }
-	int ChangeLeader();
+	void SetLeader( LobbyChar* sessionId );
+	LobbyChar* GetLeader() { return m_leader; }
+	LobbyChar* ChangeLeader();
+
 	//방에 들어있는 player의 핸들값을 변경해 준다
-	void SetPlayerIocp( int sessionId, int iocpKey );
-	//player추가( 성공하면 배정된 팀번호를 return한다 )
-	//int AddPlayerInRoom( int sessionId, int iocpKey );
-	int AddPlayerInRoom( int sessionId, int iocpKey, TCHAR* charID );
+	BOOL SetPlayerSession( LobbySession* session, LobbyChar* charSpace );
+
+	//player추가
+	void AddPlayerInRoom( LobbyChar* charspace );
 	//player제거
 	// return 값이 FALSE이면 방에 사람이 모두 나갔다는 뜻이다.
-	BOOL DelPlayerInRoom( int sessionId );
+	BOOL DelPlayerInRoom( LobbyChar* charspace );
+
 	//player가 한명 ready상태가 되거나 상태가 풀림
 	//TRUE : ready 상태 +
 	//FALSE: ready 상태 -
-	int ChangeReadyState( int sessionId );
+	//int ChangeReadyState( int sessionId );
+	//매개변수는 증가해야 하는 상태값을 나타낸다
+	//ex) 누군가 ready상태가 되면 TRUE를 넘겨 ready값을 증가
+	void ChangReadyState( BOOL isReady );
 	//바뀐 팀을 return한다
-	int TeamChange( int sessionID );
+	//int TeamChange( int sessionID );
+	
+	//팀을 변경
+	//증가하는 팀을 매개변수로 받는다
+	//ex) TRUE이면 공격팀을 올리고 수비팀을 내린다
+	void ChangeTeam( BOOL isATT );
+
 	//팀을 할당 받음
 	//0 : 공격
 	//1 : 수비
 	int GetTeam();
-
 
 	//--------------------------------------
 	// 전송
 	//--------------------------------------
 	//방 자신의 정보를 넣는다.
 	void PackageRoomInfo( SPacket &packet );
-	//방에 있는 모든 이의 정보를 packet에 넣는다
-	void PackageAllPlayerInRoom( SPacket &packet );
 	//방에 있는 모든 이에게 packet을 보낸다.
-	void SendPacketAllInRoom( SPacket &packet, LobbySession* mySession = NULL );
+	void SendPacketAllInRoom( SPacket &packet, LobbyChar* itMe = NULL );
 };
 
 //////////////////////////////////////////////////////////////////////////
