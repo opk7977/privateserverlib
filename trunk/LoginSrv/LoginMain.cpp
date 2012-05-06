@@ -34,7 +34,7 @@ BOOL LoginMain::Init()
 
 void LoginMain::Relase()
 {
-
+	GetDBMgr.Release();
 }
 
 void LoginMain::Run()

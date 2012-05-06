@@ -174,12 +174,14 @@ BOOL LoginSession::SendLoginResult( int result )
 		GetDBMgr.UpdateLogin( result );
 
 		//ip주소와 port번호를 넣어 준다.
-		char ipAddr[20]={0,};
+		char ipAddr[15]={0,};
 		CopyMemory( ipAddr, GetDocument.LobbySrvIP, 15 );
+		//CopyMemory( ipAddr, GetDocument.GameSrvIP, 15 );
 
 		sendPacket << (int)(strlen( ipAddr ));
 		sendPacket.PutData( ipAddr, strlen( ipAddr ) );
 		sendPacket << GetDocument.LobbySrvPortNum;		//포트번호
+		//sendPacket << GetDocument.GameSrvProtNum;		//포트번호
 	}
 
 	if( SendPacket( sendPacket ) == sendPacket.GetPacketSize() )

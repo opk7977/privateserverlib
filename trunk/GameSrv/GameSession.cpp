@@ -282,7 +282,7 @@ BOOL GameSession::SendMoveChar()
 		return FALSE;
 	}
 
-	m_myGameProc->SendAllPlayerInGame( sendPacket );
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
 
 	return TRUE;
 }

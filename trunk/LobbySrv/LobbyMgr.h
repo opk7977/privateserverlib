@@ -2,8 +2,8 @@
 
 #include "SServerObj.h"
 
+class LobbyChar;
 class SPacket;
-class LobbySession;
 
 class LobbyMgr : public SSingleton <LobbyMgr>
 {
@@ -12,7 +12,8 @@ private:
 
 private:
 	//로비에 있는 player list
-	std::list<LobbySession*>			m_listPlayerInLobby;
+	//std::list<LobbySession*>			m_listPlayerInLobby;
+	std::list<LobbyChar*>				m_listPlayerInLobby;
 
 	//로비에 있는 사람 수
 	int									m_iPlayerCountInLobby;
@@ -29,15 +30,15 @@ public:
 	void Release();
 
 	//로비에 있는 사람들에게만 패킷 보내기
-	void SendPacketAllInLobby( SPacket& packet, LobbySession* mySession = NULL );
+	void SendPacketAllInLobby( SPacket& packet, LobbyChar* mySession = NULL );
 
 	//모두의 정보를 담기
 	void PackageDataAllInLobby( SPacket& packet );
 
 	//사람 추가하기
-	void AddUser( LobbySession* _session );
+	void AddUser( LobbyChar* _session );
 	//사람 뺴기
-	void MinusUser( LobbySession* _session );
+	void MinusUser( LobbyChar* _session );
 
 	//사람 수 받기
 	inline int GetPlayerCount() { return m_iPlayerCountInLobby; }

@@ -181,10 +181,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\LobbyChar.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\LobbyMain.cpp"
 				>
 			</File>
@@ -200,10 +196,6 @@
 			>
 			<File
 				RelativePath=".\DataLeader.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LobbyChar.h"
 				>
 			</File>
 			<File
@@ -302,6 +294,18 @@
 			</File>
 			<File
 				RelativePath=".\CheckDB.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Char"
+			>
+			<File
+				RelativePath=".\LobbyChar.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LobbyChar.h"
 				>
 			</File>
 		</Filter>

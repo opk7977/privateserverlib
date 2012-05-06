@@ -1,5 +1,47 @@
 #pragma once
 
+enum SERVER_CODE
+{
+	// 쿼리 오류 등 서버 자체적인 에러로
+	// 정상적인 처리가 되지 못한경우
+	// 결과값으로 들어가 있을 수 있다.
+	SERVER_ERROR = -10,
+	// 성공의 결과값
+	SUCCESSED_ACK = 1,
+
+	//--------------------------------------------------------------
+
+	// ID체크 결과로 ID가 중복될때
+	OVERLAPPED_ID = -1,
+
+	// 로그인 결과로 해당 ID가 이미 로그인 중에 있을때
+	PRE_LOGIN_ID = -5,
+	// 로그인 결과로 ID가 없음
+	NONEXISTENT_ID = -1,
+	// 로그인 결과로 PW가 틀림
+	WRONG_PW = 0,
+	
+	//--------------------------------------------------------------
+	
+	// 방만들기 실패( 더이상 방을 만들 수 없음 )
+	ROOMCOUNT_IS_FULL = -1,
+	
+	// 방 입장시 방이 게임중이면
+	ROOM_IS_PLAY_NOW = -1,
+	// 방 입장시 방이 인원 초과
+	ROOM_PLAYERCOUNT_FULL = 0,
+
+	//--------------------------------------------------------------
+
+	// 게임 종료의 종류
+	// 시간 초과
+	GAME_END_TIMEATTECT = 1,
+	// 팀 전멸
+	GAME_END_TEAM_ALL_DIE,
+	// 팀 미션의 성공
+	GAME_END_MISSION_SUCCESS,
+};
+
 enum SERVER_TO_SERVER
 {
 	// gameSrv -> lobbySrv
@@ -11,7 +53,18 @@ enum SERVER_TO_SERVER
 	// 방의 유저들이 게임을 시작하게 되어 게임서버의 준비상태를 명령
 	// int			-		roomNo
 	// int			-		playerCount
+	//--------------------------------------------------------------
+	// int			-		SessionId
+	// int			-		id데이터의 크기
+	// TCHAR		-		id
+	// int			-		Team
+	//--------------------------------------------------------------playerCount만큼 반복으로 들어가 있음
 	LG_START_GAME,
+
+	// gameSrv -> lobbySrv
+	// 게임 시작이 가능한 상태니 신호를 보내라는 패킷
+	// int			-		roomNo
+	GL_START_OK,
 
 	// gameSrv -> lobbySrv
 	// 게임서버에서 접속을 끊어버린 player에 대한 처리
@@ -57,14 +110,13 @@ enum LOBBY_SERVER
 
 	// client -> server
 	// 방 만들기를 요청한다.
-	// int			-		roomId
 	// int			-		roomTitle데이터의 크기
 	// TCHAR		-		roomTitle
 	CS_LOBBY_CREATE_ROOM,
 
 	// server -> client
 	// 방만들기에 대한 결과를 보낸다
-	// int			-		result
+	// int			-		result ( -1:실패/ n(양수) 만들어진 방의 ID )
 	// int			-		Team	//방생성 실패시 데이터 없다
 	SC_ROOM_RESULT_CREATE,
 
@@ -131,7 +183,6 @@ enum LOBBY_SERVER
 
 	// client -> server
 	// ready상태를 변경하고 상태를 서버로 보냄
-	// int			-		ready상태값
 	CS_ROOM_CHAR_READY,
 
 	// server -> client
@@ -142,7 +193,6 @@ enum LOBBY_SERVER
 
 	// client -> server
 	// 팀 변경에 대한 상태를 알림
-	// int			-		Team
 	CS_ROOM_TEAM_CHANGE,
 
 	// server -> client

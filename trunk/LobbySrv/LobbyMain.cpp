@@ -2,6 +2,7 @@
 #include "Network.h"
 #include "Room.h"
 #include "CheckDB.h"
+#include "LobbyChar.h"
 
 #include "DataLeader.h"
 
@@ -26,6 +27,10 @@ BOOL LobbyMain::Init()
 
 	//방 셋팅
 	GetRoomMgr.CreateRoomSpace();
+
+	//캐릭터 공간 셋팅
+	GetCharMgr.Init();
+
 
 	//DB연결
 	if( !GetDB.Init( _T("GameAccount.mdb")) )

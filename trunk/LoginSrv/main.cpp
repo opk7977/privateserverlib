@@ -40,6 +40,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		{
 		}
 	}
+
+	lMain.Relase();
 	return (int)Message.wParam;
 }
 

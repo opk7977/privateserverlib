@@ -3,6 +3,7 @@
 #include "SIndexQueue.h"
 
 class LobbySession;
+class SPacket;
 
 const int Character_Space = 100;
 
@@ -24,8 +25,10 @@ private:
 	//해당 캐릭터의session공간
 	LobbySession*	m_session;
 
-	//캐릭터 정보
+	//캐릭터의 상태가 지금 게임 중인지를 확인
 	BOOL			m_isPlay;
+
+	//캐릭터 정보
 	int				m_sessionId;
 	TCHAR			m_tstrId[30];
 	int				m_myTeam;
@@ -53,7 +56,7 @@ public:
 	int GetSessionID() const;
 
 	void SetID( TCHAR* _id );
-	TCHAR* GetID() const;
+	TCHAR* GetID();
 
 	void SetTeam( int Team );
 	int GetTeam() const;
@@ -63,7 +66,13 @@ public:
 
 	//==============================================================
 
-	inline void GetVecIndex() const { return m_vecIndex; };
+	void PackageMyInfo( SPacket& packet );
+	//방에 필요한 정보(team, ready)포함해서 담기
+	void PackageMyInfoForRoom( SPacket& packet );
+
+	//==============================================================
+
+	inline int GetVecIndex() const { return m_vecIndex; };
 };
 
 

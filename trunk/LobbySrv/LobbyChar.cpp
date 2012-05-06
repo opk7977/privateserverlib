@@ -66,7 +66,7 @@ void LobbyChar::SetID( TCHAR* _id )
 	_tcsncpy_s( m_tstrId, 30, _id, _tcslen( _id ) );
 }
 
-TCHAR* LobbyChar::GetID() const
+TCHAR* LobbyChar::GetID()
 {
 	return m_tstrId;
 }
@@ -91,6 +91,28 @@ BOOL LobbyChar::GetReady() const
 	return m_ready;
 }
 
+void LobbyChar::PackageMyInfo( SPacket& packet )
+{
+	SSynchronize Sync( this );
+
+	packet << m_sessionId;
+	int size = _tcslen( m_tstrId ) * sizeof( TCHAR );
+	packet << size;
+	packet.PutData( m_tstrId, size );
+}
+
+void LobbyChar::PackageMyInfoForRoom( SPacket& packet )
+{
+	SSynchronize Sync( this );
+
+	packet << m_sessionId;
+	int size = _tcslen( m_tstrId ) * sizeof( TCHAR );
+	packet << size;
+	packet.PutData( m_tstrId, size );
+	packet << m_myTeam;
+	packet << m_ready;
+}
+
 //==============================================================
 
 CharMgr::CharMgr()
@@ -105,7 +127,7 @@ CharMgr::~CharMgr()
 
 void CharMgr::Init()
 {
-	m_IndexQ.Create( Charater_Space, 0);
+	m_IndexQ.Create( Character_Space, 0);
 
 	m_vecCharSpace.reserve( Character_Space );
 
@@ -140,6 +162,10 @@ void CharMgr::ReturnCharSpace( LobbyChar* charspace )
 {
 	//받아온 공간에 문제가 있으면 return
 	if( charspace == NULL )
+		return;
+
+	//게임중으로 나간거면 지우지 않는다
+	if( charspace->GetIsPlay() )
 		return;
 
 	int index = charspace->GetVecIndex();

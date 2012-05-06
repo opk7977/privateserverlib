@@ -2,22 +2,21 @@
 
 #include "SSessionObj.h"
 
+class LobbyChar;
+class Room;
+
 class LobbySession : public SSessionObj
 {
 private:
-	//유저의 상태( 게임중인지 게임을 끊은건지)
-	BOOL	IsPlayNow;
-
 	//--------------------------------------
 	// 유저정보
 	//--------------------------------------
-	int		m_SessionId;
-	TCHAR	m_tstrId[30];
+	LobbyChar*		m_myCharInfo;
 	//--------------------------------------
 	// 방정보
 	//--------------------------------------
-	int		m_roomNo;
-	int		m_team;	//0: 공격, 1:수비
+	Room*			m_myRoom;
+	
 
 public:
 	SDECLARE_DYNAMIC(LobbySession)
@@ -30,17 +29,13 @@ public:
 	void OnCreate();
 	void OnDestroy();
 
-	int GetSessionID() const { return m_SessionId; }
-
 	//정보들 초기화
 	void clear();
 
+	//======================================
+	// 패킷 해석 
+	//======================================
 	void PacketParsing( SPacket& packet );
-
-	//======================================
-	// 내 정보를 패킷에 담는 함수
-	//======================================
-	void PackageMyInfo( SPacket& packet/*, BOOL isTeam = FALSE*/ );
 
 	//======================================
 	// 받은 패킷 처리 함수
@@ -50,6 +45,9 @@ public:
 	//--------------------------------------
 	//GL_CONNECT_SERVER
 	void RecvConnectServer();
+
+	//GL_START_OK
+	void RecvGameStart( SPacket& packet );
 
 	//GL_PLAYER_DISCONNECT
 	void RecvPlayerDiconnectInGame( SPacket& packet );
@@ -70,10 +68,10 @@ public:
 	void RecvOutRoom();
 
 	//CS_ROOM_CHAR_READY
-	void RecvReady( SPacket& packet );
+	void RecvReady();
 
 	//CS_ROOM_TEAM_CHANGE
-	void RecvTeamChange( SPacket& packet );
+	void RecvTeamChange();
 
 	//CS_ROOM_PLAY
 	void RecvPlay();
@@ -82,6 +80,7 @@ public:
 	void RecvChat( SPacket& packet );
 
 	//CS_ROOM_START
+	void RecvRoomStartGame();
 
 	//======================================
 	// 보내는 패킷 생성함수
@@ -132,7 +131,7 @@ public:
 	BOOL SendRoomCharOut();
 
 	//SC_ROOM_CHAR_READY
-	BOOL SendRoomCharReady( int ready );
+	BOOL SendRoomCharReady();
 
 	//SC_ROOM_TEAM_CHANGE
 	BOOL SendRoomTeamChange();
@@ -141,6 +140,7 @@ public:
 	BOOL SendChat( TCHAR* chat );
 
 	//SC_ROOM_START_RESULT
+	BOOL SendStartGame();
 
 	//SC_ROOM_GAME_START
 

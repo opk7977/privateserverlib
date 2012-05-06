@@ -76,6 +76,8 @@ public:
 	//--------------------------------------
 	//GL_CONNECT_SERVER
 
+	//GL_START_OK
+
 	//GL_PLAYER_DISCONNECT
 
 	//--------------------------------------

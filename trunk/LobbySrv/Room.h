@@ -1,9 +1,7 @@
 #pragma once
 
-// #include "SServerObj.h"
-/*#include "SPacket.h"*/
-/*#include "SIndexQueue.h"*/
-
+#include "SServerObj.h"
+#include "SIndexQueue.h"
 
 class SPacket;
 class LobbyChar;
@@ -16,21 +14,12 @@ class LobbySession;
 
 #define ROOMCOUNT		4
 
-// enum ROOM_TEAM
-// {
-// 	ROOM_TEAM_ATT	=	0,
-// 	ROOM_TEAM_DEF,
-// };
-// enum ROOM_READY
-// {
-// 	ROOM_READY_NON	=	0,
-// 	ROOM_READY_OK,
-// };
-
 class Room : public SServerObj
 {
 private:
 	std::list<LobbyChar*>		m_listPlayer;
+
+	int							m_roomNum;
 
 	int							m_nowPleyrCount;		//현재 들어와 있는 사람들의 수
 	int							m_readyCount;			//준비상태의 캐릭터 수
@@ -52,10 +41,13 @@ public:
 	
 	//방초기화
 	void Init();
+	void Init( int i );
 
 	//--------------------------------------
 	// 방 관련
 	//--------------------------------------
+	//방번호를 return
+	inline int GetRoomNum() const { return m_roomNum; }
 	//방이 열려 있는지를 확인
 	inline BOOL IsOpen() { return m_visible; }
 	//title 관련
@@ -83,7 +75,7 @@ public:
 	LobbyChar* GetLeader() { return m_leader; }
 	LobbyChar* ChangeLeader();
 
-	//방에 들어있는 player의 핸들값을 변경해 준다
+	//방에 들어있는 player의 세션 주소를 변경해 준다
 	BOOL SetPlayerSession( LobbySession* session, LobbyChar* charSpace );
 
 	//player추가
@@ -91,16 +83,11 @@ public:
 	//player제거
 	// return 값이 FALSE이면 방에 사람이 모두 나갔다는 뜻이다.
 	BOOL DelPlayerInRoom( LobbyChar* charspace );
+	BOOL DelPlayerInRoom( int sessionId );
 
-	//player가 한명 ready상태가 되거나 상태가 풀림
-	//TRUE : ready 상태 +
-	//FALSE: ready 상태 -
-	//int ChangeReadyState( int sessionId );
 	//매개변수는 증가해야 하는 상태값을 나타낸다
 	//ex) 누군가 ready상태가 되면 TRUE를 넘겨 ready값을 증가
 	void ChangReadyState( BOOL isReady );
-	//바뀐 팀을 return한다
-	//int TeamChange( int sessionID );
 	
 	//팀을 변경
 	//증가하는 팀을 매개변수로 받는다
@@ -117,6 +104,8 @@ public:
 	//--------------------------------------
 	//방 자신의 정보를 넣는다.
 	void PackageRoomInfo( SPacket &packet );
+	//방에 있는 모든 player의 정보를 담는다
+	void PackagePlayerInRoom( SPacket &packet, LobbyChar* itMe = NULL );
 	//방에 있는 모든 이에게 packet을 보낸다.
 	void SendPacketAllInRoom( SPacket &packet, LobbyChar* itMe = NULL );
 };
@@ -129,7 +118,13 @@ private:
 	friend class SSingleton<RoomMgr>;
 
 private:
-	std::map<int, Room*>			m_mapRoomlist;
+	//std::map<int, Room*>			m_mapRoomlist;
+	std::vector<Room*>				m_vecRoom;
+	std::list<Room*>				m_listOpenRoom;
+	SIndexQueue						m_roomIndexQ;
+
+	//열려 있는 방의 개수
+	int								m_iOpenRoomCount;
 
 	//동기화 용
 	SServerObj*						m_critical;
@@ -142,12 +137,14 @@ public:
 	void CreateRoomSpace();
 	void Release();
 
-	Room* OpenRoom( int roomNum,/* int SessionID, int iocpHandle,*/ TCHAR* title );
+	//Room* OpenRoom( int roomNum, TCHAR* title );
+	Room* OpenRoom( TCHAR* title );
 	void CloseRoom( int roomNum );
 
 	Room* FindRoom( int roomNum );
 
-	void PackageRoomInfoAll( SPacket &packet );
+	//void PackageAllRoomInfo( SPacket &packet );
+	void PackageOpenRoomInfo( SPacket &packet );
 };
 
 #define GetRoomMgr RoomMgr::GetInstance()

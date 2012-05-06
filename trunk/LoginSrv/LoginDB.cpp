@@ -7,6 +7,7 @@ LoginDB::LoginDB(void)
 
 LoginDB::~LoginDB(void)
 {
+	//Release();
 }
 
 BOOL LoginDB::Init( TCHAR* filename )
@@ -14,9 +15,15 @@ BOOL LoginDB::Init( TCHAR* filename )
 	return m_query.ConnectMdb( filename );
 }
 
-void LoginDB::Relase()
+void LoginDB::Release()
 {
-	m_query.DisConnect();
+	//꺼지기 전에 DB의 모든 계정의 로그인 정보를 초기화 해준다.
+	SQLWCHAR	strQuery[255];
+	wsprintf( (TCHAR*)strQuery, _T("update tblUser set IS_LOGIN=0"), 0 );
+	if( !m_query.Exec( strQuery ) )
+		MessageBox( NULL, _T("안됨"), _T("안되"), MB_OK );
+		
+	//m_query.DisConnect();
 }
 
 int LoginDB::CheckId( TCHAR* tstrID )

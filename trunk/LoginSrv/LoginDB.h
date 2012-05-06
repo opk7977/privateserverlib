@@ -17,7 +17,7 @@ private:
 public:
 	//초기화
 	BOOL Init( TCHAR* filename );
-	void Relase();
+	void Release();
 
 	//id확인
 	// return 값 :

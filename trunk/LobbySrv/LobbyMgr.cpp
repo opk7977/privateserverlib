@@ -1,15 +1,13 @@
 #include "LobbyMgr.h"
+#include "LobbyChar.h"
 #include "LobbySession.h"
-
-#include "SSynchronize.h"
-
 
 SServerObj* LobbyMgr::m_critical = new SServerObj;
 
 
 LobbyMgr::LobbyMgr(void)
+: m_iPlayerCountInLobby(0)
 {
-	Init();
 }
 
 LobbyMgr::~LobbyMgr(void)
@@ -28,12 +26,15 @@ void LobbyMgr::Release()
 	m_iPlayerCountInLobby = 0;
 }
 
-void LobbyMgr::SendPacketAllInLobby( SPacket& packet, LobbySession* mySession /*= NULL*/ )
+void LobbyMgr::SendPacketAllInLobby( SPacket& packet, LobbyChar* mySession /*= NULL*/ )
 {
 	{
 		SSynchronize sync( m_critical );
+
+		if( m_listPlayerInLobby.empty() )
+			return;
 		
-		std::list<LobbySession*>::iterator iter = m_listPlayerInLobby.begin();
+		std::list<LobbyChar*>::iterator iter = m_listPlayerInLobby.begin();
 
 		for( ; iter != m_listPlayerInLobby.end(); ++iter )
 		{
@@ -41,7 +42,7 @@ void LobbyMgr::SendPacketAllInLobby( SPacket& packet, LobbySession* mySession /*
 			if( *iter == mySession )
 				continue;
 
-			(*iter)->SendPacket( packet );
+			(*iter)->GetSession()->SendPacket( packet );
 		}
 	}
 }
@@ -51,16 +52,19 @@ void LobbyMgr::PackageDataAllInLobby( SPacket& packet )
 	{
 		SSynchronize sync( m_critical );
 
+		if( m_listPlayerInLobby.empty() )
+			return;
+
 		packet << m_iPlayerCountInLobby;
 
-		std::list<LobbySession*>::iterator iter = m_listPlayerInLobby.begin();
+		std::list<LobbyChar*>::iterator iter = m_listPlayerInLobby.begin();
 
 		for( ; iter != m_listPlayerInLobby.end(); ++iter )
 			(*iter)->PackageMyInfo( packet );
 	}
 }
 
-void LobbyMgr::AddUser( LobbySession* _session )
+void LobbyMgr::AddUser( LobbyChar* _session )
 {
 	{
 		SSynchronize sync( m_critical );
@@ -70,10 +74,13 @@ void LobbyMgr::AddUser( LobbySession* _session )
 	}
 }
 
-void LobbyMgr::MinusUser( LobbySession* _session )
+void LobbyMgr::MinusUser( LobbyChar* _session )
 {
 	{
 		SSynchronize sync( m_critical );
+
+		if( m_listPlayerInLobby.empty() )
+			return;
 
 		m_listPlayerInLobby.remove( _session );
 		--m_iPlayerCountInLobby;
