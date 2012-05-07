@@ -14,6 +14,13 @@ class LobbySession;
 
 #define ROOMCOUNT		4
 
+enum ROOM_STATE
+{
+	ROOM_STATE_READY = -1,
+	ROOM_STATE_NORMAL,
+	ROOM_STATE_PLAYING,
+};
+
 class Room : public SServerObj
 {
 private:
@@ -27,7 +34,8 @@ private:
 	LobbyChar*					m_leader;				//방장의 세션 번호
 
 	BOOL						m_visible;				//방이 만들어져 있는 방인지?
-	BOOL						m_isPlay;				//현재 게임중인 방인지
+//	BOOL						m_isPlay;				//현재 게임중인 방인지
+	int							m_roomState;			//방의 현재 상태
 
 	TCHAR						m_tstrRoomTitle[50];	//방 문구
 
@@ -61,6 +69,13 @@ public:
 	BOOL PossiblePlay();
 	//방을 play상태로 만들어 준다.
 	BOOL SetPlay();
+	inline void ListReset() { m_listPlayer.clear(); }
+	//방을 ready상태로 만들어 준다
+	BOOL SetReady();
+	//방을 다시 일반 상태로
+	void SetNormal() { m_roomState = ROOM_STATE_NORMAL; }
+	//현재 방으로 들어가는것이 가능한지
+	BOOL CanInsert();
 
 	//--------------------------------------
 	// player관련
@@ -104,8 +119,10 @@ public:
 	//--------------------------------------
 	//방 자신의 정보를 넣는다.
 	void PackageRoomInfo( SPacket &packet );
-	//방에 있는 모든 player의 정보를 담는다
+	//방에 있는 모든 player의 정보를 담는다( team과 ready를 모두 담는다 )
 	void PackagePlayerInRoom( SPacket &packet, LobbyChar* itMe = NULL );
+	//방에 있는 모든 player의 정보를 담는다( team까지만 담는다 )
+	void PackagePlayerInRoomForGame( SPacket &packet, LobbyChar* itMe = NULL );
 	//방에 있는 모든 이에게 packet을 보낸다.
 	void SendPacketAllInRoom( SPacket &packet, LobbyChar* itMe = NULL );
 };

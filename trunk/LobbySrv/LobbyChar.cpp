@@ -113,6 +113,17 @@ void LobbyChar::PackageMyInfoForRoom( SPacket& packet )
 	packet << m_ready;
 }
 
+void LobbyChar::PackageMyInfoForGame( SPacket& packet )
+{
+	SSynchronize Sync( this );
+
+	packet << m_sessionId;
+	int size = _tcslen( m_tstrId ) * sizeof( TCHAR );
+	packet << size;
+	packet.PutData( m_tstrId, size );
+	packet << m_myTeam;
+}
+
 //==============================================================
 
 CharMgr::CharMgr()

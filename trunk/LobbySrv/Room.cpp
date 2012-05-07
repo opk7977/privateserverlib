@@ -24,7 +24,8 @@ void Room::Init()
 		m_nowPleyrCount = m_readyCount = 0;
 		m_leader = NULL;
 
-		m_isPlay = FALSE;
+		//m_isPlay = FALSE;
+		m_roomState = 0;
 
 		_tcsncpy_s( m_tstrRoomTitle, 50, _T("Empty Room"), 10 ); 
 		
@@ -46,7 +47,8 @@ void Room::Init( int i )
 		m_nowPleyrCount = m_readyCount = 0;
 		m_leader = NULL;
 
-		m_isPlay = FALSE;
+		//m_isPlay = FALSE;
+		m_roomState = 0;
 
 		_tcsncpy_s( m_tstrRoomTitle, 50, _T("Empty Room"), 10 ); 
 
@@ -59,7 +61,8 @@ void Room::Init( int i )
 BOOL Room::PossiblePlay()
 {
 	//모두 ready상태가 아니면 안됨
-	if( m_nowPleyrCount != m_readyCount )
+	//방장의 카운트는 빼야 한다
+	if( (m_nowPleyrCount-1) != m_readyCount )
 		return FALSE;
 
 	//최소인원보다 적으면 안됨
@@ -75,13 +78,49 @@ BOOL Room::PossiblePlay()
 
 BOOL Room::SetPlay()
 {
+	SSynchronize Sync( this );
+
 	//방을 게임중으로 만들고
+	m_roomState = ROOM_STATE_PLAYING;
 
 	//방의 모든 플레이어의 세션에 표시한다.
+	{
+		SSynchronize Sync( this );
 
-	//방의 모든 플레이어에게 게임서버로 이동하라는 페킷을 보낸다.
+		std::list<LobbyChar*>::iterator iter;
+		iter = m_listPlayer.begin();
+
+		for( ; iter != m_listPlayer.end(); ++iter )
+		{
+			//캐릭터를 게임 중 상태로 만들어 준다
+			(*iter)->SetIsPlay();
+		}
+	}
 
 	return TRUE;
+}
+
+BOOL Room::SetReady()
+{
+	SSynchronize Sync( this );
+
+	m_roomState = ROOM_STATE_READY;
+
+	return TRUE;
+}
+
+BOOL Room::CanInsert()
+{
+	//방상태가 괜찮으면 TRUE
+	if( m_roomState == ROOM_STATE_NORMAL )
+		return TRUE;
+
+	//인원이 다 차지 않았으면 TRUE
+	if( m_nowPleyrCount < MAX_PLAYER_COUNT )
+		return TRUE;
+
+	//그렇지 않다면 못 들어옴
+	return FALSE;	
 }
 
 void Room::SetLeader( LobbyChar* sessionId )
@@ -284,7 +323,7 @@ void Room::PackageRoomInfo( SPacket &packet )
 	int size = _tcslen( m_tstrRoomTitle ) * sizeof( TCHAR );
 	packet << size;
 	packet.PutData( m_tstrRoomTitle, size );
-	packet << m_isPlay;
+	packet << m_roomState;
 }
 
 void Room::SendPacketAllInRoom( SPacket &packet, LobbyChar* itMe /*= NULL */ )
@@ -324,6 +363,26 @@ void Room::PackagePlayerInRoom( SPacket &packet, LobbyChar* itme /*= NULL */ )
 			continue;
 
 		(*iter)->PackageMyInfoForRoom( packet );
+	}
+}
+
+void Room::PackagePlayerInRoomForGame( SPacket &packet, LobbyChar* itMe /*= NULL */ )
+{
+	SSynchronize Sync( this );
+
+	if( m_listPlayer.empty() )
+		return;
+
+	std::list<LobbyChar*>::iterator iter;
+	iter = m_listPlayer.begin();
+
+	for( ; iter != m_listPlayer.end(); ++iter )
+	{
+		//나를 넘겼으면 나는 보내지 않아야 한다
+		if( *iter == itMe )
+			continue;
+
+		(*iter)->PackageMyInfoForGame( packet );
 	}
 }
 

@@ -18,11 +18,11 @@ LobbyMain::~LobbyMain(void)
 BOOL LobbyMain::Init()
 {
 	//서버 초기화
-	if( !GetNetwork.Init( GetData.SessionCount ) )
+	if( !GetNetwork.Init( GetDocument.SessionCount ) )
 		return FALSE;
 
 	//서버 셋팅
-	if( !GetNetwork.SrvSetting( GetData.LobbySrvPortNum ) )
+	if( !GetNetwork.SrvSetting( GetDocument.LobbySrvPortNum ) )
 		return FALSE;
 
 	//방 셋팅

@@ -18,7 +18,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	GetLogger.Create( "GameSrv" );
 
 	//데이터 부터 셋팅 하자
-	if( !GetData.DataSetting() )
+	if( !GetDocument.DataSetting() )
 		return -1;
 
 	GameSrvMain  myMain;

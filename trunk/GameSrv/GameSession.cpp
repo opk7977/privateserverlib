@@ -37,23 +37,29 @@ void GameSession::OnCreate()
 
 void GameSession::OnDestroy()
 {
-	if( isEndGame )
-	{
-		//게임을 완전히 종료
-		//user가 속한 곳의 player들 에게 접속을 끊었음을 알린다.
-		if( m_myGameProc != NULL )
-		{
-			//방에서 나를 제거하고
-			m_myGameProc->DelPlayer( this );
+	SSynchronize Sync( this );
 
-			//방 사람들에게 패킷 전송
-			SendCharDisconnect();
-		}
-		
-	}
-	else
+	if( m_myCharInfo != NULL )
 	{
-		//로비로 이동
+		//캐릭터 정보가 없다면 그냥 무시
+		if( isEndGame )
+		{
+			//완전히 게임을 끔
+			//lobby서버로 접속을 종료 했음을 알려 준다
+			SendToSrvThatPlayerDisconnect();
+		}
+		//아직 남아 있는 같이 게임하고 있던 사람들에게 내가 나가는것을 알림
+		SendCharDisconnect();
+
+		//방에서 나를 제거
+		if( !m_myGameProc->DelPlayer( this ) )
+		{
+			//현재 게임 내에 아무도 남지 않았음
+			//로비로 방의 게임 proc이 닫혔음을 알림?
+
+			//게임 proc닫음
+			m_myGameProc->Init();
+		}
 	}
 
 	//캐릭터 공간의 정보를 지워 준다.
@@ -79,6 +85,7 @@ void GameSession::PackageMyInfo( SPacket& packet )
 		packet << m_myCharInfo->GetDirX();
 		packet << m_myCharInfo->GetDirY();
 		packet << m_myCharInfo->GetDirZ();
+		packet << m_myCharInfo->GetDirInt();
 	}
 }
 
@@ -88,6 +95,9 @@ void GameSession::PacketParsing( SPacket& packet )
 	{
 	case SC_LOBBY_CONNECT_OK:
 		RecvLobbyConnectOK();
+		break;
+	case LG_START_GAME:
+		RecvLobbyStartGame( packet );
 		break;
 	//==============================================================> LobbySrv
 	case CS_GAME_INGAME:
@@ -120,6 +130,56 @@ void GameSession::RecvLobbyConnectOK()
 	GetSrvNet.SendToLobbyServer( sendPacket );
 }
 
+void GameSession::RecvLobbyStartGame( SPacket &packet )
+{
+	int roomNum, count;
+
+	packet >> roomNum;		//방번호
+	packet >> count;		//방의 인원수
+
+	//우선 방 번호에 해당하는 게임을 연다
+	GameProc* tmpGame = GetGameMgr.FindGame( roomNum );
+	if( tmpGame == NULL )
+	{
+		//게임proc을 열수 없거나 실패했다는 패킷을 보낸다
+		SendStartFaild( roomNum );
+		return;
+	}
+	if( tmpGame->NowIsPlay() )
+	{
+		//이미 게임이 진행 중이면 실패했다는 패킷을 보낸다.
+		SendStartFaild( roomNum );
+		return;
+	}
+
+	//방을 얻어 왔고 게임이 시작중이 아니라면 게임을 열고 캐릭터를 저장해 준다
+
+	int sessionId, size, team;
+	TCHAR stringID[30];
+	//인원수에 맞게 캐릭터를 생성해 준다
+	for( int i=0; i<count; ++i )
+	{
+		ZeroMemory( stringID, 30 );
+		packet >> sessionId;
+		packet >> size;
+		packet.GetData( stringID, size );
+		packet >> team;
+
+		//캐릭터 생성
+		CharObj* tmpChar = GetCharMgr.GetCharSpace();
+		tmpChar->Init();
+		tmpChar->SetIndexId( sessionId );
+		tmpChar->SetID( stringID );
+		tmpChar->SetTeam( team );
+		tmpChar->SetPosition( 10.f, 0.f, 10.f );
+	}
+
+	//게임 proc을 활성화 하고 인원을 설정해 준다
+	tmpGame->StartGame( count );
+
+	//게임을 시작해도 된다는 패킷을 Lobby로 보낸다
+	SendStartOK( roomNum );
+}
 
 //--------------------------------------
 // Client와의 커뮤니케이션
@@ -163,7 +223,7 @@ void GameSession::RecvInGame( SPacket &packet )
 
 void GameSession::RecvMoveChar( SPacket &packet )
 {
-	int state;
+	int state, dirInt;
 	POINT3 pos, dir;
 	packet >> state;
 	//위치
@@ -174,6 +234,7 @@ void GameSession::RecvMoveChar( SPacket &packet )
 	packet >> dir.m_X;
 	packet >> dir.m_Y;
 	packet >> dir.m_Z;
+	packet >> dirInt;
 
 	{
 		SSynchronize sync( m_myCharInfo );
@@ -186,7 +247,8 @@ void GameSession::RecvMoveChar( SPacket &packet )
 
 		m_myCharInfo->SetState( state );
 		m_myCharInfo->SetPosition( pos );
-		m_myCharInfo->SetDirection( dir );
+		m_myCharInfo->SetDirection( dir.m_X, dir.m_Y, dir.m_Z );
+		m_myCharInfo->SetDirInt( dirInt );
 	}
 
 	SendMoveChar();
@@ -198,6 +260,50 @@ void GameSession::RecvMoveChar( SPacket &packet )
 //--------------------------------------
 // Lobby Srv와의 커뮤니케이션
 //--------------------------------------
+
+BOOL GameSession::SendStartFaild( int roomNum )
+{
+	SPacket sendPacket;
+	sendPacket.SetID( GL_START_FAILD );
+	sendPacket << roomNum;
+
+	GetSrvNet.SendToLobbyServer( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendStartOK( int roomNum )
+{
+	SPacket sendPacket;
+	sendPacket.SetID( GL_START_OK );
+	sendPacket << roomNum;
+
+	GetSrvNet.SendToLobbyServer( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendGameEnd( int roomNum )
+{
+	SPacket sendPacket;
+	sendPacket.SetID( GL_GAME_END );
+	sendPacket << roomNum;
+
+	GetSrvNet.SendToLobbyServer( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendToSrvThatPlayerDisconnect( int sessionId )
+{
+	SPacket sendPacket;
+	sendPacket.SetID( GL_PLAYER_DISCONNECT );
+	sendPacket << m_myCharInfo->GetIndexId();
+
+	GetSrvNet.SendToLobbyServer( sendPacket );
+
+	return TRUE;
+}
 
 //--------------------------------------
 // Client와의 커뮤니케이션
@@ -274,6 +380,7 @@ BOOL GameSession::SendMoveChar()
 		sendPacket << m_myCharInfo->GetDirX();
 		sendPacket << m_myCharInfo->GetDirY();
 		sendPacket << m_myCharInfo->GetDirZ();
+		sendPacket << m_myCharInfo->GetDirInt();
 	}
 
 	if( m_myGameProc == NULL )

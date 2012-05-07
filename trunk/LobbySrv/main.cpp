@@ -18,7 +18,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	GetLogger.Create( "LobbySrv" );
 
 	//데이터 부터 셋팅 하자
-	if( !GetData.DataSetting() )
+	if( !GetDocument.DataSetting() )
 		return -1;
 
 	LobbyMain  myMain;

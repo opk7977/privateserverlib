@@ -17,7 +17,8 @@ void CharObj::Init()
 	ZeroMemory( m_tstrID, 50 );
 	m_iTeam = -1;
 	m_State = 0;
-	m_Direction.Clear();
+	m_DirInt = 0;
+	SetDirection( 0.f, 0.f, 1.f );
 }
 
 void CharObj::Init( int index )
@@ -29,7 +30,8 @@ void CharObj::Init( int index )
 	ZeroMemory( m_tstrID, 50 );
 	m_iTeam = -1;
 	m_State = 0;
-	m_Direction.Clear();
+	m_DirInt = 0;
+	SetDirection( 0.f, 0.f, 1.f );
 }
 
 //==============================================================

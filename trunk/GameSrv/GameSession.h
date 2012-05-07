@@ -45,6 +45,7 @@ public:
 	void RecvLobbyConnectOK();
 
 	//LG_START_GAME
+	void RecvLobbyStartGame( SPacket &packet );
 
 	//--------------------------------------
 	// client와의 커뮤니케이션
@@ -75,10 +76,19 @@ public:
 	// lobby 서버와의 커뮤니케이션
 	//--------------------------------------
 	//GL_CONNECT_SERVER
+	//함수 없음
+
+	//GL_START_FAILD
+	BOOL SendStartFaild( int roomNum );
 
 	//GL_START_OK
+	BOOL SendStartOK( int roomNum );
+
+	//GL_GAME_END
+	BOOL SendGameEnd( int roomNum );
 
 	//GL_PLAYER_DISCONNECT
+	BOOL SendToSrvThatPlayerDisconnect();
 
 	//--------------------------------------
 	// client와의 커뮤니케이션

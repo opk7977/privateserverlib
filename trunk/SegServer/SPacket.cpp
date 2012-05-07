@@ -168,6 +168,9 @@ int SPacket::GetData( char* data, int size )
 	if( m_chpReadPos + size >= m_chpEndofDataField )
 		return 0;
 
+	//ZeroMemory를 하지 못하는 이유는 다른 자료형들을 넣을때 이 함수를 호출하기 때문에
+	// size이상의 memory를 초기화 할 수 없다
+	// char형 문자열을 받아가기 위해서 처음에 zeromemory를 하고 넘기자
 	CopyMemory( data, m_chpReadPos, size );
 	m_chpReadPos += size;
 

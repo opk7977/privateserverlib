@@ -51,7 +51,7 @@ enum SERVER_TO_SERVER
 
 	// lobbySrv -> gameSrv
 	// 방의 유저들이 게임을 시작하게 되어 게임서버의 준비상태를 명령
-	// int			-		roomNo
+	// int			-		roomNum
 	// int			-		playerCount
 	//--------------------------------------------------------------
 	// int			-		SessionId
@@ -62,9 +62,19 @@ enum SERVER_TO_SERVER
 	LG_START_GAME,
 
 	// gameSrv -> lobbySrv
+	// 게임 proc을 열수가 없거나 열기에 실패했다
+	// int			-		roomNum
+	GL_START_FAILD,
+
+	// gameSrv -> lobbySrv
 	// 게임 시작이 가능한 상태니 신호를 보내라는 패킷
 	// int			-		roomNo
 	GL_START_OK,
+
+	// gameSrv -> lobbySrv
+	// 게임이 종료되고 방을 다시 일반 상태로 바꿔 준다
+	// int			-		roomNum
+	GL_GAME_END,
 
 	// gameSrv -> lobbySrv
 	// 게임서버에서 접속을 끊어버린 player에 대한 처리
@@ -119,8 +129,8 @@ enum GAME_SERVER
 	// float		-		posY
 	// float		-		posZ
 	// float		-		DirX
-	// float		-		DirY
 	// float		-		DirZ
+	// int			-		DirInt
 	CS_GAME_MOVE_CHAR,
 
 	// server -> client
@@ -131,8 +141,8 @@ enum GAME_SERVER
 	// float		-		posY
 	// float		-		posZ
 	// float		-		DirX
-	// float		-		DirY
 	// float		-		DirZ
+	// int			-		DirInt
 	SC_GAME_MOVE_CHAR,
 
 	// client -> server

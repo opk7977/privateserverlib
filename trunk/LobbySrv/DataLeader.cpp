@@ -5,7 +5,7 @@ DataLeader::DataLeader(void)
 , RoomCount(0)
 , LoginSrvPortNum(0)
 , LobbySrvPortNum(0)
-, GameSrvProtNum(0)
+, GameSrvPortNum(0)
 , GamePlaySec(0)
 {
 	ZeroMemory( LoginSrvIP, 15 );
@@ -76,7 +76,7 @@ BOOL DataLeader::DataSetting()
 	//192.168.0.56	7900
 	fgets( text, 256, fp );
 	sscanf_s( text, "%s %s", GameSrvIP, 15, tmpNum, 10 );
-	GameSrvProtNum = atoi( tmpNum );
+	GameSrvPortNum = atoi( tmpNum );
 
 	//======================================
 	// 게임 play 시간

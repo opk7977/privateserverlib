@@ -74,7 +74,8 @@ public:
 
 	//플레이어 추가
 	void AddPlayer( GameSession* player );
-	void DelPlayer( GameSession* player );
+	//플레이어 제거/ 현 게임 proc에 사람이 없으면 FALSE를 return
+	BOOL DelPlayer( GameSession* player );
 
 	//방에 있는 모든 player에게 전송
 	//나를 빼고 보내려면 자신의 session을 매개변수로 넘긴다

@@ -46,8 +46,14 @@ public:
 	//GL_CONNECT_SERVER
 	void RecvConnectServer();
 
+	//GL_START_FAILD
+	void RecvStartFaild( SPacket& packet );
+
 	//GL_START_OK
 	void RecvGameStart( SPacket& packet );
+
+	//GL_GAME_END
+	void RecvGameEnd( SPacket& packet );
 
 	//GL_PLAYER_DISCONNECT
 	void RecvPlayerDiconnectInGame( SPacket& packet );
@@ -72,9 +78,6 @@ public:
 
 	//CS_ROOM_TEAM_CHANGE
 	void RecvTeamChange();
-
-	//CS_ROOM_PLAY
-	void RecvPlay();
 
 	//CS_ROOM_CHAT
 	void RecvChat( SPacket& packet );
@@ -140,11 +143,16 @@ public:
 	BOOL SendChat( TCHAR* chat );
 
 	//SC_ROOM_START_RESULT
-	BOOL SendStartGame();
+	BOOL SendStartGameResult();
 
 	//SC_ROOM_GAME_START
+	BOOL SendStartGameInRoom( int roomNum );
 
 	//SC_LOBBY_GAME_START
+	BOOL SendLobbyGameStart( int roomNum );
+
+	//SC_LOBBY_GAME_END
+	BOOL SendLobbyGameEnd( int roomNum );
 
 	//SC_LOBBY_PLAYER_DISCONNECT
 	BOOL SendPlayerDisconnect();

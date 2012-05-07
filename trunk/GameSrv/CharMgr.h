@@ -30,6 +30,7 @@ private:
 	int			m_iTeam;
 	int			m_State;
 	POINT3		m_Direction;
+	int			m_DirInt;
 
 	//vec¿« Index
 	int			m_vecIndex;
@@ -52,10 +53,12 @@ public:
 
 	inline void SetDirection( float x, float y, float z ) { m_Direction.SetElement( x, y, z ); }
 	inline void SetDirection( POINT3 dir ) { m_Direction = dir; }
+	inline void SetDirInt( int dir ) { m_DirInt = dir; }
 	inline POINT3 GetDirection() { return m_Direction; }
 	inline float GetDirX() { return m_Direction.m_X; }
 	inline float GetDirY() { return m_Direction.m_Y; }
 	inline float GetDirZ() { return m_Direction.m_Z; }
+	inline int GetDirInt() { return m_DirInt; }
 
 	inline int GetVecIndex() { return m_vecIndex; }
 };

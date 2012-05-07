@@ -16,6 +16,7 @@ void GameMgr::CreateGameProc( int count )
 	{
 		GameProc* tmpGame = new GameProc;
 		tmpGame->Init();
+		tmpGame->BeginThread();
 
 		m_mapGameRoom[i] = tmpGame;
 	}

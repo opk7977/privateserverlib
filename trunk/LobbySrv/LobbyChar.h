@@ -69,6 +69,8 @@ public:
 	void PackageMyInfo( SPacket& packet );
 	//방에 필요한 정보(team, ready)포함해서 담기
 	void PackageMyInfoForRoom( SPacket& packet );
+	//게임 서버에 필요한 정보(team)를 담는다
+	void PackageMyInfoForGame( SPacket& packet );
 
 	//==============================================================
 

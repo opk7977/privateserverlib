@@ -20,7 +20,7 @@ public:
 	int		LobbySrvPortNum;
 	//--------------------------------------------------------------
 	char	GameSrvIP[15];
-	int		GameSrvProtNum;
+	int		GameSrvPortNum;
 	//--------------------------------------------------------------
 	int		GamePlaySec;
 
@@ -36,6 +36,6 @@ public:
 	
 };
 
-#define GetData DataLeader::GetInstance()
+#define GetDocument DataLeader::GetInstance()
 
 

@@ -18,10 +18,10 @@ GameProc::~GameProc(void)
 
 void GameProc::Init()
 {
-	//다시 실행되지 못하게 이벤트 막고
-	ResetEvent( m_hStartGame );
-	//while문 빠져 나오게 게임flag풀고
-	m_nowIsPlaying = FALSE;
+// 	//다시 실행되지 못하게 이벤트 막고
+// 	ResetEvent( m_hStartGame );
+// 	//while문 빠져 나오게 게임flag풀고
+// 	m_nowIsPlaying = FALSE;
 
 	//정보는 초기화
 	m_listPlayer.clear();
@@ -31,6 +31,7 @@ void GameProc::Init()
 
 void GameProc::Release()
 {
+	m_listPlayer.clear();
 }
 
 BOOL GameProc::Run()
@@ -66,6 +67,8 @@ BOOL GameProc::StartGame( int playercount )
 	m_playerCount = playercount;
 	m_nowIsPlaying = TRUE;
 
+	SetEvent( m_hStartGame );
+
 	return TRUE;
 }
 
@@ -74,7 +77,7 @@ BOOL GameProc::PreStartGame()
 	//모든 player가 접속하기를 기다려야 한다
 	while( m_playerCount != m_inGamePlayerCount )
 	{
-
+		
 	}
 
 	return TRUE;
@@ -82,7 +85,10 @@ BOOL GameProc::PreStartGame()
 
 void GameProc::EndGame()
 {
-
+	//다시 실행되지 못하게 이벤트 막고
+	ResetEvent( m_hStartGame );
+	//while문 빠져 나오게 게임flag풀고
+	m_nowIsPlaying = FALSE;
 }
 
 void GameProc::EndLogic()
@@ -106,7 +112,7 @@ void GameProc::AddPlayer( GameSession* player )
 	}
 }
 
-void GameProc::DelPlayer( GameSession* player )
+BOOL GameProc::DelPlayer( GameSession* player )
 {
 	if( m_listPlayer.empty() )
 	{
@@ -126,10 +132,16 @@ void GameProc::DelPlayer( GameSession* player )
 			if( (*iterPre) == player )
 			{
 				m_listPlayer.erase( iterPre );
-				return;
+				--m_inGamePlayerCount;
+				break;
 			}
 		}
 	}
+
+	if( m_inGamePlayerCount <= 0 )
+		return FALSE;
+
+	return TRUE;
 
 	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::DelPlayer()\n삭제할 player가 존재하지 않습니다\n\n") );
 }
