@@ -190,7 +190,7 @@ void CLobby::OnBnClickedRoom1New()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CNewRoom* room = new CNewRoom;
-	room->SetRoomNum( 1 );
+	//room->SetRoomNum( 1 );
 
 	CRoom* pRoom = (CRoom*)((CMainFrame*)AfxGetMainWnd())->wndSplitterRow.GetPane( 1, 0 );
 	room->m_pRoom = pRoom;
@@ -204,7 +204,7 @@ void CLobby::OnBnClickedRoom2New()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CNewRoom* room = new CNewRoom;
-	room->SetRoomNum( 2 );
+	//room->SetRoomNum( 2 );
 
 	CRoom* pRoom = (CRoom*)((CMainFrame*)AfxGetMainWnd())->wndSplitterRow.GetPane( 1, 0 );
 	room->m_pRoom = pRoom;
@@ -218,7 +218,7 @@ void CLobby::OnBnClickedRoom3New()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CNewRoom* room = new CNewRoom;
-	room->SetRoomNum( 3 );
+	//room->SetRoomNum( 3 );
 
 	CRoom* pRoom = (CRoom*)((CMainFrame*)AfxGetMainWnd())->wndSplitterRow.GetPane( 1, 0 );
 	room->m_pRoom = pRoom;
@@ -232,7 +232,7 @@ void CLobby::OnBnClickedRoom4New()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CNewRoom* room = new CNewRoom;
-	room->SetRoomNum( 4 );
+	//room->SetRoomNum( 4 );
 
 	CRoom* pRoom = (CRoom*)((CMainFrame*)AfxGetMainWnd())->wndSplitterRow.GetPane( 1, 0 );
 	room->m_pRoom = pRoom;

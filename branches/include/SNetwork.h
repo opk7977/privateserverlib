@@ -26,6 +26,9 @@ public:
 	BOOL Init( BOOL isNon = TRUE );
 	void Release();
 
+	//현재 연결되어 있는지를 확인한다
+	BOOL IsConnect();
+
 	//연결
 	BOOL ConnectToSrv( char* ipAddr, int port );
 	BOOL ReConnect( char* ipAddr, int port );

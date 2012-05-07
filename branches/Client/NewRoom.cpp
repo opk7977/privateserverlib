@@ -72,7 +72,6 @@ void CNewRoom::OnBnClickedOk()
 
 	SPacket sendPacket;
 	sendPacket.SetID( CS_LOBBY_CREATE_ROOM );
-	sendPacket << m_roomNum;
 	int size = m_RoomTitle.GetLength() * sizeof( TCHAR );
 	sendPacket << size;
 	sendPacket.PutDataW( (TCHAR*)m_RoomTitle.GetString(), size );

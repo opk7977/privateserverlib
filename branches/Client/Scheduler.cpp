@@ -369,6 +369,8 @@ void CScheduler::RecvRoomResultCreate()
 		m_pDoc->isRecvResult = TRUE;
 		return;
 	}
+	else
+		m_
 
 	Character* tmpChar = GetCharMgr.GetMe();
 	

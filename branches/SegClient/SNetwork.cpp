@@ -22,11 +22,11 @@ BOOL SNetwork::Init( BOOL isNon /*= TRUE */ )
 	if( !m_conSock.CreateSocket() )
 		return FALSE;
 
-	if( isNon )
-	{
-		if( !m_conSock.SetNonBlkSock() )
-			return FALSE;
-	}
+// 	if( isNon )
+// 	{
+// 		if( !m_conSock.SetNonBlkSock() )
+// 			return FALSE;
+// 	}
 
 	return TRUE;
 }
@@ -37,13 +37,24 @@ void SNetwork::Release()
 	m_conSock.Release();
 }
 
+BOOL SNetwork::IsConnect()
+{
+	//연결되어 있으면 TRUE
+	return ( m_conSock.GetSocket() != INVALID_SOCKET );
+}
+
 BOOL SNetwork::ConnectToSrv( char* ipAddr, int port )
 {
 	m_hStartEvent = ::CreateEvent( NULL, TRUE, FALSE, NULL);
 
 	BeginThread();
 
+	//SetEvent( m_hStartEvent );
+
 	if( !m_conSock.ConnectSock( ipAddr, port ) )
+		return FALSE;
+
+	if( !m_conSock.SetNonBlkSock() )
 		return FALSE;
 
 	SetEvent( m_hStartEvent );
@@ -56,13 +67,19 @@ BOOL SNetwork::ReConnect( char* ipAddr, int port )
 	//우선 연결 끊고
 	DisConnect();
 
-	//다시 연결
+	//소켓 만들고
 	Init();
 
+	//SetEvent( m_hStartEvent );
+
+	//다시 연결
 	if( !m_conSock.ConnectSock( ipAddr, port ) )
 		return FALSE;
 
-	Sleep(1);
+	if( !m_conSock.SetNonBlkSock() )
+		return FALSE;
+
+	//Sleep(1);
 
 	SetEvent( m_hStartEvent );
 
@@ -88,7 +105,7 @@ BOOL SNetwork::Run()
 
 	while(1)
 	{
-		Sleep( 1 );
+		//Sleep( 0 );
 
 		WaitForSingleObject( m_hStartEvent, INFINITE );
 
@@ -101,7 +118,7 @@ BOOL SNetwork::Run()
 			if( errorCode != WSAEWOULDBLOCK )
 			{
 				GetLogger.ErrorLog( errorCode, _T("[SNetwork::Run()] ") );
-				return FALSE;
+				//return FALSE;
 			}
 		}
 		else
