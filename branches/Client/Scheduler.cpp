@@ -362,15 +362,18 @@ void CScheduler::RecvRoomResultCreate()
 	int result, team;
 	m_packet >> result;
 
+	m_pDoc->Revcvresult = result;
+	m_pDoc->isRecvResult = TRUE;
+
 	//result가 0보다 작으면 방만들기에 실패했음
 	if( result < 0 )
 	{
-		m_pDoc->Revcvresult = result;
-		m_pDoc->isRecvResult = TRUE;
+// 		m_pDoc->Revcvresult = result;
+// 		m_pDoc->isRecvResult = TRUE;
 		return;
 	}
-	else
-		m_
+// 	else
+// 		m_
 
 	Character* tmpChar = GetCharMgr.GetMe();
 	

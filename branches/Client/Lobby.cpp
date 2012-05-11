@@ -139,8 +139,8 @@ void CLobby::OnNetConn()
 		return;
 	}
 
-	//if( !GetNetwork.ConnectToSrv( "192.168.0.56", 8800 ) )
-	if( !GetNetwork.ConnectToSrv( "127.0.0.1", 8800 ) )
+	if( !GetNetwork.ConnectToSrv( "192.168.0.56", 8800 ) )
+	//if( !GetNetwork.ConnectToSrv( "127.0.0.1", 8800 ) )
 	{
 		MessageBox( _T("연결 실패.."), _T("?!?!?"), MB_OK | MB_ICONERROR );
 		return;
