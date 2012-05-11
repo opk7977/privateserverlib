@@ -5,6 +5,8 @@ void main()
 {
 	int count = 0;
 
+	AllocConsole();
+
 	GetLogger.Create( "SampleLogger" );
 
 	while(1)
@@ -24,4 +26,6 @@ void main()
 		if( count >= 20 )
 			break;
 	}
+
+	FreeConsole();
 }

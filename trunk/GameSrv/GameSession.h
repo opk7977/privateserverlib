@@ -59,6 +59,16 @@ public:
 	//CS_GAME_ATTECT
 
 	//CS_GAME_SYNC
+	void RecvGameSync( SPacket &packet );
+
+	//CS_GAME_CHANGE_STATE
+	void RecvGameChangeState( SPacket &packet );
+
+	//CS_GAME_ROTATION
+	void RecvGameRotation( SPacket &packet );
+
+	//CS_GAME_CHATTING
+	void RecvGameChatting( SPacket &packet );
 
 	//CS_GAME_INSTALL_BOOM
 
@@ -110,6 +120,16 @@ public:
 	//SC_GAME_CHAR_DIE
 
 	//SC_GAME_SYNC
+	BOOL SendGameSync();
+
+	//SC_GAME_CHANGE_STATE
+	BOOL SendGameChangeState();
+
+	//SC_GAME_ROTATION
+	BOOL SendGameRotation();
+
+	//SC_GAME_CHATTING
+	BOOL SendGameChatting( TCHAR* chatting, int size );
 
 	//SC_GAME_INSTALL_BOOM
 

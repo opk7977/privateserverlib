@@ -3,10 +3,13 @@
 
 #include "SPacket.h"
 #include "SLogger.h"
+#include "GameProtocol.h"
 
 GameProc::GameProc(void)
 {
 	m_hStartGame = ::CreateEvent( NULL, TRUE, FALSE, NULL );
+
+/*	m_timer.Init();*/
 	Init();
 }
 
@@ -74,10 +77,26 @@ BOOL GameProc::StartGame( int playercount )
 
 BOOL GameProc::PreStartGame()
 {
+// 	float basictime = 0.1f;
+// 	float timeCount = 0.f;
+
 	//모든 player가 접속하기를 기다려야 한다
 	while( m_playerCount != m_inGamePlayerCount )
 	{
-		
+// 		m_timer.ProcessTime();
+// 
+// 		timeCount += m_timer.GetElapsedTime();
+// 
+// 		if( timeCount >= basictime )
+// 		{
+// 			timeCount = 0;
+// 
+// 			SPacket sendPacket;
+// 			sendPacket.SetID( SC_GAME_SYNC );
+// 
+// 			PackageAllPlayerInGame( sendPacket );
+// 			SendAllPlayerInGame( sendPacket );
+// 		}
 	}
 
 	return TRUE;
@@ -117,7 +136,7 @@ BOOL GameProc::DelPlayer( GameSession* player )
 	if( m_listPlayer.empty() )
 	{
 		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::DelPlayer()\nlist에 player가 존재하지 않습니다\n\n") );
-		return;
+		return FALSE;
 	}
 
 	std::list<GameSession*>::iterator	iter, iterPre;

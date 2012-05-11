@@ -60,11 +60,10 @@ void GameSession::OnDestroy()
 			//게임 proc닫음
 			m_myGameProc->Init();
 		}
-	}
 
-	//캐릭터 공간의 정보를 지워 준다.
-	if( m_myCharInfo == NULL )
+		//캐릭터 공간의 정보를 지워 준다.
 		GetCharMgr.ReturnCharSpace( m_myCharInfo );
+	}
 
 	//세션 초기화
 	Init();
@@ -74,19 +73,17 @@ void GameSession::OnDestroy()
 
 void GameSession::PackageMyInfo( SPacket& packet )
 {
-	{
-		SSynchronize sync( this );
+	SSynchronize sync( this );
 
-		packet << m_myCharInfo->GetIndexId();
-		packet << m_myCharInfo->GetState();
-		packet << m_myCharInfo->GetPosX();
-		packet << m_myCharInfo->GetPosY();
-		packet << m_myCharInfo->GetPosZ();
-		packet << m_myCharInfo->GetDirX();
-		packet << m_myCharInfo->GetDirY();
-		packet << m_myCharInfo->GetDirZ();
-		packet << m_myCharInfo->GetDirInt();
-	}
+	packet << m_myCharInfo->GetIndexId();
+	packet << m_myCharInfo->GetState();
+	packet << m_myCharInfo->GetPosX();
+	packet << m_myCharInfo->GetPosY();
+	packet << m_myCharInfo->GetPosZ();
+	packet << m_myCharInfo->GetDirX();
+	packet << m_myCharInfo->GetDirY();
+	packet << m_myCharInfo->GetDirZ();
+	packet << m_myCharInfo->GetDirInt();
 }
 
 void GameSession::PacketParsing( SPacket& packet )
@@ -99,6 +96,7 @@ void GameSession::PacketParsing( SPacket& packet )
 	case LG_START_GAME:
 		RecvLobbyStartGame( packet );
 		break;
+
 	//==============================================================> LobbySrv
 	case CS_GAME_INGAME:
 		RecvInGame( packet );
@@ -106,6 +104,19 @@ void GameSession::PacketParsing( SPacket& packet )
 	case CS_GAME_MOVE_CHAR:
 		RecvMoveChar( packet );
 		break;
+	case CS_GAME_SYNC:
+		RecvGameSync( packet );
+		break;
+	case CS_GAME_CHANGE_STATE:
+		RecvGameChangeState( packet );
+		break;
+	case CS_GAME_ROTATION:
+		RecvGameRotation( packet );
+		break;
+	case CS_GAME_CHATTING:
+		RecvGameChatting( packet );
+		break;
+
 	//==============================================================> Client
 	default:
 		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::PacketParsing()\n받은 패킷의 아이디가 유효하지 않습니다.\n\n") );
@@ -132,6 +143,8 @@ void GameSession::RecvLobbyConnectOK()
 
 void GameSession::RecvLobbyStartGame( SPacket &packet )
 {
+	SSynchronize Sync( this );
+
 	int roomNum, count;
 
 	packet >> roomNum;		//방번호
@@ -186,6 +199,8 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 //--------------------------------------
 void GameSession::RecvInGame( SPacket &packet )
 {
+	SSynchronize Sync( this );
+
 	int sessionId, roomNum;
 
 	packet >> sessionId;
@@ -195,6 +210,10 @@ void GameSession::RecvInGame( SPacket &packet )
 	//지금은 무조건 1번 방....1번만 열려 있음
 	roomNum = 1;
 	//////////////////////////////////////////////////////////////////////////
+
+	GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+					_T("GameSession::RecvInGame()\n%d번 캐릭터가 %d번게임으로 입장합니다.\n\n") 
+					, sessionId, roomNum );
 
 	//캐릭터를 검색
 	m_myCharInfo = GetCharMgr.FindCharAsSessionId( sessionId );
@@ -223,6 +242,8 @@ void GameSession::RecvInGame( SPacket &packet )
 
 void GameSession::RecvMoveChar( SPacket &packet )
 {
+	SSynchronize Sync( this );
+
 	int state, dirInt;
 	POINT3 pos, dir;
 	packet >> state;
@@ -236,8 +257,8 @@ void GameSession::RecvMoveChar( SPacket &packet )
 	packet >> dir.m_Z;
 	packet >> dirInt;
 
-	{
-		SSynchronize sync( m_myCharInfo );
+// 	{
+// 		SSynchronize sync( m_myCharInfo );
 
 		if( m_myCharInfo == NULL )
 		{
@@ -249,9 +270,124 @@ void GameSession::RecvMoveChar( SPacket &packet )
 		m_myCharInfo->SetPosition( pos );
 		m_myCharInfo->SetDirection( dir.m_X, dir.m_Y, dir.m_Z );
 		m_myCharInfo->SetDirInt( dirInt );
-	}
+
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("GameSession::RecvMoveChar()\n")
+						_T("%s(%d) 캐릭터가 %d번 상태\n")
+						_T("pos(%f, %f, %f)위치")
+						_T("/ dir(%f, %f, %f, %i)방향으로 전환\n\n")
+						, m_myCharInfo->GetID()
+						, m_myCharInfo->GetIndexId()
+						, state
+						, pos.m_X, pos.m_Y, pos.m_Z
+						, dir.m_X, dir.m_Y, dir.m_Z, dirInt );
+//	}
 
 	SendMoveChar();
+}
+
+void GameSession::RecvGameSync( SPacket &packet )
+{
+	SSynchronize Sync( this );
+
+	if( m_myCharInfo == NULL )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::RecvMoveChar()\n캐릭터 설정에 문제가 있습니다.\n\n") );
+		return;
+	}
+
+	POINT3 pos, dir;
+	//위치
+	packet >> pos.m_X;
+	packet >> pos.m_Y;
+	packet >> pos.m_Z;
+	//방향
+	packet >> dir.m_X;
+	packet >> dir.m_Y;
+	packet >> dir.m_Z;
+
+	m_myCharInfo->SetPosition( pos );
+	m_myCharInfo->SetDirection( dir );
+
+	GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+					_T("GameSession::RecvGameSync()\n")
+					_T("%s(%d) 캐릭터\n")
+					_T("pos(%f, %f, %f)위치")
+					_T("/ dir(%f, %f, %f)방향으로 전환\n\n")
+					, m_myCharInfo->GetID()
+					, m_myCharInfo->GetIndexId()
+					, pos.m_X, pos.m_Y, pos.m_Z
+					, dir.m_X, dir.m_Y, dir.m_Z );
+
+	SendGameSync();
+}
+
+void GameSession::RecvGameChangeState( SPacket &packet )
+{
+	SSynchronize Sync( this );
+
+	int state;
+	packet >> state;
+
+	if( m_myCharInfo == NULL )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("GameSession::RecvGameChangeDir()\n")
+						_T("캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	m_myCharInfo->SetState( state );
+
+	SendGameChangeState();
+}
+
+void GameSession::RecvGameRotation( SPacket &packet )
+{
+	SSynchronize Sync( this );
+
+	POINT3 dir;
+	packet >> dir.m_X >> dir.m_Y >> dir.m_Z;
+
+	if( m_myCharInfo == NULL )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("GameSession::RecvGameRotation()\n")
+						_T("캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	m_myCharInfo->SetDirection( dir );
+
+	SendGameRotation();
+}
+
+void GameSession::RecvGameChatting( SPacket &packet )
+{
+	SSynchronize Sync( this );
+
+	int size;
+	TCHAR tmpChatting[256] = {0,};
+	TCHAR Chatting[300] = {0,};
+
+	packet >> size;
+	packet.GetData( tmpChatting, size );
+
+	
+	if( m_myCharInfo == NULL )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("GameSession::RecvGameChatting()\n캐릭터의 정보가 유효하지 않습니다.\n\n") );
+		return;
+	}
+
+	swprintf_s( Chatting, _T("[%s] %s"), m_myCharInfo->GetID(), tmpChatting );
+	size = _tcslen( Chatting )*sizeof( TCHAR );
+
+	GetLogger.PutLog( SLogger::LOG_LEVEL_CONINFO,
+		_T("GameSession::RecvGameChatting()\n%s\n\n"), Chatting );
+
+	SendGameChatting( Chatting, size );
 }
 
 //======================================
@@ -294,7 +430,7 @@ BOOL GameSession::SendGameEnd( int roomNum )
 	return TRUE;
 }
 
-BOOL GameSession::SendToSrvThatPlayerDisconnect( int sessionId )
+BOOL GameSession::SendToSrvThatPlayerDisconnect()
 {
 	SPacket sendPacket;
 	sendPacket.SetID( GL_PLAYER_DISCONNECT );
@@ -347,6 +483,155 @@ BOOL GameSession::SendMyCharInfoToInGamePlayer()
 	return TRUE;
 }
 
+BOOL GameSession::SendMoveChar()
+{
+	SPacket sendPacket;
+	sendPacket.SetID( SC_GAME_MOVE_CHAR );
+
+// 	{
+// 		//SSynchronize sync( m_myCharInfo );
+// 		SSynchronize sync( this );
+
+	POINT3 pos = m_myCharInfo->GetPosition();
+	POINT3 dir = m_myCharInfo->GetDirection();
+
+	sendPacket << m_myCharInfo->GetIndexId();
+	sendPacket << m_myCharInfo->GetState();
+	sendPacket << pos.m_X << pos.m_Y << pos.m_Z;
+	sendPacket << dir.m_X << dir.m_Y << dir.m_Z;
+	sendPacket << m_myCharInfo->GetDirInt();
+
+	GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+					_T("GameSession::SendMoveChar()\n")
+					_T("%s(%d) 캐릭터가 %d번 상태\n")
+					_T("pos(%f, %f, %f)위치")
+					_T("/ dir(%f, %f, %f, %i)방향으로 전환\n\n")
+					, m_myCharInfo->GetID()
+					, m_myCharInfo->GetIndexId()
+					, m_myCharInfo->GetState()
+					, pos.m_X, pos.m_Y, pos.m_Z
+					, dir.m_X, dir.m_Y, dir.m_Z, m_myCharInfo->GetDirInt() );
+//	}
+
+	if( m_myGameProc == NULL )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::SendMoveChar()\n방정보에 문제가 있습니다.\n\n") );
+		return FALSE;
+	}
+
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendGameSync()
+{
+	SPacket sendPacket;
+	sendPacket.SetID( SC_GAME_SYNC );
+
+	//{
+		//SSynchronize sync( m_myCharInfo );
+		//SSynchronize sync( this );
+
+	const POINT3 pos = m_myCharInfo->GetPosition();
+	const POINT3 dir = m_myCharInfo->GetDirection();
+	
+
+	sendPacket << m_myCharInfo->GetIndexId();
+	//sendPacket << m_myCharInfo->GetState();
+	sendPacket << pos.m_X;
+	sendPacket << pos.m_Y;
+	sendPacket << pos.m_Z;
+
+	sendPacket << dir.m_X;
+	sendPacket << dir.m_Y;
+	sendPacket << dir.m_Z;
+	//sendPacket << m_myCharInfo->GetDirInt();
+	//}
+
+	GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+					_T("GameSession::SendGameSync()\n")
+					_T("%s(%d) 캐릭터\n")
+					_T("pos(%f, %f, %f)위치\n")
+					_T("dir(%f, %f, %f)방향으로 전환\n\n")
+					, m_myCharInfo->GetID()
+					, m_myCharInfo->GetIndexId()
+					, pos.m_X, pos.m_Y, pos.m_Z
+					, dir.m_X, dir.m_Y, dir.m_Z );
+
+	if( m_myGameProc == NULL )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::SendMoveChar()\n방정보에 문제가 있습니다.\n\n") );
+		return FALSE;
+	}
+
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendGameChatting( TCHAR* chatting, int size )
+{
+	SPacket sendPacket;
+	sendPacket.SetID( SC_GAME_CHATTING );
+
+	sendPacket << size;
+	sendPacket.PutData( chatting, size );
+
+	if( m_myGameProc == NULL )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("GameSession::SendGameChatting()\n방 게임 proc정보가 유효하지 않습니다.\n\n") );
+		return FALSE;
+	}
+	m_myGameProc->SendAllPlayerInGame( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendGameChangeState()
+{
+	SPacket sendPacket;
+	sendPacket.SetID( SC_GAME_CHANGE_STATE );
+	sendPacket << m_myCharInfo->GetIndexId();
+	sendPacket << m_myCharInfo->GetState();
+
+	if( m_myGameProc == NULL )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("GameSession::SendGameChangeDir()\n")
+						_T("게임proc정보가 유효하지 않습니다.\n\n") );
+		return FALSE;
+	}
+
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendGameRotation()
+{
+	SPacket sendPacket;
+	sendPacket.SetID( SC_GAME_ROTATION );
+
+	POINT3 dir = m_myCharInfo->GetDirection();
+
+	sendPacket << m_myCharInfo->GetIndexId();
+	sendPacket << dir.m_X << dir.m_Y << dir.m_Z;
+
+	if( m_myGameProc == NULL )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("GameSession::SendGameRotation()\n")
+						_T("게임proc정보가 유효하지 않습니다.\n\n") );
+		return FALSE;
+	}
+
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
+
+	return TRUE;
+}
+
 BOOL GameSession::SendCharDisconnect()
 {
 	SPacket sendPacket;
@@ -360,36 +645,6 @@ BOOL GameSession::SendCharDisconnect()
 
 	//나는 이미 빠져 있으니 모두에게 보내도 된다.
 	m_myGameProc->SendAllPlayerInGame( sendPacket );
-
-	return TRUE;
-}
-
-BOOL GameSession::SendMoveChar()
-{
-	SPacket sendPacket;
-	sendPacket.SetID( SC_GAME_MOVE_CHAR );
-
-	{
-		SSynchronize sync( m_myCharInfo );
-
-		sendPacket << m_myCharInfo->GetIndexId();
-		sendPacket << m_myCharInfo->GetState();
-		sendPacket << m_myCharInfo->GetPosX();
-		sendPacket << m_myCharInfo->GetPosY();
-		sendPacket << m_myCharInfo->GetPosZ();
-		sendPacket << m_myCharInfo->GetDirX();
-		sendPacket << m_myCharInfo->GetDirY();
-		sendPacket << m_myCharInfo->GetDirZ();
-		sendPacket << m_myCharInfo->GetDirInt();
-	}
-
-	if( m_myGameProc == NULL )
-	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::SendMoveChar()\n방정보에 문제가 있습니다.\n\n") );
-		return FALSE;
-	}
-
-	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
 
 	return TRUE;
 }

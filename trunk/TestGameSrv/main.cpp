@@ -11,7 +11,8 @@ void Relase();
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdParam, int nCmdShow )
 {
 	HWND hWnd;
-
+	AllocConsole();
+	
  	WinMgr window;
 	if( !window.CreateWindows( hInstance, _T("Try"), _T("TestGameSrv"), hWnd, 800, 600, nCmdShow ) )
 		return 0;
@@ -59,5 +60,5 @@ void Init()
 
 void Relase()
 {
-
+	FreeConsole();
 }

@@ -1,7 +1,7 @@
 #include "SampleQuery.h"
 #include "SLogger.h"
-//한글 입력을 위해 사용해야 하는 헤더
-//#include <locale.h>
+
+#include "crtdbg.h"
 
 int SelectMenu()
 {
@@ -24,9 +24,6 @@ int SelectMenu()
 
 void main()
 {
-	//한글을 입력되게 선언해 줘야 한다!!!!!!!
-	//_tsetlocale(LC_ALL, _T("Korean")); 
-
 	//로그초기화
 	GetLogger.Create( "SampleDtatBase" );
 
@@ -41,7 +38,8 @@ void main()
 	//////////////////////////////////////////////////////////////////////////
 	int menu;
 
-	while(1)
+	BOOL isEnd = FALSE;
+	while( !isEnd )
 	{
 		menu = SelectMenu();
 
@@ -60,8 +58,11 @@ void main()
 			query.DelMember();
 			break;
 		case 0:		//종료
-			//query.Release();
-			return;
+			isEnd = TRUE;
 		}
 	}
+
+	query.Release();
+
+	_CrtMemDumpAllObjectsSince( 0 );
 }

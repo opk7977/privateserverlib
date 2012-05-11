@@ -67,7 +67,11 @@ BOOL SSocket::SetScokReuseAddr()
 	//서버에 필수적인 설정이다.
 	//실패하면 0 return
 	retval = setsockopt( m_socket, SOL_SOCKET, SO_REUSEADDR, (char*)&reuse, sizeof(reuse) );
+	
+	if( retval != 0 )
+		return FALSE;
 
+	retval = setsockopt( m_socket, IPPROTO_TCP, TCP_NODELAY, (char*)&reuse, sizeof(reuse) );
 	if( retval != 0 )
 		return FALSE;
 

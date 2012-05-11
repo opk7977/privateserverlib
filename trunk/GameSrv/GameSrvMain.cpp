@@ -109,6 +109,33 @@ BOOL GameSrvMain::Init()
 	tmpChar->SetPosition( 70.f, 0.f, 70.f );
 	tmpChar->SetDirection( 0.f, 0.f, 1.f );
 	tmpChar->SetDirInt( 0 );
+	//일곱번째 캐릭터 수동 입력///////////////////////////////////////////////
+	tmpChar = GetCharMgr.GetCharSpace();
+	tmpChar->SetIndexId( 8 );
+	tmpChar->SetID( _T("www") );
+	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
+	tmpChar->SetState( SRV_CHAR_STATE_STAND );
+	tmpChar->SetPosition( 80.f, 0.f, 80.f );
+	tmpChar->SetDirection( 0.f, 0.f, 1.f );
+	tmpChar->SetDirInt( 0 );
+	//일곱번째 캐릭터 수동 입력///////////////////////////////////////////////
+	tmpChar = GetCharMgr.GetCharSpace();
+	tmpChar->SetIndexId( 9 );
+	tmpChar->SetID( _T("ddd") );
+	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
+	tmpChar->SetState( SRV_CHAR_STATE_STAND );
+	tmpChar->SetPosition( 90.f, 0.f, 90.f );
+	tmpChar->SetDirection( 0.f, 0.f, 1.f );
+	tmpChar->SetDirInt( 0 );
+	//일곱번째 캐릭터 수동 입력///////////////////////////////////////////////
+	tmpChar = GetCharMgr.GetCharSpace();
+	tmpChar->SetIndexId( 10 );
+	tmpChar->SetID( _T("ccc") );
+	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
+	tmpChar->SetState( SRV_CHAR_STATE_STAND );
+	tmpChar->SetPosition( 100.f, 0.f, 100.f );
+	tmpChar->SetDirection( 0.f, 0.f, 1.f );
+	tmpChar->SetDirInt( 0 );
 	//////////////////////////////////////////////////////////////////////////
 	
 	return TRUE;

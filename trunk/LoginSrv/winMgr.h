@@ -9,4 +9,6 @@ public:
 	~WinMgr(void);
 
 	virtual LRESULT WindowMegProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
+
+	BOOL InitConsolHandler();
 };

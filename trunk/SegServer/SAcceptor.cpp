@@ -150,8 +150,8 @@ BOOL SAcceptor::Run()
 void SAcceptor::Release()
 {
 	m_bThreadLoop = FALSE;
-#ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("[Acepptor::Release()] srv소켓을 닫습니다.\n") );
-#endif
+// #ifdef _DEBUG
+// 	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("[Acepptor::Release()] srv소켓을 닫습니다.\n") );
+// #endif
 	m_srvSock.Release();
 }

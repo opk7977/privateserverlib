@@ -12,6 +12,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	if( !window.CreateWindows( hInstance, _T("Login"), _T("LoginSrv"), hWnd, 800, 600, nCmdShow ) )
 		return 0;
 
+	if( !window.InitConsolHandler() )
+		return 0;
+
 	//로그초기화
 	GetLogger.Create( "LoginSrv" );
 

@@ -198,7 +198,7 @@ int SSession::SendPacket( SPacket& packet, BOOL tudp /*= FALSE*/ )
 	if( getpeername( m_socket, (SOCKADDR*)&sockAddr, &size ) != SOCKET_ERROR )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, "[Session::SendPacket()] Completed Send Pakcet To IP: %s / socket: %d / bytes: %d\n",
+		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, "[Session::SendPacket()] Completed Send Pakcet To IP: %s / socket: %d / bytes: %d\n\n",
 			inet_ntoa( sockAddr.sin_addr ), m_socket, writtenBytes );
 #endif
 	}

@@ -172,7 +172,6 @@ enum GAME_SERVER
 
 	// client -> server
 	// 위치 및 상태 동기화를 위한 패킷
-	// int			-		charState
 	// float		-		posX
 	// float		-		posY
 	// float		-		posZ
@@ -184,7 +183,6 @@ enum GAME_SERVER
 	// server -> client
 	// 위치 및 상태 동기화를 위한 패킷
 	// int			-		SessionID
-	// int			-		charState
 	// float		-		posX
 	// float		-		posY
 	// float		-		posZ
@@ -192,6 +190,42 @@ enum GAME_SERVER
 	// float		-		DirY
 	// float		-		DirZ
 	SC_GAME_SYNC,
+
+	// client -> server
+	// 캐릭터 상태가 변함
+	// int			-		dirInt
+	CS_GAME_CHANGE_STATE,
+
+	// server -> client
+	// 캐릭터가 전환된 상태를 모두에게 알린다.
+	// int			-		sessionId
+	// int			-		dirInt
+	SC_GAME_CHANGE_STATE,
+
+	// client -> server
+	// 캐릭터 회전
+	// float		-		dirX
+	// float		-		dirY
+	// float		-		dirZ
+	CS_GAME_ROTATION,
+
+	// server -> client
+	// 캐릭터 회전을 모두에게 알린다
+	// int			-		sessionId
+	// float		-		dirX
+	// float		-		dirY
+	// float		-		dirZ
+	SC_GAME_ROTATION,
+
+	// client -> server
+	// int			-		stringSize
+	// TCHAR		-		chattingString
+	CS_GAME_CHATTING,
+
+	// server -> client
+	// int			-		stringSize
+	// TCHAR		-		chattingString
+	SC_GAME_CHATTING,
 
 	// client -> server
 	// 공격팀의 player가 폭탄을 설치했음

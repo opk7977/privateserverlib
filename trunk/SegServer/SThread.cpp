@@ -12,10 +12,6 @@ SThread::SThread(void) : m_bIsStart(FALSE)
 
 SThread::~SThread(void)
 {
-	//GetLogger.PutLog( 0, _T("[Thread] %d번 쓰레드가 종료 됩니다\n"), m_iThread );
-#ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("[Thread::~SThread()] %d번 쓰레드가 종료 됩니다\n"), m_iThread );
-#endif
 }
 
 void SThread::BeginThread()

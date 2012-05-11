@@ -10,7 +10,7 @@ SQuery::SQuery(void)
 
 SQuery::~SQuery(void)
 {
-	DisConnect();
+	//DisConnect();
 }
 
 BOOL SQuery::ConnectMdb( TCHAR* conStr )

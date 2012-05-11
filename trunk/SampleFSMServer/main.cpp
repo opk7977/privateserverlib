@@ -43,6 +43,8 @@ float					g_frame = 0.f;
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdParam, int nCmdShow )
 {
+	AllocConsole();
+
 	CWinMgr			winMgr;
 	SDump			dump;
 	dump.Begin();
@@ -87,6 +89,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	g_net.Release();
 
 	dump.End();
+	FreeConsole();
 	return (int)Message.wParam;
 }
 
