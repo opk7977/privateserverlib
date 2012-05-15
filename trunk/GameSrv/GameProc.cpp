@@ -32,6 +32,15 @@ void GameProc::Init()
 	m_AttKillCount = m_DefKillCount = 0;
 }
 
+void GameProc::Init( int i )
+{
+	m_id = i;
+
+	m_listPlayer.clear();
+	m_playerCount = m_inGamePlayerCount = 0;
+	m_AttKillCount = m_DefKillCount = 0;
+}
+
 void GameProc::Release()
 {
 	m_listPlayer.clear();
@@ -119,7 +128,7 @@ void GameProc::AddPlayer( GameSession* player )
 {
 	if( m_inGamePlayerCount >= m_playerCount )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::AddPlayer()\n설정된 player수를 넘습니다\n\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameProc::AddPlayer()\n설정된 player수를 넘습니다\n\n") );
 		return;
 	}
 
@@ -135,7 +144,7 @@ BOOL GameProc::DelPlayer( GameSession* player )
 {
 	if( m_listPlayer.empty() )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::DelPlayer()\nlist에 player가 존재하지 않습니다\n\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameProc::DelPlayer()\nlist에 player가 존재하지 않습니다\n\n") );
 		return FALSE;
 	}
 
@@ -161,8 +170,6 @@ BOOL GameProc::DelPlayer( GameSession* player )
 		return FALSE;
 
 	return TRUE;
-
-	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::DelPlayer()\n삭제할 player가 존재하지 않습니다\n\n") );
 }
 
 void GameProc::SendAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL */ )

@@ -26,7 +26,7 @@ void SMap::Release()
 
 void SMap::PushIndex( int index, SServerObj* obj )
 {
-	((SSession*)obj)->SetKey( index );
+	/*((SSession*)obj)->SetKey( index );*/
 	m_Map[index] = obj;
 	//map의 크기(session block의 크기를 하나씩 늘려줌)
 	++m_iSize;

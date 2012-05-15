@@ -35,8 +35,8 @@ public:
 	virtual	void	OnCreate();
 	virtual void	OnDestroy();
 
-	inline void		SetKey( int i ) { m_iIocpKey = i; }
-	inline int		GetKey() { return m_iIocpKey; }
+// 	inline void		SetKey( int i ) { m_iIocpKey = i; }
+// 	inline int		GetKey() { return m_iIocpKey; }
 
 	//====================================
 	// 패킷을 받았을 때의 호출 함수

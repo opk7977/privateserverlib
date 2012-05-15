@@ -1,13 +1,15 @@
 #include "LoginMain.h"
 #include "LoginDB.h"
 #include "Network.h"
-#include "SThreadMgr.h"
 
 #include "DataLeader.h"
 
 
 LoginMain::LoginMain(void)
 {
+	m_network	= &GetNetwork;
+	m_dbMgr		= &GetDBMgr;
+	m_document	= &GetDocument;
 }
 
 LoginMain::~LoginMain(void)
@@ -17,16 +19,22 @@ LoginMain::~LoginMain(void)
 
 BOOL LoginMain::Init()
 {
-	//db 초기화/ 설정
-	if( !GetDBMgr.Init( _T("GameAccount.mdb") ) )
+	//======================================
+	// db 초기화/ 설정
+	//======================================
+	if( !m_dbMgr->Init( _T("GameAccount.mdb") ) )
 		return FALSE;
 
-	//서버 초기화
-	if( !GetNetwork.Init( GetDocument.SessionCount ) )
+	//======================================
+	// 서버 초기화
+	//======================================
+	if( !m_network->Init( m_document->SessionCount ) )
 		return FALSE;
 
-	//서버 셋팅
-	if( !GetNetwork.SrvSetting( GetDocument.LoginSrvPortNum ) )
+	//======================================
+	// 서버 셋팅
+	//======================================
+	if( !m_network->SrvSetting( m_document->LoginSrvPortNum ) )
 		return FALSE;
 
 	return TRUE;
@@ -34,10 +42,5 @@ BOOL LoginMain::Init()
 
 void LoginMain::Relase()
 {
-	GetDBMgr.Release();
-}
-
-void LoginMain::Run()
-{
-	GetThreadMgr.IsEndAllThread();
+	m_dbMgr->Release();
 }

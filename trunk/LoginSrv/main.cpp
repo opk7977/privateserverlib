@@ -6,25 +6,40 @@
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdParam, int nCmdShow )
 {
+	//======================================
+	// 로그 초기화
+	//======================================
+	SLogger* m_logger = &GetLogger;
+	m_logger->Create( "LoginSrv" );
+	
+	//======================================
+	// 윈도우 생성
+	//======================================
 	HWND hWnd;
-
 	WinMgr window;
 	if( !window.CreateWindows( hInstance, _T("Login"), _T("LoginSrv"), hWnd, 800, 600, nCmdShow ) )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("main\n윈도우 생성 실패!\n\n") );
 		return 0;
+	}
 
-	if( !window.InitConsolHandler() )
-		return 0;
-
-	//로그초기화
-	GetLogger.Create( "LoginSrv" );
-
-	//데이터 부터 셋팅 하자
+	//======================================
+	// 서버 데이터 로드
+	//======================================
 	if( !GetDocument.DataSetting() )
-		return -1;
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("main\n데이터 로드 실패!\n\n") );
+		return 0;
+	}
 
+	//======================================
+	// login 메인 실행
+	//======================================
+	LoginMain* lMain = new LoginMain;
+	lMain->Init();
 
-	LoginMain lMain;
-	lMain.Init();
 
 
 	MSG Message;
@@ -44,7 +59,11 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		}
 	}
 
-	lMain.Relase();
+	//======================================
+	// 할당 해제
+	//======================================
+	delete lMain;
+
 	return (int)Message.wParam;
 }
 

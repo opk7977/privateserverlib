@@ -176,13 +176,24 @@ void CharMgr::ReturnCharSpace( LobbyChar* charspace )
 		return;
 
 	//게임중으로 나간거면 지우지 않는다
-	if( charspace->GetIsPlay() )
-		return;
+// 	if( charspace->GetIsPlay() )
+// 		return;
 
 	int index = charspace->GetVecIndex();
 	charspace->Init();
 
 	m_IndexQ.PutIndex( index );
+}
+
+void CharMgr::ReturnCharSpace( int sessionID )
+{
+	//받아온 session번호에 문제가 있으면 return
+	if( sessionID < 0 || sessionID >= 100 )
+		return;
+
+	LobbyChar* tmpChar = FindCharAsSessionId( sessionID );
+
+	ReturnCharSpace( tmpChar );
 }
 
 LobbyChar* CharMgr::FindCharAsSessionId( int session )

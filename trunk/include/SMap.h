@@ -1,7 +1,7 @@
 #ifndef __SESSION_MAP__
 #define __SESSION_MAP__
 
-#include "SServerobj.h"
+#include "SServerObj.h"
 
 class SMap : public SServerObj
 {

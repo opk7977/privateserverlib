@@ -9,6 +9,9 @@ class SPacket;
 class GameProc : public SThread
 {
 private:
+	// 자신의 ID(방번호(key값))
+	int						m_id;
+
 	// 게임을 하고 있는 player list
 	std::list<GameSession*>	m_listPlayer;
 
@@ -43,11 +46,15 @@ public:
 
 	// 게임 정보들을 초기화
 	void Init();
+	void Init( int i );
+
 	void Release();
 
 	//////////////////////////////////////////////////////////////////////////
 	void SendAsync();
 	//////////////////////////////////////////////////////////////////////////
+
+	int GetGameID() const { return m_id; }
 
 	//======================================
 	// 쓰레드 동작함수

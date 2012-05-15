@@ -1,28 +1,45 @@
 #include "WinMgr.h"
 #include "LobbyMain.h"
-#include "SLogger.h"
+
 #include "DataLeader.h"
+#include "SLogger.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdParam, int nCmdShow )
 {
-	HWND hWnd;
+	//======================================
+	// 로그 초기화
+	//======================================
+	SLogger* m_logger = &GetLogger;
+	m_logger->Create( "LobbySrv" );
 
+	//======================================
+	// 윈도우 생성
+	//======================================
+	HWND hWnd;
 	WinMgr window;
 	if( !window.CreateWindows( hInstance, _T("Lobby"), _T("LobbySrv"), hWnd, 800, 600, nCmdShow ) )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("main::WinMain()\n윈도우 생성에 실패했습니다.\n\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("main\n윈도우 생성 실패!\n\n") );
 		return 0;
 	}
 
-	//로그초기화
-	GetLogger.Create( "LobbySrv" );
-
-	//데이터 부터 셋팅 하자
+	//======================================
+	// 서버 데이터 로드
+	//======================================
 	if( !GetDocument.DataSetting() )
-		return -1;
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("main\n데이터 로드 실패!\n\n") );
+		return 0;
+	}
 
-	LobbyMain  myMain;
-	myMain.Init();
+	//======================================
+	// login 메인 실행
+	//======================================
+	LobbyMain* lMain = new LobbyMain;
+	lMain->Init();
+
 
 
 	MSG Message;
@@ -41,6 +58,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		{
 		}
 	}
+
+	//======================================
+	// 할당 해제
+	//======================================
+	delete lMain;
+
 	return (int)Message.wParam;
 }
 

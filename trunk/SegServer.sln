@@ -27,8 +27,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameSrv", "GameSrv\GameSrv.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LobbySrv", "LobbySrv\LobbySrv.vcproj", "{FBAD751E-0510-4060-A019-4A52041342B9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoginSrvConsol", "LoginSrvConsol\LoginSrvConsol.vcproj", "{42268B62-682B-4D1B-B694-315908106399}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -87,10 +85,6 @@ Global
 		{FBAD751E-0510-4060-A019-4A52041342B9}.Debug|Win32.Build.0 = Debug|Win32
 		{FBAD751E-0510-4060-A019-4A52041342B9}.Release|Win32.ActiveCfg = Release|Win32
 		{FBAD751E-0510-4060-A019-4A52041342B9}.Release|Win32.Build.0 = Release|Win32
-		{42268B62-682B-4D1B-B694-315908106399}.Debug|Win32.ActiveCfg = Debug|Win32
-		{42268B62-682B-4D1B-B694-315908106399}.Debug|Win32.Build.0 = Debug|Win32
-		{42268B62-682B-4D1B-B694-315908106399}.Release|Win32.ActiveCfg = Release|Win32
-		{42268B62-682B-4D1B-B694-315908106399}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

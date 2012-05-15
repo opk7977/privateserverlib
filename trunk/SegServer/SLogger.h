@@ -25,14 +25,6 @@ private:
 	//입력될 파일 공간
 	FILE			*m_pFile;
 	//==============================================================
-	// 문장을 저장하는 변수
-// 	TCHAR			tstr[TMPSTRING_LENTH];
-// 	TCHAR			tmpTStr[TMPSTRING_LENTH];		//에러 추출용
-// 
-// 	char			str[TMPSTRING_LENTH];
-// 	char			tmpStr[TMPSTRING_LENTH];		//에러 추출용
-// 	char			transStr[TMPSTRING_LENTH*2];
-	//==============================================================
 
 private:
 	//내부에서 비교할 flag

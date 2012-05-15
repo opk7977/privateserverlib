@@ -17,7 +17,7 @@ private:
 public:
 	//초기화
 	BOOL Init( TCHAR* filename );
-	void Relase();
+	void Release();
 
 	//sessionId로 userID를 받아 간다
 	void GetData( int in_sessionId, TCHAR* out_ID );

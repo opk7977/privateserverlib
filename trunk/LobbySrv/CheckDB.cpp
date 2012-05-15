@@ -14,7 +14,7 @@ BOOL CheckDB::Init( TCHAR* filename )
 	return m_query.ConnectMdb( filename );
 }
 
-void CheckDB::Relase()
+void CheckDB::Release()
 {
 	m_query.DisConnect();
 }
@@ -26,7 +26,10 @@ void CheckDB::GetData( int in_sessionId, TCHAR* out_ID )
 
 	if( !m_query.Exec( strQuery ) )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("CheckDB::GetData()\nSQLExecDirect Failed\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("CheckDB::GetData()\n%d¹ø session Äõ¸® ½ÇÆÐ\n%s\n\n"),
+						in_sessionId,
+						(TCHAR*)strQuery );
 		return;
 	}
 
@@ -44,7 +47,10 @@ BOOL CheckDB::UpdateLogin( int sessionId, BOOL isLogin /*= TRUE */ )
 	wsprintf( (TCHAR*)strQuery, _T("update tblUser set IS_LOGIN=%d where ID=%d"), isLogin, sessionId );
 	if( !m_query.Exec( strQuery ) )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("[LoginDB::UpdateLogin()] SQLExecDirect Failed(UpdateLogin())\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("LoginDB::UpdateLogin()\n%d¹ø session Äõ¸® ½ÇÆÐ\n%s\n\n"),
+						sessionId,
+						(TCHAR*)strQuery );
 		return FALSE;
 	}
 
@@ -57,11 +63,14 @@ int CheckDB::IsLogin( int sessionID )
 	wsprintf( (TCHAR*)strQuery, _T( "select IS_LOGIN from tblUser where ID=%d"), sessionID );
 	if( !m_query.Exec( strQuery ) )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("[LoginDB::TryLogin()] SQLExecDirect Failed(AskLogin())\n") );
-		return -10;
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("LoginDB::TryLogin()\n%d¹ø session Äõ¸® ½ÇÆÐ\n%s\n\n"),
+						sessionID,
+						(TCHAR*)strQuery );
+		return SERVER_ERROR;
 	}
 
-	BOOL isLoginResult = FALSE;
+	int isLoginResult = -1;
 	while( m_query.Fetch() != SQL_NO_DATA )
 	{
 		isLoginResult = m_query.GetInt( _T("IS_LOGIN") );

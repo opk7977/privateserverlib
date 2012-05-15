@@ -1,9 +1,10 @@
 #include "LoginSession.h"
 #include "LoginProtocol.h"
 #include "LoginDB.h"
-#include "SLogger.h"
-
 #include "DataLeader.h"
+
+#include "SPacket.h"
+#include "SLogger.h"
 
 SIMPLEMENT_DYNAMIC(LoginSession)
 SIMPLEMENT_DYNCREATE(LoginSession)
@@ -11,8 +12,10 @@ SIMPLEMENT_DYNCREATE(LoginSession)
 LoginSession::LoginSession(void)
 : isLogin(FALSE)
 {
-	m_dbMgr = &GetDBMgr;
-	m_logger = &GetLogger;
+	//singleTon객체를 미리 받아 논다.
+	m_dbMgr		= &GetDBMgr;
+	m_logger	= &GetLogger;
+	m_document	= &GetDocument;
 }
 
 LoginSession::~LoginSession(void)
@@ -29,6 +32,7 @@ void LoginSession::OnCreate()
 
 void LoginSession::OnDestroy()
 {
+	//그냥 지워 주면 됨
 	SSession::OnDestroy();
 }
 
@@ -48,7 +52,8 @@ void LoginSession::PacketParsing( SPacket& packet )
 		RecvTryLogin( packet );
 		break;
 	default:
-		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("정의되지 않은 패킷 id입니다.\n\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("정의되지 않은 패킷 id입니다.\n\n") );
 	}
 }
 
@@ -57,20 +62,23 @@ void LoginSession::PacketParsing( SPacket& packet )
 //CS_LOGIN_CHECK_ID
 void LoginSession::RecvCheckId( SPacket& packet )
 {
+	//======================================
+	// ID중복 체크
+	//======================================
 	TCHAR tstrID[64] = {0,};
 	int idSize;
 
 	SSynchronize Sync( this );
 
+	//--------------------------------------
+	// 데이터 추출
+	//--------------------------------------
 	packet >> idSize;
 	packet.GetData( tstrID, idSize );
+	//--------------------------------------
 
+	//ID중복 체크
 	int result = m_dbMgr->CheckId( tstrID );
-
-	if( result < 0 )
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LoginSession::RecvCheckId()\n아이디 %s는 중복되는 ID가 이미 존재합니다.\n\n"), tstrID );
-	else
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LoginSession::RecvCheckId()\n아이디 %s는 사용할 수 있는 ID입니다.\n\n"), tstrID );
 
 	SendCheckIdResult( result );
 }
@@ -78,6 +86,9 @@ void LoginSession::RecvCheckId( SPacket& packet )
 //CS_LOGIN_CREATE_ACCOUNT
 void LoginSession::RecvCreateAccount( SPacket& packet )
 {
+	//======================================
+	// 계정생성
+	//======================================
 	TCHAR tstrID[64] = {0,};
 	TCHAR tstrPW[64] = {0,};
 	TCHAR tstrMAIL[128] = {0,};
@@ -85,21 +96,23 @@ void LoginSession::RecvCreateAccount( SPacket& packet )
 
 	SSynchronize Sync( this );
 
+	//--------------------------------------
+	// 데이터 추출
+	//--------------------------------------
 	packet >> tstrSize;
 	packet.GetData( tstrID, tstrSize );
 	packet >> tstrSize;
 	packet.GetData( tstrPW, tstrSize );
 	packet >> tstrSize;
 	packet.GetData( tstrMAIL, tstrSize );
+	//--------------------------------------
 
-	int result = m_dbMgr->AddAccount( tstrID, tstrPW, tstrMAIL );
+	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+					_T("LoginSession::RecvCheckId()\n아이디 : %s\n패스워드 : %s\n이메일 : %s\n"),
+					tstrID, tstrPW,	tstrMAIL );
 
-	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LoginSession::RecvCheckId()\n아이디 : %s\n패스워드 : %s\n이메일 : %s\n"), tstrID, tstrPW, tstrMAIL );
-
-	if( result < 0 )
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("계정 생성에 실패하였습니다.\n\n") );
-	else
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("계정 생성에 성공하였습니다.\n\n") );
+	//계정 생성
+	int result = m_dbMgr->AddAccount( tstrID, tstrPW, tstrMAIL );	
 
 	SendCreateResult( result );
 }
@@ -107,17 +120,25 @@ void LoginSession::RecvCreateAccount( SPacket& packet )
 //CS_LOGIN_LOGIN
 void LoginSession::RecvTryLogin( SPacket& packet )
 {
+	//======================================
+	// 로그인
+	//======================================
 	TCHAR tstrID[64];
 	TCHAR tstrPW[64];
 	int tstrSize;
 
 	SSynchronize Sync( this );
 
+	//--------------------------------------
+	// 데이터 추출
+	//--------------------------------------
 	packet >> tstrSize;
 	packet.GetData( tstrID, tstrSize );
 	packet >> tstrSize;
 	packet.GetData( tstrPW, tstrSize );
+	//--------------------------------------
 
+	//로그인!
 	int sessionId = m_dbMgr->TryLogin( tstrID, tstrPW );
 
 	if( sessionId > 0 )
@@ -128,24 +149,22 @@ void LoginSession::RecvTryLogin( SPacket& packet )
 		if( retval < 0 )
 		{
 			//오류
-			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LoginSession::RecvTryLogin()\nIsLogin쿼리 실패, 쿼리문을 다시 확인하세요.\n\n") );
 			sessionId = retval;
 		}
 		else if( retval > 0 )
 		{
 			//이미 로그인되어 있음
-			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LoginSession::RecvTryLogin()\nIsLogin이미 로그인 되어 있는 ID입니다.\n\n") );
-			sessionId = -5;
+			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LoginSession::RecvTryLogin()\nIsLogin이미 로그인 되어 있는 ID입니다.\n\n") );
+			sessionId = PRE_LOGIN_ID;
 		}
-		// 그냥 로그인 됨
-	}
-	else if( sessionId < -1 )
-	{
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LoginSession::RecvTryLogin()\nTryLogin쿼리 실패, 쿼리문을 다시 확인하세요.\n\n") );
+		// retval == 0이면 로그인
 	}
 
 
-	SendLoginResult( sessionId );
+	if( sessionId > 0 )
+		SendLoginSuccess( sessionId );
+	else
+		SendLoginFailed( sessionId );
 }
 
 //==============================================================
@@ -179,29 +198,74 @@ BOOL LoginSession::SendCreateResult( int result )
 }
 
 //SC_LOGIN_LOGIN_RESULT
-BOOL LoginSession::SendLoginResult( int result )
+// BOOL LoginSession::SendLoginResult( int result )
+// {
+// 	SPacket sendPacket;
+// 
+// 	sendPacket.SetID( SC_LOGIN_LOGIN_RESULT );
+// 	sendPacket << result;
+// 
+// 	if( result > 0 )
+// 	{
+// 		//result값이 양수(session)값이면
+// 
+// 		//로그인 처리
+// 		//DB에 표시
+// 		m_dbMgr->UpdateLogin( result );
+// 
+// 		//ip주소와 port번호를 넣어 준다.
+// 		char ipAddr[15]={0,};
+// 		CopyMemory( ipAddr, GetDocument.LobbySrvIP, 15 );
+// 
+// 		sendPacket << (int)(strlen( ipAddr ));
+// 		sendPacket.PutData( ipAddr, strlen( ipAddr ) );
+// 		sendPacket << GetDocument.LobbySrvPortNum;		//포트번호
+// 	}
+// 
+// 	if( SendPacket( sendPacket ) == sendPacket.GetPacketSize() )
+// 		return TRUE;
+// 
+// 	return FALSE;
+// }
+
+BOOL LoginSession::SendLoginFailed( int result )
 {
+	//--------------------------------------
+	// 로그인 실패!
+	//--------------------------------------
 	SPacket sendPacket;
 
 	sendPacket.SetID( SC_LOGIN_LOGIN_RESULT );
 	sendPacket << result;
 
-	if( result > 0 )
-	{
-		//result값이 양수(session)값이면
+	if( SendPacket( sendPacket ) == sendPacket.GetPacketSize() )
+		return TRUE;
 
-		//로그인 처리
-		//DB에 표시
-		m_dbMgr->UpdateLogin( result );
+	return FALSE;
+}
 
-		//ip주소와 port번호를 넣어 준다.
-		char ipAddr[15]={0,};
-		CopyMemory( ipAddr, GetDocument.LobbySrvIP, 15 );
+BOOL LoginSession::SendLoginSuccess( int result )
+{
+	//--------------------------------------
+	// 로그인 성공!!
+	//--------------------------------------
+	SPacket sendPacket;
 
-		sendPacket << (int)(strlen( ipAddr ));
-		sendPacket.PutData( ipAddr, strlen( ipAddr ) );
-		sendPacket << GetDocument.LobbySrvPortNum;		//포트번호
-	}
+	sendPacket.SetID( SC_LOGIN_LOGIN_RESULT );
+	sendPacket << result;
+
+	//로그인 처리
+	//DB에 표시
+	m_dbMgr->UpdateLogin( result );
+
+	//ip주소와 port번호를 넣어 준다.
+	//char ipAddr[15]={0,};
+	//CopyMemory( ipAddr, GetDocument.LobbySrvIP, 15 );
+
+	int size = strlen( m_document->LobbySrvIP );
+	sendPacket << size;
+	sendPacket.PutData( m_document->LobbySrvIP, size );
+	sendPacket << m_document->LobbySrvPortNum;		//포트번호
 
 	if( SendPacket( sendPacket ) == sendPacket.GetPacketSize() )
 		return TRUE;

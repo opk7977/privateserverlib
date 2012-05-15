@@ -1,5 +1,47 @@
 #pragma once
 
+enum SERVER_CODE
+{
+	// 쿼리 오류 등 서버 자체적인 에러로
+	// 정상적인 처리가 되지 못한경우
+	// 결과값으로 들어가 있을 수 있다.
+	SERVER_ERROR = -10,
+	// 성공의 결과값
+	SUCCESSED_ACK = 1,
+
+	//--------------------------------------------------------------
+
+	// ID체크 결과로 ID가 중복될때
+	OVERLAPPED_ID = -1,
+
+	// 로그인 결과로 해당 ID가 이미 로그인 중에 있을때
+	PRE_LOGIN_ID = -5,
+	// 로그인 결과로 ID가 없음
+	NONEXISTENT_ID = -1,
+	// 로그인 결과로 PW가 틀림
+	WRONG_PW = 0,
+
+	//--------------------------------------------------------------
+
+	// 방만들기 실패( 더이상 방을 만들 수 없음 )
+	ROOMCOUNT_IS_FULL = -1,
+
+	// 방 입장시 방이 게임중이면
+	ROOM_IS_PLAY_NOW = -1,
+	// 방 입장시 방이 인원 초과
+	ROOM_PLAYERCOUNT_FULL = 0,
+
+	//--------------------------------------------------------------
+
+	// 게임 종료의 종류
+	// 시간 초과
+	GAME_END_TIMEATTECT = 1,
+	// 팀 전멸
+	GAME_END_TEAM_ALL_DIE,
+	// 팀 미션의 성공
+	GAME_END_MISSION_SUCCESS,
+};
+
 enum LOGIN_SERVER
 {
 	// server -> client
@@ -31,7 +73,7 @@ enum LOGIN_SERVER
 
 	// server -> client
 	// 계정 새로 만들기에 대한 결과
-	// -1(음수) : 실패/ 1(양수) : 성공
+	// -10(음수) : 실패/ 1(양수) : 성공
 	// int			-		결과값
 	SC_LOGIN_CREATE_RESULT,
 

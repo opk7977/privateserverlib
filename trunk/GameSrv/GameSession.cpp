@@ -56,6 +56,7 @@ void GameSession::OnDestroy()
 		{
 			//현재 게임 내에 아무도 남지 않았음
 			//로비로 방의 게임 proc이 닫혔음을 알림?
+			SendGameEnd( m_myGameProc->GetGameID() );
 
 			//게임 proc닫음
 			m_myGameProc->Init();
@@ -119,7 +120,7 @@ void GameSession::PacketParsing( SPacket& packet )
 
 	//==============================================================> Client
 	default:
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::PacketParsing()\n받은 패킷의 아이디가 유효하지 않습니다.\n\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::PacketParsing()\n(%d번 ID)받은 패킷의 아이디가 유효하지 않습니다.\n\n"), packet.GetID() );
 	}
 }
 
@@ -131,7 +132,7 @@ void GameSession::PacketParsing( SPacket& packet )
 //--------------------------------------
 void GameSession::RecvLobbyConnectOK()
 {
-	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::RecvLobbyConnectOK()\n로비서버와 연결에 성공하였습니다\n\n") );
+	GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::RecvLobbyConnectOK()\n로비서버와 연결에 성공하였습니다\n\n") );
 
 	GetSrvNet.SetSession( this );
 
@@ -149,6 +150,10 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 
 	packet >> roomNum;		//방번호
 	packet >> count;		//방의 인원수
+
+	GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("GameSession::RecvLobbyStartGame()\n%d번 방에 %d명의 캐릭터가 게임을 시작합니다.\n\n") 
+						, roomNum, count );
 
 	//우선 방 번호에 해당하는 게임을 연다
 	GameProc* tmpGame = GetGameMgr.FindGame( roomNum );
@@ -219,14 +224,14 @@ void GameSession::RecvInGame( SPacket &packet )
 	m_myCharInfo = GetCharMgr.FindCharAsSessionId( sessionId );
 	if( m_myCharInfo == NULL )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::RecvInGame()\n해당 캐릭터를 찾지 못했습니다.\n\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::RecvInGame()\n해당 캐릭터를 찾지 못했습니다.\n\n") );
 		return;
 	}
 	
 	m_myGameProc = GetGameMgr.FindGame( roomNum );
 	if( m_myGameProc == NULL )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::RecvInGame()\n해당 게임 프로세스를 찾지 못했습니다.\n\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::RecvInGame()\n해당 게임 프로세스를 찾지 못했습니다.\n\n") );
 		return;
 	}
 
@@ -262,7 +267,7 @@ void GameSession::RecvMoveChar( SPacket &packet )
 
 		if( m_myCharInfo == NULL )
 		{
-			GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::RecvMoveChar()\n캐릭터 설정에 문제가 있습니다.\n\n") );
+			GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::RecvMoveChar()\n캐릭터 설정에 문제가 있습니다.\n\n") );
 			return;
 		}
 
@@ -271,7 +276,7 @@ void GameSession::RecvMoveChar( SPacket &packet )
 		m_myCharInfo->SetDirection( dir.m_X, dir.m_Y, dir.m_Z );
 		m_myCharInfo->SetDirInt( dirInt );
 
-		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM,
 						_T("GameSession::RecvMoveChar()\n")
 						_T("%s(%d) 캐릭터가 %d번 상태\n")
 						_T("pos(%f, %f, %f)위치")
@@ -292,7 +297,7 @@ void GameSession::RecvGameSync( SPacket &packet )
 
 	if( m_myCharInfo == NULL )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::RecvMoveChar()\n캐릭터 설정에 문제가 있습니다.\n\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::RecvMoveChar()\n캐릭터 설정에 문제가 있습니다.\n\n") );
 		return;
 	}
 
@@ -309,7 +314,7 @@ void GameSession::RecvGameSync( SPacket &packet )
 	m_myCharInfo->SetPosition( pos );
 	m_myCharInfo->SetDirection( dir );
 
-	GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM,
 					_T("GameSession::RecvGameSync()\n")
 					_T("%s(%d) 캐릭터\n")
 					_T("pos(%f, %f, %f)위치")
@@ -384,7 +389,7 @@ void GameSession::RecvGameChatting( SPacket &packet )
 	swprintf_s( Chatting, _T("[%s] %s"), m_myCharInfo->GetID(), tmpChatting );
 	size = _tcslen( Chatting )*sizeof( TCHAR );
 
-	GetLogger.PutLog( SLogger::LOG_LEVEL_CONINFO,
+	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM,
 		_T("GameSession::RecvGameChatting()\n%s\n\n"), Chatting );
 
 	SendGameChatting( Chatting, size );
@@ -459,7 +464,7 @@ BOOL GameSession::SendOtherCharInfoToMe()
 	int retval = SendPacket( sendPacket );
 	if( retval != sendPacket.GetPacketSize() )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::SendMyCharInfoToInGamePlayer()\n전송된 패킷크기와 패킷의 크기 일치 하지 않습니다.\n\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::SendMyCharInfoToInGamePlayer()\n전송된 패킷크기와 패킷의 크기 일치 하지 않습니다.\n\n") );
 		return FALSE;
 	}
 	return TRUE;
@@ -501,7 +506,7 @@ BOOL GameSession::SendMoveChar()
 	sendPacket << dir.m_X << dir.m_Y << dir.m_Z;
 	sendPacket << m_myCharInfo->GetDirInt();
 
-	GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM,
 					_T("GameSession::SendMoveChar()\n")
 					_T("%s(%d) 캐릭터가 %d번 상태\n")
 					_T("pos(%f, %f, %f)위치")
@@ -515,7 +520,7 @@ BOOL GameSession::SendMoveChar()
 
 	if( m_myGameProc == NULL )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::SendMoveChar()\n방정보에 문제가 있습니다.\n\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::SendMoveChar()\n방정보에 문제가 있습니다.\n\n") );
 		return FALSE;
 	}
 
@@ -549,7 +554,7 @@ BOOL GameSession::SendGameSync()
 	//sendPacket << m_myCharInfo->GetDirInt();
 	//}
 
-	GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM,
 					_T("GameSession::SendGameSync()\n")
 					_T("%s(%d) 캐릭터\n")
 					_T("pos(%f, %f, %f)위치\n")
@@ -561,7 +566,7 @@ BOOL GameSession::SendGameSync()
 
 	if( m_myGameProc == NULL )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameSession::SendMoveChar()\n방정보에 문제가 있습니다.\n\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::SendMoveChar()\n방정보에 문제가 있습니다.\n\n") );
 		return FALSE;
 	}
 

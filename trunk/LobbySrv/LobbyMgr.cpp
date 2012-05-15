@@ -2,9 +2,6 @@
 #include "LobbyChar.h"
 #include "LobbySession.h"
 
-SServerObj* LobbyMgr::m_critical = new SServerObj;
-
-
 LobbyMgr::LobbyMgr(void)
 : m_iPlayerCountInLobby(0)
 {
@@ -28,61 +25,53 @@ void LobbyMgr::Release()
 
 void LobbyMgr::SendPacketAllInLobby( SPacket& packet, LobbyChar* mySession /*= NULL*/ )
 {
+	SSynchronize sync( this );
+
+	if( m_listPlayerInLobby.empty() )
+		return;
+	
+	std::list<LobbyChar*>::iterator iter = m_listPlayerInLobby.begin();
+
+	for( ; iter != m_listPlayerInLobby.end(); ++iter )
 	{
-		SSynchronize sync( m_critical );
+		//mySession이 NULL이 아니면 나한테는 보내지 말라는 것.
+		if( *iter == mySession )
+			continue;
 
-		if( m_listPlayerInLobby.empty() )
-			return;
-		
-		std::list<LobbyChar*>::iterator iter = m_listPlayerInLobby.begin();
-
-		for( ; iter != m_listPlayerInLobby.end(); ++iter )
-		{
-			//mySession이 NULL이 아니면 나한테는 보내지 말라는 것.
-			if( *iter == mySession )
-				continue;
-
-			(*iter)->GetSession()->SendPacket( packet );
-		}
+		(*iter)->GetSession()->SendPacket( packet );
 	}
 }
 
 void LobbyMgr::PackageDataAllInLobby( SPacket& packet )
 {
-	{
-		SSynchronize sync( m_critical );
+	SSynchronize sync( this );
 
-		if( m_listPlayerInLobby.empty() )
-			return;
+	if( m_listPlayerInLobby.empty() )
+		return;
 
-		packet << m_iPlayerCountInLobby;
+	packet << m_iPlayerCountInLobby;
 
-		std::list<LobbyChar*>::iterator iter = m_listPlayerInLobby.begin();
+	std::list<LobbyChar*>::iterator iter = m_listPlayerInLobby.begin();
 
-		for( ; iter != m_listPlayerInLobby.end(); ++iter )
-			(*iter)->PackageMyInfo( packet );
-	}
+	for( ; iter != m_listPlayerInLobby.end(); ++iter )
+		(*iter)->PackageMyInfo( packet );
 }
 
 void LobbyMgr::AddUser( LobbyChar* _session )
 {
-	{
-		SSynchronize sync( m_critical );
+	SSynchronize sync( this );
 
-		m_listPlayerInLobby.push_back( _session );
-		++m_iPlayerCountInLobby;
-	}
+	m_listPlayerInLobby.push_back( _session );
+	++m_iPlayerCountInLobby;
 }
 
 void LobbyMgr::MinusUser( LobbyChar* _session )
 {
-	{
-		SSynchronize sync( m_critical );
+	SSynchronize sync( this );
 
-		if( m_listPlayerInLobby.empty() )
-			return;
+	if( m_listPlayerInLobby.empty() )
+		return;
 
-		m_listPlayerInLobby.remove( _session );
-		--m_iPlayerCountInLobby;
-	}
+	m_listPlayerInLobby.remove( _session );
+	--m_iPlayerCountInLobby;
 }

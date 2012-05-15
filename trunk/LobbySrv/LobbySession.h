@@ -5,8 +5,34 @@
 class LobbyChar;
 class Room;
 
+//--------------------------------------
+// For SingleTon
+//--------------------------------------
+class DataLeader;
+
+class LobbyMgr;
+class RoomMgr;
+class CharMgr;
+class CheckDB;
+
+class SrvNet;
+
+class SLogger;
+
 class LobbySession : public SSessionObj
 {
+private:
+	//======================================
+	// singleTon객체
+	//======================================
+	DataLeader*		m_document;
+	LobbyMgr*		m_lobbyMgr;
+	RoomMgr*		m_roomMgr;
+	CharMgr*		m_charMgr;
+	CheckDB*		m_DBMgr;
+	SrvNet*			m_srvNet;
+	SLogger*		m_logger;
+
 private:
 	//--------------------------------------
 	// 유저정보
@@ -132,6 +158,9 @@ public:
 
 	//SC_ROOM_CHAR_OUT
 	BOOL SendRoomCharOut();
+
+	//SC_LOBBY_ROOMPLAYER_COUNTDOWN
+	BOOL SendLobbyRoomCharOut( int room );
 
 	//SC_ROOM_CHAR_READY
 	BOOL SendRoomCharReady();

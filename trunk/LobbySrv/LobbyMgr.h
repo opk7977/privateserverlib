@@ -5,21 +5,17 @@
 class LobbyChar;
 class SPacket;
 
-class LobbyMgr : public SSingleton <LobbyMgr>
+class LobbyMgr : public SSingleton <LobbyMgr>, public SServerObj
 {
 private:
 	friend class SSingleton<LobbyMgr>;
 
 private:
 	//로비에 있는 player list
-	//std::list<LobbySession*>			m_listPlayerInLobby;
 	std::list<LobbyChar*>				m_listPlayerInLobby;
 
 	//로비에 있는 사람 수
 	int									m_iPlayerCountInLobby;
-
-	//임계영역을 위한 obj
-	static SServerObj*					m_critical;
 
 private:
 	LobbyMgr(void);

@@ -1,16 +1,17 @@
 #include "LobbySession.h"
 #include "LobbyProtocol.h"
 
-#include "LobbyMgr.h"
-#include "SLogger.h"
+#include "DataLeader.h"
 
+#include "LobbyMgr.h"
 #include "Room.h"
 #include "LobbyChar.h"
-
-#include "DataLeader.h"
 #include "CheckDB.h"
 
 #include "SrvNet.h"
+
+#include "SLogger.h"
+
 
 SIMPLEMENT_DYNAMIC(LobbySession)
 SIMPLEMENT_DYNCREATE(LobbySession)
@@ -19,6 +20,13 @@ LobbySession::LobbySession(void)
 : m_myCharInfo(NULL)
 , m_myRoom(NULL)
 {
+	m_document	= &GetDocument;
+	m_lobbyMgr	= &GetLobbyMgr;
+	m_roomMgr	= &GetRoomMgr;
+	m_charMgr	= &GetCharMgr;
+	m_DBMgr		= &GetDB;
+	m_srvNet	= &GetSrvNet;
+	m_logger	= &GetLogger;
 }
 
 LobbySession::~LobbySession(void)
@@ -41,7 +49,8 @@ void LobbySession::OnDestroy()
 	if( m_myCharInfo == NULL )
 	{
 		//캐릭터 정보가 없다면 서버 혹은 클라에서 자신의 정보를 보내기 전에 끈경우
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::OnDestroy()\n 캐릭터 정보가 없는 session의 연결을 끊습니다.\n\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("LobbySession::OnDestroy()\n 캐릭터 정보가 없는 session의 연결을 끊습니다.\n\n") );
 	}
 	else
 	{
@@ -50,22 +59,31 @@ void LobbySession::OnDestroy()
 			//게임중이 아님
 			if( m_myRoom == NULL )
 			{
+				m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+								_T("LobbySession::OnDestroy()\n캐릭터 %s님이 로비에서 연결을 끊습니다.\n\n"),
+								m_myCharInfo->GetID() );
+
 				//로비에 있는 user
 				//그냥 로비에서 삭제
-				GetLobbyMgr.MinusUser( m_myCharInfo );
+				m_lobbyMgr->MinusUser( m_myCharInfo );
 
 				//모두에게 알린다
 				SendPlayerDisconnect();
 			}
 			else
 			{
+				int room = m_myRoom->GetRoomNum();
+
+				m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+								_T("LobbySession::OnDestroy()\n캐릭터 %s님이 %d번 방에서 연결을 끊습니다.\n\n"),
+								room, m_myCharInfo->GetID() );
+
 				//방에서 지워준다
 				if( !m_myRoom->DelPlayerInRoom( m_myCharInfo ) )
 				{
 					//방에 남아있는 인원이 없음
 					//방 닫고
-					int room = m_myRoom->GetRoomNum();
-					GetRoomMgr.CloseRoom( room );
+					m_roomMgr->CloseRoom( room );
 
 					//방이 닫혔다는 정보를 로비의 사람들에게 보낸다.
 					SendCloseRoom( room );
@@ -76,11 +94,10 @@ void LobbySession::OnDestroy()
 			}
 
 			//DB에 있는 user정보에 Logout체크를 해 준다
-			GetDB.UpdateLogin( m_myCharInfo->GetSessionID(), FALSE );
+			m_DBMgr->UpdateLogin( m_myCharInfo->GetSessionID(), FALSE );
 
 			//캐릭터 공간을 지워 준다
-			//게임중인 캐릭터라면 지워주지 않고 그냥 return된다
-			GetCharMgr.ReturnCharSpace( m_myCharInfo );
+			m_charMgr->ReturnCharSpace( m_myCharInfo );
 			
 		}
 		else
@@ -99,12 +116,10 @@ void LobbySession::OnDestroy()
 
 void LobbySession::clear()
 {
-	{
-		SSynchronize Sync( this );
+	SSynchronize Sync( this );
 
-		m_myCharInfo = NULL;
-		m_myRoom = NULL;
-	}
+	m_myCharInfo = NULL;
+	m_myRoom = NULL;
 }
 
 //패킷을 해석해서 지정된 함수를 호출한다.
@@ -155,6 +170,10 @@ void LobbySession::PacketParsing( SPacket& packet )
 	case CS_ROOM_START:
 		RecvRoomStartGame();
 		break;
+
+	default:
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("LobbySession::PacketParsing()\n%d번 패킷, 패킷 ID가 유효하지 않습니다.\n\n") );
 	}
 }
 
@@ -164,24 +183,33 @@ void LobbySession::PacketParsing( SPacket& packet )
 
 void LobbySession::RecvConnectServer()
 {
-	if( GetSrvNet.GetSession() != NULL )
+	SSynchronize Sync( this );
+
+	//이미 연결되어 있는지를 확인하고
+	if( m_srvNet->GetSession() != NULL )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LobbySession::RecvConnectServer()\n서버설정이 이미 끝났습니다. 넌 누구냐...\n\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("LobbySession::RecvConnectServer()\n서버설정이 이미 끝났습니다. 넌 누구냐...\n\n") );
 		return;
 	}
 	//내가 서버다!!
-	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::RecvConnectServer()\n게임서버와 연결되었습니다.\n\n") );
-	GetSrvNet.SetSession( this );
+	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+					_T("LobbySession::RecvConnectServer()\n게임서버와 연결되었습니다.\n\n") );
+	m_srvNet->SetSession( this );
 }
 
 void LobbySession::RecvStartFaild( SPacket& packet )
 {
+	SSynchronize Sync( this );
+
 	int room;
 	packet >> room;
-	Room* tmpRoom = GetRoomMgr.FindRoom( room );
+
+	Room* tmpRoom = m_roomMgr->FindRoom( room );
 	if( tmpRoom == NULL )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LobbySession::RecvStartFaild()\n해당 방의 정보가 없습니다.\n\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, 
+						_T("LobbySession::RecvStartFaild()\n해당 방의 정보가 없습니다.\n\n") );
 		return;
 	}
 
@@ -191,14 +219,17 @@ void LobbySession::RecvStartFaild( SPacket& packet )
 
 void LobbySession::RecvGameStart( SPacket& packet )
 {
+	SSynchronize Sync( this );
+
 	int room;
 	packet >> room;
 
 	//해당 번호에 맞는 방을 찾아 온다
-	Room* tmpRoom = GetRoomMgr.FindRoom( room );
+	Room* tmpRoom = m_roomMgr->FindRoom( room );
 	if( tmpRoom == NULL )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LobbySession::RecvGameStart()\n해당 방의 정보가 없습니다.\n\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("LobbySession::RecvGameStart()\n해당 방의 정보가 없습니다.\n\n") );
 		return;
 	}
 
@@ -211,20 +242,26 @@ void LobbySession::RecvGameStart( SPacket& packet )
 	//방의 player들에게 게임서버로 이동하라는 패킷을 보낸다.
 	SendStartGameInRoom( room );
 
-	//방에 있는 list를 비워 준다
+	//방에 있는 list를 비워주고, 인원수를 초기화 해 준다
+	//방으로 들어 오면 다시 캐릭터 정보를 갱신해야 하니 비워 준다
 	tmpRoom->ListReset();
 }
 
 void LobbySession::RecvGameEnd( SPacket& packet )
 {
+	//게임 안에 player가 모두 나갔을때 받는 패킷이다
+	//게임이 종료 되고 player가 모두 나갔다. 그러니 방을 다시 열어 준다.
+	SSynchronize Sync( this );
+
 	int room;
 	packet >> room;
 
 	//해당 번호에 맞는 방을 찾아 온다
-	Room* tmpRoom = GetRoomMgr.FindRoom( room );
+	Room* tmpRoom = m_roomMgr->FindRoom( room );
 	if( tmpRoom == NULL )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LobbySession::RecvGameStart()\n해당 방의 정보가 없습니다.\n\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("LobbySession::RecvGameStart()\n해당 방의 정보가 없습니다.\n\n") );
 		return;
 	}
 
@@ -232,45 +269,29 @@ void LobbySession::RecvGameEnd( SPacket& packet )
 	tmpRoom->SetNormal();
 	
 	//로비 사람들에게 방이 열렸다고 알려 준다.
+	SendLobbyGameEnd( room );
 }
 
 void LobbySession::RecvPlayerDiconnectInGame( SPacket& packet )
 {
+	//======================================
+	// 게임 프로세스에서 player가 게임을 종료 한경우
+	//======================================
+	SSynchronize Sync( this );
+
 	int room, session;
 	packet >> room;
 	packet >> session;
 
-	//방에서 사람을 지워 주고
-	Room* tmpRoom = GetRoomMgr.FindRoom( room );
-	if( tmpRoom == NULL )
-	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::RecvPlayerDiconnectInGame()\n방이 존재하지 않습니다.\n\n") );
-		return;
-	}
-
-	if( !tmpRoom->DelPlayerInRoom( session ) )
-	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::RecvPlayerDiconnectInGame()\n방에 해당 캐릭터가 존재하지 않습니다.\n\n") );
-		return;
-	}
 
 	//로비에 있는 사람들에게 1명 나갔다는 표시만 보내준다.
-	///////////////////////////////////////////////////////////////////////////
+	SendLobbyRoomCharOut( room );
 
-	//로비에 보내줄 packet
-	SPacket	sendPacket;
-	sendPacket.SetID( SC_LOBBY_ROOMPLAYER_COUNTDOWN );
-	sendPacket << tmpRoom->GetRoomNum();
+	//캐릭터 로그인 정보를 갱신해 준다
+	m_DBMgr->UpdateLogin( session, FALSE );
 
-	//로비의 사람들에게 몇번방에 사람이 줄었다는 패킷을 보낸다.
-	GetLobbyMgr.SendPacketAllInLobby( sendPacket );
-
-#ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomCharOut()\n")
-												_T("[All In Lobby] 전송되었습니다.\n\n") );
-
-#endif
-
+	//캐릭터 정보를 삭제 해 준다.
+	m_charMgr->ReturnCharSpace( session );
 }
 
 //--------------------------------------------------------------
@@ -282,42 +303,52 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 	packet >> roomNum;
 
 #ifdef _DEBUG 
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::RecvInsertLobby()\n")
-													_T("sessionID : %d\n")
-													_T("Room : %d\n\n")
-													, sessionId
-													, roomNum );
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+					_T("LobbySession::RecvInsertLobby()\n")
+					_T("sessionID : %d\n")
+					_T("Room : %d\n\n")
+					, sessionId
+					, roomNum );
 #endif
+
+	SSynchronize Sync( this );
 
 	//방번호를 확인해서 제 접속인지를 보자
 	if( roomNum > 0 )
 	{
-		SSynchronize Sync( this );
-
-		//--------------------------------------
+		//======================================
 		// 재 접속 //방으로
+		//======================================
+		//--------------------------------------
+		// 캐릭터와 방의 정보를 다시 갱신
 		//--------------------------------------
 		//캐릭터 공간을 받아 온다
-		m_myCharInfo = GetCharMgr.FindCharAsSessionId( sessionId );
+		m_myCharInfo = m_charMgr->FindCharAsSessionId( sessionId );
 		if( m_myCharInfo == NULL )
 		{
-			GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LobbySession::RecvInsertLobby()\n%d번에 해당하는 캐릭터의 정보가 존재하지 않습니다.\n\n"), sessionId );
+			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+							_T("LobbySession::RecvInsertLobby()\n%d번에 해당하는 캐릭터의 정보가 존재하지 않습니다.\n\n"),
+							sessionId );
 			return;
 		}
+		//방 공간도 받아 온다 
+		m_myRoom = m_roomMgr->FindRoom( roomNum );
+		if( m_myRoom == NULL )
+		{
+			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+				_T("LobbySession::RecvInsertLobby()\n%d번에 해당하는 방이 존재하지 않습니다.\n\n"),
+				roomNum );
+			return;
+		}
+		//--------------------------------------
+
+
 		//해당 캐릭터의 session정보를 다시 설정
 		m_myCharInfo->SetSession( this );
 
 		//캐릭터의 게임 실행 상태와 ready상태를 초기화 해주자
 		m_myCharInfo->SetIsPlay( FALSE );
 		m_myCharInfo->SetReady( FALSE );
-
-		//방 공간도 다시 받아 온다 
-		m_myRoom = GetRoomMgr.FindRoom( roomNum );
-		if( m_myRoom == NULL )
-		{
-			GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LobbySession::RecvInsertLobby()\n%d번에 해당하는 방이 존재하지 않습니다.\n\n"), roomNum );
-			return;
-		}
 
 		//방에 나를 추가
 		m_myRoom->AddPlayerInRoom( m_myCharInfo );
@@ -333,13 +364,12 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 		//--------------------------------------
 		// 새로 접속 //로비로
 		//--------------------------------------
-		SSynchronize Sync( this );
-
 		//캐릭터 공간을 하나 얻어 온다
-		m_myCharInfo = GetCharMgr.GetCharSPace();
+		m_myCharInfo = m_charMgr->GetCharSPace();
 		if( m_myCharInfo == NULL )
 		{
-			GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LobbySession::RecvInsertLobby()\n더이상 캐릭터를 수용할 수 있는 캐릭터 공간이 존재하지 않습니다.\n\n") );
+			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+							_T("LobbySession::RecvInsertLobby()\n더이상 캐릭터를 수용할 수 있는 캐릭터 공간이 존재하지 않습니다.\n\n") );
 			//////////////////////////////////////////////////////////////////////////
 			// 더이상 수용할 수 없다는 패킷을 보낸다
 			//
@@ -348,14 +378,20 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 			//////////////////////////////////////////////////////////////////////////
 			return;
 		}
+
 		// DB에서 정보를 찾는다.
-		GetDB.GetData( sessionId, m_myCharInfo->GetID() );
+		m_DBMgr->GetData( sessionId, m_myCharInfo->GetID() );
+
+		//======================================
+		// 내 정보 셋팅
+		//======================================
 		m_myCharInfo->SetSessionID( sessionId );
 		//해당 캐릭터의 session정보를 설정
 		m_myCharInfo->SetSession( this );
+		//======================================
 
 		//로비list에 나를 추가
-		GetLobbyMgr.AddUser( m_myCharInfo );
+		m_lobbyMgr->AddUser( m_myCharInfo );
 
 		//방 정보를 보낸다.
 		SendRoomInfo();
@@ -371,42 +407,50 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 
 void LobbySession::RecvCreateRoom( SPacket& packet )
 {
-	//int room, size;
 	int size;
 	TCHAR title[50];
 
-	{
-		SSynchronize Sync( this );
-		//packet >> room;	
-		packet >> size;
-		packet.GetData( title, size );
+	SSynchronize Sync( this );
 
-		m_myRoom = GetRoomMgr.OpenRoom( title );
-		if( m_myRoom == NULL )
-		{
-			GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::RecvCreateRoom()\n방이 열기에 실패했습니다.\n\n") );
-			SendResultCreate( -1 );
-			return;
-		}
-		m_myRoom->AddPlayerInRoom( m_myCharInfo );
-		m_myRoom->SetLeader( m_myCharInfo );
+	packet >> size;
+	packet.GetData( title, size );
+
+	m_myRoom = m_roomMgr->OpenRoom( title );
+	if( m_myRoom == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("LobbySession::RecvCreateRoom()\n방이 열기에 실패했습니다.\n\n") );
+		SendResultCreate( -1 );
+		return;
 	}
+	m_myRoom->AddPlayerInRoom( m_myCharInfo );
+	m_myRoom->SetLeader( m_myCharInfo );
 
 #ifdef _DEBUG 
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::RecvCreateRoom()\n")
-												_T("sessionID : %d\n")
-												_T("ID : %s\n")
-												_T("Room : %d번\n")
-												_T("RoomTitle : %s\n\n")
-												, m_myCharInfo->GetSessionID()
-												, m_myCharInfo->GetID()
-												, m_myRoom->GetRoomNum()
-												, title );
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO,
+					_T("LobbySession::RecvCreateRoom()\n")
+					_T("sessionID : %d\n")
+					_T("ID : %s\n")
+					_T("Room : %d번\n")
+					_T("RoomTitle : %s\n\n")
+					, m_myCharInfo->GetSessionID()
+					, m_myCharInfo->GetID()
+					, m_myRoom->GetRoomNum()
+					, title );
 
 #endif
 
+	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	//여기 부터 보자//////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+
 	//방으로 들어갔으니 로비에서는 지워 준다
-	GetLobbyMgr.MinusUser( m_myCharInfo );
+	m_lobbyMgr->MinusUser( m_myCharInfo );
 
 	//방만들기 성공
 	SendResultCreate( 1 );
@@ -428,7 +472,7 @@ void LobbySession::RecvInsertRoom( SPacket& packet )
 		SSynchronize Sync( this );
 		
 		//우선 방번호로 방을 받아 와 본다
-		m_myRoom = GetRoomMgr.FindRoom( room );
+		m_myRoom = m_roomMgr->FindRoom( room );
 		if( m_myRoom == NULL )
 		{
 			SendResultInsert(-1);
@@ -445,11 +489,11 @@ void LobbySession::RecvInsertRoom( SPacket& packet )
 		m_myRoom->AddPlayerInRoom( m_myCharInfo );
 
 		//로비리스트에서의 내 정보를 지워 준다.
-		GetLobbyMgr.MinusUser( m_myCharInfo );
+		m_lobbyMgr->MinusUser( m_myCharInfo );
 
 	}
 #ifdef _DEBUG 
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO
 					, _T("LobbySession::RecvInsertRoom()\n%s(SessionId:%d번) %d번 방으로 들어감\n\n")
 					, m_myCharInfo->GetID()
 					, m_myCharInfo->GetSessionID()
@@ -477,7 +521,7 @@ void LobbySession::RecvOutRoom()
 {
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO
 					, _T("LobbySession::RecvOutRoom()\n%s(sessionId:%d) %d번 방을 나갑니다\n\n")
 					, m_myCharInfo->GetID()
 					, m_myCharInfo->GetSessionID()
@@ -488,7 +532,7 @@ void LobbySession::RecvOutRoom()
 	if( !m_myRoom->DelPlayerInRoom( m_myCharInfo ) )
 	{
 		//방에 사람 없음 방 지워준다
-		GetRoomMgr.CloseRoom( m_myRoom->GetRoomNum() );
+		m_roomMgr->CloseRoom( m_myRoom->GetRoomNum() );
 		SendCloseRoom( m_myRoom->GetRoomNum() );
 	}
 
@@ -509,10 +553,10 @@ void LobbySession::RecvReady()
 	m_myCharInfo->SetReady( m_myCharInfo->GetReady() ? FALSE : TRUE );
 
 	//방에 ready숫자를 변경해 준다.
-	m_myRoom->ChangReadyState( m_myCharInfo->GetReady() );
+	m_myRoom->ChangReadyCount( m_myCharInfo->GetReady() );
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO
 					, _T("LobbySession::RecvReady()\n")
 					  _T("%s(sessionId:%d) Ready상태가 %s으로 변경되었습니다.\n\n")
 					, m_myCharInfo->GetID()
@@ -532,7 +576,7 @@ void LobbySession::RecvTeamChange()
 	int team = ( m_myCharInfo->GetTeam() == 0 ) ? 1 : 0;
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO
 					, _T("LobbySession::RecvTeamChange()\n")
 					  _T("%s(sessionId:%d) 팀을 %s으로 변경합니다.\n\n")
 					, m_myCharInfo->GetID()
@@ -557,7 +601,7 @@ void LobbySession::RecvChat( SPacket& packet )
 	packet.GetData( chatText, size );
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::RecvChat()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::RecvChat()\n")
 												_T("[%s] %s\n\n")
 												, m_myCharInfo->GetID()
 												, chatText );
@@ -609,7 +653,7 @@ BOOL LobbySession::SendCreateGameProc()
 
 	m_myRoom->PackagePlayerInRoomForGame( sendPacket );
 
-	GetSrvNet.SendToGameServer( sendPacket );
+	m_srvNet->SendToGameServer( sendPacket );
 	
 	return TRUE;
 }
@@ -623,7 +667,7 @@ BOOL LobbySession::SendOtherCharInfo()
 	sendPacket.SetID( SC_LOBBY_OTHER_CHARINFO );
 
 	//정보를 다 담고
-	GetLobbyMgr.PackageDataAllInLobby( sendPacket );
+	m_lobbyMgr->PackageDataAllInLobby( sendPacket );
 
 	//나에게 패킷을 보낸다!
 	int result = SendPacket( sendPacket );
@@ -631,7 +675,7 @@ BOOL LobbySession::SendOtherCharInfo()
 	if( result != sendPacket.GetPacketSize() )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::SendOtherCharInfo()\n")
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::SendOtherCharInfo()\n")
 														_T("보낸크기와 패킷의 크기가 다릅니다.\n\n") );
 
 #endif
@@ -639,7 +683,7 @@ BOOL LobbySession::SendOtherCharInfo()
 	}
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendOtherCharInfo()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendOtherCharInfo()\n")
 												_T("[To. %s] 전송되었습니다.\n\n")
 												, m_myCharInfo->GetID());
 
@@ -659,10 +703,10 @@ BOOL LobbySession::SendMyCharInfo()
 	m_myCharInfo->PackageMyInfo( sendPacket );
 
 	//모두에게 전송( 나는 빼고 보낸다! )
-	GetLobbyMgr.SendPacketAllInLobby( sendPacket, m_myCharInfo );
+	m_lobbyMgr->SendPacketAllInLobby( sendPacket, m_myCharInfo );
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendMyCharInfo()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendMyCharInfo()\n")
 												_T("[All In Lobby] 전송되었습니다.\n\n") );
 
 #endif
@@ -676,17 +720,17 @@ BOOL LobbySession::SendRoomInfo()
 
 	sendPacket.SetID( SC_LOBBY_ROOMINFO );
 	//방 개수
-	sendPacket << ROOMCOUNT;
+	sendPacket << m_roomCount;
 
 	//모든 방 정보를 담는다
-	GetRoomMgr.PackageOpenRoomInfo( sendPacket );
+	m_roomMgr->PackageOpenRoomInfo( sendPacket );
 
 	int result = SendPacket( sendPacket );
 
 	if( result != sendPacket.GetPacketSize() )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::SendRoomInfo()\n")
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::SendRoomInfo()\n")
 													_T("보낸크기와 패킷의 크기가 다릅니다.\n\n") );
 
 #endif
@@ -694,7 +738,7 @@ BOOL LobbySession::SendRoomInfo()
 	}
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomInfo()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomInfo()\n")
 												_T("[To. %s] 전송되었습니다.\n\n")
 												, m_myCharInfo->GetID());
 
@@ -721,7 +765,7 @@ BOOL LobbySession::SendResultCreate( int result )
 	if( retval != sendPacket.GetPacketSize() )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::SendResultCreate()\n")
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::SendResultCreate()\n")
 														_T("보낸크기와 패킷의 크기가 다릅니다.\n\n") );
 
 #endif
@@ -729,7 +773,7 @@ BOOL LobbySession::SendResultCreate( int result )
 	}
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendResultCreate()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendResultCreate()\n")
 												_T("[To. %s] 전송되었습니다.\n\n")
 												, m_myCharInfo->GetID());
 
@@ -746,10 +790,10 @@ BOOL LobbySession::SendOpenRoom( int room, TCHAR* title, int titleSize )
 	sendPacket << titleSize;
 	sendPacket.PutData( title, titleSize );
 
-	GetLobbyMgr.SendPacketAllInLobby( sendPacket, m_myCharInfo );
+	m_lobbyMgr->SendPacketAllInLobby( sendPacket, m_myCharInfo );
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendOpenRoom()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendOpenRoom()\n")
 												_T("[All In Lobby] 전송되었습니다.\n\n") );
 
 #endif
@@ -763,10 +807,10 @@ BOOL LobbySession::SendCloseRoom( int roomNum )
 	sendPacket.SetID( SC_LOBBY_CLOSE_ROOM );
 	sendPacket << roomNum;
 
-	GetLobbyMgr.SendPacketAllInLobby( sendPacket, m_myCharInfo );
+	m_lobbyMgr->SendPacketAllInLobby( sendPacket, m_myCharInfo );
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendCloseRoom()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendCloseRoom()\n")
 												_T("[All In Lobby] 전송되었습니다.\n\n") );
 
 #endif
@@ -786,7 +830,7 @@ BOOL LobbySession::SendResultInsert( int result )
 	if( retval != sendPacket.GetPacketSize() )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::SendResultInsert()\n")
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::SendResultInsert()\n")
 													_T("보낸크기와 패킷의 크기가 다릅니다.\n\n") );
 
 #endif
@@ -794,7 +838,7 @@ BOOL LobbySession::SendResultInsert( int result )
 	}
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendResultInsert()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendResultInsert()\n")
 												_T("[To. %s] 전송되었습니다.\n\n")
 												, m_myCharInfo->GetID());
 
@@ -814,10 +858,10 @@ BOOL LobbySession::SendInsertRoom()
 		sendPacket << m_myRoom->GetRoomNum();
 	}
 
-	GetLobbyMgr.SendPacketAllInLobby( sendPacket, m_myCharInfo );
+	m_lobbyMgr->SendPacketAllInLobby( sendPacket, m_myCharInfo );
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendInsertRoom()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendInsertRoom()\n")
 												_T("[All In Lobby] 전송되었습니다.\n\n") );
 
 #endif
@@ -843,7 +887,7 @@ BOOL LobbySession::SendRoomOtherCharInfo()
 	if( result != sendPacket.GetPacketSize() )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::SendRoomOtherCharInfo()\n")
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::SendRoomOtherCharInfo()\n")
 													_T("보낸크기와 패킷의 크기가 다릅니다.\n\n") );
 
 #endif
@@ -851,7 +895,7 @@ BOOL LobbySession::SendRoomOtherCharInfo()
 	}
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomOtherCharInfo()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomOtherCharInfo()\n")
 												_T("[To. %s] 전송되었습니다.\n\n")
 												, m_myCharInfo->GetID());
 
@@ -877,7 +921,7 @@ BOOL LobbySession::SendRoomMyInfoToOtherChar()
 	m_myRoom->SendPacketAllInRoom( sendPacket, m_myCharInfo );
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomMyInfoToOtherChar()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomMyInfoToOtherChar()\n")
 												_T("[All In No.%d Room] 전송되었습니다.\n\n")
 												, m_myRoom->GetRoomNum() );
 
@@ -897,7 +941,7 @@ BOOL LobbySession::SendRoomLeader()
 	if( result != sendPacket.GetPacketSize() )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::SendRoomLeader()\n")
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LobbySession::SendRoomLeader()\n")
 													_T("보낸크기와 패킷의 크기가 다릅니다.\n\n") );
 
 #endif
@@ -905,7 +949,7 @@ BOOL LobbySession::SendRoomLeader()
 	}
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomLeader()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomLeader()\n")
 												_T("[To. %s] 전송되었습니다.\n\n")
 												, m_myCharInfo->GetID() );
 
@@ -924,7 +968,7 @@ BOOL LobbySession::SendRoomLeaderToAll( int leader )
 	m_myRoom->SendPacketAllInRoom( sendPacket, m_myCharInfo );
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomLeaderToAll()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomLeaderToAll()\n")
 												_T("[All In No.%d Room] 전송되었습니다.\n\n")
 												, m_myRoom->GetRoomNum() );
 
@@ -945,9 +989,10 @@ BOOL LobbySession::SendRoomCharOut()
 	m_myRoom->SendPacketAllInRoom( sendPacket );
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomCharOut()\n")
-												_T("[All In No.%d Room] 전송되었습니다.\n\n")
-												, m_myRoom->GetRoomNum() );
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO,
+					_T("LobbySession::SendRoomCharOut()\n")
+					_T("[All In No.%d Room] 전송되었습니다.\n\n"),
+					m_myRoom->GetRoomNum() );
 
 #endif
 
@@ -963,16 +1008,35 @@ BOOL LobbySession::SendRoomCharOut()
 
 	//////////////////////////////////////////////////////////////////////////
 	//로비에 보내줄 packet
-	sendPacket.PacketClear();
+// 	sendPacket.PacketClear();
+// 	sendPacket.SetID( SC_LOBBY_ROOMPLAYER_COUNTDOWN );
+// 	sendPacket << m_myRoom->GetRoomNum();
+// 
+// 	//로비의 사람들에게 몇번방에 사람이 줄었다는 패킷을 보낸다.
+// 	m_lobbyMgr->SendPacketAllInLobby( sendPacket );
+// 
+// #ifdef _DEBUG
+// 	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomCharOut()\n")
+// 												_T("[All In Lobby] 전송되었습니다.\n\n") );
+// 
+// #endif
+
+	return TRUE;
+}
+
+BOOL LobbySession::SendLobbyRoomCharOut( int room )
+{
+	SPacket sendPacket;
 	sendPacket.SetID( SC_LOBBY_ROOMPLAYER_COUNTDOWN );
-	sendPacket << m_myRoom->GetRoomNum();
+	sendPacket << room;
 
 	//로비의 사람들에게 몇번방에 사람이 줄었다는 패킷을 보낸다.
-	GetLobbyMgr.SendPacketAllInLobby( sendPacket );
+	m_lobbyMgr->SendPacketAllInLobby( sendPacket );
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendRoomCharOut()\n")
-												_T("[All In Lobby] 전송되었습니다.\n\n") );
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO,
+					_T("LobbySession::SendRoomCharOut()\n")
+					_T("[All In Lobby] 전송되었습니다.\n\n") );
 
 #endif
 
@@ -1032,10 +1096,10 @@ BOOL LobbySession::SendChat( TCHAR* chat )
 	{
 		//로비로보낸다
 		//////////////////////////////////////////////////////////////////////////
-		GetLobbyMgr.SendPacketAllInLobby( sendPacket );
+		m_lobbyMgr->SendPacketAllInLobby( sendPacket );
 
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendChat()\n")
+		m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendChat()\n")
 													_T("[All In Lobby] 전송되었습니다.\n\n") );
 
 #endif
@@ -1048,7 +1112,7 @@ BOOL LobbySession::SendChat( TCHAR* chat )
 		m_myRoom->SendPacketAllInRoom( sendPacket );
 
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendChat()\n")
+		m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendChat()\n")
 													_T("[All In No.%d Room] 전송되었습니다.\n\n")
 													, m_myRoom->GetRoomNum() );
 
@@ -1071,7 +1135,7 @@ BOOL LobbySession::SendStartGameResult()
 
 	if( retval != sendPacket.GetPacketSize() )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LobbySession::SendStartGameResult()\n전송양과 패킷크기가 다릅니다.\n\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LobbySession::SendStartGameResult()\n전송양과 패킷크기가 다릅니다.\n\n") );
 		return FALSE;
 	}
 	return TRUE;
@@ -1083,13 +1147,13 @@ BOOL LobbySession::SendStartGameInRoom( int roomNum )
 	sendPacket.SetID( SC_ROOM_GAME_START );
 
 	//게임서버의 정보를 보낸다
-	int size = strlen( GetDocument.GameSrvIP );
+	int size = strlen( m_document->GameSrvIP );
 	sendPacket << size;
-	sendPacket.PutData( GetDocument.GameSrvIP, size );
-	sendPacket << GetDocument.GameSrvPortNum;
+	sendPacket.PutData( m_document->GameSrvIP, size );
+	sendPacket << m_document->GameSrvPortNum;
 
 	//방에 있는 player들에게 전송!
-	Room* tmpRoom = GetRoomMgr.FindRoom( roomNum );
+	Room* tmpRoom = m_roomMgr->FindRoom( roomNum );
 	tmpRoom->SendPacketAllInRoom( sendPacket );
 
 	return TRUE;
@@ -1102,7 +1166,7 @@ BOOL LobbySession::SendLobbyGameStart( int roomNum )
 	sendPacket.SetID( SC_LOBBY_GAME_START );
 	sendPacket << roomNum;
 
-	GetLobbyMgr.SendPacketAllInLobby( sendPacket );
+	m_lobbyMgr->SendPacketAllInLobby( sendPacket );
 
 	return TRUE;
 }
@@ -1114,7 +1178,7 @@ BOOL LobbySession::SendLobbyGameEnd( int roomNum )
 	sendPacket.SetID( SC_LOBBY_GAME_END );
 	sendPacket << roomNum;
 
-	GetLobbyMgr.SendPacketAllInLobby( sendPacket );
+	m_lobbyMgr->SendPacketAllInLobby( sendPacket );
 
 	return TRUE;
 }
@@ -1126,10 +1190,10 @@ BOOL LobbySession::SendPlayerDisconnect()
 	sendPacket.SetID( SC_LOBBY_PLAYER_DISCONNECT );
 	sendPacket << m_myCharInfo->GetSessionID();
 
-	GetLobbyMgr.SendPacketAllInLobby( sendPacket, m_myCharInfo );
+	m_lobbyMgr->SendPacketAllInLobby( sendPacket, m_myCharInfo );
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendPlayerDisconnect()\n")
+	m_logger->PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LobbySession::SendPlayerDisconnect()\n")
 												_T("[All In Lobby] 전송되었습니다.\n\n") );
 
 #endif

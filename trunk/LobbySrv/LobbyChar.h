@@ -103,6 +103,7 @@ public:
 
 	//캐릭터 공간을 반납
 	void ReturnCharSpace( LobbyChar* charspace );
+	void ReturnCharSpace( int sessionID );
 
 	//해당 session에 해당하는 character를 받음
 	LobbyChar* FindCharAsSessionId( int session );

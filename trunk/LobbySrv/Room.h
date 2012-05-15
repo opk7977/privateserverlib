@@ -4,25 +4,28 @@
 #include "SIndexQueue.h"
 
 class SPacket;
+class SLogger;
+
 class LobbyChar;
 class LobbySession;
 
 
 //방의 정원
-#define MIN_PLAYER_COUNT 6
+#define MIN_PLAYER_COUNT 2
 #define MAX_PLAYER_COUNT 8
-
-#define ROOMCOUNT		4
 
 enum ROOM_STATE
 {
-	ROOM_STATE_READY = -1,
+	ROOM_STATE_READY	= -1,
 	ROOM_STATE_NORMAL,
 	ROOM_STATE_PLAYING,
 };
 
 class Room : public SServerObj
 {
+private:
+	static SLogger*				m_logger;
+
 private:
 	std::list<LobbyChar*>		m_listPlayer;
 
@@ -34,7 +37,6 @@ private:
 	LobbyChar*					m_leader;				//방장의 세션 번호
 
 	BOOL						m_visible;				//방이 만들어져 있는 방인지?
-//	BOOL						m_isPlay;				//현재 게임중인 방인지
 	int							m_roomState;			//방의 현재 상태
 
 	TCHAR						m_tstrRoomTitle[50];	//방 문구
@@ -64,14 +66,21 @@ public:
 		_tcsncpy_s( m_tstrRoomTitle, 50, title, _tcslen( title ) );
 		m_visible = TRUE;
 	}
-	inline TCHAR* GetTitle() { return m_tstrRoomTitle; }
+	inline TCHAR* GetTitle()
+	{
+		return m_tstrRoomTitle;
+	}
 	//게임을 진행 할 수 있는 상태 인가를 확인해 준다.
 	BOOL PossiblePlay();
 	//방을 play상태로 만들어 준다.
-	BOOL SetPlay();
-	inline void ListReset() { m_listPlayer.clear(); }
+	void SetPlay();
+	inline void ListReset() 
+	{
+		m_listPlayer.clear();
+		m_nowPleyrCount = 0;
+	}
 	//방을 ready상태로 만들어 준다
-	BOOL SetReady();
+	void SetReady();
 	//방을 다시 일반 상태로
 	void SetNormal() { m_roomState = ROOM_STATE_NORMAL; }
 	//현재 방으로 들어가는것이 가능한지
@@ -102,7 +111,7 @@ public:
 
 	//매개변수는 증가해야 하는 상태값을 나타낸다
 	//ex) 누군가 ready상태가 되면 TRUE를 넘겨 ready값을 증가
-	void ChangReadyState( BOOL isReady );
+	void ChangReadyCount( BOOL isReady );
 	
 	//팀을 변경
 	//증가하는 팀을 매개변수로 받는다
@@ -129,22 +138,33 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
-class RoomMgr : public SSingleton <RoomMgr>
+class DataLeader;
+
+
+class RoomMgr : public SSingleton <RoomMgr>, public SServerObj
 {
 private:
 	friend class SSingleton<RoomMgr>;
 
 private:
-	//std::map<int, Room*>			m_mapRoomlist;
+	//======================================
+	// singleTon객체
+	//======================================
+	DataLeader*						m_document;
+	//======================================
+	//방의 총공간
+	int								m_roomCount;
+	ATL::CAtlMap<int, Room*>		m_mapRoom;
 	std::vector<Room*>				m_vecRoom;
-	std::list<Room*>				m_listOpenRoom;
+	//방 공간의 index(열수 있는 방 번호 큐)
 	SIndexQueue						m_roomIndexQ;
+
+	//열려 있는 방의 list
+	std::list<Room*>				m_listOpenRoom;
+	
 
 	//열려 있는 방의 개수
 	int								m_iOpenRoomCount;
-
-	//동기화 용
-	SServerObj*						m_critical;
 
 private:
 	RoomMgr();
@@ -154,13 +174,11 @@ public:
 	void CreateRoomSpace();
 	void Release();
 
-	//Room* OpenRoom( int roomNum, TCHAR* title );
 	Room* OpenRoom( TCHAR* title );
 	void CloseRoom( int roomNum );
 
 	Room* FindRoom( int roomNum );
 
-	//void PackageAllRoomInfo( SPacket &packet );
 	void PackageOpenRoomInfo( SPacket &packet );
 };
 

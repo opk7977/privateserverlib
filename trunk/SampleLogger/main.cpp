@@ -11,7 +11,7 @@ void main()
 
 	while(1)
 	{
-		Sleep( (int)(rand()%1000) );
+		Sleep( (int)(rand()%10000) );
 
 		printf("%d\n", count);
 
@@ -19,6 +19,10 @@ void main()
 		//GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("LOG_LEVEL_DBGINFO\n") );
 		//GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("LOG_LEVEL_SYSTEM\n") );
 		//GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LOG_LEVEL_WORRNIG\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("%d\n"), count );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, ";asdkfhl\n" );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T(";asdkfhl\n") );
+		GetLogger.ErrorLog( 10038, "[LOG_ERROR] " );
 		GetLogger.ErrorLog( 10038, _T("[LOG_ERROR] ") );
 
 		++count;
