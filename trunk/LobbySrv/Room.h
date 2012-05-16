@@ -83,6 +83,8 @@ public:
 	void SetReady();
 	//방을 다시 일반 상태로
 	void SetNormal() { m_roomState = ROOM_STATE_NORMAL; }
+	//방 상태를 return해 준다
+	int GetRoomState() { return m_roomState; }
 	//현재 방으로 들어가는것이 가능한지
 	BOOL CanInsert();
 
@@ -171,15 +173,16 @@ private:
 	~RoomMgr();
 
 public:
-	void CreateRoomSpace();
-	void Release();
+	void	CreateRoomSpace();
+	void	Release();
 
-	Room* OpenRoom( TCHAR* title );
-	void CloseRoom( int roomNum );
+	Room*	OpenRoom( TCHAR* title );
+	int		OpenRoomCount() { return m_iOpenRoomCount; }
+	void	CloseRoom( int roomNum );
 
-	Room* FindRoom( int roomNum );
+	Room*	FindRoom( int roomNum );
 
-	void PackageOpenRoomInfo( SPacket &packet );
+	void	PackageOpenRoomInfo( SPacket &packet );
 };
 
 #define GetRoomMgr RoomMgr::GetInstance()

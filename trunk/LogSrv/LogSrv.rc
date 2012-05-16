@@ -1,0 +1,486 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 한국어 resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+#ifdef _WIN32
+LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
+#pragma code_page(949)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)\r\n"
+    "LANGUAGE 18, 1\r\n"
+    "#pragma code_page(949)\r\n"
+    "#include ""res\\LogSrv.rc2""  // Microsoft Visual C++ 이외의 다른 도구에서 편집한 리소스입니다.\r\n"
+    "#include ""l.KOR\\afxres.rc""          // 표준 구성 요소입니다.\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\LogSrv.ico"
+IDR_LogSrvTYPE          ICON                    "res\\LogSrvDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "Menu(&M)"
+    BEGIN
+        MENUITEM "LogSrv Start(&S)\tCtrl+S",    ID_MENU_LOGSRVSTART
+        MENUITEM "LogSrv Setting(&C)...\tCtrl+C", ID_MENU_LOGSRVSETTING
+        MENUITEM "DisConnect(&D)\tCtrl+D",      ID_MENU_DISCONNECT
+        MENUITEM SEPARATOR
+        MENUITEM "End(&E)\tCtrl+E",             ID_APP_EXIT
+    END
+    POPUP "Add(&A)"
+    BEGIN
+        MENUITEM "Log Table(&T)...\tAlt+T",     ID_ADD_TABLE
+        MENUITEM "Server(&S)...\tAlt+S",        ID_ADD_SERVER
+    END
+    POPUP "Delete(&D)"
+    BEGIN
+        MENUITEM "Table(&T)...\tShift+T",       ID_DELETE_TABLE
+        MENUITEM "Server(&S)...\tShift+S",      ID_DELETE_SERVER
+    END
+    POPUP "Info(&I)"
+    BEGIN
+        MENUITEM "LogSrv Info(&I)...\tShift+I", ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS 
+BEGIN
+    "S",            ID_ADD_SERVER,          VIRTKEY, ALT, NOINVERT
+    "T",            ID_ADD_TABLE,           VIRTKEY, ALT, NOINVERT
+    "I",            ID_APP_ABOUT,           VIRTKEY, SHIFT, NOINVERT
+    "E",            ID_APP_EXIT,            VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_DELETE_SERVER,       VIRTKEY, SHIFT, NOINVERT
+    "T",            ID_DELETE_TABLE,        VIRTKEY, SHIFT, NOINVERT
+    "D",            ID_MENU_DISCONNECT,     VIRTKEY, CONTROL, NOINVERT
+    "C",            ID_MENU_LOGSRVSETTING,  VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_MENU_LOGSRVSTART,    VIRTKEY, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 347, 164
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "LogSrv 정보"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    CONTROL         310,IDC_STATIC,"Static",SS_BITMAP,29,125,29,22
+    LTEXT           "LogSrv, 버전 1.0",IDC_STATIC,64,124,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) Seg 2012",IDC_STATIC,64,138,114,8
+    DEFPUSHBUTTON   "확인",IDOK,275,136,50,14,WS_GROUP
+    LTEXT           "- Server를 실행하기 전에 미리 table을 셋팅 해 주세요.",IDC_STATIC,30,34,169,8
+    LTEXT           "- 새로운 서버의 연결에는 ID가 필요합니다.",IDC_STATIC,30,50,134,8
+    LTEXT           "- Server를 등록할때 자신만의 ID를 설정하되 중복 될 수 없습니다.",IDC_STATIC,30,66,204,8
+    LTEXT           "- Log는 mdb파일에 쌓이게 됩니다. 확인을 위해 파일을 열려면 본 서버program은 끄세요.",IDC_STATIC,30,82,276,8
+    LTEXT           "****터져도 제 책임이 아닙니다.****",IDC_STATIC,200,102,118,8
+    GROUPBOX        "주의하세요!!!",IDC_STATIC,16,16,310,102
+END
+
+IDD_LOGSRV_FORM DIALOGEX 0, 0, 500, 370
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    COMBOBOX        IDC_COMBO_SELECT_TABLE,18,28,119,60,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_SELECT_SERVER,164,28,119,60,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_LOGLEVEL,310,28,119,60,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Select Table",IDC_STATIC,19,15,40,8
+    LTEXT           "Select Server",IDC_STATIC,164,15,43,8
+    LTEXT           "Log Level",IDC_STATIC,310,15,31,8
+    PUSHBUTTON      "Send Query",IDC_BUTTON_QUERY,416,48,63,14
+    CONTROL         "",IDC_LOG_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,19,68,463,285,WS_EX_LEFTSCROLLBAR
+END
+
+IDD_DIALOG_SRVSETTING DIALOGEX 0, 0, 275, 164
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dlg_Server Setting"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Setting",IDOK,161,140,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,215,140,50,14
+    LTEXT           "Select Use Table",IDC_STATIC,27,103,54,8
+    LTEXT           "LogServer IP",IDC_STATIC,29,33,42,8
+    LTEXT           "LogServer PortNum",IDC_STATIC,29,52,63,8
+    GROUPBOX        "Server Setting",IDC_STATIC,17,16,237,57
+    GROUPBOX        "Database Setting",IDC_STATIC,17,82,237,45
+    EDITTEXT        IDC_EDIT_IP2,140,30,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_IP3,178,30,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_IP1,102,30,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_IP4,216,30,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PORT,200,50,40,14,ES_AUTOHSCROLL
+    COMBOBOX        IDC_COMBO_SETTING_TABLE,138,101,102,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           ".",IDC_STATIC,132,36,8,8
+    LTEXT           ".",IDC_STATIC,170,36,8,8
+    LTEXT           ".",IDC_STATIC,208,36,8,8
+END
+
+IDD_DIALOG_ADD_TABLE DIALOGEX 0, 0, 218, 81
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dlg_New LogTable"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Create",IDOK,97,53,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,151,53,50,14
+    LTEXT           "Table Name (영어 소문자만/ 뛰어쓰기 금지)",IDC_STATIC,18,15,150,8
+    EDITTEXT        IDC_EDIT_ADD_TABLE_NAME,20,28,178,14,ES_AUTOHSCROLL
+END
+
+IDD_DIALOG_ADD_SERVER DIALOGEX 0, 0, 256, 90
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dlg_Add Server"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Create",IDOK,131,61,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,185,61,50,14
+    LTEXT           "Server Name (영어/ 뛰어쓰기 금지)",IDC_STATIC,19,17,120,8
+    EDITTEXT        IDC_EDIT_ADD_SERVER_NAME,19,32,131,14,ES_AUTOHSCROLL
+    LTEXT           "Server ID (숫자)",IDC_STATIC,174,17,55,8
+    EDITTEXT        IDC_EDIT_ADD_SERVER_ID,174,32,40,14,ES_AUTOHSCROLL
+END
+
+IDD_DIALOG_DEL_TABLE DIALOGEX 0, 0, 218, 129
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dlg_Delete Table"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "확인",IDOK,95,100,50,14
+    PUSHBUTTON      "취소",IDCANCEL,149,100,50,14
+    COMBOBOX        IDC_COMBO_DEL_LOGTABLE,25,29,149,80,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Select Log Table",IDC_STATIC,19,14,53,8
+    LTEXT           "PassWord",IDC_STATIC,20,55,33,8
+    EDITTEXT        IDC_EDIT_DELTABLE_PW,25,68,149,14,ES_AUTOHSCROLL
+END
+
+IDD_DIALOG_DEL_SERVER DIALOGEX 0, 0, 214, 129
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dlg_Delete Server"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "확인",IDOK,92,99,50,14
+    PUSHBUTTON      "취소",IDCANCEL,146,99,50,14
+    COMBOBOX        IDC_COMBO_DEL_SERVER,25,29,149,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Select Server",IDC_STATIC,19,14,44,8
+    LTEXT           "PassWord",IDC_STATIC,20,55,33,8
+    EDITTEXT        IDC_EDIT_DELSERVER_PW,25,68,149,14,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041203b5"
+        BEGIN
+            VALUE "CompanyName", "TODO: <회사 이름>"
+            VALUE "FileDescription", "TODO: <파일 설명>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "LogSrv.exe"
+            VALUE "LegalCopyright", "TODO: (c) <회사 이름>.  All rights reserved."
+            VALUE "OriginalFilename", "LogSrv.exe"
+            VALUE "ProductName", "TODO: <제품 이름>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x412, 949
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 340
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 157
+    END
+
+    IDD_LOGSRV_FORM, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 493
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 363
+    END
+
+    IDD_DIALOG_SRVSETTING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 268
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 157
+    END
+
+    IDD_DIALOG_ADD_TABLE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 211
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 74
+    END
+
+    IDD_DIALOG_ADD_SERVER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 249
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 83
+    END
+
+    IDD_DIALOG_DEL_TABLE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 211
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 122
+    END
+
+    IDD_DIALOG_DEL_SERVER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 207
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 122
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_ICON                BITMAP                  "res\\icon.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE를 초기화할 수 없습니다. OLE 라이브러리 버전이 올바른지 확인하십시오."
+END
+
+STRINGTABLE 
+BEGIN
+    IDR_MAINFRAME           "LogSrv\n\nLogSrv\n\n\nLogSrv.Document\nLogSrv.Document"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "LogSrv"
+    AFX_IDS_IDLEMESSAGE     "준비"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_NEW             "새 문서를 만듭니다.\n새로 만들기"
+    ID_FILE_OPEN            "기존 문서를 엽니다.\n열기"
+    ID_FILE_CLOSE           "활성 문서를 닫습니다.\n닫기"
+    ID_FILE_SAVE            "활성 문서를 저장합니다.\n저장"
+    ID_FILE_SAVE_AS         "활성 문서를 새 이름으로 저장합니다.\n다른 이름으로 저장"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE2       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE3       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE4       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE5       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE6       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE7       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE8       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE9       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE10      "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE11      "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE12      "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE13      "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE14      "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE15      "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE16      "현재 문서를 엽니다."
+END
+
+STRINGTABLE 
+BEGIN
+    ID_EDIT_CLEAR           "선택 영역을 지웁니다.\n지우기"
+    ID_EDIT_CLEAR_ALL       "모두 지웁니다.\n모두 지우기"
+    ID_EDIT_COPY            "선택 영역을 복사하여 클립보드에 넣습니다.\n복사"
+    ID_EDIT_CUT             "선택 영역을 잘라내어 클립보드에 넣습니다.\n잘라내기"
+    ID_EDIT_FIND            "지정한 텍스트를 찾습니다.\n찾기"
+    ID_EDIT_PASTE           "클립보드 내용을 삽입합니다.\n붙여넣기"
+    ID_EDIT_REPEAT          "마지막 작업을 반복합니다.\n반복"
+    ID_EDIT_REPLACE         "특정 텍스트를 다른 텍스트로 바꿉니다.\n바꾸기"
+    ID_EDIT_SELECT_ALL      "전체 문서를 선택합니다.\n모두 선택"
+    ID_EDIT_UNDO            "마지막 작업 실행을 취소합니다.\n실행 취소"
+    ID_EDIT_REDO            "이전에 실행 취소된 작업을 다시 실행합니다.\n다시 실행"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_WINDOW_SPLIT         "활성 창을 여러 개의 창으로 분할합니다.\n분할"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_APP_ABOUT            "프로그램 정보, 버전 번호, 저작권을 표시합니다.\n정보"
+    ID_APP_EXIT             "문서를 저장할지를 묻고 응용 프로그램을 끝냅니다.\n끝내기"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_NEXT_PANE            "다음 창으로 전환합니다.\n다음 창"
+    ID_PREV_PANE            "이전 창으로 전환합니다.\n이전 창"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_STATUS_BAR      "상태 표시줄을 표시하거나 숨깁니다.\n상태 표시줄 설정/해제"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "창 크기를 변경합니다."
+    AFX_IDS_SCMOVE          "창 위치를 변경합니다."
+    AFX_IDS_SCMINIMIZE      "창을 아이콘으로 축소합니다."
+    AFX_IDS_SCMAXIMIZE      "창을 전체 화면 크기로 확대합니다."
+    AFX_IDS_SCNEXTWINDOW    "다음 문서 창으로 전환합니다."
+    AFX_IDS_SCPREVWINDOW    "이전 문서 창으로 전환합니다."
+    AFX_IDS_SCCLOSE         "문서를 저장할 것인지 확인하고 활성 창을 닫습니다."
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "창을 보통 크기로 복원합니다."
+    AFX_IDS_SCTASKLIST      "작업 목록을 활성화합니다."
+END
+
+#endif    // 한국어 resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+LANGUAGE 18, 1
+#pragma code_page(949)
+#include "res\LogSrv.rc2"  // Microsoft Visual C++ 이외의 다른 도구에서 편집한 리소스입니다.
+#include "l.KOR\afxres.rc"          // 표준 구성 요소입니다.
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

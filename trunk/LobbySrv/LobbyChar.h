@@ -4,14 +4,15 @@
 
 class LobbySession;
 class SPacket;
-
-const int Character_Space = 100;
+// 
+// const int Character_Space = 100;
 
 enum ROOM_TEAM
 {
 	ROOM_TEAM_ATT	=	0,
 	ROOM_TEAM_DEF,
 };
+
 enum ROOM_READY
 {
 	ROOM_READY_NON	=	0,
@@ -77,11 +78,15 @@ public:
 	inline int GetVecIndex() const { return m_vecIndex; };
 };
 
+class DataLeader;
 
 class CharMgr : public SSingleton <CharMgr>
 {
 private:
 	friend class SSingleton<CharMgr>;
+
+private:
+	DataLeader*					m_document;
 
 private:
 	//캐릭터 공간

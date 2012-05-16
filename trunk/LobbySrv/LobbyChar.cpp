@@ -1,6 +1,8 @@
 #include "LobbyChar.h"
 #include "LobbySession.h"
 
+#include "DataLeader.h"
+
 LobbyChar::LobbyChar(void)
 {
 }
@@ -128,7 +130,7 @@ void LobbyChar::PackageMyInfoForGame( SPacket& packet )
 
 CharMgr::CharMgr()
 {
-
+	m_document = &GetDocument;
 }
 
 CharMgr::~CharMgr()
@@ -138,11 +140,11 @@ CharMgr::~CharMgr()
 
 void CharMgr::Init()
 {
-	m_IndexQ.Create( Character_Space, 0);
+	m_IndexQ.Create( m_document->SessionCount, 0);
 
-	m_vecCharSpace.reserve( Character_Space );
+	m_vecCharSpace.reserve( m_document->SessionCount );
 
-	for( int i=0; i<Character_Space; ++i )
+	for( int i=0; i<m_document->SessionCount; ++i )
 	{
 		LobbyChar* tmpChar = new LobbyChar;
 		tmpChar->Init(i);
@@ -153,7 +155,7 @@ void CharMgr::Init()
 
 void CharMgr::Release()
 {
-	for( int i=0; i<Character_Space; ++i )
+	for( int i=0; i<m_document->SessionCount; ++i )
 	{
 		delete m_vecCharSpace[i];
 	}
@@ -174,10 +176,6 @@ void CharMgr::ReturnCharSpace( LobbyChar* charspace )
 	//받아온 공간에 문제가 있으면 return
 	if( charspace == NULL )
 		return;
-
-	//게임중으로 나간거면 지우지 않는다
-// 	if( charspace->GetIsPlay() )
-// 		return;
 
 	int index = charspace->GetVecIndex();
 	charspace->Init();

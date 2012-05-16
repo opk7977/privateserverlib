@@ -1,5 +1,6 @@
 #include "CheckDB.h"
 #include "SLogger.h"
+#include "LobbyProtocol.h"
 
 CheckDB::CheckDB(void)
 {
