@@ -20,9 +20,10 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CComboBox m_comboDelTable;
+	CComboBox m_comboDelLogTable;
 	CString m_editDelTablePw;
 
+	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
 };

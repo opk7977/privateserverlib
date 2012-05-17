@@ -5,6 +5,8 @@
 #include "LogSrv.h"
 #include "AddServer.h"
 
+#include "LogDataBase.h"
+
 
 // CAddServer 대화 상자입니다.
 
@@ -43,6 +45,24 @@ END_MESSAGE_MAP()
 void CAddServer::OnBnClickedOk()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	// 데이터를 받아 온다
+	UpdateData( TRUE );
+
+	// 변수의 값을 검사하자
+	if( m_editServerName == "" )
+	{
+		MessageBox( _T("서버 이름에 빈공간을 쓰지 마세요."), _T("다시"), MB_OK );
+		return;
+	}
+	//숫자는 mfc에서 알아서 해줌
+
+	if( !GetDB.InsertServerID( (TCHAR*)m_editServerName.GetString(), m_iServerID ) )
+	{
+		MessageBox( _T("[추가 실패!!]\n실패 이유\n\t- 서버이름 중복\n\t- 서버ID중복\n\t- 문자열 데이터 이상\n등이 있습니다.\n\n이유까지 찾아 드릴 수 없습니다. 다시..."), _T("죄송"), MB_OK );
+		return;
+	}
+	MessageBox( _T("[추가 성공]\nServerID가 추가 되었습니다."), _T("성공"), MB_OK );
+
 	OnOK();
 }
 

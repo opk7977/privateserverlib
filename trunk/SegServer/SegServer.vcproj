@@ -187,6 +187,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SPacketQueue.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SQuery.cpp"
 				>
 			</File>
@@ -274,6 +278,10 @@
 			</File>
 			<File
 				RelativePath=".\SPacket.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SPacketQueue.h"
 				>
 			</File>
 			<File

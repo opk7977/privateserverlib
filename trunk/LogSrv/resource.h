@@ -13,7 +13,6 @@
 #define IDD_DIALOG_ADD_TABLE            313
 #define IDD_DIALOG_ADD_SERVER           314
 #define IDD_DIALOG_DEL_TABLE            315
-#define IDD_DIALOG_DEL_SERVER           316
 #define IDC_COMBO_SELECT_TABLE          1000
 #define IDC_COMBO_SELECT_SERVER         1001
 #define IDC_COMBO_LOGLEVEL              1002
@@ -24,14 +23,11 @@
 #define IDC_EDIT_IP1                    1007
 #define IDC_EDIT_IP4                    1008
 #define IDC_EDIT_PORT                   1009
-#define IDC_COMBO1                      1010
 #define IDC_COMBO_SETTING_TABLE         1010
 #define IDC_EDIT_ADD_SERVER_NAME        1013
 #define IDC_EDIT_ADD_SERVER_ID          1014
 #define IDC_EDIT_ADD_TABLE_NAME         1015
-#define IDC_COMBO_DEL_SERVER            1016
-#define IDC_EDIT_DELSERVER_PW           1017
-#define IDC_COMBO_DEL_LOGTABLE          1018
+#define IDC_COMBO_DEL_TABLE             1018
 #define IDC_EDIT_DELTABLE_PW            1019
 #define ID_ADD_SERVER                   32771
 #define ID_MENU_SETTING                 32772
@@ -43,13 +39,15 @@
 #define ID_DELETE_TABLE                 32786
 #define ID_DELETE_ELEMENT               32787
 #define ID_DELETE_SERVER                32791
+#define ID_DELETE_DBINIT                32792
+#define ID_DELETE_INIT                  32793
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        317
-#define _APS_NEXT_COMMAND_VALUE         32792
+#define _APS_NEXT_COMMAND_VALUE         32794
 #define _APS_NEXT_CONTROL_VALUE         1020
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

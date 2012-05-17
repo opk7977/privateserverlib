@@ -39,10 +39,8 @@
 
 
 
-
-
-
-
+//ªË¡¶ password
+const CString password = _T("admin");
 
 
 #ifdef _UNICODE
