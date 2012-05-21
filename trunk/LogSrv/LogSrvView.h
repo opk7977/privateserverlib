@@ -7,6 +7,7 @@
 #include "afxcmn.h"
 #include "afxwin.h"
 
+class LogDataBase;
 
 class CLogSrvView : public CFormView
 {
@@ -23,6 +24,7 @@ public:
 
 // 작업입니다.
 public:
+	LogDataBase		*m_logDB;
 
 // 재정의입니다.
 public:
@@ -41,6 +43,10 @@ public:
 
 protected:
 
+public:
+	void SettingTableList();
+	void SettingServerList();
+
 // 생성된 메시지 맵 함수
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -48,8 +54,9 @@ public:
 	CComboBox	m_TableCombo;
 	CComboBox	m_ServerCombo;
 	CComboBox	m_LogLevelCombo;
-	CListCtrl	m_LogList;
+	CListBox	m_logList;
 	CButton		m_SendQuery;
+	afx_msg void OnBnClickedButtonQuery();
 };
 
 #ifndef _DEBUG  // LogSrvView.cpp의 디버그 버전

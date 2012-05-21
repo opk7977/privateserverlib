@@ -4,9 +4,11 @@
 	#include "SLogger.h"
 #endif
 
-SSession::SSession(void) : m_iRecvSize(0)
-						 , m_hRecvEvent(INVALID_HANDLE_VALUE)
-						 , m_socket(INVALID_SOCKET)
+SSession::SSession(void)
+: m_iRecvSize(0)
+, m_hRecvEvent(INVALID_HANDLE_VALUE)
+, m_socket(INVALID_SOCKET)
+, m_mySessionID(0)
 {
 }
 

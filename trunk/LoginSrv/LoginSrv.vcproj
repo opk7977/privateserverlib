@@ -177,11 +177,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\DataLeader.cpp"
+				RelativePath=".\LoginMain.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\LoginMain.cpp"
+				RelativePath=".\LogMgr.cpp"
 				>
 			</File>
 			<File
@@ -195,11 +195,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\DataLeader.h"
+				RelativePath=".\LoginMain.h"
 				>
 			</File>
 			<File
-				RelativePath=".\LoginMain.h"
+				RelativePath=".\LogMgr.h"
 				>
 			</File>
 		</Filter>
@@ -236,6 +236,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="ConToSrv"
+				>
+				<File
+					RelativePath=".\LogSrvNet.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LogSrvNet.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Dtatbase"
@@ -258,6 +270,18 @@
 			</File>
 			<File
 				RelativePath=".\winMgr.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="DataLeader"
+			>
+			<File
+				RelativePath=".\DataLeader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DataLeader.h"
 				>
 			</File>
 		</Filter>

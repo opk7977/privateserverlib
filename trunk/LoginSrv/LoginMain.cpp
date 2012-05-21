@@ -1,6 +1,7 @@
 #include "LoginMain.h"
 #include "LoginDB.h"
 #include "Network.h"
+#include "LogSrvNet.h"
 
 #include "DataLeader.h"
 
@@ -10,6 +11,8 @@ LoginMain::LoginMain(void)
 	m_network	= &GetNetwork;
 	m_dbMgr		= &GetDBMgr;
 	m_document	= &GetDocument;
+	m_logSrv	= &GetSrvNet;
+	
 }
 
 LoginMain::~LoginMain(void)
@@ -35,6 +38,15 @@ BOOL LoginMain::Init()
 	// 서버 셋팅
 	//======================================
 	if( !m_network->SrvSetting( m_document->LoginSrvPortNum ) )
+		return FALSE;
+
+	//======================================
+	// 로그 서버 접속
+	//======================================
+	if( !m_logSrv->Init() )
+		return FALSE;
+
+	if( !m_logSrv->ConnectToSrv( m_document->LogSrvIP, m_document->LogSrvPortNum ) )
 		return FALSE;
 
 	return TRUE;

@@ -3,6 +3,8 @@
 #include "SQuery.h"
 
 class SLogger;
+class LogMgr;
+class DataLeader;
 
 class LoginDB : public SSingleton <LoginDB>
 {
@@ -12,8 +14,13 @@ private:
 private:
 	SQuery		m_query;
 
-	//·Î±×°´Ã¼
+	//======================================
+	// singleTon °´Ã¼
+	//======================================
 	SLogger*	m_logger;
+	LogMgr*		m_logSrv;
+	DataLeader*	m_document;
+	
 
 private:
 	LoginDB(void);

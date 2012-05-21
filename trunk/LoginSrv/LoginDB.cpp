@@ -3,9 +3,16 @@
 
 #include "LoginProtocol.h"
 
+#include "LogMgr.h"
+#include "DataLeader.h"
+
+const int LogsrvID = 8800;
+
 LoginDB::LoginDB(void)
 {
-	m_logger = &GetLogger;
+	m_logger	= &GetLogger;
+	m_logSrv	= &GetLog;
+	m_document	= &GetDocument;
 }
 
 LoginDB::~LoginDB(void)
@@ -43,6 +50,11 @@ int LoginDB::CheckId( TCHAR* tstrID )
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("LoginDB::CheckId()\nSQLExecDirect Failed\n%s\n\n"),
 						(TCHAR*)strQuery );
+
+		m_logSrv->SendLog( m_document->LoginSrvPortNum, LogMgr::LOG_LEVEL_INFORMATION,
+						_T("[LoginDB::CheckId()] SQLExecDirect Failed [%s]"),
+						(TCHAR*)strQuery );
+
 		return SERVER_ERROR;
 	}
 
@@ -59,11 +71,19 @@ int LoginDB::CheckId( TCHAR* tstrID )
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("LoginDB::CheckId()\nID %s은(는) 중복됩니다.\n\n"),
 						tstrID );
+
+		m_logSrv->SendLog( LogsrvID, LogMgr::LOG_LEVEL_INFORMATION,
+						_T("[LoginDB::CheckId()] ID %s은(는) 중복됩니다."),
+						tstrID );
 		return OVERLAPPED_ID;
 	}
 
 	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 					_T("LoginDB::CheckId()\nID %s은(는) 사용할 수 있습니다.\n\n"),
+					tstrID );
+
+	m_logSrv->SendLog( LogsrvID, LogMgr::LOG_LEVEL_INFORMATION,
+					_T("[LoginDB::CheckId()] ID %s은(는) 사용할 수 있습니다."),
 					tstrID );
 	//id가 존재하지 않으면 사용할 수 있는 id다
 	return (int)TRUE;
@@ -82,12 +102,21 @@ int LoginDB::AddAccount( TCHAR* tstrID, TCHAR* tstrPW, TCHAR* tstrMAILE )
 						_T("[ID %s] 계정생성에 실패 했습니다."),
 						(TCHAR*)strQuery,
 						tstrID );
+
+		m_logSrv->SendLog( LogsrvID, LogMgr::LOG_LEVEL_INFORMATION,
+						_T("[LoginDB::AddAccount()] SQLExecDirect Failed [%s] [ID %s] 계정생성에 실패 했습니다."),
+						(TCHAR*)strQuery, tstrID );
+
 		return SERVER_ERROR;
 	}
 
 	//쿼리 성공
 	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 					_T("LoginDB::AddAccount()\n[ID %s] 계정 생성에 성공하였습니다.\n\n"),
+					tstrID );
+
+	m_logSrv->SendLog( LogsrvID, LogMgr::LOG_LEVEL_INFORMATION,
+					_T("[LoginDB::AddAccount()] [ID %s] 계정 생성에 성공하였습니다."),
 					tstrID );
 
 	m_query.Clear();
@@ -104,6 +133,11 @@ int LoginDB::TryLogin( TCHAR* tstrID, TCHAR* tstrPW )
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("LoginDB::TryLogin()\nSQLExecDirect Failed(AskLogin())\n%s\n\n"),
 						(TCHAR*)strQuery );
+
+		m_logSrv->SendLog( LogsrvID, LogMgr::LOG_LEVEL_INFORMATION,
+						_T("[LoginDB::TryLogin()] SQLExecDirect Failed [%s]"),
+						(TCHAR*)strQuery );
+
 		return SERVER_ERROR;
 	}
 
@@ -123,6 +157,9 @@ int LoginDB::TryLogin( TCHAR* tstrID, TCHAR* tstrPW )
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("LoginDB::TryLogin()\n로그인 실패_ ID %s가 존재하지 않습니다.\n\n"),
 						tstrID );
+		m_logSrv->SendLog( LogsrvID, LogMgr::LOG_LEVEL_INFORMATION,
+						_T("[LoginDB::TryLogin()] 로그인 실패_ ID %s가 존재하지 않습니다."),
+						tstrID );
 		return NONEXISTENT_ID;
 	}
 
@@ -132,12 +169,20 @@ int LoginDB::TryLogin( TCHAR* tstrID, TCHAR* tstrPW )
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("LoginDB::TryLogin()\n로그인 실패_ ID %s의 비번이 틀립니다.\n\n"),
 						tstrID );
+
+		m_logSrv->SendLog( LogsrvID, LogMgr::LOG_LEVEL_INFORMATION,
+						_T("[LoginDB::TryLogin()] 로그인 실패_ ID %s의 비번이 틀립니다."),
+						tstrID );
 		return WRONG_PW;		//비번이 틀림
 	}
 	else
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("LoginDB::TryLogin()\nID %s 로그인 성공.\n\n"),
+						tstrID );
+
+		m_logSrv->SendLog( LogsrvID, LogMgr::LOG_LEVEL_INFORMATION,
+						_T("[LoginDB::TryLogin()] ID %s 로그인 성공."),
 						tstrID );
 		return id;
 	}
@@ -152,6 +197,11 @@ BOOL LoginDB::UpdateLogin( int sessionId, BOOL isLogin /*= TRUE */ )
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("LoginDB::UpdateLogin()\nSQLExecDirect Failed(UpdateLogin())\n%s\n\n"),
 						(TCHAR*)strQuery );
+
+		m_logSrv->SendLog( LogsrvID, LogMgr::LOG_LEVEL_INFORMATION,
+						_T("[LoginDB::UpdateLogin()] SQLExecDirect Failed [%s]"),
+						(TCHAR*)strQuery );
+
 		return FALSE;
 	}
 
@@ -166,6 +216,9 @@ int LoginDB::IsLogin( int sessionID )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("LoginDB::TryLogin()\nSQLExecDirect Failed(AskLogin())\n%s\n\n"),
+						(TCHAR*)strQuery);
+		m_logSrv->SendLog( LogsrvID, LogMgr::LOG_LEVEL_INFORMATION,
+						_T("[LoginDB::TryLogin()] SQLExecDirect Failed [%s]"),
 						(TCHAR*)strQuery);
 		return SERVER_ERROR;
 	}

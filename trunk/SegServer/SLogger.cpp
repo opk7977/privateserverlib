@@ -69,6 +69,8 @@ BOOL SLogger::OpenFile()
 
 void SLogger::PutLog( short errLv, char* lpszFmt, ... )
 {
+	SSynchronize Sync( this );
+
 	char str[TMPSTRING_LENTH]={0,};
 	va_list Vargs;
 
@@ -101,6 +103,8 @@ void SLogger::PutLog( short errLv, char* lpszFmt, ... )
 
 void SLogger::PutLog( short errLv, TCHAR* lpszFmt, ... )
 {
+	SSynchronize Sync( this );
+
 	TCHAR tstr[TMPSTRING_LENTH]={0,};
 	va_list Vargs;
 
@@ -135,6 +139,8 @@ void SLogger::PutLog( short errLv, TCHAR* lpszFmt, ... )
 
 void SLogger::ErrorLog( INT32 errorcode, char* lpszFmt )
 {
+	SSynchronize Sync( this );
+
 	char tmpStr[TMPSTRING_LENTH]={0,};
 
 	int retval = FormatMessageA( FORMAT_MESSAGE_FROM_SYSTEM
@@ -164,6 +170,8 @@ void SLogger::ErrorLog( INT32 errorcode, char* lpszFmt )
 
 void SLogger::ErrorLog( INT32 errorcode, TCHAR* lpszFmt )
 {
+	SSynchronize Sync( this );
+
 	TCHAR tmpTStr[TMPSTRING_LENTH]={0,};
 
 	int retval = FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM

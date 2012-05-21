@@ -29,6 +29,7 @@
 #define IDC_EDIT_ADD_TABLE_NAME         1015
 #define IDC_COMBO_DEL_TABLE             1018
 #define IDC_EDIT_DELTABLE_PW            1019
+#define IDC_LIST1                       1020
 #define ID_ADD_SERVER                   32771
 #define ID_MENU_SETTING                 32772
 #define ID_MENU_DISCONNECT              32773
@@ -48,7 +49,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        317
 #define _APS_NEXT_COMMAND_VALUE         32794
-#define _APS_NEXT_CONTROL_VALUE         1020
+#define _APS_NEXT_CONTROL_VALUE         1021
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

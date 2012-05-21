@@ -7,6 +7,11 @@
 
 #include "SPacket.h"
 
+#include "LogSrvProtocol.h"
+
+//패킷 큐
+#include "SPacketQueue.h"
+
 Network::Network(void)
 {
 }
@@ -24,6 +29,11 @@ BOOL Network::Init( int sessionCount, int port )
 	// 세션공간 확보
 	//======================================
 	GetSessionMgr.Create( SRUNTIME_CLASS(LogSession), sessionCount );
+
+	//======================================
+	// 패킷 큐 공간 확보
+	//======================================
+	GetPacketQ.Init();
 
 	//======================================
 	// IOCP

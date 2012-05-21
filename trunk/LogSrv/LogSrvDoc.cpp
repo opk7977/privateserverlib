@@ -6,6 +6,7 @@
 #include "LogSrv.h"
 
 #include "LogSrvDoc.h"
+#include "LogSrvView.h"
 
 #include "LogDataBase.h"
 #include "Network.h"
@@ -34,7 +35,6 @@ BEGIN_MESSAGE_MAP(CLogSrvDoc, CDocument)
 	ON_COMMAND(ID_DELETE_TABLE, &CLogSrvDoc::OnDeleteTable)
 	ON_COMMAND(ID_MENU_LOGSRVSTART, &CLogSrvDoc::OnMenuLogsrvstart)
 	ON_COMMAND(ID_MENU_LOGSRVSETTING, &CLogSrvDoc::OnMenuLogsrvsetting)
-	ON_COMMAND(ID_MENU_DISCONNECT, &CLogSrvDoc::OnMenuDisconnect)
 END_MESSAGE_MAP()
 
 
@@ -43,6 +43,8 @@ END_MESSAGE_MAP()
 CLogSrvDoc::CLogSrvDoc()
 : m_isDBConnect(FALSE)
 , m_isSettingSrv(FALSE)
+, m_isNetConnect(FALSE)
+, m_view(NULL)
 {
 	// TODO: 여기에 일회성 생성 코드를 추가합니다.
 	m_database	= &GetDB;
@@ -68,6 +70,14 @@ BOOL CLogSrvDoc::OnNewDocument()
 		MessageBox( NULL, _T("db연결에 실패 하였습니다"), _T("ㅠㅠ"), MB_OK );
 		return FALSE;
 	}
+
+	//======================================
+	// table설정부터 다시 하려면 활성하자
+	//======================================
+// 	m_database->CreateServerTbl();
+// 	m_database->CreateTableListTbl();
+// 	m_database->CreateLogLvTbl();
+	//======================================
 
 	//////////////////////////////////////////////////////////////////////////
 	//db에 정상적으로 연결되었다는 flag혹은 신호를 준다
@@ -116,23 +126,36 @@ void CLogSrvDoc::Dump(CDumpContext& dc) const
 void CLogSrvDoc::OnMenuLogsrvstart()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	if( m_isNetConnect )
+	{
+		MessageBox( NULL, _T("이미 서버가 열려 있습니다."), _T("No"), MB_OK );
+		return;
+	}
 	if( !m_isSettingSrv )
 	{
-		MessageBox( NULL, _T("서버 설정이 되어 있지 않습니다."), _T(""), MB_OK );
+		MessageBox( NULL, _T("서버 설정이 되어 있지 않습니다."), _T("하고 오세요"), MB_OK );
 		return;
 	}
 
 	//서버 설정 해 놓기
 	//세션은 20정도?..
-	m_network->Init( 20 );
+	if( !m_network->Init( 20, m_srvPort ) )
+	{
+		MessageBox( NULL, _T("서버 설정에 실패 했습니다."), _T("왓더 헬"), MB_OK );
+		return;
+	}
+
+	//서버 연결이 완료 된
+	MessageBox( NULL, _T("서버 설정에 성공했습니다."), _T("굳 좝"), MB_OK );
+	m_isNetConnect = TRUE;
 }
 
 void CLogSrvDoc::OnMenuLogsrvsetting()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	if( m_isSettingSrv )
+	if( m_isNetConnect )
 	{
-		MessageBox( NULL, _T("이미 서버 설정이 되어 있습니다."), _T(""), MB_OK );
+		MessageBox( NULL, _T("이미 서버가 열려 있습니다."), _T("No"), MB_OK );
 		return;
 	}
 
@@ -164,6 +187,11 @@ void CLogSrvDoc::OnAddTable()
 
 	delete addLogTblDlg;
 
+	if( m_view == NULL )
+		return;
+
+	m_view->SettingTableList();
+
 }
 
 void CLogSrvDoc::OnAddServer()
@@ -181,6 +209,11 @@ void CLogSrvDoc::OnAddServer()
 	}
 
 	delete addSrvID;
+
+	if( m_view == NULL )
+		return;
+
+	m_view->SettingServerList();
 }
 
 //======================================
@@ -205,4 +238,9 @@ void CLogSrvDoc::OnDeleteTable()
 	}
 
 	delete delLogTable;
+
+	if( m_view == NULL )
+		return;
+
+	m_view->SettingTableList();
 }

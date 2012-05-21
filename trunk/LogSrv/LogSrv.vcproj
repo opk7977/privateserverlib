@@ -340,6 +340,10 @@
 					Name="Network"
 					>
 					<File
+						RelativePath=".\LogSrvProtocol.h"
+						>
+					</File>
+					<File
 						RelativePath=".\Network.cpp"
 						>
 					</File>
@@ -356,6 +360,18 @@
 						</File>
 						<File
 							RelativePath=".\LogSession.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="PacketParser"
+						>
+						<File
+							RelativePath=".\PacketParser.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\PacketParser.h"
 							>
 						</File>
 					</Filter>

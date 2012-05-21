@@ -5,6 +5,8 @@
 
 #pragma once
 
+class CLogSrvView;
+
 class LogDataBase;
 class Network;
 
@@ -34,8 +36,10 @@ private:
 	//--------------------------------------
 	BOOL				m_isDBConnect;
 	BOOL				m_isSettingSrv;
+	BOOL				m_isNetConnect;
 	
 public:
+	CLogSrvView*		m_view;
 
 // 작업입니다.
 public:
@@ -72,7 +76,6 @@ public:
 	afx_msg void OnDeleteTable();
 	afx_msg void OnMenuLogsrvstart();
 	afx_msg void OnMenuLogsrvsetting();
-	afx_msg void OnMenuDisconnect();
 };
 
 

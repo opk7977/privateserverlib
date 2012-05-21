@@ -7,6 +7,8 @@ class SPacket;
 class LoginDB;
 class SLogger;
 class DataLeader;
+class LogSrvNet;
+class LogMgr;
 
 //======================================
 // 로그인 세션은 MultiConnect보다는
@@ -27,6 +29,8 @@ private:
 	LoginDB*	m_dbMgr;		//db객체
 	SLogger*	m_logger;		//로그 객체
 	DataLeader*	m_document;		//서버 data
+	LogSrvNet*	m_logSrv;		//로그 서버
+	LogMgr*		m_logMgr;		//로그메니져
 	//======================================
 	
 	//DB로그인 체크를 위한 flag
@@ -44,6 +48,18 @@ public:
 	//======================================
 	// 받아서 처리
 	//======================================
+	//--------------------------------------
+	// log 서버와의 커뮤니케이션
+	//--------------------------------------
+	// LOG_SERVER_CONNECT_OK
+	void RecvLogSrvConnectOK();
+
+	// LOG_SERVER_SHOTDOWN
+	void RecvLogSrvShotdown();
+
+	//--------------------------------------
+	// client와의 커뮤니케이션
+	//--------------------------------------
 	//CS_LOGIN_CHECK_ID
 	void RecvCheckId( SPacket& packet );
 

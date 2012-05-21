@@ -13,7 +13,7 @@
 #define DEFUALT_INDEX_COUNT		100
 
 
-class SSessionMgr : public SSingleton <SSessionMgr>
+class SSessionMgr : public SSingleton <SSessionMgr>, public SServerObj
 {
 private:
 	friend class SSingleton<SSessionMgr>;
@@ -52,6 +52,9 @@ public:
 
 	//모든 세션에게 동일한 패킷 전송
 	void SendAllSession( SPacket &packet );
+
+	//세션 ID로 세션을 찾는다
+	SServerObj* FindSession( int SessionId );
 
 	//모든 동적할당 해제
 	void Release();

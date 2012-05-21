@@ -23,6 +23,9 @@ public:
 	int		GameSrvProtNum;
 	//--------------------------------------------------------------
 	int		GamePlaySec;
+	//--------------------------------------------------------------
+	char	LogSrvIP[15];
+	int		LogSrvPortNum;
 
 public:
 	DataLeader(void);

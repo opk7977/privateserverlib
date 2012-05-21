@@ -9,14 +9,11 @@ class Room;
 // For SingleTon
 //--------------------------------------
 class DataLeader;
-
 class LobbyMgr;
 class RoomMgr;
 class CharMgr;
 class CheckDB;
-
 class SrvNet;
-
 class SLogger;
 
 class LobbySession : public SSessionObj
@@ -57,6 +54,9 @@ public:
 
 	//정보들 초기화
 	void clear();
+
+	Room*		GetMyRoom() const { return m_myRoom; }
+	LobbyChar*	GetMyInfo() const { return m_myCharInfo; }
 
 	//======================================
 	// 패킷 해석 

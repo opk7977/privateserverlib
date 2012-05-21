@@ -23,6 +23,8 @@ LobbySession* LobbyChar::GetSession() const
 
 void LobbyChar::Init()
 {
+	SSynchronize Sync( this );
+
 	m_session = NULL;
 	m_isPlay = FALSE;
 	m_sessionId = 0;
@@ -35,12 +37,7 @@ void LobbyChar::Init( int i )
 {
 	m_vecIndex = i;
 
-	m_session = NULL;
-	m_isPlay = FALSE;
-	m_sessionId = 0;
-	ZeroMemory( m_tstrId, 30 );
-	m_myTeam = -1;
-	m_ready = FALSE;
+	Init();
 }
 
 void LobbyChar::SetIsPlay( BOOL isPlay /*= TRUE */ )
@@ -103,6 +100,23 @@ void LobbyChar::PackageMyInfo( SPacket& packet )
 	packet.PutData( m_tstrId, size );
 }
 
+void LobbyChar::PackageMyInfoForLobby( SPacket& packet )
+{
+	SSynchronize Sync( this );
+
+	packet << m_sessionId;
+	int size = _tcslen( m_tstrId ) * sizeof( TCHAR );
+	packet << size;
+	packet.PutData( m_tstrId, size );
+	//자신이 속해 있는 방
+	if( m_session->GetMyRoom() == NULL )
+		packet << 0;
+	else
+		packet << m_session->GetMyRoom()->GetRoomNum();
+	packet << m_isPlay;
+	
+}
+
 void LobbyChar::PackageMyInfoForRoom( SPacket& packet )
 {
 	SSynchronize Sync( this );
@@ -160,6 +174,7 @@ void CharMgr::Release()
 		delete m_vecCharSpace[i];
 	}
 	m_vecCharSpace.clear();
+	m_connectPlayer.clear();
 }
 
 LobbyChar* CharMgr::GetCharSPace()
@@ -167,6 +182,9 @@ LobbyChar* CharMgr::GetCharSPace()
 	int index = m_IndexQ.GetIndex();
 	if( index < 0 )
 		return NULL;
+
+	//접속 list에 추가 해 준다
+	m_connectPlayer.push_back( index );
 
 	return m_vecCharSpace[index];
 }
@@ -179,6 +197,21 @@ void CharMgr::ReturnCharSpace( LobbyChar* charspace )
 
 	int index = charspace->GetVecIndex();
 	charspace->Init();
+
+	//list에서 제거해 준다
+	{
+		SSynchronize Sync( this );
+
+		std::list<int>::iterator iter = m_connectPlayer.begin();
+		for( ; iter != m_connectPlayer.end(); ++iter )
+		{
+			if( (*iter) == index )
+			{
+				m_connectPlayer.erase( iter );
+				break;
+			}
+		}
+	}
 
 	m_IndexQ.PutIndex( index );
 }

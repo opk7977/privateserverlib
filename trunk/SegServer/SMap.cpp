@@ -13,12 +13,15 @@ SMap::~SMap(void)
 void SMap::Release()
 {
 	//count가 0보다 작거나 같으면 그냥 바이바이
-	if( m_Map.GetCount() <= 0 )
+	if( m_Map.IsEmpty() )
 		return;
 
 	//돌면서 하나하나 메모리 할당을 풀어 주고
 	for( int i=0; i<m_iSize; ++i )
+	{
 		delete m_Map[i+1];
+		m_Map[i+1] = 0;
+	}
 
 	//마지막으로 모두 지운다
 	m_Map.RemoveAll();

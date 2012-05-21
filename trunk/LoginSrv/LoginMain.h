@@ -5,6 +5,7 @@
 class Network;
 class LoginDB;
 class DataLeader;
+class LogSrvNet;
 
 class LoginMain
 {
@@ -15,6 +16,7 @@ private:
 	Network*		m_network;
 	LoginDB*		m_dbMgr;
 	DataLeader*		m_document;
+	LogSrvNet*		m_logSrv;
 	//======================================
 
 public:

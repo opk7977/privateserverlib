@@ -5,6 +5,8 @@
 #include "LogDataBase.h"
 #include "SPacketQueue.h"
 
+#include "LogSrvProtocol.h"
+
 SIMPLEMENT_DYNAMIC(LogSession)
 SIMPLEMENT_DYNCREATE(LogSession)
 

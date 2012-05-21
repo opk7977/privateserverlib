@@ -28,6 +28,9 @@ BOOL SIndexList::IsEnd( Position pos )
 
 int SIndexList::Size()
 {
+	if( m_List.empty() )
+		return 0;
+
 	return m_List.size();
 }
 

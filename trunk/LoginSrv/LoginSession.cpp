@@ -6,6 +6,10 @@
 #include "SPacket.h"
 #include "SLogger.h"
 
+#include "LogSrvNet.h"
+#include "LogMgr.h"
+
+
 SIMPLEMENT_DYNAMIC(LoginSession)
 SIMPLEMENT_DYNCREATE(LoginSession)
 
@@ -16,6 +20,8 @@ LoginSession::LoginSession(void)
 	m_dbMgr		= &GetDBMgr;
 	m_logger	= &GetLogger;
 	m_document	= &GetDocument;
+	m_logSrv	= &GetSrvNet;
+	m_logMgr	= &GetLog;
 }
 
 LoginSession::~LoginSession(void)
@@ -25,6 +31,9 @@ LoginSession::~LoginSession(void)
 void LoginSession::OnCreate()
 {
 	SSession::OnCreate();
+
+	//로그서버로 전송
+	m_logMgr->SendLog( 8800, LogMgr::LOG_LEVEL_INFORMATION, _T("[LoginSession::RecvLogSrvConnectOK()]_1. ID 접속이 정확히 잘 되나?.\n") );
 
 	//연결에 성공했다는 packet을 보낸다.
 	SendPacket( SC_LOGIN_CONNECT_OK );
@@ -42,6 +51,14 @@ void LoginSession::PacketParsing( SPacket& packet )
 {
 	switch( packet.GetID() )
 	{
+	//======================================> LogServer
+	case LOG_SERVER_CONNECT_OK:
+		RecvLogSrvConnectOK();
+		break;
+	case LOG_SERVER_SHOTDOWN:
+		RecvLogSrvShotdown();
+		break;
+	//======================================> Client
 	case CS_LOGIN_CHECK_ID:
 		RecvCheckId( packet );
 		break;
@@ -58,6 +75,31 @@ void LoginSession::PacketParsing( SPacket& packet )
 }
 
 //==============================================================
+
+void LoginSession::RecvLogSrvConnectOK()
+{
+	SSynchronize Sync( this );
+
+	//log서버 셋팅해 주자
+	m_logSrv->SetSession( this );
+
+	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+					_T("LoginSession::RecvLogSrvConnectOK()\n로그 서버와 연결되었습니다.\n\n") );
+}
+
+void LoginSession::RecvLogSrvShotdown()
+{
+	//로그서버 셋팅을 풀어 주자
+	SSynchronize Sync( this );
+
+	//log서버 셋팅해 주자
+	m_logSrv->DisConnect();
+
+	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+					_T("LoginSession::RecvLogSrvConnectOK()\n로그 서버와의 연결이 종료 되었습니다.\n\n") );
+}
+
+//--------------------------------------------------------------
 
 //CS_LOGIN_CHECK_ID
 void LoginSession::RecvCheckId( SPacket& packet )

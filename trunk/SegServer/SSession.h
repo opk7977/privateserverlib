@@ -24,8 +24,10 @@ private:
 	//////////////////////////////////////
 
 protected:
+	//자신의 SessionID번호
+	int					m_mySessionID;
 	//자신의 iocp핸들값 = map의 키값
-	int					m_iIocpKey;
+	//int					m_iIocpKey;
 
 public:
 	SSession(void);
@@ -37,6 +39,8 @@ public:
 
 // 	inline void		SetKey( int i ) { m_iIocpKey = i; }
 // 	inline int		GetKey() { return m_iIocpKey; }
+	inline void		SetSessionID( int sessionID ) { m_mySessionID = sessionID; }
+	inline int		GetSessionID() { return m_mySessionID; }
 
 	//====================================
 	// 패킷을 받았을 때의 호출 함수

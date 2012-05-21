@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SIndexQueue.h"
+#include "SServerObj.h"
 
 class LobbySession;
 class SPacket;
@@ -68,6 +69,8 @@ public:
 	//==============================================================
 
 	void PackageMyInfo( SPacket& packet );
+	//로비를 위해 필요한 정보를 담기
+	void PackageMyInfoForLobby( SPacket& packet );
 	//방에 필요한 정보(team, ready)포함해서 담기
 	void PackageMyInfoForRoom( SPacket& packet );
 	//게임 서버에 필요한 정보(team)를 담는다
@@ -80,7 +83,7 @@ public:
 
 class DataLeader;
 
-class CharMgr : public SSingleton <CharMgr>
+class CharMgr : public SSingleton <CharMgr>, public SServerObj
 {
 private:
 	friend class SSingleton<CharMgr>;
@@ -93,6 +96,8 @@ private:
 	std::vector<LobbyChar*>		m_vecCharSpace;
 	//공간 관리용 index
 	SIndexQueue					m_IndexQ;
+	//접속해있는 전체 캐릭터 list
+	std::list<int>				m_connectPlayer;
 
 private:
 	CharMgr();

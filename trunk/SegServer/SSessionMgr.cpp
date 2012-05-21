@@ -142,6 +142,27 @@ void SSessionMgr::SendAllSession( SPacket &packet )
 	}
 }
 
+SServerObj* SSessionMgr::FindSession( int SessionId )
+{
+	if( m_playerList.Size() <= 0 )
+		return NULL;
+	{
+		SSynchronize sync( &m_sessionMap );
+
+		SSession* tmpSession;
+		std::list<int>::iterator iter = m_playerList.HeadPosiont();
+		for( ; !m_playerList.IsEnd(iter); ++iter )
+		{
+			//모든 세션에 패킷을 보낸다.
+			tmpSession = (SSession*)m_sessionMap.PeekObj((*iter));
+			if( SessionId == tmpSession->GetSessionID() )
+				return (SServerObj*)(*iter);
+		}
+
+		return NULL;
+	}
+}
+
 void SSessionMgr::Release()
 {
 	m_sessionMap.Release();

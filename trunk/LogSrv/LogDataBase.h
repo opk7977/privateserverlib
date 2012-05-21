@@ -36,6 +36,7 @@ public:
 	//--------------------------------------
 	BOOL CreateServerTbl();
 	BOOL CreateTableListTbl();
+	BOOL CreateLogLvTbl();
 
 public:
 	// log table을 하나 만든다
@@ -48,6 +49,8 @@ public:
 	void SettingTableListCombobox( CComboBox* combo );
 	// server를 모두 콤보박스로 넣어 준다
 	void SettingServerListCombobox( CComboBox* combo );
+	// loglevel을 모두 콤보막스로 넣어 준다.
+	void SettingLogLevelCombobox( CComboBox* combo );
 
 	// 테이블을 제거한다
 	BOOL DisabledTable( TCHAR* tableName );
@@ -55,6 +58,9 @@ public:
 
 	//Log를 추가한다.
 	void InsertLog( int serverId, int loglv, TCHAR* log );
+
+	//항목을 list에 뿌려 준다.
+	BOOL SetLogList( TCHAR* table, TCHAR* Server, TCHAR* LogLevel, CListBox* listbox );
 };
 
 #define GetDB LogDataBase::GetInstance()
