@@ -5,6 +5,8 @@
 
 //typename을 붙여야 한다.
 //컴파일러는 std::list<T>::iterator가 자료형이라는 것을 모름
+//제공되는 클래스는 내부적으로 메모리 할당 해제 작업이 일어나지 않는다.
+//생성과 파괴가 필요한 경우에는 외부에서 작업해 줘야 한다
 #define SListIter	typename std::list<T>::iterator
 
 template <typename T>
