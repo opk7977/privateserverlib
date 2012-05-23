@@ -8,6 +8,7 @@ class Room;
 //--------------------------------------
 // For SingleTon
 //--------------------------------------
+class SSessionMgr;
 class DataLeader;
 class LobbyMgr;
 class RoomMgr;
@@ -22,6 +23,7 @@ private:
 	//======================================
 	// singleTon객체
 	//======================================
+	SSessionMgr*	m_sessionMgr;
 	DataLeader*		m_document;
 	LobbyMgr*		m_lobbyMgr;
 	RoomMgr*		m_roomMgr;
@@ -64,6 +66,11 @@ public:
 	void PacketParsing( SPacket& packet );
 
 	//======================================
+	// 보내는 함수
+	//======================================
+	int SendPacket( SPacket& packet, BOOL tudp = FALSE );
+
+	//======================================
 	// 받은 패킷 처리 함수
 	//======================================
 	//--------------------------------------
@@ -102,11 +109,17 @@ public:
 	//CS_ROOM_CHAR_READY
 	void RecvReady();
 
+	//CS_ROOM_MAP_CHANGE
+	void RecvChangeMap( SPacket& packet );
+
 	//CS_ROOM_TEAM_CHANGE
 	void RecvTeamChange();
 
-	//CS_ROOM_CHAT
-	void RecvChat( SPacket& packet );
+	//CS_LOBBYSRV_ALL_CHAT
+	void RecvAllChat( SPacket& packet );
+
+	//CS_LOBBYSRV_TARGET_CHAT
+	void RecvTargetChat( SPacket& packet );
 
 	//CS_ROOM_START
 	void RecvRoomStartGame();
@@ -165,11 +178,21 @@ public:
 	//SC_ROOM_CHAR_READY
 	BOOL SendRoomCharReady();
 
+	//SC_ROOM_MAP_CHANGE
+	BOOL SendRoomMapChange( int mapNum );
+
+	//SC_LOBBY_MAP_CHANGE
+	BOOL SendLobbyMapChange( int mapNum );
+
 	//SC_ROOM_TEAM_CHANGE
 	BOOL SendRoomTeamChange();
 
-	//SC_ROOM_CHAT
-	BOOL SendChat( TCHAR* chat );
+	//SC_LOBBYSRV_ALL_CHAT
+	BOOL SendAllChat( TCHAR* chat );
+	
+	//SC_LOBBYSRV_TARGET_CHAT
+	BOOL SendTargetChatToTarget( int target, TCHAR* chat );
+	BOOL SendTargetChatToMe( int target, TCHAR* chat );
 
 	//SC_ROOM_START_RESULT
 	BOOL SendStartGameResult();

@@ -2,6 +2,7 @@
 
 #include "SIndexQueue.h"
 #include "SServerObj.h"
+#include "SList.h"
 
 class LobbySession;
 class SPacket;
@@ -97,7 +98,11 @@ private:
 	//공간 관리용 index
 	SIndexQueue					m_IndexQ;
 	//접속해있는 전체 캐릭터 list
-	std::list<int>				m_connectPlayer;
+	SList<int>					m_listPlayer;
+
+// 	std::list<int>				m_connectPlayer;
+// 	//접속해있는 전체 캐릭터의 수
+// 	int							m_connectPlayerCount;
 
 private:
 	CharMgr();
@@ -108,6 +113,8 @@ public:
 	void Init();
 	void Release();
 
+	inline int GetConnectPlayerCount() { return m_listPlayer.GetItemCount(); }
+
 	//캐릭터 공간을 할당해주는 함수
 	LobbyChar* GetCharSPace();
 
@@ -117,6 +124,9 @@ public:
 
 	//해당 session에 해당하는 character를 받음
 	LobbyChar* FindCharAsSessionId( int session );
+
+	//모든 캐릭터를 담자
+	void PackageAllCharacter( SPacket& packet );
 };
 
 #define GetCharMgr CharMgr::GetInstance()

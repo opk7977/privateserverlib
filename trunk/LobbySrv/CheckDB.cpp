@@ -41,6 +41,30 @@ void CheckDB::GetData( int in_sessionId, TCHAR* out_ID )
 	m_query.Clear();
 }
 
+int CheckDB::GetSessionId( TCHAR* userID )
+{
+	SQLWCHAR	strQuery[255];
+	wsprintf( (TCHAR*)strQuery, _T("select ID from tblUser where U_ID='%s'"), userID );
+
+	if( !m_query.Exec( strQuery ) )
+	{
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("CheckDB::GetSessionId()\n캐릭터 %s session 쿼리 실패\n%s\n\n"),
+			userID,
+			(TCHAR*)strQuery );
+		return -10;
+	}
+
+	int result = 0;
+	while( m_query.Fetch() != SQL_NO_DATA )
+	{
+		result = m_query.GetInt( _T("ID") );
+	}
+	m_query.Clear();
+
+	return result;
+}
+
 
 BOOL CheckDB::UpdateLogin( int sessionId, BOOL isLogin /*= TRUE */ )
 {

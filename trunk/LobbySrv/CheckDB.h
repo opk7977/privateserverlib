@@ -21,6 +21,8 @@ public:
 
 	//sessionId로 userID를 받아 간다
 	void GetData( int in_sessionId, TCHAR* out_ID );
+	//userID로 sessionId를 받아 간다
+	int GetSessionId( TCHAR* userID );
 
 	//성공실패
 	BOOL UpdateLogin( int sessionId, BOOL isLogin = TRUE );

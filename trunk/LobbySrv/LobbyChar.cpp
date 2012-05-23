@@ -1,5 +1,6 @@
 #include "LobbyChar.h"
 #include "LobbySession.h"
+#include "Room.h"
 
 #include "DataLeader.h"
 
@@ -174,7 +175,6 @@ void CharMgr::Release()
 		delete m_vecCharSpace[i];
 	}
 	m_vecCharSpace.clear();
-	m_connectPlayer.clear();
 }
 
 LobbyChar* CharMgr::GetCharSPace()
@@ -184,7 +184,7 @@ LobbyChar* CharMgr::GetCharSPace()
 		return NULL;
 
 	//접속 list에 추가 해 준다
-	m_connectPlayer.push_back( index );
+	m_listPlayer.AddItem( index );
 
 	return m_vecCharSpace[index];
 }
@@ -199,19 +199,7 @@ void CharMgr::ReturnCharSpace( LobbyChar* charspace )
 	charspace->Init();
 
 	//list에서 제거해 준다
-	{
-		SSynchronize Sync( this );
-
-		std::list<int>::iterator iter = m_connectPlayer.begin();
-		for( ; iter != m_connectPlayer.end(); ++iter )
-		{
-			if( (*iter) == index )
-			{
-				m_connectPlayer.erase( iter );
-				break;
-			}
-		}
-	}
+	m_listPlayer.DelItem( index );
 
 	m_IndexQ.PutIndex( index );
 }
@@ -240,6 +228,21 @@ LobbyChar* CharMgr::FindCharAsSessionId( int session )
 
 	//없으면 NULL을 return
 	return NULL;
+}
+
+void CharMgr::PackageAllCharacter( SPacket& packet )
+{
+	SSynchronize Sync( this );
+
+	//우선 모든 인원을 넣는다.
+	packet << m_listPlayer.GetItemCount();
+
+	std::list<int>::iterator iter = m_listPlayer.GetHeader();
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
+	{
+		//해당 캐릭터의 정보를 넣는다.
+		m_vecCharSpace[(*iter)]->PackageMyInfoForLobby( packet );
+	}
 }
 
 

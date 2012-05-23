@@ -103,6 +103,8 @@ enum LOBBY_SERVER
 	// int			-		SessionId
 	// int			-		id데이터의 크기
 	// TCHAR		-		id
+	// int			-		Room(0:로비/ n:방번호)
+	// int			-		Playstate
 	//--------------------------------------> playerCount만큼 반복으로 들어가 있음
 	SC_LOBBY_OTHER_CHARINFO,
 
@@ -115,6 +117,7 @@ enum LOBBY_SERVER
 	// int			-		RoomTitle데이터의 크기
 	// TCHAR		-		RoomTitle
 	// int			-		stateOfRoom ( ex)0:일반, 1(양수):게임중 )
+	// int			-		stageMap
 	//--------------------------------------> roomCount만큼 반복으로 들어가 있음
 	SC_LOBBY_ROOMINFO,
 
@@ -202,6 +205,22 @@ enum LOBBY_SERVER
 	SC_ROOM_CHAR_READY,
 
 	// client -> server
+	// 맵을 변경
+	// int			-		mapNum
+	CS_ROOM_MAP_CHANGE,
+
+	// server -> client
+	// 변경된 맵을 전함
+	// int			-		mapNum
+	SC_ROOM_MAP_CHANGE,
+
+	// server -> client
+	// 로비에 맵이 변경된 방에 대한 정보를 알림
+	// int			-		roomnum
+	// int			-		mapnum
+	SC_LOBBY_MAP_CHANGE,
+
+	// client -> server
 	// 팀 변경에 대한 상태를 알림
 	CS_ROOM_TEAM_CHANGE,
 
@@ -212,17 +231,32 @@ enum LOBBY_SERVER
 	SC_ROOM_TEAM_CHANGE,
 
 	// client -> server
-	// 채팅을 위해 서버로 쓴글을 알림
+	// 전체 채팅
 	// int			-		문장의 데이터 크기
 	// TCHAR		-		문장
-	CS_LOBBY_CHAT,
+	CS_LOBBYSRV_ALL_CHAT,
 
 	// server -> client
-	// 채팅문장을 알림
-	// int			-		RoomNum ( 로비라면 0 )
+	// 전체 채팅
+	// int			-		0:로비/ n: 방
 	// int			-		문장의 데이터 크기
 	// TCHAR		-		문장
-	SC_LOBBY_CHAT,
+	SC_LOBBYSRV_ALL_CHAT,
+
+	// client -> server
+	// 귓말 전송
+	// int			-		상대방 ID의데이터 크기
+	// TCHAR		-		상대방의 ID
+	// int			-		문장의 데이터 크기
+	// TCHAR		-		문장
+	CS_LOBBYSRV_TARGET_CHAT,
+
+	// server -> client
+	// 귓말 전송
+	// int			-		0: 로비/ n: 방번호
+	// int			-		문장의 데이터 크기
+	// TCHAR		-		문장
+	SC_LOBBYSRV_TARGET_CHAT,
 
 	// client -> server
 	// 방장이 게임을 시작하려고 알리는 패킷

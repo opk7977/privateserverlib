@@ -54,7 +54,7 @@ void LobbyMgr::PackageDataAllInLobby( SPacket& packet )
 	std::list<LobbyChar*>::iterator iter = m_listPlayerInLobby.begin();
 
 	for( ; iter != m_listPlayerInLobby.end(); ++iter )
-		(*iter)->PackageMyInfo( packet );
+		(*iter)->PackageMyInfoForLobby( packet );
 }
 
 void LobbyMgr::AddUser( LobbyChar* _session )

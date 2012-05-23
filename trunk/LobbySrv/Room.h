@@ -2,17 +2,20 @@
 
 #include "SServerObj.h"
 #include "SIndexQueue.h"
+#include "SList.h"
 
 class SPacket;
 class SLogger;
+class CharMgr;
 
 class LobbyChar;
 class LobbySession;
 
 
 //방의 정원
-#define MIN_PLAYER_COUNT 2
-#define MAX_PLAYER_COUNT 8
+#define MIN_PLAYER_COUNT	2
+#define MAX_PLAYER_COUNT	8
+#define MAX_TIME_COUNT		4
 
 enum ROOM_STATE
 {
@@ -25,25 +28,33 @@ class Room : public SServerObj
 {
 private:
 	static SLogger*				m_logger;
+	static CharMgr*				m_charMgr;
 
 private:
-	std::list<LobbyChar*>		m_listPlayer;
-
+	//======================================
+	// 방의 정보
+	//======================================
 	int							m_roomNum;
+	TCHAR						m_tstrRoomTitle[50];	//방 제목
 
-	int							m_nowPleyrCount;		//현재 들어와 있는 사람들의 수
+	BOOL						m_visible;				//열려 있는 방인지?
+	int							m_roomState;			//방의 상태
+	//======================================
+	
+	//======================================
+	// 방 안의 player정보
+	//======================================
+	//방에 들어와있는 playerlist와 인원
+	SList<LobbyChar*>			m_listPlayer;
+
 	int							m_readyCount;			//준비상태의 캐릭터 수
+	int							m_stageMap;				//게임 맵
 
-	LobbyChar*					m_leader;				//방장의 세션 번호
+	LobbyChar*					m_leader;				//방장
 
-	BOOL						m_visible;				//방이 만들어져 있는 방인지?
-	int							m_roomState;			//방의 현재 상태
-
-	TCHAR						m_tstrRoomTitle[50];	//방 문구
-
-	int							m_AttectTeam;
-	int							m_DefenceTeam;
-
+	int							m_AttectTeam;			//공격팀 count
+	int							m_DefenceTeam;			//수비팀 count
+	//======================================
 
 public:
 	Room(void);
@@ -70,14 +81,15 @@ public:
 	{
 		return m_tstrRoomTitle;
 	}
+	inline int	GetStageMap() { return m_stageMap; }
+	inline void SetStageMap( int stageMap ) { m_stageMap = stageMap; }
 	//게임을 진행 할 수 있는 상태 인가를 확인해 준다.
 	BOOL PossiblePlay();
 	//방을 play상태로 만들어 준다.
 	void SetPlay();
 	inline void ListReset() 
 	{
-		m_listPlayer.clear();
-		m_nowPleyrCount = 0;
+		m_listPlayer.Clear();
 	}
 	//방을 ready상태로 만들어 준다
 	void SetReady();
@@ -92,7 +104,7 @@ public:
 	// player관련
 	//--------------------------------------
 	//들어와 있는 인원 확인
-	inline int GetPlayerCount() { return m_nowPleyrCount; }
+	inline int GetPlayerCount() { return m_listPlayer.GetItemCount(); }
 	//ready상태의 인원 확인
 	inline int GetReadyCount() { return m_readyCount; }
 
@@ -102,7 +114,7 @@ public:
 	LobbyChar* ChangeLeader();
 
 	//방에 들어있는 player의 세션 주소를 변경해 준다
-	BOOL SetPlayerSession( LobbySession* session, LobbyChar* charSpace );
+	//BOOL SetPlayerSession( LobbySession* session, LobbyChar* charSpace );
 
 	//player추가
 	void AddPlayerInRoom( LobbyChar* charspace );
@@ -118,7 +130,8 @@ public:
 	//팀을 변경
 	//증가하는 팀을 매개변수로 받는다
 	//ex) TRUE이면 공격팀을 올리고 수비팀을 내린다
-	void ChangeTeam( BOOL isATT );
+	//return 값이 FALSE이면 팀이 변경되지 않은것!
+	BOOL ChangeTeam( BOOL isATT );
 
 	//팀을 할당 받음
 	//0 : 공격
@@ -157,16 +170,11 @@ private:
 	//방의 총공간
 	int								m_roomCount;
 	ATL::CAtlMap<int, Room*>		m_mapRoom;
-	std::vector<Room*>				m_vecRoom;
 	//방 공간의 index(열수 있는 방 번호 큐)
 	SIndexQueue						m_roomIndexQ;
 
 	//열려 있는 방의 list
-	std::list<Room*>				m_listOpenRoom;
-	
-
-	//열려 있는 방의 개수
-	int								m_iOpenRoomCount;
+	SList<Room*>					m_listOpenRoom;
 
 private:
 	RoomMgr();
@@ -177,7 +185,7 @@ public:
 	void	Release();
 
 	Room*	OpenRoom( TCHAR* title );
-	int		OpenRoomCount() { return m_iOpenRoomCount; }
+	int		OpenRoomCount() { return m_listOpenRoom.GetItemCount(); }
 	void	CloseRoom( int roomNum );
 
 	Room*	FindRoom( int roomNum );

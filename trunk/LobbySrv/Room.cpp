@@ -8,10 +8,12 @@
 
 
 //Room
-SLogger* Room::m_logger = &GetLogger;
+SLogger* Room::m_logger		= &GetLogger;
+CharMgr* Room::m_charMgr	= &GetCharMgr;
 
 Room::Room(void)
 {
+	
 }
 
 Room::~Room(void)
@@ -22,10 +24,11 @@ void Room::Init()
 {
 	SSynchronize Sync( this );
 
-	m_listPlayer.clear();
+	m_listPlayer.Clear();
 
-	_tcsncpy_s( m_tstrRoomTitle, 50, _T("Empty Room"), 10 ); 
-	m_nowPleyrCount = m_readyCount = 0;
+	_tcsncpy_s( m_tstrRoomTitle, 50, _T("Empty Room"), 10 );
+	m_stageMap = 0;
+	m_readyCount = 0;
 	m_leader = NULL;
 	m_roomState = 0;
 	
@@ -47,11 +50,11 @@ BOOL Room::PossiblePlay()
 	SSynchronize Sync( this );
 
 	//모두(-방장) ready상태가 아니면 시작할 수 없음
-	if( (m_nowPleyrCount-1) != m_readyCount )
+	if( (m_listPlayer.GetItemCount()-1) != m_readyCount )
 		return FALSE;
 
 	//최소인원보다 적으면 시작할 수 없음
-	if( m_nowPleyrCount < MIN_PLAYER_COUNT )
+	if( m_listPlayer.GetItemCount() < MIN_PLAYER_COUNT )
 		return FALSE;
 
 	return TRUE;
@@ -65,10 +68,9 @@ void Room::SetPlay()
 	m_roomState = ROOM_STATE_PLAYING;
 
 	//방의 모든 플레이어의 세션에 표시한다.
-	std::list<LobbyChar*>::iterator iter;
-	iter = m_listPlayer.begin();
+	std::list<LobbyChar*>::iterator iter = m_listPlayer.GetHeader();
 
-	for( ; iter != m_listPlayer.end(); ++iter )
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
 	{
 		//캐릭터를 게임 중 상태로 만들어 준다
 		(*iter)->SetIsPlay();
@@ -89,7 +91,7 @@ BOOL Room::CanInsert()
 		return FALSE;
 
 	//인원이 꽉 찼으면 들어 올 수 없음
-	if( m_nowPleyrCount >= MAX_PLAYER_COUNT )
+	if( m_listPlayer.GetItemCount() >= MAX_PLAYER_COUNT )
 		return FALSE;
 
 	//그렇지 않다면 들어 올 수 있음
@@ -107,30 +109,31 @@ LobbyChar* Room::ChangeLeader()
 {
 	SSynchronize Sync( this );
 
-	m_leader = *(m_listPlayer.begin());
+	m_leader = *(m_listPlayer.GetHeader());
 
 	return m_leader;
 }
 
-BOOL Room::SetPlayerSession( LobbySession* session, LobbyChar* charSpace )
-{
-	SSynchronize Sync( this );
-	
-	std::list<LobbyChar*>::iterator iter;
-	iter = m_listPlayer.begin();
-
-	for( ; iter != m_listPlayer.end(); ++iter )
-	{
-		if( *iter == charSpace )
-		{
-			//해당 session을 찾으면 player의 session정보를 바꿔준다
-			(*iter)->SetSession( session );
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
+// BOOL Room::SetPlayerSession( LobbySession* session, LobbyChar* charSpace )
+// {
+// 	SSynchronize Sync( this );
+// 	
+// // 	std::list<LobbyChar*>::iterator iter;
+// // 	iter = m_listPlayer.begin();
+// 
+// 
+// 	for( ; iter != m_listPlayer.end(); ++iter )
+// 	{
+// 		if( *iter == charSpace )
+// 		{
+// 			//해당 session을 찾으면 player의 session정보를 바꿔준다
+// 			(*iter)->SetSession( session );
+// 			return TRUE;
+// 		}
+// 	}
+// 
+// 	return FALSE;
+// }
 
 void Room::AddPlayerInRoom( LobbyChar* charspace )
 {
@@ -140,16 +143,14 @@ void Room::AddPlayerInRoom( LobbyChar* charspace )
 	charspace->SetTeam( GetTeam() );
 
 	//list에 저장
-	m_listPlayer.push_back( charspace );
-
-	++m_nowPleyrCount;
+	m_listPlayer.AddItem( charspace );
 }
 
 BOOL Room::DelPlayerInRoom( LobbyChar* charspace )
 {
 	SSynchronize Sync( this );
 
-	if( m_listPlayer.empty() )
+	if( m_listPlayer.IsEmpty() )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 						_T("Room::DelPlayerInRoom()\nlist가 비어 있습니다.지울수 엄써...\n\n") );
@@ -166,22 +167,10 @@ BOOL Room::DelPlayerInRoom( LobbyChar* charspace )
 	if( charspace->GetReady() )
 		--m_readyCount;
 
-	std::list<LobbyChar*>::iterator iter;
-	iter = m_listPlayer.begin();
-
-	for( ; iter != m_listPlayer.end(); ++iter )
-	{
-		//일치하면 지우고 나간다
-		if( *iter == charspace )
-		{
-			m_listPlayer.erase( iter );
-			--m_nowPleyrCount;
-			break;
-		}
-	}
+	m_listPlayer.DelItem( charspace );
 
 	//캐릭터가 없으면 FALSE를 return해 주자
-	if( m_listPlayer.empty() )
+	if( m_listPlayer.IsEmpty() )
 		return FALSE;
 	else
 		return TRUE;
@@ -191,31 +180,23 @@ BOOL Room::DelPlayerInRoom( int sessionId )
 {
 	SSynchronize Sync( this );
 
-	if( m_listPlayer.empty() )
+	if( m_listPlayer.IsEmpty() )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 						_T("Room::DelPlayerInRoom()\nlist가 비어 있습니다.지울수 엄써...\n\n") );
 		return FALSE;
 	}
 
-	std::list<LobbyChar*>::iterator iter;
-	iter = m_listPlayer.begin();
+	LobbyChar* tmpChar = m_charMgr->FindCharAsSessionId( sessionId );
 
-	for( ; iter != m_listPlayer.end(); ++iter )
+	if( tmpChar == NULL )
 	{
-		//일치하면 지우고 나간다
-		if( (*iter)->GetSessionID() == sessionId )
-		{
-			m_listPlayer.erase( iter );
-			break;
-		}
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+				_T("Room::DelPlayerInRoom()\nsessionID %d번 캐릭터 정보가 존재 하지 않습니다..\n\n"), sessionId );
+		return TRUE;
 	}
 
-	//캐릭터가 없으면 FALSE를 return해 주자
-	if( m_listPlayer.empty() )
-		return FALSE;
-	else
-		return TRUE;
+	return DelPlayerInRoom( tmpChar );
 }
 
 void Room::ChangReadyCount( BOOL isReady )
@@ -232,9 +213,22 @@ void Room::ChangReadyCount( BOOL isReady )
 					m_readyCount );
 }
 
-void Room::ChangeTeam( BOOL isATT )
+BOOL Room::ChangeTeam( BOOL isATT )
 {
 	SSynchronize Sync( this );
+
+	//바꾸려는 팀의 인원이 다 찼으면 바꿀 수 없다.
+	if( isATT == 0 )
+	{
+		if( m_AttectTeam >= MAX_TIME_COUNT )
+			return FALSE;
+	}
+	else
+	{
+		if( m_DefenceTeam >= MAX_TIME_COUNT )
+			return FALSE;
+	}
+
 
 	if( isATT == 0 )
 	{
@@ -258,6 +252,7 @@ void Room::ChangeTeam( BOOL isATT )
 	else if( m_DefenceTeam < 0 )
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("Room::ChangeTeam()\ndef팀의 수가 0이하가 됩니다.\n\n") );
 
+	return TRUE;
 }
 
 int Room::GetTeam()
@@ -284,24 +279,25 @@ void Room::PackageRoomInfo( SPacket &packet )
 	SSynchronize Sync( this );
 
 	packet << m_roomNum;
-	packet << m_nowPleyrCount;
+	//packet << m_nowPleyrCount;
+	packet << m_listPlayer.GetItemCount();
 	int size = _tcslen( m_tstrRoomTitle ) * sizeof( TCHAR );
 	packet << size;
 	packet.PutData( m_tstrRoomTitle, size );
 	packet << m_roomState;
+	packet << m_stageMap;
 }
 
 void Room::SendPacketAllInRoom( SPacket &packet, LobbyChar* itMe /*= NULL */ )
 {
 	SSynchronize Sync( this );
 
-	if( m_listPlayer.empty() )
+	if( m_listPlayer.IsEmpty() )
 		return;
 
-	std::list<LobbyChar*>::iterator iter;
-	iter = m_listPlayer.begin();
+	std::list<LobbyChar*>::iterator iter = m_listPlayer.GetHeader();
 
-	for( ; iter != m_listPlayer.end(); ++iter )
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
 	{
 		//나를 넘겼으면 나는 보내지 않아야 한다
 		if( *iter == itMe )
@@ -318,13 +314,12 @@ void Room::PackagePlayerInRoom( SPacket &packet, LobbyChar* itme /*= NULL */ )
 	//--------------------------------------
 	SSynchronize Sync( this );
 
-	if( m_listPlayer.empty() )
+	if( m_listPlayer.IsEmpty() )
 		return;
 
-	std::list<LobbyChar*>::iterator iter;
-	iter = m_listPlayer.begin();
+	std::list<LobbyChar*>::iterator iter = m_listPlayer.GetHeader();
 
-	for( ; iter != m_listPlayer.end(); ++iter )
+	for( ; m_listPlayer.IsEnd( iter ); ++iter )
 	{
 		//나를 넘겼으면 나는 보내지 않아야 한다
 		if( *iter == itme )
@@ -341,13 +336,12 @@ void Room::PackagePlayerInRoomForGame( SPacket &packet, LobbyChar* itMe /*= NULL
 	//--------------------------------------
 	SSynchronize Sync( this );
 
-	if( m_listPlayer.empty() )
+	if( m_listPlayer.IsEmpty() )
 		return;
 
-	std::list<LobbyChar*>::iterator iter;
-	iter = m_listPlayer.begin();
+	std::list<LobbyChar*>::iterator iter = m_listPlayer.GetHeader();
 
-	for( ; iter != m_listPlayer.end(); ++iter )
+	for( ; m_listPlayer.IsEnd( iter ); ++iter )
 	{
 		//나를 넘겼으면 나는 보내지 않아야 한다
 		if( *iter == itMe )
@@ -376,7 +370,6 @@ void RoomMgr::CreateRoomSpace()
 	SSynchronize Sync( this );
 
 	m_roomCount = m_document->RoomCount;
-	m_iOpenRoomCount = 0;
 
 	//방 공간을 만들어 놓자
 	for( int i=1; i<=m_roomCount; ++i )
@@ -387,7 +380,7 @@ void RoomMgr::CreateRoomSpace()
 		m_mapRoom[i] = tmpRoom;
 	}
 
-	m_listOpenRoom.clear();
+	m_listOpenRoom.Clear();
 
 	m_roomIndexQ.Create( m_roomCount, 1 );
 }
@@ -397,7 +390,7 @@ void RoomMgr::Release()
 	SSynchronize Sync( this );
 	
 	m_roomIndexQ.Release();
-	m_listOpenRoom.clear();
+	m_listOpenRoom.Clear();
 
 	for( int i=1; i<=m_roomCount; ++i )
 	{
@@ -420,9 +413,9 @@ Room* RoomMgr::OpenRoom( TCHAR* title )
 		return NULL;
 
 	m_mapRoom[roomNum]->SetTitle( title );
-	++m_iOpenRoomCount;
+	m_listOpenRoom.AddItem( m_mapRoom[roomNum] );
 
-	return m_vecRoom[roomNum];
+	return m_mapRoom[roomNum];
 }
 
 void RoomMgr::CloseRoom( int roomNum )
@@ -432,7 +425,9 @@ void RoomMgr::CloseRoom( int roomNum )
 	if( roomNum <= 0 || roomNum >= m_roomCount )
 		return;
 
-	--m_iOpenRoomCount;
+	//열린 방 list에서는 지워준다
+	m_listOpenRoom.DelItem( m_mapRoom[roomNum] );
+
 	//방 초기화
 	m_mapRoom[roomNum]->Init();
 
@@ -455,12 +450,10 @@ void RoomMgr::PackageOpenRoomInfo( SPacket &packet )
 	SSynchronize Sync( this );
 
 	//열려 있는 방의 갯수부터 넣는다
-	packet << m_iOpenRoomCount;
+	packet << m_listOpenRoom.GetItemCount();
 
-	std::list<Room*>::iterator iter;
-	iter = m_listOpenRoom.begin();
-
-	for( ; iter != m_listOpenRoom.end(); ++iter )
+	std::list<Room*>::iterator iter = m_listOpenRoom.GetHeader();
+	for( ; !m_listOpenRoom.IsEnd( iter ); ++iter )
 	{
 		(*iter)->PackageRoomInfo( packet );
 	}
