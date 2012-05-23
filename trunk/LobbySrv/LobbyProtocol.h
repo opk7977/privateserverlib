@@ -192,7 +192,8 @@ enum LOBBY_SERVER
 	// server -> client
 	// 로비에 있는 사람들에게 방에 사람 수가 줄었다는 것을 알림
 	// int			-		roomNum
-	SC_LOBBY_ROOMPLAYER_COUNTDOWN,
+	// int			-		sessionId
+	SC_LOBBY_ROOM_PLAYER_OUT,
 
 	// client -> server
 	// ready상태를 변경하고 상태를 서버로 보냄
@@ -286,7 +287,13 @@ enum LOBBY_SERVER
 	SC_LOBBY_GAME_END,
 
 	// server -> client
-	// player가 접속을 끊으면 알려 준다.
+	// player(내)가 로비에서 접속을 끊으면 알려 준다.
 	// int			-		SessionID;
 	SC_LOBBY_PLAYER_DISCONNECT,
+
+	// server -> client
+	// player가 방(혹은게임)에서 접속을 끊으면 알려 준다
+	// int			-		roomNum
+	// int			-		sessionID
+	SC_ROOM_PLAYER_DISCONNECT,
 };

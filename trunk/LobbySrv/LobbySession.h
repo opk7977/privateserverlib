@@ -172,8 +172,8 @@ public:
 	//SC_ROOM_CHAR_OUT
 	BOOL SendRoomCharOut();
 
-	//SC_LOBBY_ROOMPLAYER_COUNTDOWN
-	BOOL SendLobbyRoomCharOut( int room );
+	//SC_LOBBY_ROOM_PLAYER_OUT
+	BOOL SendLobbyRoomCharOut();
 
 	//SC_ROOM_CHAR_READY
 	BOOL SendRoomCharReady();
@@ -208,4 +208,7 @@ public:
 
 	//SC_LOBBY_PLAYER_DISCONNECT
 	BOOL SendPlayerDisconnect();
+	
+	//SC_ROOM_PLAYER_DISCONNECT
+	BOOL SendPlayerDisconnect( int roomNum, int sessionId );
 };

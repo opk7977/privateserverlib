@@ -1,9 +1,11 @@
 #include "GameProc.h"
 #include "GameSession.h"
+#include "GameProtocol.h"
 
+#include "CharMgr.h"
 #include "SPacket.h"
 #include "SLogger.h"
-#include "GameProtocol.h"
+
 
 GameProc::GameProc(void)
 {
@@ -21,14 +23,9 @@ GameProc::~GameProc(void)
 
 void GameProc::Init()
 {
-// 	//다시 실행되지 못하게 이벤트 막고
-// 	ResetEvent( m_hStartGame );
-// 	//while문 빠져 나오게 게임flag풀고
-// 	m_nowIsPlaying = FALSE;
-
 	//정보는 초기화
-	m_listPlayer.clear();
-	m_playerCount = m_inGamePlayerCount = 0;
+	m_listPlayer.Clear();
+	m_playerCount = 0;
 	m_AttKillCount = m_DefKillCount = 0;
 }
 
@@ -36,14 +33,12 @@ void GameProc::Init( int i )
 {
 	m_id = i;
 
-	m_listPlayer.clear();
-	m_playerCount = m_inGamePlayerCount = 0;
-	m_AttKillCount = m_DefKillCount = 0;
+	Init();
 }
 
 void GameProc::Release()
 {
-	m_listPlayer.clear();
+	m_listPlayer.Clear();
 }
 
 BOOL GameProc::Run()
@@ -52,9 +47,13 @@ BOOL GameProc::Run()
 	{
 		//시작 신호를 기다린다.
 		WaitForSingleObject( m_hStartGame, INFINITE );
+		//게임 loop는 한번만 돌아야 하니까 바로 바꿔 준다
+		ResetEvent( m_hStartGame );
+
 
 		//모든 player가 접속하기를 기다린다.
 		PreStartGame();
+
 
 		if( GameRun() )
 		{
@@ -90,7 +89,7 @@ BOOL GameProc::PreStartGame()
 // 	float timeCount = 0.f;
 
 	//모든 player가 접속하기를 기다려야 한다
-	while( m_playerCount != m_inGamePlayerCount )
+	while( m_playerCount != m_listPlayer.GetItemCount() )
 	{
 // 		m_timer.ProcessTime();
 // 
@@ -117,6 +116,8 @@ void GameProc::EndGame()
 	ResetEvent( m_hStartGame );
 	//while문 빠져 나오게 게임flag풀고
 	m_nowIsPlaying = FALSE;
+
+	Init();
 }
 
 void GameProc::EndLogic()
@@ -126,88 +127,75 @@ void GameProc::EndLogic()
 
 void GameProc::AddPlayer( GameSession* player )
 {
-	if( m_inGamePlayerCount >= m_playerCount )
+	SSynchronize Sync( this );
+
+	if( m_listPlayer.GetItemCount() >= m_playerCount )
 	{
 		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameProc::AddPlayer()\n설정된 player수를 넘습니다\n\n") );
 		return;
 	}
 
-	{
-		SSynchronize sync( this );
-
-		m_listPlayer.push_back( player );
-		++m_inGamePlayerCount;
-	}
+	m_listPlayer.AddItem( player );
 }
 
 BOOL GameProc::DelPlayer( GameSession* player )
 {
-	if( m_listPlayer.empty() )
+	SSynchronize Sync( this );
+
+	if( m_listPlayer.IsEmpty() )
 	{
 		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameProc::DelPlayer()\nlist에 player가 존재하지 않습니다\n\n") );
 		return FALSE;
 	}
 
-	std::list<GameSession*>::iterator	iter, iterPre;
+	m_listPlayer.DelItem( player );
 
-	{
-		SSynchronize sync( this );
-
-		iter = m_listPlayer.begin();
-		for( ; iter != m_listPlayer.end(); )
-		{
-			iterPre = iter++;
-			if( (*iterPre) == player )
-			{
-				m_listPlayer.erase( iterPre );
-				--m_inGamePlayerCount;
-				break;
-			}
-		}
-	}
-
-	if( m_inGamePlayerCount <= 0 )
+	if( m_listPlayer.IsEmpty() )
 		return FALSE;
 
 	return TRUE;
 }
 
+CharObj* GameProc::FindChar( int sessionID )
+{
+	SSynchronize Sync( this );
+
+	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
+	{
+		if( (*iter)->GetSessionID() == sessionID )
+			return (*iter)->GetMyInfo();
+	}
+
+	//없으면 NULL
+	return NULL;
+}
+
 void GameProc::SendAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL */ )
 {
-	std::list<GameSession*>::iterator	iter;
-
+	SSynchronize Sync( this );
+	
+	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
 	{
-		SSynchronize sync( this );
+		if( (*iter) == me )
+			continue;
 
-		iter = m_listPlayer.begin();
-		for( ; iter != m_listPlayer.end(); ++iter )
-		{
-			if( (*iter) == me )
-				continue;
-			
-			(*iter)->SendPacket( packet );
-		}
+		(*iter)->SendPacket( packet );
 	}
 }
 
 void GameProc::PackageAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL */ )
 {
-	std::list<GameSession*>::iterator	iter;
+	SSynchronize Sync( this );
 
+	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
+
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
 	{
-		SSynchronize sync( this );
+		if( (*iter) == me )
+			continue;
 
-		//몇명있는지 우선 담고
-		packet << m_inGamePlayerCount;
-
-		//모두의 정보를 담자!
-		iter = m_listPlayer.begin();
-		for( ; iter != m_listPlayer.end(); ++iter )
-		{
-			if( (*iter) == me )
-				continue;
-
-			(*iter)->PackageMyInfo( packet );
-		}
+		(*iter)->GetMyInfo()->PackageMyInfo( packet );
 	}
 }

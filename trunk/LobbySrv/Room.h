@@ -94,7 +94,7 @@ public:
 	//방을 ready상태로 만들어 준다
 	void SetReady();
 	//방을 다시 일반 상태로
-	void SetNormal() { m_roomState = ROOM_STATE_NORMAL; }
+	void SetNormal();
 	//방 상태를 return해 준다
 	int GetRoomState() { return m_roomState; }
 	//현재 방으로 들어가는것이 가능한지

@@ -156,7 +156,7 @@ enum GAME_SERVER
 	// 캐릭터의 공격성공시 모두에게 결과를 보낸다
 	// 
 	// int			-		공격자SessionID
-	// int			-		무기종료
+	// int			-		무기종류
 	// int			-		피격대상SessionID
 	// int			-		피격부위
 	// int			-		감소 에너지

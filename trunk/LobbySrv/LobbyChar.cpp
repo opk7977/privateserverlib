@@ -91,6 +91,11 @@ BOOL LobbyChar::GetReady() const
 	return m_ready;
 }
 
+void Room::SetNormal()
+{
+	m_roomState = ROOM_STATE_NORMAL;
+}
+
 void LobbyChar::PackageMyInfo( SPacket& packet )
 {
 	SSynchronize Sync( this );

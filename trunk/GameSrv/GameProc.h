@@ -2,9 +2,12 @@
 
 #include "SThread.h"
 #include "STime.h"
+#include "SList.h"
 
 class GameSession;
+class ItemObj;
 class SPacket;
+class CharObj;
 
 class GameProc : public SThread
 {
@@ -12,17 +15,18 @@ private:
 	// 자신의 ID(방번호(key값))
 	int						m_id;
 
-	// 게임을 하고 있는 player list
-	std::list<GameSession*>	m_listPlayer;
+// 	// 게임을 하고 있는 player list
+// 	std::list<GameSession*>	m_listPlayer;
+// 	// 실제로 접속 한 인원
+// 	int						m_inGamePlayerCount;
+
+	SList<GameSession*>		m_listPlayer;
 
 	// 아이템 정보 list
-	//
+	SList<ItemObj*>			m_listItem;
 
-	// 게임을 play하는 인원
+	// 게임을 play하는 인원(로비에서 받아온 인원)
 	int						m_playerCount;
-
-	// 실제로 접속 한 인원
-	int						m_inGamePlayerCount;
 
 	// 각 팀 킬수
 	int						m_AttKillCount;
@@ -87,6 +91,8 @@ public:
 	void AddPlayer( GameSession* player );
 	//플레이어 제거/ 현 게임 proc에 사람이 없으면 FALSE를 return
 	BOOL DelPlayer( GameSession* player );
+	//게임내의 캐릭터를 검색
+	CharObj* FindChar( int sessionID );
 
 	//방에 있는 모든 player에게 전송
 	//나를 빼고 보내려면 자신의 session을 매개변수로 넘긴다

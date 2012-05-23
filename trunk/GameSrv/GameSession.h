@@ -2,6 +2,15 @@
 
 #include "SSessionObj.h"
 
+//--------------------------------------
+// singleTon
+//--------------------------------------
+class SrvNet;
+class SLogger;
+class GameMgr;
+class CharMgr;
+class ItemMgr;
+//--------------------------------------
 class CharObj;
 class GameProc;
 
@@ -12,6 +21,16 @@ public:
 	SDECLARE_DYNCREATE(GameSession)
 
 private:
+	//======================================
+	// singleTon객체들
+	//======================================
+	SrvNet*				m_srvNet;
+	SLogger*			m_logger;
+	GameMgr*			m_gameMgr;
+	CharMgr*			m_charMgr;
+	ItemMgr*			m_itemMgr;
+	//======================================
+
 	//내 정보
 	CharObj*			m_myCharInfo;
 	//내 게임 프로세스(방)
@@ -24,13 +43,16 @@ public:
 	GameSession(void);
 	~GameSession(void);
 
-	void Init();
+	void Clear();
 
 	void OnCreate();
 	void OnDestroy();
 
+	CharObj*	GetMyInfo() const { return m_myCharInfo; }
+	GameProc*	GetMyGame() const { return m_myGameProc; }
+
 	//내 정보를 담는다
-	void PackageMyInfo( SPacket& packet );
+	//void PackageMyInfo( SPacket& packet );
 
 	//패킷 처리
 	void PacketParsing( SPacket& packet );
@@ -57,6 +79,7 @@ public:
 	void RecvMoveChar( SPacket &packet );
 
 	//CS_GAME_ATTECT
+	void RecvGameAttec( SPacket &packet );
 
 	//CS_GAME_SYNC
 	void RecvGameSync( SPacket &packet );
@@ -116,6 +139,7 @@ public:
 	BOOL SendMoveChar();
 
 	//SC_GAME_ATTECT
+	BOOL SendGameAttec( int weapon, int attectedSessionID, int part, int damage );
 
 	//SC_GAME_CHAR_DIE
 

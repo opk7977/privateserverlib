@@ -2,6 +2,7 @@
 
 #include "SIndexQueue.h"
 #include "GameObj.h"
+#include "SPacket.h"
 
 const int Character_Space = 100;
 
@@ -32,6 +33,13 @@ private:
 	POINT3		m_Direction;
 	int			m_DirInt;
 
+	//에너지
+	int			m_HP;
+
+	//은신 수치 등등
+	//
+	//
+
 	//vec의 Index
 	int			m_vecIndex;
 
@@ -61,6 +69,15 @@ public:
 	inline int GetDirInt() { return m_DirInt; }
 
 	inline int GetVecIndex() { return m_vecIndex; }
+
+	//자신의 정보를 패킷에 넣는다
+	void PackageMyInfo( SPacket& packet );
+
+	//공격을 당해 데이지를 입음
+	void DownHP( int damage );
+	//피가 다 달아서 죽었는지?
+	BOOL IsDie();
+	
 };
 
 

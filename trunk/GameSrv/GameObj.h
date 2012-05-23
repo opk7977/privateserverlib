@@ -32,7 +32,7 @@ struct POINT3
 
 class GameObj : public SServerObj
 {
-private:
+protected:
 	int			m_iId;
 	POINT3		m_Position;
 
