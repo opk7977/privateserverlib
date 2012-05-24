@@ -10,8 +10,6 @@
 #include "GameProc.h"
 
 
-
-
 SIMPLEMENT_DYNAMIC(GameSession)
 SIMPLEMENT_DYNCREATE(GameSession)
 
@@ -182,9 +180,13 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 {
 	SSynchronize Sync( this );
 
-	int roomNum, count;
+	int roomNum, gameMode, playTime, playCount, count;
 
 	packet >> roomNum;		//방번호
+	packet >> gameMode;		//게임 모드
+	packet >> playTime;		//판당 게임시간
+	packet >> playCount;	//게임 판수
+
 	packet >> count;		//방의 인원수
 
 	GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
@@ -202,6 +204,10 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 	if( tmpGame->NowIsPlay() )
 	{
 		//이미 게임이 진행 중이면 실패했다는 패킷을 보낸다.
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvLobbyStartGame()\n%d번 방이 이미 게임 중입니다.\n\n") 
+			, roomNum );
+
 		SendStartFaild( roomNum );
 		return;
 	}
@@ -225,11 +231,21 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 		tmpChar->SetIndexId( sessionId );
 		tmpChar->SetID( stringID );
 		tmpChar->SetTeam( team );
+		//위치 설정!!
 		tmpChar->SetPosition( 10.f, 0.f, 10.f );
 	}
 
-	//게임 proc을 활성화 하고 인원을 설정해 준다
-	tmpGame->StartGame( count );
+	//======================================
+	// 게임 proc을 열기 위해 준비
+	//======================================
+	//게임의 정보를 셋팅해 준다.
+	tmpGame->SetPlayerCount( count );
+	tmpGame->SetGameMode( gameMode );
+	tmpGame->SetGamePlayTime( playTime );
+	tmpGame->SetGamePlayCount( playCount );
+
+	//게임 proc을 활성화 한다
+	tmpGame->StartGame();
 
 	//게임을 시작해도 된다는 패킷을 Lobby로 보낸다
 	SendStartOK( roomNum );

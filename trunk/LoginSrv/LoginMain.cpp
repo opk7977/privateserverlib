@@ -43,11 +43,11 @@ BOOL LoginMain::Init()
 	//======================================
 	// 로그 서버 접속
 	//======================================
-	if( !m_logSrv->Init() )
-		return FALSE;
-
-	if( !m_logSrv->ConnectToSrv( m_document->LogSrvIP, m_document->LogSrvPortNum ) )
-		return FALSE;
+// 	if( !m_logSrv->Init() )
+// 		return FALSE;
+// 
+// 	if( !m_logSrv->ConnectToSrv( m_document->LogSrvIP, m_document->LogSrvPortNum ) )
+// 		return FALSE;
 
 	return TRUE;
 }

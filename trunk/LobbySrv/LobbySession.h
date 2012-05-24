@@ -110,7 +110,10 @@ public:
 	void RecvReady();
 
 	//CS_ROOM_MAP_CHANGE
-	void RecvChangeMap( SPacket& packet );
+	void RecvMapChange( SPacket& packet );
+
+	//CS_ROOM_MODE_CHANGE
+	void RecvChangeMode( SPacket& packet );
 
 	//CS_ROOM_TEAM_CHANGE
 	void RecvTeamChange();
@@ -150,7 +153,7 @@ public:
 	BOOL SendResultCreate( int result );
 
 	//SC_LOBBY_OPEN_ROOM
-	BOOL SendOpenRoom( int room, TCHAR* title, int titleSize );
+	BOOL SendOpenRoom();
 
 	//SC_LOBBY_CLOSE_ROOM
 	BOOL SendCloseRoom( int roomNum );
@@ -169,6 +172,9 @@ public:
 	BOOL SendRoomLeader();
 	BOOL SendRoomLeaderToAll( int leader );
 
+	//SC_ROOM_OUT_RESULT
+	BOOL SendRoomOutResult();
+
 	//SC_ROOM_CHAR_OUT
 	BOOL SendRoomCharOut();
 
@@ -179,10 +185,16 @@ public:
 	BOOL SendRoomCharReady();
 
 	//SC_ROOM_MAP_CHANGE
-	BOOL SendRoomMapChange( int mapNum );
+	BOOL SendRoomMapChange();
 
 	//SC_LOBBY_MAP_CHANGE
-	BOOL SendLobbyMapChange( int mapNum );
+	BOOL SendLobbyMapChange();
+
+	//SC_ROOM_MODE_CHANGE
+	BOOL SendRoomModeChange();
+
+	//SC_LOBBY_MODE_CHANGE
+	BOOL SendLobbyModeChange();
 
 	//SC_ROOM_TEAM_CHANGE
 	BOOL SendRoomTeamChange();

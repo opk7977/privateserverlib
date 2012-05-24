@@ -39,6 +39,11 @@ private:
 
 	BOOL						m_visible;				//열려 있는 방인지?
 	int							m_roomState;			//방의 상태
+
+	int							m_stageMap;				//게임 맵
+	int							m_gameMode;				//게임 모드
+	int							m_playTime;				//게임 play시간
+	int							m_playCount;			//게임 play수(판수)
 	//======================================
 	
 	//======================================
@@ -48,7 +53,6 @@ private:
 	SList<LobbyChar*>			m_listPlayer;
 
 	int							m_readyCount;			//준비상태의 캐릭터 수
-	int							m_stageMap;				//게임 맵
 
 	LobbyChar*					m_leader;				//방장
 
@@ -81,8 +85,22 @@ public:
 	{
 		return m_tstrRoomTitle;
 	}
+	//맵
 	inline int	GetStageMap() { return m_stageMap; }
 	inline void SetStageMap( int stageMap ) { m_stageMap = stageMap; }
+	//게임 모드( 0:폭파미션, 1:데스매치 )
+	inline int	GetGameMode() { return m_gameMode; }
+	inline void SetGameMode( int gameMode ) { m_gameMode = gameMode; }
+	//게임 판당 시간(초단위)
+	inline int	GetPlayTime() { return m_playTime; }
+	inline void SetPlayTime( int playTime ) { m_playTime = playTime; }
+	//판수(1, 3, 5, ...) 
+	inline int	GetPlayCount() { return m_playCount; }
+	inline void SetPlayCount( int playCount ) { m_playCount = playCount; }
+
+	//--------------------------------------
+	// 방상태 관련
+	//--------------------------------------
 	//게임을 진행 할 수 있는 상태 인가를 확인해 준다.
 	BOOL PossiblePlay();
 	//방을 play상태로 만들어 준다.
@@ -143,6 +161,8 @@ public:
 	//--------------------------------------
 	//방 자신의 정보를 넣는다.
 	void PackageRoomInfo( SPacket &packet );
+	//방 자신의 정보를 넣는다 (simple)
+	void PackageRoomModeInfo( SPacket &packet );
 	//방에 있는 모든 player의 정보를 담는다( team과 ready를 모두 담는다 )
 	void PackagePlayerInRoom( SPacket &packet, LobbyChar* itMe = NULL );
 	//방에 있는 모든 player의 정보를 담는다( team까지만 담는다 )

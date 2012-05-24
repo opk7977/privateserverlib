@@ -31,6 +31,11 @@ void Room::Init()
 	m_readyCount = 0;
 	m_leader = NULL;
 	m_roomState = 0;
+
+	m_stageMap = 0;
+	m_gameMode = 0;
+	m_playTime = 300;
+	m_playCount = 1;
 	
 	m_AttectTeam = m_DefenceTeam = 0;
 	m_visible = FALSE;
@@ -285,7 +290,22 @@ void Room::PackageRoomInfo( SPacket &packet )
 	packet << size;
 	packet.PutData( m_tstrRoomTitle, size );
 	packet << m_roomState;
+	//게임관련 모드
 	packet << m_stageMap;
+	packet << m_gameMode;
+	packet << m_playTime;
+	packet << m_playCount;
+}
+
+void Room::PackageRoomModeInfo( SPacket &packet )
+{
+	SSynchronize Sync( this );
+
+	//게임관련 모드
+	packet << m_stageMap;
+	packet << m_gameMode;
+	packet << m_playTime;
+	packet << m_playCount;
 }
 
 void Room::SendPacketAllInRoom( SPacket &packet, LobbyChar* itMe /*= NULL */ )
@@ -317,9 +337,12 @@ void Room::PackagePlayerInRoom( SPacket &packet, LobbyChar* itme /*= NULL */ )
 	if( m_listPlayer.IsEmpty() )
 		return;
 
+	//우선 인원을 담는다
+	packet << m_listPlayer.GetItemCount();
+
 	std::list<LobbyChar*>::iterator iter = m_listPlayer.GetHeader();
 
-	for( ; m_listPlayer.IsEnd( iter ); ++iter )
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
 	{
 		//나를 넘겼으면 나는 보내지 않아야 한다
 		if( *iter == itme )
@@ -338,6 +361,9 @@ void Room::PackagePlayerInRoomForGame( SPacket &packet, LobbyChar* itMe /*= NULL
 
 	if( m_listPlayer.IsEmpty() )
 		return;
+
+	//우선 인원을 담는다.
+	packet << m_listPlayer.GetItemCount();
 
 	std::list<LobbyChar*>::iterator iter = m_listPlayer.GetHeader();
 

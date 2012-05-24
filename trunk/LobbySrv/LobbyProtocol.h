@@ -130,7 +130,13 @@ enum LOBBY_SERVER
 	// server -> client
 	// 방만들기에 대한 결과를 보낸다
 	// int			-		result ( -1:실패/ n(양수) 만들어진 방의 ID )
-	// int			-		Team	//방생성 실패시 데이터 없다
+	//--------------------------------------> retult가 성공이면 아래 데이터가 온다
+	// int			-		방제목 데이터 길이
+	// TCHAR		-		방제목
+	// int			-		stageMap
+	// int			-		gameMode
+	// int			-		playTime
+	// int			-		playCount
 	SC_ROOM_RESULT_CREATE,
 
 	// server -> client
@@ -152,14 +158,19 @@ enum LOBBY_SERVER
 
 	// server -> client
 	// 방에 들어가는 요청이 잘 받아 졌는지 결과를 보내주는 패킷
-	// int			-		result
-	// int			-		Team	//못들어갔으면 데이터 없다
+	// int			-		result( -1: 실패/ 1: 성공 )
 	SC_ROOM_RESULT_INSERT,
 
 	// server -> client
-	// 로비의 사람들에게 누군가 방으로 들어갔는 패킷을 보낸다.
-	// int			-		SessionID
-	// int			-		roomId
+	// 방에 들어가는 요청이 잘 받아 졌는지 결과를 보내주는 패킷
+	// int			-		result
+	//--------------------------------------> retult가 성공이면 아래 데이터가 온다
+	// int			-		방제목 데이터 길이
+	// TCHAR		-		방제목
+	// int			-		stageMap
+	// int			-		gameMode
+	// int			-		playTime
+	// int			-		playCount
 	SC_LOBBY_INSERT_ROOM,
 
 	// server -> client
@@ -185,6 +196,11 @@ enum LOBBY_SERVER
 	CS_ROOM_OUT_ROOM,
 
 	// server -> client
+	// 방에서 정상적으로 나가졌는지를 받는다
+	// 데이터 없음
+	SC_ROOM_OUT_RESULT,
+
+	// server -> client
 	// 방에 사람들에게 누군가 방을 나갔가고 알림
 	// int			-		SessionId
 	SC_ROOM_CHAR_OUT,
@@ -207,19 +223,43 @@ enum LOBBY_SERVER
 
 	// client -> server
 	// 맵을 변경
-	// int			-		mapNum
+	// int			-		stageMap
 	CS_ROOM_MAP_CHANGE,
 
 	// server -> client
-	// 변경된 맵을 전함
-	// int			-		mapNum
+	// 변경된 맵을 알림
+	// int			-		stageMap
 	SC_ROOM_MAP_CHANGE,
+
+	// server -> client
+	// int			-		roomNum
+	// int			-		stageMap
+	SC_LOBBY_MAP_CHANGE,
+
+	// client -> server
+	// 게임의 Mode를 변경
+	// int			-		mapNum
+	// int			-		gameMode
+	// int			-		playTime
+	// int			-		playCount
+	CS_ROOM_MODE_CHANGE,
+
+	// server -> client
+	// 변경된 Mode을 전함
+	// int			-		mapNum
+	// int			-		gameMode
+	// int			-		playTime
+	// int			-		playCount
+	SC_ROOM_MODE_CHANGE,
 
 	// server -> client
 	// 로비에 맵이 변경된 방에 대한 정보를 알림
 	// int			-		roomnum
 	// int			-		mapnum
-	SC_LOBBY_MAP_CHANGE,
+	// int			-		gameMode
+	// int			-		playTime
+	// int			-		playCount
+	SC_LOBBY_MODE_CHANGE,
 
 	// client -> server
 	// 팀 변경에 대한 상태를 알림

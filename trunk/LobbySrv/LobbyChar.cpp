@@ -120,7 +120,6 @@ void LobbyChar::PackageMyInfoForLobby( SPacket& packet )
 	else
 		packet << m_session->GetMyRoom()->GetRoomNum();
 	packet << m_isPlay;
-	
 }
 
 void LobbyChar::PackageMyInfoForRoom( SPacket& packet )

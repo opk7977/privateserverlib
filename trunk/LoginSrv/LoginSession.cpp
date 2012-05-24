@@ -33,7 +33,7 @@ void LoginSession::OnCreate()
 	SSession::OnCreate();
 
 	//로그서버로 전송
-	m_logMgr->SendLog( 8800, LogMgr::LOG_LEVEL_INFORMATION, _T("[LoginSession::RecvLogSrvConnectOK()]_1. ID 접속이 정확히 잘 되나?.\n") );
+// 	m_logMgr->SendLog( 8800, LogMgr::LOG_LEVEL_INFORMATION, _T("[LoginSession::RecvLogSrvConnectOK()]_1. ID 접속이 정확히 잘 되나?.\n") );
 
 	//연결에 성공했다는 packet을 보낸다.
 	SendPacket( SC_LOGIN_CONNECT_OK );
@@ -239,37 +239,6 @@ BOOL LoginSession::SendCreateResult( int result )
 	return FALSE;
 }
 
-//SC_LOGIN_LOGIN_RESULT
-// BOOL LoginSession::SendLoginResult( int result )
-// {
-// 	SPacket sendPacket;
-// 
-// 	sendPacket.SetID( SC_LOGIN_LOGIN_RESULT );
-// 	sendPacket << result;
-// 
-// 	if( result > 0 )
-// 	{
-// 		//result값이 양수(session)값이면
-// 
-// 		//로그인 처리
-// 		//DB에 표시
-// 		m_dbMgr->UpdateLogin( result );
-// 
-// 		//ip주소와 port번호를 넣어 준다.
-// 		char ipAddr[15]={0,};
-// 		CopyMemory( ipAddr, GetDocument.LobbySrvIP, 15 );
-// 
-// 		sendPacket << (int)(strlen( ipAddr ));
-// 		sendPacket.PutData( ipAddr, strlen( ipAddr ) );
-// 		sendPacket << GetDocument.LobbySrvPortNum;		//포트번호
-// 	}
-// 
-// 	if( SendPacket( sendPacket ) == sendPacket.GetPacketSize() )
-// 		return TRUE;
-// 
-// 	return FALSE;
-// }
-
 BOOL LoginSession::SendLoginFailed( int result )
 {
 	//--------------------------------------
@@ -301,9 +270,6 @@ BOOL LoginSession::SendLoginSuccess( int result )
 	m_dbMgr->UpdateLogin( result );
 
 	//ip주소와 port번호를 넣어 준다.
-	//char ipAddr[15]={0,};
-	//CopyMemory( ipAddr, GetDocument.LobbySrvIP, 15 );
-
 	int size = strlen( m_document->LobbySrvIP );
 	sendPacket << size;
 	sendPacket.PutData( m_document->LobbySrvIP, size );

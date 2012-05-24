@@ -85,6 +85,4 @@ public:
 	//SC_LOGIN_LOGIN_RESULT
 	BOOL SendLoginFailed( int result );
 	BOOL SendLoginSuccess( int result );
-
-	//BOOL SendLoginResult( int result );
 };

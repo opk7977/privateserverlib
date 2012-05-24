@@ -73,9 +73,9 @@ BOOL GameProc::GameRun()
 	return TRUE;
 }
 
-BOOL GameProc::StartGame( int playercount )
+BOOL GameProc::StartGame()
 {
-	m_playerCount = playercount;
+	m_nowPlayTimeCount = m_playTime;
 	m_nowIsPlaying = TRUE;
 
 	SetEvent( m_hStartGame );
