@@ -1,6 +1,7 @@
 #include "SSocket.h"
 
-SSocket::SSocket(void) : m_socket(INVALID_SOCKET)
+SSocket::SSocket(void)
+: m_socket(INVALID_SOCKET)
 {
 }
 
@@ -59,6 +60,18 @@ BOOL SSocket::CreateSocket()
 	return TRUE;
 }
 
+BOOL SSocket::CreateUDPSock()
+{
+	if( m_socket != INVALID_SOCKET )
+		return TRUE;
+
+	m_socket = socket( AF_INET, SOCK_DGRAM, 0 );
+	if( m_socket == INVALID_SOCKET )
+		return FALSE;
+
+	return TRUE;
+}
+
 BOOL SSocket::SetScokReuseAddr()
 {
 	bool reuse = true;
@@ -68,6 +81,10 @@ BOOL SSocket::SetScokReuseAddr()
 	//실패하면 0 return
 	retval = setsockopt( m_socket, SOL_SOCKET, SO_REUSEADDR, (char*)&reuse, sizeof(reuse) );
 
+	if( retval != 0 )
+		return FALSE;
+
+	retval = setsockopt( m_socket, IPPROTO_TCP, TCP_NODELAY, (char*)&reuse, sizeof(reuse) );
 	if( retval != 0 )
 		return FALSE;
 
@@ -96,8 +113,8 @@ BOOL SSocket::ConnectSock( char* ipAddr, int port )
 	sockAddr.sin_port			= htons( port );
 
 	//연결한다.
-	//if( connect( m_socket, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR) ) == SOCKET_ERROR )
-	if( WSAConnect( m_socket, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR), NULL, NULL, NULL, NULL ) == SOCKET_ERROR )
+	if( connect( m_socket, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR) ) == SOCKET_ERROR )
+	//if( WSAConnect( m_socket, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR), NULL, NULL, NULL, NULL ) == SOCKET_ERROR )
 	{
 		//비동기 소켓은 접속시도가 바로 완료 되지 않기때문에 SOCKET_ERROR를
 		//return 할 수도 있기 때문에 WSAEWOULDBLOCK를 확인해 주어야 한다.

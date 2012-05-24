@@ -25,6 +25,7 @@ public:
 
 	//소켓을 생성
 	BOOL CreateSocket();
+	BOOL CreateUDPSock();
 
 	//ip재사용 설정
 	BOOL SetScokReuseAddr();

@@ -1,5 +1,4 @@
-#ifndef __LOGGER__
-#define __LOGGER__
+#pragma once
 
 //파일 크기 10MB
 #define FILE_MAX_SIZE	100000
@@ -102,6 +101,3 @@ public:
 };
 
 #define GetLogger SLogger::GetInstance()
-
-#endif
-

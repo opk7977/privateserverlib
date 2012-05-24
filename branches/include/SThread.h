@@ -32,7 +32,7 @@ public:
 	//쓰레드 동작!!
 	void BeginThread();
 
-	//쓰레드 종료/ 구현X
+	//쓰레드 종료
 	virtual void EndThread();
 
 private:

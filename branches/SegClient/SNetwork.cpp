@@ -3,7 +3,16 @@
 #include "SPacketQueue.h"
 
 SNetwork::SNetwork(void)
+/*: m_LoginSrvPort(0)*/
+: m_isConnect(FALSE)
+, m_isReConnect(FALSE)
+, m_sendSize(0)
 {
+	ZeroMemory( m_sendStream, DEFAULT_BUFFER_SIZE );
+
+	//패킷 큐를 셋팅!
+	m_packetQ = &GetPacketQ;
+	//m_packetQ->Init();
 }
 
 SNetwork::~SNetwork(void)
@@ -14,19 +23,14 @@ SNetwork::~SNetwork(void)
 	WaitForSingleObject( GetThreadHandle(), 1000 );
 }
 
-BOOL SNetwork::Init( BOOL isNon /*= TRUE */ )
+BOOL SNetwork::Init()
 {
+	//초기화
 	if( !m_conSock.Init() )
 		return FALSE;
 
 	if( !m_conSock.CreateSocket() )
 		return FALSE;
-
-// 	if( isNon )
-// 	{
-// 		if( !m_conSock.SetNonBlkSock() )
-// 			return FALSE;
-// 	}
 
 	return TRUE;
 }
@@ -35,13 +39,18 @@ void SNetwork::Release()
 {
 	ResetEvent( m_hStartEvent );
 	m_conSock.Release();
+
+	m_packetQ->Release();
 }
 
-BOOL SNetwork::IsConnect()
-{
-	//연결되어 있으면 TRUE
-	return ( m_conSock.GetSocket() != INVALID_SOCKET );
-}
+// void SNetwork::ConToLoginSrv( char* ipaddr, int port )
+// {
+// 	//정보를 받아 놓는다
+// 	CopyMemory( m_LoginSrvIp, ipaddr, strlen(ipaddr) );
+// 	m_LoginSrvPort = port;
+// 
+// 	BeginThread();
+// }
 
 BOOL SNetwork::ConnectToSrv( char* ipAddr, int port )
 {
@@ -49,8 +58,6 @@ BOOL SNetwork::ConnectToSrv( char* ipAddr, int port )
 
 	BeginThread();
 
-	//SetEvent( m_hStartEvent );
-
 	if( !m_conSock.ConnectSock( ipAddr, port ) )
 		return FALSE;
 
@@ -58,42 +65,52 @@ BOOL SNetwork::ConnectToSrv( char* ipAddr, int port )
 		return FALSE;
 
 	SetEvent( m_hStartEvent );
+	//m_isConnect = TRUE;
 
 	return TRUE;
 }
 
 BOOL SNetwork::ReConnect( char* ipAddr, int port )
 {
+	m_isReConnect = TRUE;
+
 	//우선 연결 끊고
 	DisConnect();
 
-	//소켓 만들고
+	//다시 연결
 	Init();
 
-	//SetEvent( m_hStartEvent );
-
-	//다시 연결
 	if( !m_conSock.ConnectSock( ipAddr, port ) )
-		return FALSE;
-
-	if( !m_conSock.SetNonBlkSock() )
 		return FALSE;
 
 	//Sleep(1);
 
+	if( !m_conSock.SetNonBlkSock() )
+		return FALSE;
+
 	SetEvent( m_hStartEvent );
+
+	m_isReConnect = FALSE;
 
 	return TRUE;
 }
 
+BOOL SNetwork::IsCounnect()
+{
+	return m_isConnect;
+}
+
 void SNetwork::DisConnect()
 {
+	m_isConnect = FALSE;
 	ResetEvent( m_hStartEvent );
 	m_conSock.Release();
 }
 
 BOOL SNetwork::Run()
 {
+	//ConnectToSrv( m_LoginSrvIp, m_LoginSrvPort );
+
 	const int tmpbufSize = 512;
 
 	char buffer[DEFAULT_BUFFER_SIZE] = {0,};
@@ -105,7 +122,7 @@ BOOL SNetwork::Run()
 
 	while(1)
 	{
-		//Sleep( 0 );
+		//Sleep( 1 );
 
 		WaitForSingleObject( m_hStartEvent, INFINITE );
 
@@ -117,8 +134,12 @@ BOOL SNetwork::Run()
 
 			if( errorCode != WSAEWOULDBLOCK )
 			{
-				GetLogger.ErrorLog( errorCode, _T("[SNetwork::Run()] ") );
-				//return FALSE;
+				if( !m_isReConnect )
+				{
+					//다시 연결을 위해 잠시 끊긴 상태가 아니면 진짜 오류
+					GetLogger.ErrorLog( errorCode, _T("[SNetwork::Run()] ") );
+					return FALSE;
+				}
 			}
 		}
 		else
@@ -162,20 +183,80 @@ BOOL SNetwork::Run()
 	return TRUE;
 }
 
-int SNetwork::SendPacket( SPacket* packet )
+BOOL SNetwork::PilePacket( SPacket* packet )
 {
-	int retval = send( m_conSock.GetSocket(), packet->GetDataBufferPtr(), packet->GetPacketSize(), 0 );
+	int size = packet->GetPacketSize();
+
+	//크기를 확인한다
+	if( m_sendSize + size > DEFAULT_BUFFER_SIZE )
+	{
+		//더 커지면 우선 보내고 보자
+		if( !SendPacket() )
+			return FALSE;
+	}
+
+	CopyMemory( m_sendStream + m_sendSize, packet->GetDataBufferPtr(), size );
+	m_sendSize += size;
+
+	return TRUE;
+}
+
+// int SNetwork::SendPacket( SPacket* packet )
+// {
+// 	int retval = send( m_conSock.GetSocket(), packet->GetDataBufferPtr(), packet->GetPacketSize(), 0 );
+// 
+// 	if( retval < 0 )
+// 	{
+// 		DWORD errorcode = WSAGetLastError();
+// 		if( errorcode != WSAEWOULDBLOCK )
+// 		{
+// 			GetLogger.ErrorLog( WSAGetLastError(), _T("[Network::SendPacket()] ") );
+// 			Release();
+// 			return;
+// 		}
+// 	}
+// 	else if( retval == 0 )
+// 	{
+// 		//연결 끊기
+// 		Release();
+// 	}
+// 
+// 	//잘 전송됬으면
+// 	return retval;
+// }
+
+BOOL SNetwork::SendPacket()
+{
+	//연결되어 있지 않으면 전송하지 않는다
+	if( !m_isConnect )
+		return TRUE;
+
+	//전송할 데이터가 없으면 전송하지 않는다
+	if( m_sendSize <= 0 )
+		return TRUE;
+
+	int retval = send( m_conSock.GetSocket(), m_sendStream, m_sendSize, 0 );
 
 	if( retval < 0 )
 	{
-		GetLogger.ErrorLog( WSAGetLastError(), _T("[Network::SendPacket()] ") );
+		DWORD errorcode = WSAGetLastError();
+		if( errorcode != WSAEWOULDBLOCK )
+		{
+			GetLogger.ErrorLog( WSAGetLastError(), _T("[Network::SendPacket()] ") );
+			Release();
+			return FALSE;
+		}
 	}
 	else if( retval == 0 )
 	{
 		//연결 끊기
 		Release();
+		return FALSE;
 	}
+	if( retval >= 20 )
+		int a = 1000;
 
 	//잘 전송됬으면
-	return retval;
+	m_sendSize = 0;
+	return TRUE;
 }

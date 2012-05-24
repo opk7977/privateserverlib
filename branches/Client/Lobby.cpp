@@ -138,13 +138,13 @@ void CLobby::OnNetConn()
 		MessageBox( _T("소켓 초기화 실패"), _T("error"), MB_OK | MB_ICONERROR );
 		return;
 	}
-
-	if( !GetNetwork.ConnectToSrv( "192.168.0.56", 8800 ) )
+	GetNetwork.ConToLoginSrv( "192.168.0.56", 8800 );
+	//if( !GetNetwork.ConnectToSrv( "192.168.0.56", 8800 ) )
 	//if( !GetNetwork.ConnectToSrv( "127.0.0.1", 8800 ) )
-	{
-		MessageBox( _T("연결 실패.."), _T("?!?!?"), MB_OK | MB_ICONERROR );
-		return;
-	}
+// 	{
+// 		MessageBox( _T("연결 실패.."), _T("?!?!?"), MB_OK | MB_ICONERROR );
+// 		return;
+// 	}
 }
 
 void CLobby::OnNetLogin()

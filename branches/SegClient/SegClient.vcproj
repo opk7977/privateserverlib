@@ -151,6 +151,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\SIndexQueue.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SLogger.cpp"
 				>
 			</File>
@@ -195,6 +199,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SUDPNet.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SWindow.cpp"
 				>
 			</File>
@@ -204,6 +212,14 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\SIndexQueue.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SList.h"
+				>
+			</File>
 			<File
 				RelativePath=".\SLogger.h"
 				>
@@ -250,6 +266,10 @@
 			</File>
 			<File
 				RelativePath=".\STime.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SUDPNet.h"
 				>
 			</File>
 			<File

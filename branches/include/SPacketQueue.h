@@ -4,7 +4,7 @@
 
 class SPacket;
 
-#define VECBUFFER_SIZE 100
+#define VECBUFFER_SIZE 300
 #define PACKETDATA_SIZE 8192
 
 class SPacketQueue : public SSingleton <SPacketQueue>
@@ -23,11 +23,16 @@ private:
 	//쌓여 있는 데이터 수
 	int						m_iDataCount;
 
+	//큐의 크기
+	int						m_iQueueSize;
+
 private:
 	SPacketQueue(void);
 	~SPacketQueue(void);
 
 public:
+	void Init( int PoolSize = VECBUFFER_SIZE );
+	void Release();
 
 	BOOL PutPacket( char* buf, int dataSize );
 	//패킷 처리가 끝나면MoveReadPos()를 호출해 줘야 한다!

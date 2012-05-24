@@ -1,23 +1,36 @@
 #include "SPacketQueue.h"
 #include "SPacket.h"
+#include "SSynchronize.h"
 
 SPacketQueue::SPacketQueue(void)
-: m_iReadPos(0)
-, m_iWritePos(0)
-, m_iDataCount(0)
 {
-	//공간 할당 해 준다
-	m_vecPacketPool.resize( VECBUFFER_SIZE );
-	m_vecPacketSize.resize( VECBUFFER_SIZE );
-
-	//각 공간에 버퍼 할당
-	for( int i=0; i<VECBUFFER_SIZE; ++i )
-		m_vecPacketPool[i] = new char[PACKETDATA_SIZE];
+	Init();
 }
 
 SPacketQueue::~SPacketQueue(void)
 {
-	for( int i=0; i<VECBUFFER_SIZE; ++i )
+}
+
+void SPacketQueue::Init( int PoolSize /*= VECBUFFER_SIZE */ )
+{
+	m_iReadPos = 0;
+	m_iWritePos = 0;
+	m_iDataCount = 0;
+
+	m_iQueueSize = PoolSize;
+
+	//공간 할당 해 준다
+	m_vecPacketPool.resize( m_iQueueSize );
+	m_vecPacketSize.resize( m_iQueueSize );
+
+	//각 공간에 버퍼 할당
+	for( int i=0; i<m_iQueueSize; ++i )
+		m_vecPacketPool[i] = new char[PACKETDATA_SIZE];
+}
+
+void SPacketQueue::Release()
+{
+	for( int i=0; i<m_iQueueSize; ++i )
 	{
 		delete m_vecPacketPool[i];
 		m_vecPacketPool[i] = 0;
@@ -29,6 +42,8 @@ SPacketQueue::~SPacketQueue(void)
 
 BOOL SPacketQueue::PutPacket( char* buf, int dataSize )
 {
+	SSynchronize Sync( this );
+
 	//꽉 찼으면 이제 그만..
 	if( m_iDataCount >= VECBUFFER_SIZE )
 		return FALSE;
