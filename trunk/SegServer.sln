@@ -29,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LobbySrv", "LobbySrv\LobbyS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LogSrv", "LogSrv\LogSrv.vcproj", "{FA78BFB6-E5D1-4422-8372-79F3727354F7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testSrvforUDP", "testSrvforUDP\testSrvforUDP.vcproj", "{FA34E9F7-9ABA-43C9-B309-7C9198F896CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -91,6 +93,10 @@ Global
 		{FA78BFB6-E5D1-4422-8372-79F3727354F7}.Debug|Win32.Build.0 = Debug|Win32
 		{FA78BFB6-E5D1-4422-8372-79F3727354F7}.Release|Win32.ActiveCfg = Release|Win32
 		{FA78BFB6-E5D1-4422-8372-79F3727354F7}.Release|Win32.Build.0 = Release|Win32
+		{FA34E9F7-9ABA-43C9-B309-7C9198F896CD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FA34E9F7-9ABA-43C9-B309-7C9198F896CD}.Debug|Win32.Build.0 = Debug|Win32
+		{FA34E9F7-9ABA-43C9-B309-7C9198F896CD}.Release|Win32.ActiveCfg = Release|Win32
+		{FA34E9F7-9ABA-43C9-B309-7C9198F896CD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
