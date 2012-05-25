@@ -1,4 +1,5 @@
 #include "SSocket.h"
+#include "SLogger.h"
 
 SSocket::SSocket(void)
 : m_socket(INVALID_SOCKET)
@@ -65,9 +66,28 @@ BOOL SSocket::CreateUDPSock()
 	if( m_socket != INVALID_SOCKET )
 		return TRUE;
 
-	m_socket = socket( AF_INET, SOCK_DGRAM, 0 );
-	if( m_socket == INVALID_SOCKET )
+	WSAData wsaData;
+
+	//성공하면 0을 return하는 것에 주의!!
+	//실패하면 false return
+	if( WSAStartup( MAKEWORD(2, 2), &wsaData ) != 0 )
 		return FALSE;
+
+	//버전 정보를 한번 확인해 준다.
+	if( wsaData.wVersion != MAKEWORD(2, 2) )
+	{
+		//버전이 다르면 false return
+		WSACleanup();
+		return FALSE;
+	}
+	//UDP소켓을 생성
+	m_socket = socket( AF_INET, SOCK_DGRAM, 0 );
+
+	if( m_socket == INVALID_SOCKET )
+	{
+		WSACleanup();
+		return FALSE;
+	}
 
 	return TRUE;
 }

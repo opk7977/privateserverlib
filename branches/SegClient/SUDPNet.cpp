@@ -1,5 +1,6 @@
 #include "SUDPNet.h"
 #include "SPacketQueue.h"
+#include "SLogger.h"
 
 SUDPNet::SUDPNet(void)
 : m_gameStart(FALSE)
@@ -17,12 +18,16 @@ BOOL SUDPNet::Init( int port )
 	if( !m_conSock.Init() )
 		return FALSE;
 
-	if( !m_conSock.CreateUDPSock( INADDR_ANY, port ) )
+	if( !m_conSock.CreateUDPSock() )
+		return FALSE;
+
+	//바인드
+	if( !m_conSock.BindSocket( port ) )
 		return FALSE;
 
 	//소켓 넌블럭
-	if( !m_conSock.SetNonBlkSock() )
-		return FALSE;
+// 	if( !m_conSock.SetNonBlkSock() )
+// 		return FALSE;
 
 	//인덱스 큐 준비
 	//0번부터 8개의 index를 준비
@@ -35,7 +40,10 @@ BOOL SUDPNet::Init( int port )
 		m_clientSpace.SetAt( i, tmpAddr );
 	}
 
+	BeginThread();
 	m_gameStart = TRUE;
+
+	return TRUE;
 }
 
 BOOL SUDPNet::AddSockAddr( char* _ip, int port )
@@ -44,16 +52,18 @@ BOOL SUDPNet::AddSockAddr( char* _ip, int port )
 	SSynchronize Sync( this );
 
 	int index = m_clientIndexQ.GetIndex();
-	if( index <= 0 )
+	if( index < 0 )
 		return FALSE;
 
 	//해당 공간을 받아 오고
 	SockAddr* tmpAddr = m_clientSpace[index];
-	tmpAddr.sin_family		= AF_INET;
-	tmpAddr.sin_addr.S_addr = inet_addr( _ip );
-	tmpAddr.sin_port		= htons( port );
+	tmpAddr->m_sockAddr.sin_family		= AF_INET;
+	tmpAddr->m_sockAddr.sin_addr.s_addr = inet_addr( _ip );
+	tmpAddr->m_sockAddr.sin_port		= htons( port );
 
 	m_clientList.AddItem( tmpAddr );
+
+	return TRUE;
 }
 
 void SUDPNet::ClientClear()
@@ -98,7 +108,7 @@ BOOL SUDPNet::Run()
 		if( !m_gameStart )
 			continue;
 
-		retval = recvfrom( m_conSock.GetSocket(), tmpbuf, tmpbufSize, 0, (SOCKADDR*)&recvSockAddr, sockAddrSize );
+		retval = recvfrom( m_conSock.GetSocket(), tmpbuf, tmpbufSize, 0, (SOCKADDR*)&recvSockAddr, &sockAddrSize );
 
 		if( retval == SOCKET_ERROR )
 		{
@@ -157,5 +167,19 @@ BOOL SUDPNet::Run()
 
 void SUDPNet::SendPacketAllClient( SPacket& packet )
 {
-	
+	SSynchronize Sync( this );
+
+	int retval;
+
+	std::list<SockAddr*>::iterator iter = m_clientList.GetHeader();
+	for( ; !m_clientList.IsEnd( iter ); ++iter )
+	{
+		retval = sendto( m_conSock.GetSocket(), packet.GetDataBufferPtr(), packet.GetPacketSize(),
+				0, (sockaddr*)&((*iter)->m_sockAddr), sizeof(sockaddr) );
+
+		if( retval == SOCKET_ERROR )
+		{
+			GetLogger.ErrorLog( WSAGetLastError(), _T("SUDPNet error: ") );
+		}
+	}
 }

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "SThread.h"
+#include "SSocket.h"
+#include "SPacket.h"
 #include "SIndexQueue.h"
 #include "SList.h"
 
@@ -10,17 +12,19 @@ struct SockAddr
 {
 private:
 	int				m_index;
+
+public:
 	sockaddr_in		m_sockAddr;
 
 public:
 	SockAddr( int i )
 	{
 		m_index = i;
-		ZeroMemory( m_sockAddr, sizeof( SOCKADDR ) );
+		ZeroMemory( &m_sockAddr, sizeof( SOCKADDR ) );
 	}
 	void Clear()
 	{
-		ZeroMemory( m_sockAddr, sizeof( SOCKADDR ) );
+		ZeroMemory( &m_sockAddr, sizeof( SOCKADDR ) );
 	}
 	int GetIndex()
 	{
@@ -30,6 +34,10 @@ public:
 
 class SUDPNet : public SSingleton <SUDPNet>, public SThread
 {
+private:
+	friend class SSingleton<SUDPNet>;
+
+private:
 	SSocket								m_conSock;
 	SPacket								m_recvPack;
 
@@ -48,7 +56,8 @@ private:
 	SUDPNet(void);
 	~SUDPNet(void);
 
-	BOOL Init();
+public:
+	BOOL Init( int port );
 	BOOL AddSockAddr( char* _ip, int port );
 	//게임 종료후 모든 정보를 초기화/ 자신의 소켓도 초기화
 	void ClientClear();
@@ -57,6 +66,7 @@ private:
 
 	//모든 클라에게 패킷을 보낸다.
 	void SendPacketAllClient( SPacket& packet );
-
-public:
 };
+
+#define GetUNet SUDPNet::GetInstance()
+
