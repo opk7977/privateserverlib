@@ -178,6 +178,14 @@
 				RelativePath=".\Network.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\PlayerMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UDPSession.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="헤더 파일"
@@ -186,6 +194,14 @@
 			>
 			<File
 				RelativePath=".\Network.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PlayerMgr.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UDPSession.h"
 				>
 			</File>
 		</Filter>
