@@ -1,6 +1,8 @@
 #include "PlayerMgr.h"
 #include "UDPSession.h"
 
+#include "SSynchronize.h"
+
 //--------------------------------------
 // player
 //--------------------------------------
@@ -12,7 +14,7 @@ Player::~Player(void)
 {
 }
 
-void Player::Init( int _id );
+void Player::Init( int _id )
 {
 	m_id = _id;
 	Init();
@@ -43,6 +45,41 @@ UDPSession* Player::GetSession() const
 	return m_session;
 }
 
+void Player::SetIP( char* ip )
+{
+	int size = strlen( ip );
+	if( size > 15 )
+		return;
+
+	CopyMemory( m_ip, ip, size );
+}
+
+char* Player::GetIP()
+{
+	return &m_ip[0];
+}
+
+void Player::SetPort( int port )
+{
+	m_port = port;
+}
+
+int Player::GetPort() const
+{
+	return m_port;
+}
+
+void Player::PackageMyInfo( SPacket* packet )
+{
+	SSynchronize Sync( this );
+
+	(*packet) << m_id;
+	int size = strlen( m_ip );
+	(*packet) << size;
+	packet->PutData( m_ip, size );
+	(*packet) << m_port;
+}
+
 //--------------------------------------
 // playerMgr
 //--------------------------------------
@@ -67,6 +104,8 @@ BOOL PlayerMgr::Init( int playerCount )
 	}
 
 	m_indexQ.Create( playerCount, 1 );
+
+	return TRUE;
 }
 
 void PlayerMgr::Release()
@@ -81,8 +120,8 @@ void PlayerMgr::Release()
 	std::map<int, Player*>::iterator iter = m_playerSpace.begin();
 	for( ; iter != m_playerSpace.end(); ++iter )
 	{
-		delete (*iter);
-		(*iter) = 0;
+		delete iter->second;
+		iter->second = 0;
 	}
 	m_playerSpace.clear();
 }
@@ -125,7 +164,7 @@ Player* PlayerMgr::FindPlayer( int _id )
 		return NULL;
 
 	std::list<Player*>::iterator iter = m_listPlayer.GetHeader();
-	for( ; !m_listPlayer.IsEnd(); ++iter )
+	for( ; !m_listPlayer.IsEnd(iter); ++iter )
 	{
 		if( (*iter)->GetID() == _id )
 			return (*iter);
@@ -138,12 +177,26 @@ Player* PlayerMgr::FindPlayer( int _id )
 void PlayerMgr::SendAllPlayer( SPacket* packet, Player* itme/* = NULL*/ )
 {
 	std::list<Player*>::iterator iter = m_listPlayer.GetHeader();
-	for( ; !m_listPlayer.IsEnd(); ++iter )
+	for( ; !m_listPlayer.IsEnd(iter); ++iter )
 	{
 		if( *iter == itme )
 			continue;
 
-		(*iter)->GetSession()->SendPacket( &packet );
+		(*iter)->GetSession()->SendPacket( *packet );
 	}
 }
 
+void PlayerMgr::PackageAllPlayer( SPacket* packet, Player* itme/* = NULL*/ )
+{
+	//총 인원을 넣고
+	(*packet) << m_listPlayer.GetItemCount();
+
+	std::list<Player*>::iterator iter = m_listPlayer.GetHeader();
+	for( ; !m_listPlayer.IsEnd(iter); ++iter )
+	{
+		if( *iter == itme )
+			continue;
+
+		(*iter)->PackageMyInfo( packet );
+	}
+}

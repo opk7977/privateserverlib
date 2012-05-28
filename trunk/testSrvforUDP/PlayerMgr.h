@@ -8,7 +8,7 @@
 class UDPSession;
 class SPacket;
 
-class Player
+class Player : public SServerObj
 {
 private:
 	int				m_id;
@@ -23,13 +23,21 @@ public:
 	~Player(void);
 
 	void Init( int _id );
-	void Init(
+	void Init();
 
 	void SetID( int _id );
 	int GetID() const;
 
 	void SetSession( UDPSession* session );
 	UDPSession* GetSession() const;
+
+	void SetIP( char* ip );
+	char* GetIP();
+
+	void SetPort( int port );
+	int GetPort() const;
+
+	void PackageMyInfo( SPacket* packet );
 
 };
 
@@ -58,6 +66,7 @@ public:
 	Player* FindPlayer( int _id );
 
 	void SendAllPlayer( SPacket* packet, Player* itme = NULL );
+	void PackageAllPlayer( SPacket* packet, Player* itme = NULL );
 };
 
 #define GetPlayerMgr PlayerMgr::GetInstance()

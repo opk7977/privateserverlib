@@ -6,8 +6,6 @@ enum SERVER_PACKET_ID
 	UDPSERVER_CONNECT_OK = 10,
 
 	// int			-		id
-	// int			-		ip데이터 크기
-	// char			-		ip
 	// int			-		port번호
 	UDPSERVER_ASK_INFO,
 
@@ -27,6 +25,7 @@ enum SERVER_PACKET_ID
 #include "SSessionObj.h"
 
 class Player;
+class PlayerMgr;
 
 class UDPSession : public SSessionObj
 {
@@ -36,6 +35,9 @@ public:
 
 private:
 	Player*				m_player;
+
+	//세션 ID용 번호
+	static int			m_sessionID;
 
 	//======================================
 	// singleTon 객체
@@ -53,7 +55,7 @@ public:
 
 	void RecvASKInfo( SPacket& packet );
 
-	void SendConnectOK( int id );
+	void SendConnectOK();
 	void SendPlayerInfo();
 	void SendPlayerDisconnect();
 };
