@@ -24,5 +24,12 @@ enum SERVER_PACKET_ID
 
 enum CLIENT_UDP_PACKET
 {
+	// int			-		id
+	// float		-		posX
+	// float		-		posY
+	// float		-		posZ
+	// float		-		dirX
+	// float		-		dirY
+	// float		-		dirZ
 	UDP_CHAR_INFO = 100,
 };

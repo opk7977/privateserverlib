@@ -11,7 +11,10 @@ class SPacketQueue;
 struct SockAddr
 {
 private:
+	//내부적으로 쓰이는 index
 	int				m_index;
+	//캐릭터의 id
+	int				m_sessionID;
 
 public:
 	sockaddr_in		m_sockAddr;
@@ -20,16 +23,17 @@ public:
 	SockAddr( int i )
 	{
 		m_index = i;
-		ZeroMemory( &m_sockAddr, sizeof( SOCKADDR ) );
+		Clear();
 	}
 	void Clear()
 	{
+		m_sessionID = 0;
 		ZeroMemory( &m_sockAddr, sizeof( SOCKADDR ) );
 	}
-	int GetIndex()
-	{
-		return m_index;
-	}
+	int GetIndex() { return m_index; }
+
+	void SetSessionID( int id ) { m_sessionID = id; }
+	int GetSessionID() { return m_sessionID; }
 };
 
 class SUDPNet : public SSingleton <SUDPNet>, public SThread
@@ -58,7 +62,8 @@ private:
 
 public:
 	BOOL Init( int port );
-	BOOL AddSockAddr( char* _ip, int port );
+	BOOL AddSockAddr( int sessionId, char* _ip, int port );
+	BOOL DelSockAddr( int sessionId );
 	//게임 종료후 모든 정보를 초기화/ 자신의 소켓도 초기화
 	void ClientClear();
 	//쓰레드 동작함수

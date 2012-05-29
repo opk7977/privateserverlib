@@ -46,7 +46,7 @@ BOOL SUDPNet::Init( int port )
 	return TRUE;
 }
 
-BOOL SUDPNet::AddSockAddr( char* _ip, int port )
+BOOL SUDPNet::AddSockAddr( int sessionId, char* _ip, int port )
 {
 
 	SSynchronize Sync( this );
@@ -61,7 +61,33 @@ BOOL SUDPNet::AddSockAddr( char* _ip, int port )
 	tmpAddr->m_sockAddr.sin_addr.s_addr = inet_addr( _ip );
 	tmpAddr->m_sockAddr.sin_port		= htons( port );
 
+	//세션 id추가
+	tmpAddr->SetSessionID( sessionId );
+
 	m_clientList.AddItem( tmpAddr );
+
+	return TRUE;
+}
+
+BOOL SUDPNet::DelSockAddr( int sessionId )
+{
+	if( m_clientList.IsEmpty() )
+		return FALSE;
+	
+	std::list<SockAddr*>::iterator iter = m_clientList.GetHeader();
+	int index;
+	for( ; !m_clientList.IsEnd( iter ) ; ++iter )
+	{
+		if( (*iter)->GetSessionID() == sessionId )
+		{
+			index = (*iter)->GetIndex();
+			break;
+		}
+	}
+
+	m_clientList.DelItem( (*iter) );
+	m_clientSpace[index]->Clear();
+	m_clientIndexQ.PutIndex( index );
 
 	return TRUE;
 }

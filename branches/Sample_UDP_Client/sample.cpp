@@ -1,3 +1,6 @@
+#include "SNetwork.h"
+#include "SUDPNet.h"
+
 #include "CharMgr.h"
 #include "PacketParser.h"
 
@@ -8,6 +11,7 @@ Sample_UDP_Client::Sample_UDP_Client(void)
 {
 	m_charMgr	= &GetCharMgr;
 	m_parser	= &GetParser;
+	m_net		= &GetNetwork;
 }
 
 Sample_UDP_Client::~Sample_UDP_Client(void)
@@ -17,6 +21,17 @@ Sample_UDP_Client::~Sample_UDP_Client(void)
 bool Sample_UDP_Client::Init(void)
 {
 	m_charMgr->Init();
+
+	//서버 셋팅
+	if( !m_net->Init() )
+		return false;
+
+	if( !m_net->ConnectToSrv( "192.168.0.56", 1234 ) )
+		return false;
+
+	//udp셋팅
+	if( !GetUNet.Init( 4321 ) )
+		return false;
 
 	return true;
 }
@@ -28,7 +43,8 @@ bool Sample_UDP_Client::Frame(void)
 
  	m_charMgr->Frame();
 
-	//여기서 내 정보 send
+	//여기서 packet send
+	m_net->SendPacket();
 
 	return true;
 }

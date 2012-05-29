@@ -7,6 +7,18 @@
 
 class NInput;
 class NTime;
+class PacketSender;
+
+class GameChar : public NObject, public SServerObj
+{
+private:
+	int m_SessionId;
+
+public:
+	void SetId( int id ) { m_SessionId = id; }
+	int GetId() { return m_SessionId; }
+
+};
 
 class CharMgr : public SSingleton <CharMgr>, public SServerObj
 {
@@ -19,13 +31,14 @@ private:
 
 	// 나요 나
 	int										m_myIndex;
-	NObject									m_heroObj;
+	GameChar*								m_heroObj;
 
 	//======================================
 	// singleTon 객체들
 	//======================================
-	NInput*				m_pInput;
-	NTime*				m_pTime;
+	NInput*									m_pInput;
+	NTime*									m_pTime;
+	PacketSender*							m_sender;
 
 private:
 	CharMgr(void);
@@ -36,6 +49,12 @@ public:
 	void Release();
 	void Frame();
 	void Render();
+
+	void AddMe( int _id );
+	void AddChar( int _id );
+	void DelChar( int _id );
+
+	NObject* FindChar( int _id );
 };
 
 #define GetCharMgr CharMgr::GetInstance()

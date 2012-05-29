@@ -5,6 +5,8 @@
 
 class CharMgr;
 class SPacket;
+class PacketSender;
+class SUDPNet;
 
 class PacketParser : public SSingleton <PacketParser>
 {
@@ -18,6 +20,8 @@ private:
 	// Singleton°´Ã¼
 	//======================================
 	CharMgr*			m_playerMgr;
+	PacketSender*		m_sender;
+	SUDPNet*			m_udp;
 
 private:
 	PacketParser(void);

@@ -4,6 +4,7 @@
 
 class CharMgr;
 class PacketParser;
+class SNetwork;
 
 //===================================================================
 //  NAME	  : Sample_UDP_Client
@@ -16,6 +17,7 @@ class Sample_UDP_Client : public NeoLux
 	//==============================
 	CharMgr*			m_charMgr;
 	PacketParser*		m_parser;
+	SNetwork*			m_net;
 	
 
 public:

@@ -157,6 +157,7 @@ BOOL SSocket::BindSocket( int port )
 	if( bind( m_socket, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR) ) == SOCKET_ERROR )
 	{
 		//bind가 잘 못 되었다면 종료하고 돌아가자
+		int a = WSAGetLastError();
 		WSACleanup();
 		return FALSE;
 	}
