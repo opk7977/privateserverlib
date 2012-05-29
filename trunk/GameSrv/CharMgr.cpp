@@ -89,6 +89,9 @@ void CharMgr::Init()
 
 void CharMgr::Release()
 {
+	if( m_vecCharSpace.empty() )
+		return;
+
 	for( int i=0; i<Character_Space; ++i )
 	{
 		delete m_vecCharSpace[i];

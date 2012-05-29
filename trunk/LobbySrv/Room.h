@@ -19,9 +19,9 @@ class LobbySession;
 
 enum ROOM_STATE
 {
-	ROOM_STATE_READY	= -1,
-	ROOM_STATE_NORMAL,
-	ROOM_STATE_PLAYING,
+	ROOM_STATE_READY	= -1,		// 시작을 눌러 놓고 기다리는 중
+	ROOM_STATE_NORMAL,				// 그냥 기본상태
+	ROOM_STATE_PLAYING,				// 게임중
 };
 
 class Room : public SServerObj

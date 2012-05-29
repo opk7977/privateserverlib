@@ -90,7 +90,11 @@ void UDPSession::RecvASKInfo( SPacket& packet )
 	m_player->SetIP( inet_ntoa( sockAddr.sin_addr ) );
 	m_player->SetPort( port );
 
+	//나에게 모두의 정보를 보낸다.
 	SendPlayerInfo();
+
+	//모두에게 나의 정보를 보낸다.
+	SendMyInfo();
 }
 
 
@@ -111,6 +115,16 @@ void UDPSession::SendPlayerInfo()
 	m_playerMgr->PackageAllPlayer( &sendPacket, m_player );
 
 	SendPacket( sendPacket );
+}
+
+void UDPSession::SendMyInfo()
+{
+	SPacket sendPacket( UDPSERVER_PLAYER_INFO );
+
+	sendPacket << 1;
+	m_player->PackageMyInfo( &sendPacket );
+
+	m_playerMgr->SendAllPlayer( &sendPacket, m_player );
 }
 
 void UDPSession::SendPlayerDisconnect()

@@ -49,10 +49,16 @@ void GameSession::OnDestroy()
 
 	if( m_myCharInfo == NULL )
 	{
-		//캐릭터 정보가 엄써...
-		//서번가 봅니다..
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-						_T("GameSession::OnDestroy()\n 캐릭저보가 없는 세션이 접속을 종료합니다. 서번가?\n\n") );
+		if( m_srvNet->GetSession() == this )
+		{
+			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+							_T("GameSession::OnDestroy()\n 서버와의 접속을 끊습니다.\n\n") );
+		}
+		else
+		{
+			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+							_T("GameSession::OnDestroy()\n 캐릭정보가 없는 세션이 접속을 종료합니다.\n\n") );
+		}
 	}
 	else
 	{
@@ -170,10 +176,10 @@ void GameSession::RecvLobbyConnectOK()
 
 	GetSrvNet.SetSession( this );
 
-	SPacket sendPacket;
-	sendPacket.SetID( GL_CONNECT_SERVER );
-
-	GetSrvNet.SendToLobbyServer( sendPacket );
+// 	SPacket sendPacket;
+// 	sendPacket.SetID( GL_CONNECT_SERVER );
+// 
+// 	GetSrvNet.SendToLobbyServer( sendPacket );
 }
 
 void GameSession::RecvLobbyStartGame( SPacket &packet )
@@ -263,10 +269,10 @@ void GameSession::RecvInGame( SPacket &packet )
 	packet >> sessionId;
 	packet >> roomNum;
 
-	//test////////////////////////////////////////////////////////////////////
-	//지금은 무조건 1번 방....1번만 열려 있음
-	roomNum = 1;
-	//////////////////////////////////////////////////////////////////////////
+// 	//test////////////////////////////////////////////////////////////////////
+// 	//지금은 무조건 1번 방....1번만 열려 있음
+// 	roomNum = 1;
+// 	//////////////////////////////////////////////////////////////////////////
 
 	GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
 					_T("GameSession::RecvInGame()\n%d번 캐릭터가 %d번게임으로 입장합니다.\n\n") 

@@ -29,3 +29,8 @@ BOOL SrvNet::SendToGameServer( SPacket &packet )
 
 	return TRUE;
 }
+
+void SrvNet::SrvNetClear()
+{
+	m_GameSrv = NULL;
+}

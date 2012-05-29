@@ -83,6 +83,13 @@ enum SERVER_TO_SERVER
 	GL_PLAYER_DISCONNECT,
 };
 
+enum GAME_SERVER
+{
+	// server -> client
+	// 게임서버와의 연결이 정상적으로 되었다는 신호
+	SC_GAME_CONNECT_OK = 300,
+};
+
 enum LOBBY_SERVER
 {
 	// server -> client
@@ -298,6 +305,16 @@ enum LOBBY_SERVER
 	// int			-		문장의 데이터 크기
 	// TCHAR		-		문장
 	SC_LOBBYSRV_TARGET_CHAT,
+
+	// server -> client
+	// 방장에게 이제 start버튼을 활성화 하도록 알려줌
+	// 데이터 없음
+	SC_ROOM_START_VISIBLE,
+
+	// server -> client
+	// 방장에게 start버튼을 비활성화 하도록 알려줌
+	// 데이터 없음
+	SC_ROOM_START_INVISIBLE,
 
 	// client -> server
 	// 방장이 게임을 시작하려고 알리는 패킷

@@ -23,6 +23,7 @@ void Player::Init( int _id )
 void Player::Init()
 {
 	m_session = NULL;
+	ZeroMemory( m_ip, 15 );
 }
 
 void Player::SetID( int _id )
@@ -189,7 +190,7 @@ void PlayerMgr::SendAllPlayer( SPacket* packet, Player* itme/* = NULL*/ )
 void PlayerMgr::PackageAllPlayer( SPacket* packet, Player* itme/* = NULL*/ )
 {
 	//총 인원을 넣고
-	(*packet) << m_listPlayer.GetItemCount();
+	(*packet) << m_listPlayer.GetItemCount() - 1;
 
 	std::list<Player*>::iterator iter = m_listPlayer.GetHeader();
 	for( ; !m_listPlayer.IsEnd(iter); ++iter )

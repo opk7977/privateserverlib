@@ -26,7 +26,7 @@ public:
 
 	//연결
 	BOOL ConnectToSrv( char* ipAddr, int port );
-	//void DisConnect();
+	void DisConnect();
 
 	//보내기 함수
 	BOOL SendToLobbyServer( SPacket &packet );

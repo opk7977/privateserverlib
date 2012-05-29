@@ -147,6 +147,9 @@ void Room::AddPlayerInRoom( LobbyChar* charspace )
 	//우선 팀 설정을 하고
 	charspace->SetTeam( GetTeam() );
 
+// 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+// 			_T("Room::AddPlayerInRoom()\n%s님이 %e팀으로 추가됩니다.\n\n"), charspace->GetID(),  );
+
 	//list에 저장
 	m_listPlayer.AddItem( charspace );
 }
@@ -302,7 +305,6 @@ void Room::PackageRoomModeInfo( SPacket &packet )
 	SSynchronize Sync( this );
 
 	//게임관련 모드
-	packet << m_stageMap;
 	packet << m_gameMode;
 	packet << m_playTime;
 	packet << m_playCount;
@@ -448,7 +450,7 @@ void RoomMgr::CloseRoom( int roomNum )
 {
 	SSynchronize Sync( this );
 
-	if( roomNum <= 0 || roomNum >= m_roomCount )
+	if( roomNum <= 0 || roomNum > m_roomCount )
 		return;
 
 	//열린 방 list에서는 지워준다
@@ -465,7 +467,7 @@ Room* RoomMgr::FindRoom( int roomNum )
 {
 	SSynchronize Sync( this );
 
-	if( roomNum <= 0 || roomNum >= m_roomCount )
+	if( roomNum <= 0 || roomNum > m_roomCount )
 		return NULL;
 
 	return m_mapRoom[roomNum];

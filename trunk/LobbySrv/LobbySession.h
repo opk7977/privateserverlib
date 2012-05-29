@@ -206,6 +206,12 @@ public:
 	BOOL SendTargetChatToTarget( int target, TCHAR* chat );
 	BOOL SendTargetChatToMe( int target, TCHAR* chat );
 
+	//SC_ROOM_START_VISIBLE
+	BOOL SendRoomStartVisible();
+
+	//SC_ROOM_START_INVISIBLE
+	BOOL SendRoomStartInvisible();
+
 	//SC_ROOM_START_RESULT
 	BOOL SendStartGameResult();
 

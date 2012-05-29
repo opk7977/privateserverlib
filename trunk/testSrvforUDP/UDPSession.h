@@ -56,6 +56,9 @@ public:
 	void RecvASKInfo( SPacket& packet );
 
 	void SendConnectOK();
+
 	void SendPlayerInfo();
+	void SendMyInfo();
+
 	void SendPlayerDisconnect();
 };

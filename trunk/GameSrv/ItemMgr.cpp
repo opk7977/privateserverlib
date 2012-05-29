@@ -57,6 +57,9 @@ void ItemMgr::Init()
 
 void ItemMgr::Release()
 {
+	if( m_vecItem.empty() )
+		return;
+
 	for( int i=0; i<Item_Space; ++i )
 	{
 		delete m_vecItem[i];
