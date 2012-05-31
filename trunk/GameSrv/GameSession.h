@@ -36,6 +36,7 @@ private:
 	//내 게임 프로세스(방)
 	GameProc*			m_myGameProc;
 
+
 	//게임을 끝낸건가?(로비로 간것이 아니다)
 	BOOL				isEndGame;
 
@@ -53,6 +54,8 @@ public:
 
 	//내 정보를 담는다
 	//void PackageMyInfo( SPacket& packet );
+	//내 ip정보를 담자
+	void PackageMyNetInfo( SPacket& packet );
 
 	//패킷 처리
 	void PacketParsing( SPacket& packet );
@@ -74,6 +77,8 @@ public:
 	//--------------------------------------
 	//CS_GAME_INGAME
 	void RecvInGame( SPacket &packet );
+
+	//CS_GAME_GAME_READY_OK
 
 	//CS_GAME_MOVE_CHAR
 	void RecvMoveChar( SPacket &packet );
@@ -109,7 +114,7 @@ public:
 	// lobby 서버와의 커뮤니케이션
 	//--------------------------------------
 	//GL_CONNECT_SERVER
-	//함수 없음
+	BOOL SendConnectOK();
 
 	//GL_START_FAILD
 	BOOL SendStartFaild( int roomNum );
@@ -134,6 +139,7 @@ public:
 	BOOL SendMyCharInfoToInGamePlayer();		//게임내의 사람들에게 내 정보를 보낸다
 
 	//SC_GAME_START_GAME
+	//게임Proc에 있음
 
 	//SC_GAME_MOVE_CHAR
 	BOOL SendMoveChar();

@@ -10,6 +10,7 @@ SSession::SSession(void)
 , m_socket(INVALID_SOCKET)
 , m_mySessionID(0)
 {
+	ZeroMemory( m_IPAddr, 20 );
 }
 
 SSession::~SSession(void)
@@ -41,10 +42,14 @@ void SSession::OnCreate()
 	int size = sizeof( sockAddr );
 	if( getpeername( m_socket, (SOCKADDR*)&sockAddr, &size ) != SOCKET_ERROR )
 	{
+		//ip¿˙¿Â
+		CopyMemory( m_IPAddr, inet_ntoa(sockAddr.sin_addr), strlen( inet_ntoa(sockAddr.sin_addr) ) );
 		//logøÎ///////////////////////////////////////////////////////////
 #ifdef _DEBUG
+// 		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, "[Session::OnCreate()] Connect Client_IP: %s_Port: %d\n",
+// 			inet_ntoa( sockAddr.sin_addr ), ntohs( sockAddr.sin_port ) );
 		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, "[Session::OnCreate()] Connect Client_IP: %s_Port: %d\n",
-			inet_ntoa( sockAddr.sin_addr ), ntohs( sockAddr.sin_port ) );
+			m_IPAddr, ntohs( sockAddr.sin_port ) );
 #endif
 	}
 

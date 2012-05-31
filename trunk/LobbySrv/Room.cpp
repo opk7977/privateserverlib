@@ -369,7 +369,7 @@ void Room::PackagePlayerInRoomForGame( SPacket &packet, LobbyChar* itMe /*= NULL
 
 	std::list<LobbyChar*>::iterator iter = m_listPlayer.GetHeader();
 
-	for( ; m_listPlayer.IsEnd( iter ); ++iter )
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
 	{
 		//나를 넘겼으면 나는 보내지 않아야 한다
 		if( *iter == itMe )

@@ -1,5 +1,6 @@
 #include "CharMgr.h"
 #include "SLogger.h"
+#include "GameSession.h"
 
 CharObj::CharObj()
 {
@@ -15,6 +16,7 @@ void CharObj::Init()
 	GameObj::Init();
 
 	ZeroMemory( m_tstrID, 50 );
+	m_session = NULL;
 	m_iTeam = -1;
 	m_State = 0;
 	m_DirInt = 0;
@@ -36,7 +38,7 @@ void CharObj::PackageMyInfo( SPacket& packet )
 {
 	SSynchronize Sync( this );
 
-	packet << m_vecIndex;			//세션ID
+	packet << m_iId;				//세션ID
 	packet << m_State;				//캐릭터 상태
 	packet << m_Position.m_X;		//위치값
 	packet << m_Position.m_Y;
@@ -46,6 +48,8 @@ void CharObj::PackageMyInfo( SPacket& packet )
 	packet << m_Direction.m_Z;
 	packet << m_DirInt;
 
+	//ip와 port번호를 넣는다
+	m_session->PackageMyNetInfo( packet );
 }
 
 void CharObj::DownHP( int damage )

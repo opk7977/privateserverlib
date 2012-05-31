@@ -28,6 +28,8 @@ protected:
 	int					m_mySessionID;
 	//자신의 iocp핸들값 = map의 키값
 	//int					m_iIocpKey;
+	//자신의 ip주소
+	char				m_IPAddr[20];
 
 public:
 	SSession(void);

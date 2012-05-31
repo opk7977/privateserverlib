@@ -59,6 +59,31 @@ BOOL SSocket::CreateSocket()
 	return TRUE;
 }
 
+BOOL SSocket::CreateUDPSock()
+{
+	if( m_socket != INVALID_SOCKET )
+		return TRUE;
+
+	WSAData wsaData;
+
+	//성공하면 0을 return하는 것에 주의!!
+	//실패하면 false return
+	if( WSAStartup( MAKEWORD(2, 2), &wsaData ) != 0 )
+		return FALSE;
+
+	//소켓 생성(TCP)
+	m_socket = socket( AF_INET, SOCK_STREAM, 0 );
+
+	//소켓 생성에 문제가 있었다면 false return
+	if( m_socket == INVALID_SOCKET )
+	{
+		WSACleanup();
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 BOOL SSocket::SetScokReuseAddr()
 {
 	bool reuse = true;

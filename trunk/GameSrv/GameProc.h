@@ -12,8 +12,15 @@ class CharObj;
 class GameProc : public SThread
 {
 private:
+	//======================================
+	// 지정값
+	//======================================
 	// 자신의 ID(방번호(key값))
 	int						m_id;
+	// 이 방의 PORT번호값
+	int						m_port;
+	//======================================
+
 	// playerlist
 	SList<GameSession*>		m_listPlayer;
 	// 아이템 정보 list
@@ -59,8 +66,8 @@ public:
 	~GameProc(void);
 
 	// 게임 정보들을 초기화
-	void Init();
 	void Init( int i );
+	void Init();
 
 	void Release();
 
@@ -69,6 +76,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 
 	int GetGameID() const { return m_id; }
+	int GetPort() const { return m_port; }
 
 	//======================================
 	// 쓰레드 동작함수
@@ -123,6 +131,9 @@ public:
 	BOOL DelPlayer( GameSession* player );
 	//게임내의 캐릭터를 검색
 	CharObj* FindChar( int sessionID );
+
+	//SC_GAME_START_GAME
+	BOOL SendStartPacket();
 
 	//방에 있는 모든 player에게 전송
 	//나를 빼고 보내려면 자신의 session을 매개변수로 넘긴다

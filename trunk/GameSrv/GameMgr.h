@@ -12,6 +12,9 @@ private:
 private:
 	std::map<int, GameProc*>			m_mapGameRoom;
 
+	//항상 열려 있는 0번방//ㅋㅋ
+	GameProc*							m_zeroRoom;
+
 public:
 	GameMgr(void);
 	~GameMgr(void);

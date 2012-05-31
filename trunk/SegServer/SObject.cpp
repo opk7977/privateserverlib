@@ -13,6 +13,8 @@ SRTClass SObject::classSObject = { "SObject", sizeof(SObject), NULL };
 // SRTClass SObject::classSObject = { "SObject", sizeof(SObject), SObject::CreateObject() };
 //	 }
 
+//==============================================================
+
 SObject::SObject()
 {
 }
@@ -20,3 +22,5 @@ SObject::SObject()
 SObject::~SObject()
 {
 }
+
+//==============================================================

@@ -4,6 +4,8 @@
 #include "GameObj.h"
 #include "SPacket.h"
 
+class GameSession;
+
 const int Character_Space = 100;
 
 enum SRV_CHAR_STATE
@@ -27,11 +29,13 @@ enum SRV_CHAR_TEAM
 class CharObj : public GameObj
 {
 private:
-	TCHAR		m_tstrID[50];
-	int			m_iTeam;
-	int			m_State;
-	POINT3		m_Direction;
-	int			m_DirInt;
+	GameSession*		m_session;
+
+	TCHAR				m_tstrID[50];
+	int					m_iTeam;
+	int					m_State;
+	POINT3				m_Direction;
+	int					m_DirInt;
 
 	//¿¡³ÊÁö
 	int			m_HP;
@@ -49,6 +53,9 @@ public:
 
 	void Init();
 	void Init( int index );
+
+	inline void SetSession( GameSession* session ) { m_session = session; }
+	inline GameSession* GetSession() { return m_session; }
 
 	inline void SetID( TCHAR* id ) { _tcsncpy_s( m_tstrID, 50, id, _tcslen(id) ); }
 	inline TCHAR* GetID() { return m_tstrID; }

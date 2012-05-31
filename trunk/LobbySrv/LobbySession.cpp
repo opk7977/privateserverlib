@@ -1723,6 +1723,8 @@ BOOL LobbySession::SendStartGameInRoom( int roomNum )
 	sendPacket << size;
 	sendPacket.PutData( m_document->GameSrvIP, size );
 	sendPacket << m_document->GameSrvPortNum;
+	//해당방의 UDP번호를 넣어 준다
+	sendPacket << (m_document->GameSrvPortNum+tmpRoom->GetRoomNum());
 
 	//방에 있는 player들에게 전송!
 	tmpRoom->SendPacketAllInRoom( sendPacket );

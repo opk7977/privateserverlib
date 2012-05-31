@@ -20,16 +20,19 @@ private:
 
 private:
 	//모든 player 정보를 담을 공간
-	SMap					m_sessionMap;
+	//SMap							m_sessionMap;
+	ATL::CAtlMap<int, SServerObj*>	m_mapSession;
+	int								m_spaceSize;
 	//비어있는 공간의 인덱스를 관리
-	SIndexQueue				m_indexQueue;
+	SIndexQueue						m_indexQueue;
 	//접속한 player들을 저장한 공간
-	SList<int>				m_listPlayer;
+	SList<int>						m_listPlayer;
+	//SList<SServerObj*>				m_listPlayer;
 
 
 	//제한 인원이 모두 차있어서 수용을 못하는 경우
 	//접속불가를 전송하기 위한 임시 Session공간
-	SSession				m_tmpSession;
+	SSession						m_tmpSession;
 
 private:
 	SSessionMgr(void);
@@ -51,7 +54,7 @@ public:
 
 
 	//모든 세션에게 동일한 패킷 전송
-// 	void SendAllSession( SPacket &packet );
+ 	void SendAllSession( SPacket &packet, SSession* itme = NULL );
 
 	//세션 ID로 세션을 찾는다
 	SServerObj* FindSession( int SessionId );

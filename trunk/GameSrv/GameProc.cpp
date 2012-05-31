@@ -1,6 +1,7 @@
 #include "GameProc.h"
 #include "GameSession.h"
 #include "GameProtocol.h"
+#include "DataLeader.h"
 
 #include "CharMgr.h"
 #include "SPacket.h"
@@ -21,19 +22,20 @@ GameProc::~GameProc(void)
 	Release();
 }
 
+void GameProc::Init( int i )
+{
+	m_id	= i;
+	m_port	= GetDocument.GameSrvProtNum+i;
+
+	Init();
+}
+
 void GameProc::Init()
 {
 	//정보는 초기화
 	m_listPlayer.Clear();
-	m_playerCount = 0;
+	m_playerCount = 8;
 	m_AttKillCount = m_DefKillCount = 0;
-}
-
-void GameProc::Init( int i )
-{
-	m_id = i;
-
-	Init();
 }
 
 void GameProc::Release()
@@ -70,6 +72,9 @@ BOOL GameProc::Run()
 
 BOOL GameProc::GameRun()
 {
+	while(1)
+	{
+	}
 	return TRUE;
 }
 
@@ -106,6 +111,8 @@ BOOL GameProc::PreStartGame()
 // 			SendAllPlayerInGame( sendPacket );
 // 		}
 	}
+
+	//게임 시작 packet을 보낸다.
 
 	return TRUE;
 }
@@ -171,6 +178,15 @@ CharObj* GameProc::FindChar( int sessionID )
 	return NULL;
 }
 
+BOOL GameProc::SendStartPacket()
+{
+	SPacket sendPacket( SC_GAME_START_GAME );
+	
+	SendAllPlayerInGame( sendPacket );
+
+	return TRUE;
+}
+
 void GameProc::SendAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL */ )
 {
 	SSynchronize Sync( this );
@@ -188,6 +204,13 @@ void GameProc::SendAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL */
 void GameProc::PackageAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL */ )
 {
 	SSynchronize Sync( this );
+
+	//우선 사람 수를 넣고
+	int count = m_listPlayer.GetItemCount();;
+	if( me == NULL )
+		packet << count;
+	else
+		packet << count-1;
 
 	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
 

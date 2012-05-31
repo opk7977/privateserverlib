@@ -117,6 +117,11 @@ enum GAME_SERVER
 	//-------------------------------------> playerCount만큼 반복으로 들어가 있음
 	SC_GAME_CHARINFO_INGAME,
 
+	// client -> server
+	// 게임 시작이 가능하다는 신호
+	// 데이터 없음
+	CS_GAME_GAME_READY_OK,
+
 	// server -> client
 	// 게임에 모든 player가 접속했으므로 게임을 시작하라는 명령
 	// 데이터 없음
@@ -154,13 +159,29 @@ enum GAME_SERVER
 
 	// server -> client
 	// 캐릭터의 공격성공시 모두에게 결과를 보낸다
-	// 
 	// int			-		공격자SessionID
 	// int			-		무기종류
 	// int			-		피격대상SessionID
 	// int			-		피격부위
 	// int			-		감소 에너지
 	SC_GAME_ATTECT,
+
+	// client -> server 
+	// 인간(캐릭터)가 아닌 물체같은것에 공격을 했을때
+	// int			-		무기종류
+	// 그리고 또 뭐가 필요함?
+	//				.
+	//				.
+	CS_GAME_TRY_ATTECT,
+
+	// server -> client
+	// 인간(캐릭터)가 아닌 물체같은것에 공격을 했다는것을 알림
+	// int			-		공격자SessionID
+	// int			-		무기종류
+	// 그리고 또 뭐가 필요함?
+	//				.
+	//				.
+	SC_GAME_TRY_ATTECT,
 
 	// server -> client
 	// 공격당한 캐릭터가 죽으면 보내는 패킷

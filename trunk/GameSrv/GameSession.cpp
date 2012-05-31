@@ -31,6 +31,8 @@ GameSession::~GameSession(void)
 
 void GameSession::Clear()
 {
+	SSynchronize sync( this );
+
 	m_myCharInfo = NULL;
 	m_myGameProc = NULL;
 	isEndGame	= TRUE;
@@ -112,6 +114,16 @@ void GameSession::OnDestroy()
 // 	packet << m_myCharInfo->GetDirInt();
 // }
 
+void GameSession::PackageMyNetInfo( SPacket& packet )
+{
+	SSynchronize sync( this );
+
+	int size = strlen( m_IPAddr );
+	packet << size;
+	packet.PutData( m_IPAddr, size );
+	packet << m_myGameProc->GetPort();
+}
+
 void GameSession::PacketParsing( SPacket& packet )
 {
 	switch( packet.GetID() )
@@ -186,9 +198,10 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 {
 	SSynchronize Sync( this );
 
-	int roomNum, gameMode, playTime, playCount, count;
+	int roomNum, mapNum, gameMode, playTime, playCount, count;
 
 	packet >> roomNum;		//방번호
+	packet >> mapNum;
 	packet >> gameMode;		//게임 모드
 	packet >> playTime;		//판당 게임시간
 	packet >> playCount;	//게임 판수
@@ -207,7 +220,7 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 		SendStartFaild( roomNum );
 		return;
 	}
-	if( tmpGame->NowIsPlay() )
+	if( !tmpGame->NowIsPlay() )
 	{
 		//이미 게임이 진행 중이면 실패했다는 패킷을 보낸다.
 		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
@@ -238,14 +251,16 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 		tmpChar->SetID( stringID );
 		tmpChar->SetTeam( team );
 		//위치 설정!!
-		tmpChar->SetPosition( 10.f, 0.f, 10.f );
+		//tmpChar->SetPosition( 10.f, 0.f, 10.f );
+		tmpChar->SetPosition( (float)(sessionId+10), 0.f, (float)(sessionId+10) );
 	}
 
 	//======================================
 	// 게임 proc을 열기 위해 준비
 	//======================================
 	//게임의 정보를 셋팅해 준다.
-	tmpGame->SetPlayerCount( count );
+	tmpGame->SetGameStage( mapNum );
+	//tmpGame->SetPlayerCount( count );
 	tmpGame->SetGameMode( gameMode );
 	tmpGame->SetGamePlayTime( playTime );
 	tmpGame->SetGamePlayCount( playCount );
@@ -269,10 +284,18 @@ void GameSession::RecvInGame( SPacket &packet )
 	packet >> sessionId;
 	packet >> roomNum;
 
-// 	//test////////////////////////////////////////////////////////////////////
-// 	//지금은 무조건 1번 방....1번만 열려 있음
-// 	roomNum = 1;
-// 	//////////////////////////////////////////////////////////////////////////
+	if( roomNum == 0 )
+	{
+		//임시 캐릭터 공간을 만든다
+		CharObj* tmpChar = GetCharMgr.GetCharSpace();
+		tmpChar->SetIndexId( sessionId );
+		tmpChar->SetID( _T("Unknown") );
+		tmpChar->SetTeam( (int)(sessionId % 2) );
+		tmpChar->SetState( SRV_CHAR_STATE_STAND );
+		tmpChar->SetPosition( (float)(sessionId+10), 0.f, (float)(sessionId+10) );
+		tmpChar->SetDirection( 0.f, 0.f, 1.f );
+		tmpChar->SetDirInt( 0 );
+	}
 
 	GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
 					_T("GameSession::RecvInGame()\n%d번 캐릭터가 %d번게임으로 입장합니다.\n\n") 
@@ -288,6 +311,8 @@ void GameSession::RecvInGame( SPacket &packet )
 		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::RecvInGame()\n해당 캐릭터를 찾지 못했습니다.\n\n") );
 		return;
 	}
+
+	m_myCharInfo->SetSession( this );
 	
 	m_myGameProc = GetGameMgr.FindGame( roomNum );
 	if( m_myGameProc == NULL )
@@ -583,6 +608,10 @@ BOOL GameSession::SendMyCharInfoToInGamePlayer()
 {
 	if( m_myCharInfo == NULL || m_myGameProc == NULL )
 		return FALSE;
+	
+	//방에 나만 있으면 안보내도 된다
+// 	if( m_myGameProc->GetNowPlayerCount() <= 1 )
+// 		return TRUE;
 
 	SPacket sendPacket;
 	sendPacket.SetID( SC_GAME_CHARINFO_INGAME );

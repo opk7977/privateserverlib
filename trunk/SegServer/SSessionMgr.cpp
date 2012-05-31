@@ -13,16 +13,25 @@ SSessionMgr::~SSessionMgr(void)
 
 void SSessionMgr::Create( SRTClass* pRTC, int _size )
 {
+	//우선 만들어지는 총 수를 저장
+	m_spaceSize = _size;
+
 	//indexQueue를 만들어 놓자
 	// 개수와 시작 숫자를 넘겨 준다.
 	m_indexQueue.Create( _size, 1 );
 
 	//Session을 담을 공간을 미리 만들어 놓는다!
 	//map은 1부터 시작해야 하니까 1~size+1까지 만들어 넣어 둬야 한다
-	for( int i=1; i<=_size; ++i )
+// 	for( int i=1; i<=_size; ++i )
+// 	{
+// 		SObject* pObj = pRTC->CreateObject();
+// 		m_sessionMap.PushIndex( i, (SServerObj*)pObj );
+// 	}
+
+	for( int i=1; i<=m_spaceSize; ++i )
 	{
 		SObject* pObj = pRTC->CreateObject();
-		m_sessionMap.PushIndex( i, (SServerObj*)pObj );
+		m_mapSession[i] = (SServerObj*)pObj;
 	}
 }
 
@@ -48,10 +57,17 @@ void SSessionMgr::CreateNewSession( SOCKET socket, SOCKADDR addr )
 	}
 	//////////////////////////////////////////////////////////////////////////
 
+// 	{
+// 		SSynchronize sync( &m_sessionMap );
+// 		SServerObj* tmp = m_sessionMap.PeekObj( index );
+// 		newSession = (SSession*)tmp;
+// 		if( newSession == 0 )
+// 			return;
+// 	}
+
 	{
-		SSynchronize sync( &m_sessionMap );
-		SServerObj* tmp = m_sessionMap.PeekObj( index );
-		newSession = (SSession*)tmp;
+		SSynchronize sync( this );
+		newSession = (SSession*)m_mapSession[index];
 		if( newSession == 0 )
 			return;
 	}
@@ -86,8 +102,12 @@ void SSessionMgr::RemoveSession( int index )
 
 	//해당 index의 session을 받아 온다
 	{
-		SSynchronize sync( &m_sessionMap );
-		newSession = (SSession*)(m_sessionMap.PeekObj( index ));
+// 		SSynchronize sync( &m_sessionMap );
+// 		newSession = (SSession*)(m_sessionMap.PeekObj( index ));
+// 		if( newSession == 0 )
+// 			return;
+		SSynchronize sync( this );
+		newSession = (SSession*)m_mapSession[index];
 		if( newSession == 0 )
 			return;
 
@@ -117,20 +137,25 @@ SServerObj* SSessionMgr::GetSession( int index )
 {
 	SServerObj* newSession = 0;
 
-	{
-		SSynchronize sync( &m_sessionMap );
-		newSession = m_sessionMap.PeekObj( index );
+// 	{
+// 		SSynchronize sync( &m_sessionMap );
+// 		newSession = m_sessionMap.PeekObj( index );
+// 
+// 		if( newSession == 0 )
+// 			return NULL;
+// 	}
+	SSynchronize sync( this );
 
-		if( newSession == 0 )
-			return NULL;
-	}
+	newSession = m_mapSession[index];
+	if( newSession == 0 )
+		return NULL;
 
 	return newSession;
 }
 
-// void SSessionMgr::SendAllSession( SPacket &packet )
-// {
-// 	//우선 세션이 비어 있다면 그냥 돌아 간다
+void SSessionMgr::SendAllSession( SPacket &packet, SSession* itme/* = NULL*/ )
+{
+	//우선 세션이 비어 있다면 그냥 돌아 간다
 // 	if( m_playerList.Size() <= 0 )
 // 		return;
 // 	{
@@ -149,33 +174,76 @@ SServerObj* SSessionMgr::GetSession( int index )
 // 			tmpSession->SendPacket( packet );
 // 		}
 // 	}
-// }
+	SSynchronize Sync( this );
+
+	if( m_listPlayer.IsEmpty() )
+		return;
+
+	SSession* tmpSession;
+
+	std::list<int>::iterator iter = m_listPlayer.GetHeader();
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
+	{
+		tmpSession = (SSession*)m_mapSession[(*iter)];
+
+		//나를 넘겼으면 나에겐 보내지 않는다.
+		if( tmpSession == itme )
+			continue;
+
+		tmpSession->SendPacket( packet );
+	}
+}
 
 SServerObj* SSessionMgr::FindSession( int SessionId )
 {
 	//if( m_playerList.Size() <= 0 )
+	SSynchronize Sync( this );
+
 	if( m_listPlayer.IsEmpty() )
 		return NULL;
+// 	{
+// 		SSynchronize sync( &m_sessionMap );
+// 
+// 		SSession* tmpSession;
+// 		//std::list<int>::iterator iter = m_playerList.HeadPosiont();
+// 		std::list<int>::iterator	iter = m_listPlayer.GetHeader();
+// 		for( ; !m_listPlayer.IsEnd(iter); ++iter )
+// 		{
+// 			//접속해 있는 세션에서 찾는다.
+// 			tmpSession = (SSession*)m_sessionMap.PeekObj((*iter));
+// 			if( SessionId == tmpSession->GetSessionID() )
+// 				return (SServerObj*)(*iter);
+// 		}
+// 
+// 		return NULL;
+// 	}
+
+	SSession* tmpSession;
+	std::list<int>::iterator iter = m_listPlayer.GetHeader();
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
 	{
-		SSynchronize sync( &m_sessionMap );
-
-		SSession* tmpSession;
-		//std::list<int>::iterator iter = m_playerList.HeadPosiont();
-		std::list<int>::iterator	iter = m_listPlayer.GetHeader();
-		for( ; !m_listPlayer.IsEnd(iter); ++iter )
-		{
-			//접속해 있는 세션에서 찾는다.
-			tmpSession = (SSession*)m_sessionMap.PeekObj((*iter));
-			if( SessionId == tmpSession->GetSessionID() )
-				return (SServerObj*)(*iter);
-		}
-
-		return NULL;
+		tmpSession = (SSession*)m_mapSession[(*iter)];
+		if( SessionId == tmpSession->GetSessionID() )
+			return (SServerObj*)tmpSession;
 	}
+
+	return NULL;
 }
 
 void SSessionMgr::Release()
 {
-	m_sessionMap.Release();
+	//m_sessionMap.Release();
+	SSynchronize sync( this );
+
+	SServerObj* tmpSession;
+	POSITION pos = m_mapSession.GetStartPosition();
+	while( pos )
+	{
+		tmpSession = m_mapSession.GetNextValue( pos );
+		delete tmpSession;
+		tmpSession = 0;
+	}
+	m_mapSession.RemoveAll();
+
 	m_indexQueue.Release();
 }
