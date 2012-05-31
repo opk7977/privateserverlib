@@ -1,8 +1,6 @@
 #include "SSocket.h"
-#include "SLogger.h"
 
-SSocket::SSocket(void)
-: m_socket(INVALID_SOCKET)
+SSocket::SSocket(void) : m_socket(INVALID_SOCKET)
 {
 }
 
@@ -73,16 +71,10 @@ BOOL SSocket::CreateUDPSock()
 	if( WSAStartup( MAKEWORD(2, 2), &wsaData ) != 0 )
 		return FALSE;
 
-	//버전 정보를 한번 확인해 준다.
-	if( wsaData.wVersion != MAKEWORD(2, 2) )
-	{
-		//버전이 다르면 false return
-		WSACleanup();
-		return FALSE;
-	}
-	//UDP소켓을 생성
-	m_socket = socket( AF_INET, SOCK_DGRAM, 0 );
+	//소켓 생성(TCP)
+	m_socket = socket( AF_INET, SOCK_STREAM, 0 );
 
+	//소켓 생성에 문제가 있었다면 false return
 	if( m_socket == INVALID_SOCKET )
 	{
 		WSACleanup();
@@ -100,7 +92,7 @@ BOOL SSocket::SetScokReuseAddr()
 	//서버에 필수적인 설정이다.
 	//실패하면 0 return
 	retval = setsockopt( m_socket, SOL_SOCKET, SO_REUSEADDR, (char*)&reuse, sizeof(reuse) );
-
+	
 	if( retval != 0 )
 		return FALSE;
 
@@ -122,7 +114,7 @@ BOOL SSocket::SetNonBlkSock()
 	return TRUE;
 }
 
-BOOL SSocket::ConnectSock( char* ipAddr, int port )
+BOOL SSocket::ConnectSock( char* ipAddr, int port, SOCKADDR *sAddr /*= NULL */ )
 {
 	SOCKADDR_IN sockAddr;
 
@@ -131,10 +123,15 @@ BOOL SSocket::ConnectSock( char* ipAddr, int port )
 	sockAddr.sin_family			= AF_INET;
 	sockAddr.sin_addr.s_addr	= inet_addr( ipAddr );
 	sockAddr.sin_port			= htons( port );
+	
+	if( sAddr != NULL )
+		CopyMemory( sAddr, (SOCKADDR*)&sockAddr, sizeof(*sAddr) );
+		//sAddr = (SOCKADDR*)&sockAddr;
+
 
 	//연결한다.
-	if( connect( m_socket, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR) ) == SOCKET_ERROR )
-	//if( WSAConnect( m_socket, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR), NULL, NULL, NULL, NULL ) == SOCKET_ERROR )
+	//if( connect( m_socket, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR) ) == SOCKET_ERROR )
+	if( WSAConnect( m_socket, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR), NULL, NULL, NULL, NULL ) == SOCKET_ERROR )
 	{
 		//비동기 소켓은 접속시도가 바로 완료 되지 않기때문에 SOCKET_ERROR를
 		//return 할 수도 있기 때문에 WSAEWOULDBLOCK를 확인해 주어야 한다.
@@ -157,7 +154,6 @@ BOOL SSocket::BindSocket( int port )
 	if( bind( m_socket, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR) ) == SOCKET_ERROR )
 	{
 		//bind가 잘 못 되었다면 종료하고 돌아가자
-		int a = WSAGetLastError();
 		WSACleanup();
 		return FALSE;
 	}

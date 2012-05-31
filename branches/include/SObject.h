@@ -74,7 +74,5 @@ public:
 	virtual ~SObject(void);
 };
 
-
-
 #endif
 

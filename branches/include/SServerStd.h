@@ -7,6 +7,7 @@
 #include <Windows.h>
 #include <tchar.h>
 #include <string>
+#include <time.h>
 
 #include <vector>
 #include <list>
@@ -63,6 +64,7 @@ typedef struct CUSTOMOVERLAPPED : OVERLAPPED
 	~CUSTOMOVERLAPPED()
 	{
 	}
+
 }CUSTOMOVERLAPPED;
 
 #endif

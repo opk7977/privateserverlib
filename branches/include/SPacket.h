@@ -131,7 +131,6 @@ public:
 	SPacket &operator >> ( float &_value );
 	SPacket &operator >> ( __int64 _value );
 	SPacket &operator >> ( SPacket &_value );
-
 };
 
 
