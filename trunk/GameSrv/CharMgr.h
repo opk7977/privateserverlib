@@ -34,18 +34,19 @@ private:
 	TCHAR				m_tstrID[50];
 	int					m_iTeam;
 	int					m_State;
-	POINT3				m_Direction;
-	int					m_DirInt;
+	int					m_startPoint;
+	//POINT3				m_Direction;
+	//int					m_DirInt;
 
 	//에너지
-	int			m_HP;
+	int					m_HP;
 
 	//은신 수치 등등
 	//
 	//
 
 	//vec의 Index
-	int			m_vecIndex;
+	int					m_vecIndex;
 
 public:
 	CharObj();
@@ -66,14 +67,16 @@ public:
 	inline void SetState( int state ) { m_State = state; }
 	inline int GetState() { return m_State; }
 
-	inline void SetDirection( float x, float y, float z ) { m_Direction.SetElement( x, y, z ); }
-	inline void SetDirection( POINT3 dir ) { m_Direction = dir; }
-	inline void SetDirInt( int dir ) { m_DirInt = dir; }
-	inline POINT3 GetDirection() const { return m_Direction; }
-	inline float GetDirX() { return m_Direction.m_X; }
-	inline float GetDirY() { return m_Direction.m_Y; }
-	inline float GetDirZ() { return m_Direction.m_Z; }
-	inline int GetDirInt() { return m_DirInt; }
+// 	inline void SetDirection( float x, float y, float z ) { m_Direction.SetElement( x, y, z ); }
+// 	inline void SetDirection( POINT3 dir ) { m_Direction = dir; }
+// 	inline void SetDirInt( int dir ) { m_DirInt = dir; }
+// 	inline POINT3 GetDirection() const { return m_Direction; }
+// 	inline float GetDirX() { return m_Direction.m_X; }
+// 	inline float GetDirY() { return m_Direction.m_Y; }
+// 	inline float GetDirZ() { return m_Direction.m_Z; }
+// 	inline int GetDirInt() { return m_DirInt; }
+	inline void SetStartPoint( int p ) { m_startPoint = p; }
+	inline int GetStartPoint() { return m_startPoint; }
 
 	inline int GetVecIndex() { return m_vecIndex; }
 

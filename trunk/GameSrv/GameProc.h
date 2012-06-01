@@ -1,13 +1,20 @@
 #pragma once
 
 #include "SThread.h"
-#include "STime.h"
 #include "SList.h"
+#include "STime.h"
 
 class GameSession;
 class ItemObj;
 class SPacket;
 class CharObj;
+class SLogger;
+
+enum Team
+{
+	GAME_TEAM_ATT = 0,
+	GAME_TEAM_DEF,
+};
 
 class GameProc : public SThread
 {
@@ -33,16 +40,33 @@ private:
 	//======================================
 	// 게임을 play하는 인원(로비에서 받아온 인원)
 	int						m_playerCount;
+	int						m_readyCount;
 
-	//======================================
+	//==============================================================
+	//--------------------------------------
+	// 이번 판
+	//--------------------------------------
 	// 각 팀 킬수
 	int						m_AttKillCount;
 	int						m_DefKillCount;
+	// 승리 팀
+	int						m_WinTeam;
 	//--------------------------------------
+
+	//--------------------------------------
+	// 전체판수
+	//--------------------------------------
+	// 각 팀 킬수
+	int						m_AttKillAllCount;
+	int						m_DefKillAllCount;
 	// 스코어
 	int						m_AttWinCount;
 	int						m_DefWinCount;
-	//======================================
+	//==============================================================
+
+	//죽은 캐릭터의 수
+	//int						m_deathPlayerCount;
+
 	//======================================
 	// 맵 정보
 	int						m_gameStageMap;
@@ -61,6 +85,22 @@ private:
 	// 쓰레드 이벤트 핸들
 	HANDLE					m_hStartGame;
 
+	//======================================
+	// 게임 flag
+	//======================================
+	//play인원이 모두 준비가 다 되었음
+	//BOOL					m_isAllReady;
+	HANDLE					m_hStartEvent;
+
+	//======================================
+
+	//======================================
+	// SingleTon 객체들
+	//======================================
+	SLogger*				m_logger;
+
+	//======================================
+
 public:
 	GameProc(void);
 	~GameProc(void);
@@ -68,6 +108,9 @@ public:
 	// 게임 정보들을 초기화
 	void Init( int i );
 	void Init();
+
+	//다음 판(?)을 위해 정보를 저장하고 다시 셋팅
+	void ResultGame();
 
 	void Release();
 
@@ -111,6 +154,11 @@ public:
 	//==============================================================
 
 	//==============================================================
+	//게임 시작 준비가 완료된 신호를 받으면 하나씩 올려 준다.
+	void AddReadyCount();
+	//==============================================================
+
+	//==============================================================
 	//게임시작
 	BOOL StartGame();
 	//게임 시작전에 처리해야 하는 로직
@@ -124,6 +172,8 @@ public:
 
 	//지금 플레이 중인지를 확인
 	inline BOOL NowIsPlay() { return m_nowIsPlaying; }
+
+	void AddKillCount( BOOL deathTeam );
 
 	//플레이어 추가
 	void AddPlayer( GameSession* player );

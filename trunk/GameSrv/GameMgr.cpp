@@ -26,6 +26,7 @@ void GameMgr::CreateGameProc( int count )
 	//======================================
 	m_zeroRoom = new GameProc;
 	m_zeroRoom->Init(0);
+	m_zeroRoom->BeginThread();
 
 	m_zeroRoom->SetPlayerCount( 4 );
 	m_zeroRoom->SetGameMode( 0 );

@@ -26,6 +26,8 @@ BOOL GameSrvMain::Init()
 	//캐릭터 공간 셋팅
 	GetCharMgr.Init();
 
+	//ITEM 공간 셋팅
+
 	//게임proc셋팅
 	GetGameMgr.CreateGameProc( GetDocument.RoomCount );
 

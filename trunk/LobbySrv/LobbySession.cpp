@@ -1008,6 +1008,9 @@ void LobbySession::RecvRoomStartGame()
 	//방이 시작 가능 상태인지 확인
 	if( !m_myRoom->PossiblePlay() )
 	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("LobbySession::RecvRoomStartGame()\n%d번 방이 게임 시작 가능한 상태가 아닙니다.\n\n"),
+						m_myRoom->GetRoomNum() );
 		//실패 패킷을 보낸다
 		SendStartGameResult();
 		return;
@@ -1724,7 +1727,7 @@ BOOL LobbySession::SendStartGameInRoom( int roomNum )
 	sendPacket.PutData( m_document->GameSrvIP, size );
 	sendPacket << m_document->GameSrvPortNum;
 	//해당방의 UDP번호를 넣어 준다
-	sendPacket << (m_document->GameSrvPortNum+tmpRoom->GetRoomNum());
+	sendPacket << (m_document->GameSrvPortNum+tmpRoom->GetRoomNum()+10);
 
 	//방에 있는 player들에게 전송!
 	tmpRoom->SendPacketAllInRoom( sendPacket );

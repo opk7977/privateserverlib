@@ -79,21 +79,25 @@ public:
 	void RecvInGame( SPacket &packet );
 
 	//CS_GAME_GAME_READY_OK
+	void RecvGameReadyOK();
 
 	//CS_GAME_MOVE_CHAR
-	void RecvMoveChar( SPacket &packet );
+	//void RecvMoveChar( SPacket &packet );
 
-	//CS_GAME_ATTECT
+	//CS_GAME_ATTACK
 	void RecvGameAttec( SPacket &packet );
 
+	//CS_GAME_TRY_ATTACK
+	void RecvGameTryAttact( SPacket &packet );
+
 	//CS_GAME_SYNC
-	void RecvGameSync( SPacket &packet );
+	//void RecvGameSync( SPacket &packet );
 
 	//CS_GAME_CHANGE_STATE
-	void RecvGameChangeState( SPacket &packet );
+	//void RecvGameChangeState( SPacket &packet );
 
 	//CS_GAME_ROTATION
-	void RecvGameRotation( SPacket &packet );
+	//void RecvGameRotation( SPacket &packet );
 
 	//CS_GAME_CHATTING
 	void RecvGameChatting( SPacket &packet );
@@ -142,21 +146,28 @@ public:
 	//게임Proc에 있음
 
 	//SC_GAME_MOVE_CHAR
-	BOOL SendMoveChar();
+	//BOOL SendMoveChar();
 
-	//SC_GAME_ATTECT
-	BOOL SendGameAttec( int weapon, int attectedSessionID, int part, int damage );
+	//SC_GAME_ATTACK
+	BOOL SendGameAttact( int weapon, CharObj* attactedChar );
 
-	//SC_GAME_CHAR_DIE
+	//SC_GAME_YOU_ATTACKED
+	BOOL SendGameYouAttact( int weapon, int damage, CharObj* attactedChar );
+
+	//SC_GAME_TRY_ATTACK
+	BOOL SendGameTryAttact( SPacket& packet );
+
+	//SC_GAME_CHAR_DIE /SC_GAME_YOU_DIE
+	BOOL SendGameDie( int weapon, CharObj* dieChar );
 
 	//SC_GAME_SYNC
-	BOOL SendGameSync();
+	//BOOL SendGameSync();
 
 	//SC_GAME_CHANGE_STATE
-	BOOL SendGameChangeState();
+	//BOOL SendGameChangeState();
 
 	//SC_GAME_ROTATION
-	BOOL SendGameRotation();
+	//BOOL SendGameRotation();
 
 	//SC_GAME_CHATTING
 	BOOL SendGameChatting( TCHAR* chatting, int size );
@@ -168,6 +179,7 @@ public:
 	//SC_GAME_UNINSTALL_BOOM
 
 	//SC_GAME_TIME_COUNTDOWN
+	//게임Proc에 있음
 
 	//SC_GAME_END
 

@@ -107,13 +107,10 @@ enum GAME_SERVER
 	// int			-		playerCount
 	//--------------------------------------
 	// int			-		sessionID
-	// int			-		charState
-	// float		-		posX
-	// float		-		posY
-	// float		-		posZ
-	// float		-		DirX
-	// float		-		DirY
-	// float		-		DirZ
+	// int			-		startPoint
+	// int			-		ip주소 size
+	// char			-		ip
+	// int			-		port
 	//-------------------------------------> playerCount만큼 반복으로 들어가 있음
 	SC_GAME_CHARINFO_INGAME,
 
@@ -127,116 +124,131 @@ enum GAME_SERVER
 	// 데이터 없음
 	SC_GAME_START_GAME,
 
-	// client -> server
-	// 캐릭터의 상태가 변함( 이동시작/멈춤 등 )
-	// int			-		charState
-	// float		-		posX
-	// float		-		posY
-	// float		-		posZ
-	// float		-		DirX
-	// float		-		DirZ
-	// int			-		DirInt
-	CS_GAME_MOVE_CHAR,
-
-	// server -> client
-	// 캐릭터의 상태가 변함( 이동시작/멈춤 등 )
-	// int			-		sessionID
-	// int			-		charState
-	// float		-		posX
-	// float		-		posY
-	// float		-		posZ
-	// float		-		DirX
-	// float		-		DirZ
-	// int			-		DirInt
-	SC_GAME_MOVE_CHAR,
+// 	// client -> server
+// 	// 캐릭터의 상태가 변함( 이동시작/멈춤 등 )
+// 	// int			-		charState
+// 	// float		-		posX
+// 	// float		-		posY
+// 	// float		-		posZ
+// 	// float		-		DirX
+// 	// float		-		DirZ
+// 	// int			-		DirInt
+// 	CS_GAME_MOVE_CHAR,
+// 
+// 	// server -> client
+// 	// 캐릭터의 상태가 변함( 이동시작/멈춤 등 )
+// 	// int			-		sessionID
+// 	// int			-		charState
+// 	// float		-		posX
+// 	// float		-		posY
+// 	// float		-		posZ
+// 	// float		-		DirX
+// 	// float		-		DirZ
+// 	// int			-		DirInt
+// 	SC_GAME_MOVE_CHAR,
 
 	// client -> server
 	// 캐릭터의 공격
 	// int			-		무기종류
 	// int			-		피격대상 sessionID
-	// int			-		피격부위
-	CS_GAME_ATTECT,
+	// int			-		감소 에너지
+	CS_GAME_ATTACK,
 
 	// server -> client
 	// 캐릭터의 공격성공시 모두에게 결과를 보낸다
 	// int			-		공격자SessionID
 	// int			-		무기종류
 	// int			-		피격대상SessionID
-	// int			-		피격부위
+	SC_GAME_ATTACK,
+
+	// server -> client
+	// 공격당한 캐릭터에게 너 맞았다고 알려줌
+	// int			-		공격자SessionID
+	// int			-		무기종류
 	// int			-		감소 에너지
-	SC_GAME_ATTECT,
+	SC_GAME_YOU_ATTACKED,
 
 	// client -> server 
 	// 인간(캐릭터)가 아닌 물체같은것에 공격을 했을때
-	// int			-		무기종류
-	// 그리고 또 뭐가 필요함?
-	//				.
-	//				.
-	CS_GAME_TRY_ATTECT,
+	// int			-		objID
+	// float		-		PosX
+	// float		-		PosY
+	// float		-		PosZ
+	// float		-		NormalX
+	// float		-		NormalY
+	// float		-		NormalZ
+	CS_GAME_TRY_ATTACK,
 
 	// server -> client
 	// 인간(캐릭터)가 아닌 물체같은것에 공격을 했다는것을 알림
-	// int			-		공격자SessionID
-	// int			-		무기종류
-	// 그리고 또 뭐가 필요함?
-	//				.
-	//				.
-	SC_GAME_TRY_ATTECT,
+	// int			-		objID
+	// float		-		PosX
+	// float		-		PosY
+	// float		-		PosZ
+	// float		-		NormalX
+	// float		-		NormalY
+	// float		-		NormalZ
+	SC_GAME_TRY_ATTACK,
 
 	// server -> client
 	// 공격당한 캐릭터가 죽으면 보내는 패킷
 	// int			-		공격자SessionID
 	// int			-		무기종류
 	// int			-		피격대상SessionID
-	// int			-		피격부위
 	SC_GAME_CHAR_DIE,
 
-	// client -> server
-	// 위치 및 상태 동기화를 위한 패킷
-	// float		-		posX
-	// float		-		posY
-	// float		-		posZ
-	// float		-		DirX
-	// float		-		DirY
-	// float		-		DirZ
-	CS_GAME_SYNC,
-
 	// server -> client
-	// 위치 및 상태 동기화를 위한 패킷
-	// int			-		SessionID
-	// float		-		posX
-	// float		-		posY
-	// float		-		posZ
-	// float		-		DirX
-	// float		-		DirY
-	// float		-		DirZ
-	SC_GAME_SYNC,
+	// 공격당해서 죽으면 나에게 보내는 패킷
+	// int			-		공격자SessionID
+	// int			-		무기종류
+	SC_GAME_YOU_DIE,
 
-	// client -> server
-	// 캐릭터 상태가 변함
-	// int			-		dirInt
-	CS_GAME_CHANGE_STATE,
+// 	// client -> server
+// 	// 위치 및 상태 동기화를 위한 패킷
+// 	// float		-		posX
+// 	// float		-		posY
+// 	// float		-		posZ
+// 	// float		-		DirX
+// 	// float		-		DirY
+// 	// float		-		DirZ
+// 	CS_GAME_SYNC,
+// 
+// 	// server -> client
+// 	// 위치 및 상태 동기화를 위한 패킷
+// 	// int			-		SessionID
+// 	// float		-		posX
+// 	// float		-		posY
+// 	// float		-		posZ
+// 	// float		-		DirX
+// 	// float		-		DirY
+// 	// float		-		DirZ
+// 	SC_GAME_SYNC,
 
-	// server -> client
-	// 캐릭터가 전환된 상태를 모두에게 알린다.
-	// int			-		sessionId
-	// int			-		dirInt
-	SC_GAME_CHANGE_STATE,
-
-	// client -> server
-	// 캐릭터 회전
-	// float		-		dirX
-	// float		-		dirY
-	// float		-		dirZ
-	CS_GAME_ROTATION,
-
-	// server -> client
-	// 캐릭터 회전을 모두에게 알린다
-	// int			-		sessionId
-	// float		-		dirX
-	// float		-		dirY
-	// float		-		dirZ
-	SC_GAME_ROTATION,
+// 	// client -> server
+// 	// 캐릭터 상태가 변함
+// 	// int			-		dirInt
+// 	CS_GAME_CHANGE_STATE,
+// 
+// 	// server -> client
+// 	// 캐릭터가 전환된 상태를 모두에게 알린다.
+// 	// int			-		sessionId
+// 	// int			-		dirInt
+// 	SC_GAME_CHANGE_STATE,
+// 
+// 	// client -> server
+// 	// 캐릭터 회전
+// 	// float		-		dirX
+// 	// float		-		dirY
+// 	// float		-		dirZ
+// 	CS_GAME_ROTATION,
+// 
+// 	// server -> client
+// 	// 캐릭터 회전을 모두에게 알린다
+// 	// int			-		sessionId
+// 	// float		-		dirX
+// 	// float		-		dirY
+// 	// float		-		dirZ
+// 	SC_GAME_ROTATION,
 
 	// client -> server
 	// int			-		stringSize

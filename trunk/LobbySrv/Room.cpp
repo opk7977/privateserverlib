@@ -62,6 +62,10 @@ BOOL Room::PossiblePlay()
 	if( m_listPlayer.GetItemCount() < MIN_PLAYER_COUNT )
 		return FALSE;
 
+	//팀인원이 0인경우도 시작 할 수 없음
+	if( m_AttectTeam <= 0 || m_DefenceTeam <= 0 )
+		return FALSE;
+
 	return TRUE;
 }
 
