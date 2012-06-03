@@ -85,6 +85,9 @@ public:
 	//CS_GAME_TRY_ATTACK
 	void RecvGameTryAttack( SPacket &packet );
 
+	//CS_GAME_JUST_SHOOT
+	void RecvGameJustShoot();
+
 	//CS_GAME_CHANGE_STATE
 	void RecvGameChangeState( SPacket &packet );
 
@@ -98,9 +101,12 @@ public:
 
 	//CS_GAME_UNINSTALL_BOOM
 
+	//CS_GAME_RADIO_PLAY
+	void RecvGameRadioPlay( SPacket &packet );
+
 	//CS_GAME_INSTALL_ITEM
 
-	//CS_GAME_GOTO_LOBBY
+//	//CS_GAME_GOTO_LOBBY
 
 
 	//======================================
@@ -138,16 +144,19 @@ public:
 	//게임Proc에 있음
 
 	//SC_GAME_ATTACK
-	BOOL SendGameAttack( int weapon, CharObj* attactedChar );
+	BOOL SendGameAttack( BOOL isHead, CharObj* attactedChar, float posX, float posY, float posZ, float normalX, float normalY, float normalZ );
 
 	//SC_GAME_YOU_ATTACKED
-	BOOL SendGameYouAttack( int weapon, CharObj* attactedChar );
+	BOOL SendGameYouAttack( BOOL isHead, CharObj* attactedChar );
 
 	//SC_GAME_TRY_ATTACK
 	BOOL SendGameTryAttact( SPacket& packet );
 
+	//SC_GAME_JUST_SHOOT
+	//함수 없음
+
 	//SC_GAME_CHAR_DIE /SC_GAME_YOU_DIE
-	BOOL SendGameDie( int weapon, CharObj* dieChar );
+	BOOL SendGameDie( BOOL isHead, CharObj* dieChar );
 
 	//SC_GAME_CHANGE_STATE
 	BOOL SendGameChangeState( int state );
@@ -164,18 +173,25 @@ public:
 
 	//SC_GAME_UNINSTALL_BOOM
 
+	//SC_GAME_RADIO_PLAY
+	BOOL SendGameRadioPlay( SPacket &packet );
+
 	//SC_GAME_TIME_COUNTDOWN
 	//게임Proc에 있음
 
-	//SC_GAME_END
+//	//SC_GAME_END
 
 	//SC_GAME_INSTALL_ITEM
 
 	//SC_GAME_RUN_ITEM
 
-	//SC_GAME_GOTO_LOBBY
+	//SC_GAME_RESTART
+	//게임Proc에 있음
 
-	//SC_GAME_CHAR_GOTO_LOBBY
+	//SC_GAME_GOTO_LOBBY
+	//게임Proc에 있음
+
+//	//SC_GAME_CHAR_GOTO_LOBBY
 
 	//SC_GAME_CHAR_DISCONNECT
 	BOOL SendCharDisconnect();

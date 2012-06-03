@@ -9,6 +9,9 @@ class ItemObj;
 class SPacket;
 class CharObj;
 class SLogger;
+class DataLeader;
+
+#define WAIT_GAME_END_TIME	10
 
 enum Team
 {
@@ -32,6 +35,9 @@ private:
 	SList<GameSession*>		m_listPlayer;
 	// 아이템 정보 list
 	SList<ItemObj*>			m_listItem;
+
+	// 피 체운 대상 보내고 clear되고하는 패턴임
+	SList<GameSession*>		m_SendList;
 
 	//======================================
 	// 게임중 flag
@@ -93,8 +99,8 @@ private:
 	//======================================
 	// SingleTon 객체들
 	//======================================
-	SLogger*				m_logger;
-
+	static SLogger*			m_logger;
+	static DataLeader*		m_document;
 	//======================================
 
 public:
@@ -156,6 +162,8 @@ public:
 	BOOL ResetGame();
 	//게임 완전히 종료
 	void EndGame();
+	//게임이 한판(?)끝나고 다시시작 혹은 게임 종료
+	void WaitTimeLogic();
 	//==============================================================
 
 	//지금 플레이 중인지를 확인
@@ -176,12 +184,23 @@ public:
 	//게임내의 캐릭터를 검색
 	CharObj* FindChar( int sessionID );
 
+	//모든 캐릭터의 피를 올려 주고 피가 올라간 애들을 list에 넣어 준다
+	void PlayerHeal();
+	//피가 올라간 애들만 보낸다.
+	void SendPlayerHeal();
+
 	//SC_GAME_START_GAME
 	BOOL SendStartPacket();
+	//SC_GAME_RESTART
+	BOOL SendRestartPacket();
+	//SC_GAME_GOTO_LOBBY
+	BOOL SendGotoLobbyPacket();
 
 	//방에 있는 모든 player에게 전송
 	//나를 빼고 보내려면 자신의 session을 매개변수로 넘긴다
 	void SendAllPlayerInGame( SPacket& packet, GameSession* me = NULL );
+	//방에 있는 자신의 팀 사람들에게 패킷을 전송
+	void SendPacketToMyTeam( int team, SPacket& packet, GameSession* me );
 
 	//방에 있는 모든 player정보를 패킷에 담는다
 	//나를 빼고 담으려면 자신의 session을 매개변수로 넘긴다.

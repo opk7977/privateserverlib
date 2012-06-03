@@ -69,6 +69,17 @@ BOOL CharObj::IsDie()
 	return ( m_HP <= 0 ) ? TRUE : FALSE;
 }
 
+BOOL CharObj::HPUpOnePoint()
+{
+	//이미 100이면 그냥 return
+	if( m_HP >= 100 )
+		return FALSE;
+
+	//올려 주고
+	++m_HP;
+	return TRUE;
+}
+
 void CharObj::DeathCountUp()
 {
 	++m_deathCount;
@@ -88,6 +99,13 @@ int CharObj::GetKillCount()
 {
 	return m_killCount;
 }
+
+// void CharObj::PackageCharInfoForResult( SPacket& packet )
+// {
+// 	SSynchronize sync( this );
+// 
+// 	//packet << 
+// }
 
 //==============================================================
 

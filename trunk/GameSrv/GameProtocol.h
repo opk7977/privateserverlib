@@ -126,22 +126,34 @@ enum GAME_SERVER
 
 	// client -> server
 	// 캐릭터의 공격
-	// int			-		무기종류
+	// int			-		헤드샷?
 	// int			-		피격대상 sessionID
 	// int			-		감소 에너지
+	// float		-		PosX
+	// float		-		PosY
+	// float		-		PosZ
+	// float		-		NormalX
+	// float		-		NormalY
+	// float		-		NormalZ
 	CS_GAME_ATTACK,
 
 	// server -> client
 	// 캐릭터의 공격성공시 모두에게 결과를 보낸다
+	// int			-		헤드샷?
 	// int			-		공격자SessionID
-	// int			-		무기종류
 	// int			-		피격대상SessionID
+	// float		-		PosX
+	// float		-		PosY
+	// float		-		PosZ
+	// float		-		NormalX
+	// float		-		NormalY
+	// float		-		NormalZ
 	SC_GAME_ATTACK,
 
 	// server -> client
 	// 공격당한 캐릭터에게 너 맞았다고 알려줌
+	// int			-		헤드샷?
 	// int			-		공격자SessionID
-	// int			-		무기종류
 	// int			-		남은 에너지
 	SC_GAME_YOU_ATTACKED,
 
@@ -167,17 +179,26 @@ enum GAME_SERVER
 	// float		-		NormalZ
 	SC_GAME_TRY_ATTACK,
 
+	// client -> server
+	// 그냥 총을 쏨
+	CS_GAME_JUST_SHOOT,
+
+	// server -> client
+	// 그냥 총을 쏨
+	// int			-		sessionID
+	SC_GAME_JUST_SHOOT,
+
 	// server -> client
 	// 공격당한 캐릭터가 죽으면 보내는 패킷
+	// int			-		헤드샷?
 	// int			-		공격자SessionID
-	// int			-		무기종류
 	// int			-		피격대상SessionID
 	SC_GAME_CHAR_DIE,
 
 	// server -> client
 	// 공격당해서 죽으면 나에게 보내는 패킷
+	// int			-		헤드샷?
 	// int			-		공격자SessionID
-	// int			-		무기종류
 	SC_GAME_YOU_DIE,
 
 	// client -> server
@@ -238,25 +259,40 @@ enum GAME_SERVER
 	SC_GAME_UNINSTALL_BOOM,
 
 	// server -> client
+	// 일정시간마다 hp를 올려 올라간 hp를 받는다
+	// int			-		현재의 hp
+	SC_GAME_REMAIN_HP,
+
+	// client -> server
+	// 라디오 play
+	// int			-		라디오index
+	CS_GAME_RADIO_PLAY,
+
+	// server -> client
+	// 라디오 play
+	// int			-		라디오index
+	SC_GAME_RADIO_PLAY,
+
+	// server -> client
 	// 게임중 시간 어택
 	// 데이터 없음( or int	- 남은 카운트 )
 	SC_GAME_TIME_COUNTDOWN,
 
 	// server -> client
 	// 타임 아웃!/ 현재게임의 종료
-	// 데이터 없음
+	// 보류
 	SC_TIME_OUT,
 
-	// server -> client
-	// 게임 종료
-	// int			-		종료의 종류( 팀 승리/ 타임오버 )
-	// int			-		승리 팀
-	// int			-		공격팀 총Kill수( 수비팀 Death수 )
-	// int			-		수비팀 총Kill수( 공격팀 Death수 )
-	// int			-		공격팀 win 수
-	// int			-		수비팀 win 수
-	// int			-		게임 비긴 수
-	SC_GAME_END,
+// 	// server -> client
+// 	// 게임 종료
+// 	// int			-		종료의 종류( 팀 승리/ 타임오버 )
+// 	// int			-		승리 팀
+// 	// int			-		공격팀 총Kill수( 수비팀 Death수 )
+// 	// int			-		수비팀 총Kill수( 공격팀 Death수 )
+// 	// int			-		공격팀 win 수
+// 	// int			-		수비팀 win 수
+// 	// int			-		게임 비긴 수
+// 	SC_GAME_END,
 
 	// client -> server
 	// 아이템 설치
@@ -283,10 +319,14 @@ enum GAME_SERVER
 	// int			-		데미지
 	SC_GAME_RUN_ITEM,
 
-	// client -> server
-	// 게임이 끝나고 방으로 이동하기 위해 정보 요청
-	// 데이터 없음
-	CS_GAME_GOTO_LOBBY,
+	// server -> client
+	// 게임을 다시 시작한다는 패킷을 보낸다
+	SC_GAME_RESTART,
+
+// 	// client -> server
+// 	// 게임이 끝나고 방으로 이동하기 위해 정보 요청
+// 	// 데이터 없음
+// 	CS_GAME_GOTO_LOBBY,
 
 	// server -> client
 	// player를 로비로 이동
@@ -295,10 +335,10 @@ enum GAME_SERVER
 	// int			-		port
 	SC_GAME_GOTO_LOBBY,
 
-	// server -> client
-	// player가 로비로 이동했다고 알림
-	// int			-		SessionID
-	SC_GAME_CHAR_GOTO_LOBBY,
+// 	// server -> client
+// 	// player가 로비로 이동했다고 알림
+// 	// int			-		SessionID
+// 	SC_GAME_CHAR_GOTO_LOBBY,
 
 	// server -> client
 	// player가 게임을 끄고 접속을 끊었을때 사람들에게 알림

@@ -142,6 +142,9 @@ void GameSession::PacketParsing( SPacket& packet )
 	case CS_GAME_TRY_ATTACK:
 		RecvGameTryAttack( packet );
 		break;
+	case CS_GAME_JUST_SHOOT:
+		//
+		break;
 	case CS_GAME_CHANGE_STATE:
 		RecvGameChangeState( packet );
 		break;
@@ -157,12 +160,15 @@ void GameSession::PacketParsing( SPacket& packet )
 	case CS_GAME_UNINSTALL_BOOM:
 		//
 		break;
+	case CS_GAME_RADIO_PLAY:
+		RecvGameRadioPlay( packet );
+		break;
 	case CS_GAME_INSTALL_ITEM:
 		//
 		break;
-	case CS_GAME_GOTO_LOBBY:
-		//
-		break;
+// 	case CS_GAME_GOTO_LOBBY:
+// 		//
+// 		break;
 
 	//==============================================================> Client
 	default:
@@ -361,10 +367,15 @@ void GameSession::RecvGameAttack( SPacket &packet )
 		return;
 	}
 
-	int weapon, attectedSessionID, damage;
-	packet >> weapon;
+	int attectedSessionID, damage;
+	float posX, posY, posZ, normalX, normalY, normalZ;
+	BOOL isHead;
+	packet >> isHead;
 	packet >> attectedSessionID;
 	packet >> damage;
+
+	packet >> posX >> posY >> posZ;
+	packet >> normalX >> normalY >> normalZ;
 
 	//피격 대상을 받아 온다
 	CharObj* tmpChar = m_myGameProc->FindChar( attectedSessionID );
@@ -393,6 +404,13 @@ void GameSession::RecvGameAttack( SPacket &packet )
 	//에너지를 달게 한다
 	tmpChar->DownHP( damage );
 
+	//attect패킷
+	//모두에게
+	SendGameAttack( isHead, tmpChar, posX, posY, posZ, normalX, normalY, normalZ );
+
+	//맞은 놈에게
+	SendGameYouAttack( isHead, tmpChar );
+
 	//피격대상의 피를 확인한다
 	if( tmpChar->IsDie() )
 	{
@@ -404,16 +422,7 @@ void GameSession::RecvGameAttack( SPacket &packet )
 		tmpChar->DeathCountUp();
 
 		//die패킷
-		SendGameDie( weapon, tmpChar );
-	}
-	else
-	{
-		//attect패킷
-		//모두에게
-		SendGameAttack( weapon, tmpChar );
-
-		//맞은 놈에게
-		SendGameYouAttack( weapon, tmpChar );
+		SendGameDie( isHead, tmpChar );
 	}
 }
 
@@ -423,6 +432,23 @@ void GameSession::RecvGameTryAttack( SPacket &packet )
 	packet.SetID( SC_GAME_TRY_ATTACK );
 
 	SendGameTryAttact( packet );
+}
+
+void GameSession::RecvGameJustShoot()
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameJustShoot()\n")
+			_T("캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	SPacket sendPacket( SC_GAME_JUST_SHOOT );
+
+	sendPacket << m_myCharInfo->GetSessionID();
+
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
 }
 
 void GameSession::RecvGameChangeState( SPacket &packet )
@@ -491,6 +517,13 @@ void GameSession::RecvGameChatting( SPacket &packet )
 		_T("GameSession::RecvGameChatting()\n%s\n\n"), Chatting );
 
 	SendGameChatting( Chatting, size );
+}
+
+void GameSession::RecvGameRadioPlay( SPacket &packet )
+{
+	packet.SetID( SC_GAME_RADIO_PLAY );
+
+	SendGameRadioPlay( packet );
 }
 
 //======================================
@@ -600,24 +633,27 @@ BOOL GameSession::SendMyCharInfoToInGamePlayer()
 	return TRUE;
 }
 
-BOOL GameSession::SendGameAttack( int weapon, CharObj* attactedChar )
+BOOL GameSession::SendGameAttack( BOOL isHead, CharObj* attactedChar, float posX, float posY, float posZ, float normalX, float normalY, float normalZ )
 {
 	SPacket sendPacket( SC_GAME_ATTACK );
+	sendPacket << isHead;
 	sendPacket << m_myCharInfo->GetSessionID();
-	sendPacket << weapon;
 	sendPacket << attactedChar->GetSessionID();
+
+	sendPacket << posX << posY << posZ;
+	sendPacket << normalX << normalY << normalZ;
 
 	m_myGameProc->SendAllPlayerInGame( sendPacket, attactedChar->GetSession() );
 
 	return TRUE;
 }
 
-BOOL GameSession::SendGameYouAttack( int weapon, CharObj* attactedChar )
+BOOL GameSession::SendGameYouAttack( BOOL isHead, CharObj* attactedChar )
 {
 	SPacket sendPacket( SC_GAME_YOU_ATTACKED );
+	sendPacket << isHead;
 	sendPacket << m_myCharInfo->GetSessionID();
-	sendPacket << weapon;
-	sendPacket << m_myCharInfo->GetHP();		//남은 HP
+	sendPacket << attactedChar->GetHP();		//남은 HP
 
 	attactedChar->GetSession()->SendPacket( sendPacket );
 
@@ -631,15 +667,15 @@ BOOL GameSession::SendGameTryAttact( SPacket& packet )
 	return TRUE;
 }
 
-BOOL GameSession::SendGameDie( int weapon, CharObj* dieChar )
+BOOL GameSession::SendGameDie( BOOL isHead, CharObj* dieChar )
 {
 	//======================================
 	// 남들에게 보냄
 	//======================================
 	SPacket sendPacket( SC_GAME_CHAR_DIE );
 
+	sendPacket << isHead;
 	sendPacket << m_myCharInfo->GetSessionID();
-	sendPacket << weapon;
 	sendPacket << dieChar->GetSessionID();
 
 	m_myGameProc->SendAllPlayerInGame( sendPacket, dieChar->GetSession() );
@@ -650,9 +686,8 @@ BOOL GameSession::SendGameDie( int weapon, CharObj* dieChar )
 	sendPacket.PacketClear();
 	sendPacket.SetID( SC_GAME_YOU_DIE );
 
+	sendPacket << isHead;
 	sendPacket << m_myCharInfo->GetSessionID();
-	sendPacket << weapon;
-
 	dieChar->GetSession()->SendPacket( sendPacket );
 
 	return TRUE;
@@ -713,6 +748,28 @@ BOOL GameSession::SendGameChatting( TCHAR* chatting, int size )
 		return FALSE;
 	}
 	m_myGameProc->SendAllPlayerInGame( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendGameRadioPlay( SPacket &packet )
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::SendGameRadioPlay()\n캐릭터 정보가 유효하지 않습니다.\n\n") );
+		return FALSE;
+	}
+
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::SendGameRadioPlay()\n캐릭터 %s의 게임 proc정보가 유효하지 않습니다.\n\n"), m_myCharInfo->GetID() );
+		return FALSE;
+	}
+
+	//자신의 팀에만 보낸다
+	m_myGameProc->SendPacketToMyTeam( m_myCharInfo->GetTeam(), packet, this );
 
 	return TRUE;
 }

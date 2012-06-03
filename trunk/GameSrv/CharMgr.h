@@ -81,6 +81,8 @@ public:
 	BOOL IsDie();
 	//살리기
 	void SetAlive() { m_HP = 100; }
+	//피1 올리기_ return FALSE는 원래 피가 100이라 올릴게 없을 경우
+	BOOL HPUpOnePoint();
 
 	//죽은 횟수
 	void DeathCountUp();
@@ -89,7 +91,11 @@ public:
 	//죽인 횟수
 	void KillCountUp();
 	int GetKillCount();
-	
+
+	//==================================================
+	// 게임한판이 끝나고 지금까지의 결과를 넣는다.
+	//==================================================
+//	void PackageCharInfoForResult( SPacket& packet );
 };
 
 
