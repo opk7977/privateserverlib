@@ -1,7 +1,6 @@
 #pragma once
 
 #include "SIndexQueue.h"
-#include "GameObj.h"
 #include "SPacket.h"
 
 class GameSession;
@@ -26,17 +25,18 @@ enum SRV_CHAR_TEAM
 
 
 
-class CharObj : public GameObj
+class CharObj : public SServerObj
 {
 private:
 	GameSession*		m_session;
 
+	int					m_sessionID;
 	TCHAR				m_tstrID[50];
 	int					m_iTeam;
-	int					m_State;
 	int					m_startPoint;
-	//POINT3				m_Direction;
-	//int					m_DirInt;
+
+	int					m_killCount;
+	int					m_deathCount;
 
 	//에너지
 	int					m_HP;
@@ -45,7 +45,7 @@ private:
 	//
 	//
 
-	//vec의 Index
+	//vec의 Index_공간 관리용 index
 	int					m_vecIndex;
 
 public:
@@ -54,6 +54,9 @@ public:
 
 	void Init();
 	void Init( int index );
+
+	void SetSessionID( int session ) { m_sessionID = session; }
+	int GetSessionID() { return m_sessionID; }
 
 	inline void SetSession( GameSession* session ) { m_session = session; }
 	inline GameSession* GetSession() { return m_session; }
@@ -64,29 +67,28 @@ public:
 	inline void SetTeam( int team ) { m_iTeam = team; }
 	inline int GetTeam() { return m_iTeam; }
 
-	inline void SetState( int state ) { m_State = state; }
-	inline int GetState() { return m_State; }
-
-// 	inline void SetDirection( float x, float y, float z ) { m_Direction.SetElement( x, y, z ); }
-// 	inline void SetDirection( POINT3 dir ) { m_Direction = dir; }
-// 	inline void SetDirInt( int dir ) { m_DirInt = dir; }
-// 	inline POINT3 GetDirection() const { return m_Direction; }
-// 	inline float GetDirX() { return m_Direction.m_X; }
-// 	inline float GetDirY() { return m_Direction.m_Y; }
-// 	inline float GetDirZ() { return m_Direction.m_Z; }
-// 	inline int GetDirInt() { return m_DirInt; }
 	inline void SetStartPoint( int p ) { m_startPoint = p; }
 	inline int GetStartPoint() { return m_startPoint; }
 
+	//공간 관리용 index
 	inline int GetVecIndex() { return m_vecIndex; }
-
-	//자신의 정보를 패킷에 넣는다
-	void PackageMyInfo( SPacket& packet );
 
 	//공격을 당해 데이지를 입음
 	void DownHP( int damage );
+	//내 hp return
+	int	GetHP() const { return m_HP; }
 	//피가 다 달아서 죽었는지?
 	BOOL IsDie();
+	//살리기
+	void SetAlive() { m_HP = 100; }
+
+	//죽은 횟수
+	void DeathCountUp();
+	int GetDeathCount();
+
+	//죽인 횟수
+	void KillCountUp();
+	int GetKillCount();
 	
 };
 

@@ -80,6 +80,7 @@ enum SERVER_TO_SERVER
 	// 게임서버에서 접속을 끊어버린 player에 대한 처리
 	// int			-		roomNum
 	// int			-		SessionId
+	// int			-		Team정보
 	GL_PLAYER_DISCONNECT,
 };
 
@@ -347,10 +348,4 @@ enum LOBBY_SERVER
 	// player(내)가 로비에서 접속을 끊으면 알려 준다.
 	// int			-		SessionID;
 	SC_LOBBY_PLAYER_DISCONNECT,
-
-	// server -> client
-	// player가 방(혹은게임)에서 접속을 끊으면 알려 준다
-	// int			-		roomNum
-	// int			-		sessionID
-	SC_ROOM_PLAYER_DISCONNECT,
 };

@@ -6,6 +6,7 @@
 
 class LobbySession;
 class SPacket;
+class Room;
 // 
 // const int Character_Space = 100;
 
@@ -28,6 +29,9 @@ private:
 	//해당 캐릭터의session공간
 	LobbySession*	m_session;
 
+	//자신의 방 공간
+	Room*			m_myRoom;
+
 	//캐릭터의 상태가 지금 게임 중인지를 확인
 	BOOL			m_isPlay;
 
@@ -49,6 +53,9 @@ public:
 
 	void SetSession( LobbySession* session );
 	LobbySession* GetSession() const;
+
+	void SetRoom( Room* room );
+	Room* GetRoom() const;
 
 	//==============================================================
 

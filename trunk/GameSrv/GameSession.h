@@ -24,11 +24,11 @@ private:
 	//======================================
 	// singleTon객체들
 	//======================================
-	SrvNet*				m_srvNet;
-	SLogger*			m_logger;
-	GameMgr*			m_gameMgr;
-	CharMgr*			m_charMgr;
-	ItemMgr*			m_itemMgr;
+	static SrvNet*			m_srvNet;
+	static SLogger*			m_logger;
+	static GameMgr*			m_gameMgr;
+	static CharMgr*			m_charMgr;
+	static ItemMgr*			m_itemMgr;
 	//======================================
 
 	//내 정보
@@ -52,8 +52,6 @@ public:
 	CharObj*	GetMyInfo() const { return m_myCharInfo; }
 	GameProc*	GetMyGame() const { return m_myGameProc; }
 
-	//내 정보를 담는다
-	//void PackageMyInfo( SPacket& packet );
 	//내 ip정보를 담자
 	void PackageMyNetInfo( SPacket& packet );
 
@@ -81,23 +79,17 @@ public:
 	//CS_GAME_GAME_READY_OK
 	void RecvGameReadyOK();
 
-	//CS_GAME_MOVE_CHAR
-	//void RecvMoveChar( SPacket &packet );
-
 	//CS_GAME_ATTACK
-	void RecvGameAttec( SPacket &packet );
+	void RecvGameAttack( SPacket &packet );
 
 	//CS_GAME_TRY_ATTACK
-	void RecvGameTryAttact( SPacket &packet );
-
-	//CS_GAME_SYNC
-	//void RecvGameSync( SPacket &packet );
+	void RecvGameTryAttack( SPacket &packet );
 
 	//CS_GAME_CHANGE_STATE
-	//void RecvGameChangeState( SPacket &packet );
+	void RecvGameChangeState( SPacket &packet );
 
-	//CS_GAME_ROTATION
-	//void RecvGameRotation( SPacket &packet );
+	//CS_GAME_ASK_REVIVAL
+	void RecvGameAskRevival( SPacket &packet );
 
 	//CS_GAME_CHATTING
 	void RecvGameChatting( SPacket &packet );
@@ -145,14 +137,11 @@ public:
 	//SC_GAME_START_GAME
 	//게임Proc에 있음
 
-	//SC_GAME_MOVE_CHAR
-	//BOOL SendMoveChar();
-
 	//SC_GAME_ATTACK
-	BOOL SendGameAttact( int weapon, CharObj* attactedChar );
+	BOOL SendGameAttack( int weapon, CharObj* attactedChar );
 
 	//SC_GAME_YOU_ATTACKED
-	BOOL SendGameYouAttact( int weapon, int damage, CharObj* attactedChar );
+	BOOL SendGameYouAttack( int weapon, CharObj* attactedChar );
 
 	//SC_GAME_TRY_ATTACK
 	BOOL SendGameTryAttact( SPacket& packet );
@@ -160,14 +149,11 @@ public:
 	//SC_GAME_CHAR_DIE /SC_GAME_YOU_DIE
 	BOOL SendGameDie( int weapon, CharObj* dieChar );
 
-	//SC_GAME_SYNC
-	//BOOL SendGameSync();
-
 	//SC_GAME_CHANGE_STATE
-	//BOOL SendGameChangeState();
+	BOOL SendGameChangeState( int state );
 
-	//SC_GAME_ROTATION
-	//BOOL SendGameRotation();
+	//SC_GAME_CHAR_REVIVAL
+	BOOL SendGameCharRevival( int pointIndex );
 
 	//SC_GAME_CHATTING
 	BOOL SendGameChatting( TCHAR* chatting, int size );

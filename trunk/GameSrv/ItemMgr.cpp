@@ -1,4 +1,5 @@
 #include "ItemMgr.h"
+#include "SSynchronize.h"
 
 #include "SLogger.h"
 
@@ -15,19 +16,18 @@ ItemObj::~ItemObj()
 
 void ItemObj::Init( int index )
 {
-	GameObj::Init();
-
 	m_vecIndex = index;
-	m_itemType = -1;
+
+	Init();
 }
 
 void ItemObj::Init()
 {
-	GameObj::Init();
+	m_iId = 0;
+	m_Position.Clear();
 
 	m_itemType = -1;
 }
-
 
 //==============================================================
 
@@ -57,6 +57,8 @@ void ItemMgr::Init()
 
 void ItemMgr::Release()
 {
+	SSynchronize sync( this );
+
 	if( m_vecItem.empty() )
 		return;
 
@@ -69,6 +71,8 @@ void ItemMgr::Release()
 
 ItemObj* ItemMgr::GetItemSpace()
 {
+	SSynchronize sync( this );
+
 	int index = m_IndexQ.GetIndex();
 	if( index < 0 )
 		return NULL;
@@ -78,6 +82,8 @@ ItemObj* ItemMgr::GetItemSpace()
 
 void ItemMgr::ReturnSpace( ItemObj* item )
 {
+	SSynchronize sync( this );
+
 	int index = item->GetVecIndex();
 	item->Init();
 
@@ -86,6 +92,8 @@ void ItemMgr::ReturnSpace( ItemObj* item )
 
 ItemObj* ItemMgr::FindItem( int index )
 {
+	SSynchronize sync( this );
+
 	//0보다 작고 초대값보다 크거나 같으면 index에러
 	if( index < 0 || index >= Item_Space )
 	{

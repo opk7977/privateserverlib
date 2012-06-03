@@ -34,7 +34,7 @@ public:
 };
 
 template <typename T>
-SList<T>::SList()
+SList<T>::SList() : m_itemCount(0)
 {
 }
 

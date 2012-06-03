@@ -1,7 +1,6 @@
 #pragma once
 
 #include "SIndexQueue.h"
-#include "GameObj.h"
 
 enum SRV_ITEM_TYPE
 {
@@ -10,10 +9,12 @@ enum SRV_ITEM_TYPE
 
 const int Item_Space = 50;
 
-
-class ItemObj : public GameObj
+class ItemObj
 {
 private:
+	int			m_iId;
+	POINT3		m_Position;
+
 	//item Á¾·ù
 	int			m_itemType;
 
@@ -27,6 +28,16 @@ public:
 	void Init();
 	void Init( int index );
 
+	void SetIndexId( int session ) { m_iId = session; }
+	int GetIndexId() { return m_iId; }
+
+	void SetPosition( float x, float y, float z ) { m_Position.SetElement( x, y, z ); }
+	void SetPosition( POINT3 pos ) { m_Position = pos; }
+	POINT3 GetPosition() const { return m_Position; }
+	float GetPosX() { return m_Position.m_X; }
+	float GetPosY() { return m_Position.m_Y; }
+	float GetPosZ() { return m_Position.m_Z; }
+
 	inline void SetItemType( int type ) { m_itemType = type; }
 	inline int GetItemType() { return m_itemType; }
 
@@ -34,7 +45,9 @@ public:
 
 };
 
-class ItemMgr : public SSingleton <ItemMgr>
+//==============================================================
+
+class ItemMgr : public SSingleton <ItemMgr>, public SServerObj
 {
 private:
 	friend class SSingleton<ItemMgr>;

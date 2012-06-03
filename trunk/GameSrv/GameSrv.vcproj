@@ -292,14 +292,6 @@
 		<Filter
 			Name="Object"
 			>
-			<File
-				RelativePath=".\GameObj.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GameObj.h"
-				>
-			</File>
 			<Filter
 				Name="Character"
 				>

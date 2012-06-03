@@ -25,6 +25,7 @@ void Room::Init()
 	SSynchronize Sync( this );
 
 	m_listPlayer.Clear();
+	m_playerCount = 0;
 
 	_tcsncpy_s( m_tstrRoomTitle, 50, _T("Empty Room"), 10 );
 	m_stageMap = 0;
@@ -91,6 +92,9 @@ void Room::SetReady()
 	SSynchronize Sync( this );
 
 	m_roomState = ROOM_STATE_READY;
+
+	//우선 설정을 하는게 아니니까 넘어가는 인원을 받아 둔다
+	m_playerCount = m_listPlayer.GetItemCount();
 }
 
 BOOL Room::CanInsert()
@@ -211,6 +215,22 @@ BOOL Room::DelPlayerInRoom( int sessionId )
 	return DelPlayerInRoom( tmpChar );
 }
 
+BOOL Room::DelPlayerInRoomAtPlaying( int team )
+{
+	SSynchronize sync( this );
+
+	//팀 인원을 빼준다
+	if( team == 0 )
+		--m_AttectTeam;
+	else
+		--m_DefenceTeam;
+
+	if( --m_playerCount <= 0 )
+		return FALSE;
+
+	return TRUE;
+}
+
 void Room::ChangReadyCount( BOOL isReady )
 {
 	SSynchronize Sync( this );
@@ -292,7 +312,10 @@ void Room::PackageRoomInfo( SPacket &packet )
 
 	packet << m_roomNum;
 	//packet << m_nowPleyrCount;
-	packet << m_listPlayer.GetItemCount();
+	if( m_roomState == ROOM_STATE_NORMAL )
+		packet << m_listPlayer.GetItemCount();
+	else
+		packet << m_playerCount;
 	int size = _tcslen( m_tstrRoomTitle ) * sizeof( TCHAR );
 	packet << size;
 	packet.PutData( m_tstrRoomTitle, size );

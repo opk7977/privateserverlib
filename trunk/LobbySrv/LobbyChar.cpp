@@ -5,6 +5,7 @@
 #include "DataLeader.h"
 
 LobbyChar::LobbyChar(void)
+: m_myRoom(NULL)
 {
 }
 
@@ -22,16 +23,27 @@ LobbySession* LobbyChar::GetSession() const
 	return m_session;
 }
 
+void LobbyChar::SetRoom( Room* room )
+{
+	m_myRoom = room;
+}
+
+Room* LobbyChar::GetRoom() const
+{
+	return m_myRoom;
+}
+
 void LobbyChar::Init()
 {
 	SSynchronize Sync( this );
 
-	m_session = NULL;
-	m_isPlay = FALSE;
-	m_sessionId = 0;
+	m_session	= NULL;
+	m_myRoom	= NULL;
+	m_isPlay	= FALSE;
+	m_sessionId	= 0;
 	ZeroMemory( m_tstrId, 30 );
-	m_myTeam = -1;
-	m_ready = FALSE;
+	m_myTeam	= -1;
+	m_ready		= FALSE;
 }
 
 void LobbyChar::Init( int i )
@@ -93,7 +105,8 @@ BOOL LobbyChar::GetReady() const
 
 void Room::SetNormal()
 {
-	m_roomState = ROOM_STATE_NORMAL;
+	m_roomState		= ROOM_STATE_NORMAL;
+	m_playerCount	= 0;
 }
 
 void LobbyChar::PackageMyInfo( SPacket& packet )
@@ -115,10 +128,10 @@ void LobbyChar::PackageMyInfoForLobby( SPacket& packet )
 	packet << size;
 	packet.PutData( m_tstrId, size );
 	//자신이 속해 있는 방
-	if( m_session->GetMyRoom() == NULL )
+	if( m_myRoom == NULL )
 		packet << 0;
 	else
-		packet << m_session->GetMyRoom()->GetRoomNum();
+		packet << m_myRoom->GetRoomNum();
 	packet << m_isPlay;
 }
 

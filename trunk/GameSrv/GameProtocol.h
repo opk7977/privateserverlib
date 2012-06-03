@@ -80,6 +80,7 @@ enum SERVER_TO_SERVER
 	// 게임서버에서 접속을 끊어버린 player에 대한 처리
 	// int			-		roomNum
 	// int			-		SessionId
+	// int			-		Team정보
 	GL_PLAYER_DISCONNECT,
 };
 
@@ -107,7 +108,6 @@ enum GAME_SERVER
 	// int			-		playerCount
 	//--------------------------------------
 	// int			-		sessionID
-	// int			-		startPoint
 	// int			-		ip주소 size
 	// char			-		ip
 	// int			-		port
@@ -123,29 +123,6 @@ enum GAME_SERVER
 	// 게임에 모든 player가 접속했으므로 게임을 시작하라는 명령
 	// 데이터 없음
 	SC_GAME_START_GAME,
-
-// 	// client -> server
-// 	// 캐릭터의 상태가 변함( 이동시작/멈춤 등 )
-// 	// int			-		charState
-// 	// float		-		posX
-// 	// float		-		posY
-// 	// float		-		posZ
-// 	// float		-		DirX
-// 	// float		-		DirZ
-// 	// int			-		DirInt
-// 	CS_GAME_MOVE_CHAR,
-// 
-// 	// server -> client
-// 	// 캐릭터의 상태가 변함( 이동시작/멈춤 등 )
-// 	// int			-		sessionID
-// 	// int			-		charState
-// 	// float		-		posX
-// 	// float		-		posY
-// 	// float		-		posZ
-// 	// float		-		DirX
-// 	// float		-		DirZ
-// 	// int			-		DirInt
-// 	SC_GAME_MOVE_CHAR,
 
 	// client -> server
 	// 캐릭터의 공격
@@ -165,7 +142,7 @@ enum GAME_SERVER
 	// 공격당한 캐릭터에게 너 맞았다고 알려줌
 	// int			-		공격자SessionID
 	// int			-		무기종류
-	// int			-		감소 에너지
+	// int			-		남은 에너지
 	SC_GAME_YOU_ATTACKED,
 
 	// client -> server 
@@ -203,52 +180,27 @@ enum GAME_SERVER
 	// int			-		무기종류
 	SC_GAME_YOU_DIE,
 
-// 	// client -> server
-// 	// 위치 및 상태 동기화를 위한 패킷
-// 	// float		-		posX
-// 	// float		-		posY
-// 	// float		-		posZ
-// 	// float		-		DirX
-// 	// float		-		DirY
-// 	// float		-		DirZ
-// 	CS_GAME_SYNC,
-// 
-// 	// server -> client
-// 	// 위치 및 상태 동기화를 위한 패킷
-// 	// int			-		SessionID
-// 	// float		-		posX
-// 	// float		-		posY
-// 	// float		-		posZ
-// 	// float		-		DirX
-// 	// float		-		DirY
-// 	// float		-		DirZ
-// 	SC_GAME_SYNC,
+	// client -> server
+	// 캐릭터 상태가 변함
+	// int			-		dirInt
+	CS_GAME_CHANGE_STATE,
 
-// 	// client -> server
-// 	// 캐릭터 상태가 변함
-// 	// int			-		dirInt
-// 	CS_GAME_CHANGE_STATE,
-// 
-// 	// server -> client
-// 	// 캐릭터가 전환된 상태를 모두에게 알린다.
-// 	// int			-		sessionId
-// 	// int			-		dirInt
-// 	SC_GAME_CHANGE_STATE,
-// 
-// 	// client -> server
-// 	// 캐릭터 회전
-// 	// float		-		dirX
-// 	// float		-		dirY
-// 	// float		-		dirZ
-// 	CS_GAME_ROTATION,
-// 
-// 	// server -> client
-// 	// 캐릭터 회전을 모두에게 알린다
-// 	// int			-		sessionId
-// 	// float		-		dirX
-// 	// float		-		dirY
-// 	// float		-		dirZ
-// 	SC_GAME_ROTATION,
+	// server -> client
+	// 캐릭터가 전환된 상태를 모두에게 알린다.
+	// int			-		sessionId
+	// int			-		dirInt
+	SC_GAME_CHANGE_STATE,
+
+	// client -> server
+	// 부활할 수 있는 시간이 되어 부활을 요청한다
+	// int			-		부활 위치 index
+	CS_GAME_ASK_REVIVAL,
+
+	// server -> client
+	// 캐릭터가 부활한다는 명령
+	// int			-		SessionID
+	// int			-		부활 위치 index
+	SC_GAME_CHAR_REVIVAL,
 
 	// client -> server
 	// int			-		stringSize
@@ -291,11 +243,19 @@ enum GAME_SERVER
 	SC_GAME_TIME_COUNTDOWN,
 
 	// server -> client
+	// 타임 아웃!/ 현재게임의 종료
+	// 데이터 없음
+	SC_TIME_OUT,
+
+	// server -> client
 	// 게임 종료
 	// int			-		종료의 종류( 팀 승리/ 타임오버 )
 	// int			-		승리 팀
-	// int			-		공격팀 Kill수( 수비팀 Death수 )
-	// int			-		수비팀 Kill수( 공격팀 Death수 )
+	// int			-		공격팀 총Kill수( 수비팀 Death수 )
+	// int			-		수비팀 총Kill수( 공격팀 Death수 )
+	// int			-		공격팀 win 수
+	// int			-		수비팀 win 수
+	// int			-		게임 비긴 수
 	SC_GAME_END,
 
 	// client -> server

@@ -49,7 +49,7 @@ BOOL GameSrvMain::Init()
 // 	tmpGame->StartGame( 8 );
 // 	//첫번째 캐릭터 수동 입력/////////////////////////////////////////////////
 // 	CharObj* tmpChar = GetCharMgr.GetCharSpace();
-// 	tmpChar->SetIndexId( 1 );
+// 	tmpChar->SetSessionID( 1 );
 // 	tmpChar->SetID( _T("admin") );
 // 	tmpChar->SetTeam( SRV_CHAR_TEAM_ATT );
 // 	tmpChar->SetState( SRV_CHAR_STATE_STAND );
@@ -58,7 +58,7 @@ BOOL GameSrvMain::Init()
 // 	tmpChar->SetDirInt( 0 );
 // 	//두번째 캐릭터 수동 입력/////////////////////////////////////////////////
 // 	tmpChar = GetCharMgr.GetCharSpace();
-// 	tmpChar->SetIndexId( 2 );
+// 	tmpChar->SetSessionID( 2 );
 // 	tmpChar->SetID( _T("seg") );
 // 	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
 // 	tmpChar->SetState( SRV_CHAR_STATE_STAND );
@@ -67,7 +67,7 @@ BOOL GameSrvMain::Init()
 // 	tmpChar->SetDirInt( 0 );
 // 	//세번째 캐릭터 수동 입력/////////////////////////////////////////////////
 // 	tmpChar = GetCharMgr.GetCharSpace();
-// 	tmpChar->SetIndexId( 3 );
+// 	tmpChar->SetSessionID( 3 );
 // 	tmpChar->SetID( _T("areah") );
 // 	tmpChar->SetTeam( SRV_CHAR_TEAM_ATT );
 // 	tmpChar->SetState( SRV_CHAR_STATE_STAND );
@@ -76,7 +76,7 @@ BOOL GameSrvMain::Init()
 // 	tmpChar->SetDirInt( 0 );
 // 	//네번째 캐릭터 수동 입력/////////////////////////////////////////////////
 // 	tmpChar = GetCharMgr.GetCharSpace();
-// 	tmpChar->SetIndexId( 4 );
+// 	tmpChar->SetSessionID( 4 );
 // 	tmpChar->SetID( _T("aaa") );
 // 	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
 // 	tmpChar->SetState( SRV_CHAR_STATE_STAND );
@@ -85,7 +85,7 @@ BOOL GameSrvMain::Init()
 // 	tmpChar->SetDirInt( 0 );
 // 	//다섯번째 캐릭터 수동 입력///////////////////////////////////////////////
 // 	tmpChar = GetCharMgr.GetCharSpace();
-// 	tmpChar->SetIndexId( 5 );
+// 	tmpChar->SetSessionID( 5 );
 // 	tmpChar->SetID( _T("zzz") );
 // 	tmpChar->SetTeam( SRV_CHAR_TEAM_ATT );
 // 	tmpChar->SetState( SRV_CHAR_STATE_STAND );
@@ -94,7 +94,7 @@ BOOL GameSrvMain::Init()
 // 	tmpChar->SetDirInt( 0 );
 // 	//여섯번째 캐릭터 수동 입력///////////////////////////////////////////////
 // 	tmpChar = GetCharMgr.GetCharSpace();
-// 	tmpChar->SetIndexId( 6 );
+// 	tmpChar->SetSessionID( 6 );
 // 	tmpChar->SetID( _T("qqq") );
 // 	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
 // 	tmpChar->SetState( SRV_CHAR_STATE_STAND );
@@ -103,7 +103,7 @@ BOOL GameSrvMain::Init()
 // 	tmpChar->SetDirInt( 0 );
 // 	//일곱번째 캐릭터 수동 입력///////////////////////////////////////////////
 // 	tmpChar = GetCharMgr.GetCharSpace();
-// 	tmpChar->SetIndexId( 7 );
+// 	tmpChar->SetSessionID( 7 );
 // 	tmpChar->SetID( _T("asdf") );
 // 	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
 // 	tmpChar->SetState( SRV_CHAR_STATE_STAND );
@@ -112,7 +112,7 @@ BOOL GameSrvMain::Init()
 // 	tmpChar->SetDirInt( 0 );
 // 	//일곱번째 캐릭터 수동 입력///////////////////////////////////////////////
 // 	tmpChar = GetCharMgr.GetCharSpace();
-// 	tmpChar->SetIndexId( 8 );
+// 	tmpChar->SetSessionID( 8 );
 // 	tmpChar->SetID( _T("www") );
 // 	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
 // 	tmpChar->SetState( SRV_CHAR_STATE_STAND );
@@ -121,7 +121,7 @@ BOOL GameSrvMain::Init()
 // 	tmpChar->SetDirInt( 0 );
 // 	//일곱번째 캐릭터 수동 입력///////////////////////////////////////////////
 // 	tmpChar = GetCharMgr.GetCharSpace();
-// 	tmpChar->SetIndexId( 9 );
+// 	tmpChar->SetSessionID( 9 );
 // 	tmpChar->SetID( _T("ddd") );
 // 	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
 // 	tmpChar->SetState( SRV_CHAR_STATE_STAND );
@@ -130,7 +130,7 @@ BOOL GameSrvMain::Init()
 // 	tmpChar->SetDirInt( 0 );
 // 	//일곱번째 캐릭터 수동 입력///////////////////////////////////////////////
 // 	tmpChar = GetCharMgr.GetCharSpace();
-// 	tmpChar->SetIndexId( 10 );
+// 	tmpChar->SetSessionID( 10 );
 // 	tmpChar->SetID( _T("ccc") );
 // 	tmpChar->SetTeam( SRV_CHAR_TEAM_DEF );
 // 	tmpChar->SetState( SRV_CHAR_STATE_STAND );

@@ -67,4 +67,25 @@ typedef struct CUSTOMOVERLAPPED : OVERLAPPED
 	}
 }CUSTOMOVERLAPPED;
 
+struct POINT3
+{
+	float m_X, m_Y, m_Z;
+
+	POINT3() {}
+	POINT3( float x, float y, float z ) : m_X(x), m_Y(y), m_Z(z) {}
+	~POINT3() {}
+
+	void Clear()
+	{
+		m_X = m_Y = m_Z = 0.f;
+	}
+
+	void SetElement( float x, float y, float z )
+	{
+		m_X = x;
+		m_Y = y;
+		m_Z = z;
+	}
+};
+
 #endif

@@ -206,9 +206,10 @@ public:
 	BOOL SendTargetChatToTarget( int target, TCHAR* chat );
 	BOOL SendTargetChatToMe( int target, TCHAR* chat );
 
+	//시작 버튼에 관련된 함수를 호출하는 함수
+	BOOL SendStartBtnForVisible( int oldReadyCount );
 	//SC_ROOM_START_VISIBLE
 	BOOL SendRoomStartVisible();
-
 	//SC_ROOM_START_INVISIBLE
 	BOOL SendRoomStartInvisible();
 
@@ -226,7 +227,5 @@ public:
 
 	//SC_LOBBY_PLAYER_DISCONNECT
 	BOOL SendPlayerDisconnect();
-	
-	//SC_ROOM_PLAYER_DISCONNECT
-	BOOL SendPlayerDisconnect( int roomNum, int sessionId );
+	BOOL SendPlayerDisconnect( int sessionId );
 };

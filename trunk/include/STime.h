@@ -2,11 +2,8 @@
 
 #include "SServerobj.h"
 
-class STime : public SSingleton <STime>, public SServerObj
+class STime : public SServerObj
 {
-private:
-	friend class SSingleton<STime>;
-
 private:
 	BOOL		m_bUseQPF;
 	float		m_fElapsedTime;
@@ -27,5 +24,4 @@ public:
 	void ProcessTime();
 };
 
-#define GetSTime STime::GetInstance()
 

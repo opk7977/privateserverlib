@@ -51,6 +51,7 @@ private:
 	//======================================
 	//방에 들어와있는 playerlist와 인원
 	SList<LobbyChar*>			m_listPlayer;
+	int							m_playerCount;
 
 	int							m_readyCount;			//준비상태의 캐릭터 수
 
@@ -140,6 +141,8 @@ public:
 	// return 값이 FALSE이면 방에 사람이 모두 나갔다는 뜻이다.
 	BOOL DelPlayerInRoom( LobbyChar* charspace );
 	BOOL DelPlayerInRoom( int sessionId );
+	//게임중인 방에서 사람이 나간경우는 인원수만 감소해 주면 된다.
+	BOOL DelPlayerInRoomAtPlaying( int team );
 
 	//매개변수는 증가해야 하는 상태값을 나타낸다
 	//ex) 누군가 ready상태가 되면 TRUE를 넘겨 ready값을 증가

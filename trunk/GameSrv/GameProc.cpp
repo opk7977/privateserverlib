@@ -4,6 +4,7 @@
 #include "DataLeader.h"
 
 #include "CharMgr.h"
+#include "ItemMgr.h"
 
 #include "SPacket.h"
 #include "SLogger.h"
@@ -19,15 +20,11 @@ GameProc::GameProc(void)
 	m_logger = &GetLogger;
 
 	m_timer.Init();
-
-/*	m_timer.Init();*/
-/*	Init();*/
 }
 
 GameProc::~GameProc(void)
 {
 	WaitForSingleObject( GetThreadHandle(), 1000 );
-	Release();
 }
 
 void GameProc::Init( int i )
@@ -44,26 +41,18 @@ void GameProc::Init()
 
 	//정보는 초기화
 	m_listPlayer.Clear();
-	m_playerCount	= 8;
-	m_AttKillCount	= 0;
-	m_DefKillCount	= 0;
-	//m_isAllReady	= FALSE;
-	m_readyCount	= 0;
-}
+	//ClearItem();
+	m_nowIsPlaying		= FALSE;
+	m_playerCount		= 8;
+	m_AttKillCount		= m_DefKillCount	= 0;
+	m_AttKillAllCount	= m_DefKillAllCount = 0;
+	m_AttWinCount		= m_DefWinCount		= 0;
+	m_nowPlayTimeCount	= 0;
+	m_TieCount			= 0;
+	m_readyCount		= 0;
 
-void GameProc::ResultGame()
-{
-// 	SSynchronize sync( this );
-// 
-// 	if( m_WinTeam )
-}
-
-void GameProc::Release()
-{
-	SSynchronize sync( this );
-
-	m_listPlayer.Clear();
-	m_listItem.Clear();
+	ResetEvent( m_hStartGame );
+	ResetEvent( m_hStartEvent );
 }
 
 BOOL GameProc::Run()
@@ -76,27 +65,36 @@ BOOL GameProc::Run()
 		ResetEvent( m_hStartGame );
 
 		//게임 시작 전에 모든 player가 접속하기를 기다린다.
-		PreStartGame();
+		//PreStartGame();
+		WaitForSingleObject( m_hStartEvent, INFINITE );
+		//======================================
+		// 게임 시작 packet을 보낸다.
+		//======================================
+		SendStartPacket();
+		//======================================
 
 		//게임 loop를 돈다
-// 		while(1)
-// 		{
-// 			if( !GameRun() )
-// 			{
-// 				//게임을 다시 시작해야 한다.
-// 			}
-// 			else
-// 			{
-// 				//게임 판수를 모두 맞침
-// 				//빠져 나간다.
-// 				break;
-// 			}
-//		}
 		//우선 1판 기준
-		GameRun();
-		
-		//게임 종료
-		//EndGame();
+		while( 1 )
+		{
+			//게임
+			GameRun();
+
+			//게임 종료
+			if( ResetGame() )
+			{
+				//아직 해야 하는 게임이 남았음
+				//약간의 시간을 두고 게임을 다시 시작합니다.
+				//게임 재시작 패킷을 보냄
+				continue;
+			}
+			else
+			{
+				//게임 완전히 종료
+				EndGame();
+				break;
+			}
+		}
 
 		//게임이 종료됨
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
@@ -106,12 +104,14 @@ BOOL GameProc::Run()
 	return TRUE;
 }
 
-BOOL GameProc::GameRun()
+void GameProc::GameRun()
 {
 	float frameTime = 0.f;
 
+	SPacket sendPacket;
+
 	//시간이 다 되기 전까지 loop
-	while( m_nowIsPlaying )
+	while( m_nowPlayTimeCount > 0 )
 	{
 		//======================================
 		// 시간 처리
@@ -125,25 +125,22 @@ BOOL GameProc::GameRun()
 			frameTime = 0.f;
 
 			//시간 줄이고
-			if( --m_nowPlayTimeCount <= 0 )
-				m_nowIsPlaying = FALSE;
+//			--m_nowPlayTimeCount;
+			if( --m_nowPlayTimeCount < 0 )
+				break;
+
+			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("보낸 시간: %d\n"), m_nowPlayTimeCount );
 
 			//시간 패킷 보내기
-			SPacket sendPacket( SC_GAME_TIME_COUNTDOWN );
+			sendPacket.PacketClear();
+			sendPacket.SetID( SC_GAME_TIME_COUNTDOWN );
 			sendPacket << m_nowPlayTimeCount;
 			SendAllPlayerInGame( sendPacket );
 		}
-		//======================================
-
-		//
-		//
-		//
 	}
 
 	//게임 셋팅을 바꿔 준다...새로이..여기서 해주는게 맞겠지?....
 	//게임 판수에 따라 판수를 다 하지 않았으면 FALSE를 return 해준다.
-
-	return TRUE;
 }
 
 void GameProc::AddReadyCount()
@@ -156,65 +153,89 @@ void GameProc::AddReadyCount()
 BOOL GameProc::StartGame()
 {
 	//게임 시간을 셋팅
- 	m_nowPlayTimeCount = m_playTime;
- 	m_nowIsPlaying = TRUE;
+ 	m_nowPlayTimeCount	= m_playTime;
+ 	m_nowIsPlaying		= TRUE;
 
 	SetEvent( m_hStartGame );
 
 	return TRUE;
 }
 
-BOOL GameProc::PreStartGame()
+// BOOL GameProc::PreStartGame()
+// {
+// 	//모든 player가 준비완료가 되기를 기다려야 한다
+// 	//while( m_playerCount != m_listPlayer.GetItemCount() )
+// 	WaitForSingleObject( m_hStartEvent, INFINITE );
+// 
+// 	//게임 시작 packet을 보낸다.
+// 	SPacket sendPacket;
+// 	sendPacket.SetID( SC_GAME_START_GAME );
+// 
+// 	SendAllPlayerInGame( sendPacket );
+// 
+// 	return TRUE;
+// }
+
+BOOL GameProc::ResetGame()
 {
-// 	float basictime = 0.1f;
-// 	float timeCount = 0.f;
-	//우선 막고
-	ResetEvent( m_hStartEvent );
-
-	//모든 player가 준비완료가 되기를 기다려야 한다
-	//while( m_playerCount != m_listPlayer.GetItemCount() )
-	WaitForSingleObject( m_hStartEvent, INFINITE );
-//	{
-// 		m_timer.ProcessTime();
-// 
-// 		timeCount += m_timer.GetElapsedTime();
-// 
-// 		if( timeCount >= basictime )
-// 		{
-// 			timeCount = 0;
-// 
-// 			SPacket sendPacket;
-// 			sendPacket.SetID( SC_GAME_SYNC );
-// 
-// 			PackageAllPlayerInGame( sendPacket );
-// 			SendAllPlayerInGame( sendPacket );
-// 		}
-//	}
-
-	//게임 시작 packet을 보낸다.
-	SPacket sendPacket;
-	sendPacket.SetID( SC_GAME_START_GAME );
-
+	//======================================
+	// 게임 타임아웃 packet을 보낸다.
+	//======================================
+	SPacket sendPacket( SC_TIME_OUT );
 	SendAllPlayerInGame( sendPacket );
+	//======================================
+
+	if( m_AttKillCount > m_DefKillCount )
+		++m_AttWinCount;		//어택팀이 이김
+	else if( m_AttKillCount < m_DefKillCount )
+		++m_DefKillCount;		//디펜스팀이 이김
+	else
+		++m_TieCount;			//비김
+
+	//총 수에 넣어 준다
+	m_AttKillAllCount	+= m_AttKillCount;
+	m_DefKillAllCount	+= m_DefKillCount;
+
+	//초기화
+	m_AttKillCount		= m_DefKillCount = 0;
+	m_nowPlayTimeCount	= m_playTime;
+	ClearItem();
+	//////////////////////////////////////////////////////////////////////////
+	//게임내에서 사용된 item도 초기화 해 줘야 함
+	//////////////////////////////////////////////////////////////////////////
+
+	//게임을 모두 끝냈으면 FALSE를 return하여 게임을 종료 할 수 있게 한다.
+	if( --m_playCount <= 0 )
+		return FALSE;
 
 	return TRUE;
 }
 
 void GameProc::EndGame()
 {
-	SSynchronize sync( this );
+	//======================================
+	// 게임 종료 packet을 보낸다.
+	//======================================
+	int result;
+	if( m_AttWinCount > m_DefWinCount )
+		result = 0;		//red팀 승리
+	else if( m_AttWinCount < m_DefWinCount )
+		result = 1;		//blue팀 승리
+	else
+		result = -1;	//무승부
 
-	//다시 실행되지 못하게 이벤트 막고
-	ResetEvent( m_hStartGame );
-	//while문 빠져 나오게 게임flag풀고
-	m_nowIsPlaying = FALSE;
+	SPacket sendPacket( SC_GAME_END );
+	sendPacket << 0;				//타임 아웃
+	sendPacket << result;
+	sendPacket << m_AttKillAllCount;
+	sendPacket << m_DefKillAllCount;
+	sendPacket << m_AttWinCount;
+	sendPacket << m_DefWinCount;
+	sendPacket << m_TieCount;
+	SendAllPlayerInGame( sendPacket );
+	//======================================
 
-	Init();
-}
-
-void GameProc::EndLogic()
-{
-
+	//게임을 종료 하기 위해 약간의 시간을 두고 캐릭터들에게 로비로 돌아가라는 신호를 보낸다.
 }
 
 void GameProc::AddKillCount( BOOL deathTeam )
@@ -256,6 +277,20 @@ BOOL GameProc::DelPlayer( GameSession* player )
 		return FALSE;
 
 	return TRUE;
+}
+
+void GameProc::ClearItem()
+{
+	if( m_listItem.IsEmpty() )
+		return;
+
+	std::list<ItemObj*>::iterator iter = m_listItem.GetHeader();
+	for( ; !m_listItem.IsEnd( iter ); ++iter )
+	{
+		GetItemMgr.ReturnSpace( (*iter) );
+	}
+
+	m_listItem.Clear();
 }
 
 CharObj* GameProc::FindChar( int sessionID )
@@ -301,11 +336,12 @@ void GameProc::PackageAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL
 	SSynchronize Sync( this );
 
 	//우선 사람 수를 넣고
-	int count = m_listPlayer.GetItemCount();;
-	if( me == NULL )
-		packet << count;
-	else
-		packet << count-1;
+// 	int count = m_listPlayer.GetItemCount();
+// 
+// 	if( me == NULL )
+// 		packet << count;
+// 	else
+// 		packet << count-1;
 
 	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
 
@@ -314,6 +350,6 @@ void GameProc::PackageAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL
 		if( (*iter) == me )
 			continue;
 
-		(*iter)->GetMyInfo()->PackageMyInfo( packet );
+		(*iter)->PackageMyNetInfo( packet );
 	}
 }
