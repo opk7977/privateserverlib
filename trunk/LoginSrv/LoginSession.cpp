@@ -30,6 +30,8 @@ LoginSession::~LoginSession(void)
 
 void LoginSession::OnCreate()
 {
+	SSynchronize Sync( this );
+
 	SSession::OnCreate();
 
 	//로그서버로 전송
@@ -41,6 +43,8 @@ void LoginSession::OnCreate()
 
 void LoginSession::OnDestroy()
 {
+	SSynchronize Sync( this );
+
 	//그냥 지워 주면 됨
 	SSession::OnDestroy();
 }

@@ -125,7 +125,7 @@ void GameProc::GameRun()
 	//시간이 다 되기 전까지 loop
 	while( m_nowPlayTimeCount > 0 )
 	{
-		Sleep(0);
+		//Sleep(0);
 		//======================================
 		// 시간 처리
 		//======================================
@@ -174,6 +174,9 @@ void GameProc::GameRun()
 void GameProc::AddReadyCount()
 {
 	//준비완료 인원이 게임 실행 인원과 같아 지면 게임을 시작할 수 있다.
+
+	SSynchronize sync( this );
+
 	if( ++m_readyCount == m_playerCount )
 		SetEvent( m_hStartEvent );
 }

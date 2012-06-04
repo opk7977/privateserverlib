@@ -108,7 +108,7 @@ void GameSession::OnDestroy()
 
 void GameSession::PackageMyNetInfo( SPacket& packet )
 {
-	SSynchronize sync( this );
+	//SSynchronize sync( this );
 
 	packet << m_myCharInfo->GetSessionID();
 
@@ -120,6 +120,8 @@ void GameSession::PackageMyNetInfo( SPacket& packet )
 
 void GameSession::PacketParsing( SPacket& packet )
 {
+	SSynchronize Sync( this );
+
 	switch( packet.GetID() )
 	{
 	case SC_LOBBY_CONNECT_OK:
@@ -191,7 +193,7 @@ void GameSession::RecvLobbyConnectOK()
 
 void GameSession::RecvLobbyStartGame( SPacket &packet )
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	int roomNum, mapNum, gameMode, playTime, playCount, count;
 
@@ -209,63 +211,69 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 
 	//우선 방 번호에 해당하는 게임을 연다
 	GameProc* tmpGame = m_gameMgr->FindGame( roomNum );
+
 	if( tmpGame == NULL )
 	{
 		//게임proc을 열수 없거나 실패했다는 패킷을 보낸다
 		SendStartFaild( roomNum );
 		return;
 	}
-	if( tmpGame->NowIsPlay() )
+
 	{
-		//이미 게임이 진행 중이면 실패했다는 패킷을 보낸다.
-		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-							_T("GameSession::RecvLobbyStartGame()\n%d번 방이 이미 게임 중입니다.\n\n") 
-							, roomNum );
-
-		SendStartFaild( roomNum );
-		return;
-	}
-
-	//방을 얻어 왔고 게임이 시작중이 아니라면 게임을 열고 캐릭터를 저장해 준다
-
-	int sessionId, size, team;
-	TCHAR stringID[30];
-	//인원수에 맞게 캐릭터를 생성해 준다
-	for( int i=0; i<count; ++i )
-	{
-		ZeroMemory( stringID, 30 );
-		packet >> sessionId;
-		packet >> size;
-		packet.GetData( stringID, size );
-		packet >> team;
-
-		//캐릭터 생성
-		CharObj* tmpChar = m_charMgr->GetCharSpace();
-		if( tmpChar == NULL )
+		SSynchronize sync( tmpGame );
+		
+		if( tmpGame->NowIsPlay() )
 		{
+			//이미 게임이 진행 중이면 실패했다는 패킷을 보낸다.
 			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-							_T("GameSession::RecvLobbyStartGame()\n캐릭터 공간이 없습니다.\n\n") );
+								_T("GameSession::RecvLobbyStartGame()\n%d번 방이 이미 게임 중입니다.\n\n") 
+								, roomNum );
+
 			SendStartFaild( roomNum );
 			return;
 		}
-		tmpChar->Init();
-		tmpChar->SetSessionID( sessionId );
-		tmpChar->SetID( stringID );
-		tmpChar->SetTeam( team );
+
+		//방을 얻어 왔고 게임이 시작중이 아니라면 게임을 열고 캐릭터를 저장해 준다
+
+		int sessionId, size, team;
+		TCHAR stringID[30];
+		//인원수에 맞게 캐릭터를 생성해 준다
+		for( int i=0; i<count; ++i )
+		{
+			ZeroMemory( stringID, 30 );
+			packet >> sessionId;
+			packet >> size;
+			packet.GetData( stringID, size );
+			packet >> team;
+
+			//캐릭터 생성
+			CharObj* tmpChar = m_charMgr->GetCharSpace();
+			if( tmpChar == NULL )
+			{
+				m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+								_T("GameSession::RecvLobbyStartGame()\n캐릭터 공간이 없습니다.\n\n") );
+				SendStartFaild( roomNum );
+				return;
+			}
+			tmpChar->Init();
+			tmpChar->SetSessionID( sessionId );
+			tmpChar->SetID( stringID );
+			tmpChar->SetTeam( team );
+		}
+
+		//======================================
+		// 게임 proc을 열기 위해 준비
+		//======================================
+		//게임의 정보를 셋팅해 준다.
+		tmpGame->SetGameStage( mapNum );
+		tmpGame->SetPlayerCount( count );
+		tmpGame->SetGameMode( gameMode );
+		tmpGame->SetGamePlayTime( playTime );
+		tmpGame->SetGamePlayCount( playCount );
+
+		//게임 proc을 활성화 한다
+		tmpGame->StartGame();
 	}
-
-	//======================================
-	// 게임 proc을 열기 위해 준비
-	//======================================
-	//게임의 정보를 셋팅해 준다.
-	tmpGame->SetGameStage( mapNum );
-	tmpGame->SetPlayerCount( count );
-	tmpGame->SetGameMode( gameMode );
-	tmpGame->SetGamePlayTime( playTime );
-	tmpGame->SetGamePlayCount( playCount );
-
-	//게임 proc을 활성화 한다
-	tmpGame->StartGame();
 
 	//게임을 시작해도 된다는 패킷을 Lobby로 보낸다
 	SendStartOK( roomNum );
@@ -276,25 +284,25 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 //--------------------------------------
 void GameSession::RecvInGame( SPacket &packet )
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	int sessionId, roomNum;
 
 	packet >> sessionId;
 	packet >> roomNum;
 
-	if( roomNum == 0 )
-	{
-		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-						_T("GameSession::RecvInGame()\n%d번 캐릭터 임시 캐릭터 공간을 만듭니다.\n\n") 
-						, sessionId );
-
-		//임시 캐릭터 공간을 만든다
-		CharObj* tmpChar = m_charMgr->GetCharSpace();
-		tmpChar->SetSessionID( sessionId );
-		tmpChar->SetID( _T("Unknown") );
-		tmpChar->SetTeam( (int)(sessionId % 2) );
-	}
+// 	if( roomNum == 0 )
+// 	{
+// 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+// 						_T("GameSession::RecvInGame()\n%d번 캐릭터 임시 캐릭터 공간을 만듭니다.\n\n") 
+// 						, sessionId );
+// 
+// 		//임시 캐릭터 공간을 만든다
+// 		CharObj* tmpChar = m_charMgr->GetCharSpace();
+// 		tmpChar->SetSessionID( sessionId );
+// 		tmpChar->SetID( _T("Unknown") );
+// 		tmpChar->SetTeam( (int)(sessionId % 2) );
+// 	}
 
 	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 					_T("GameSession::RecvInGame()\n%d번 캐릭터가 %d번게임으로 입장합니다.\n\n") 
@@ -330,7 +338,7 @@ void GameSession::RecvInGame( SPacket &packet )
 
 void GameSession::RecvGameReadyOK()
 {
-	SSynchronize sync( this );
+	//SSynchronize sync( this );
 
 	if( m_myGameProc == NULL )
 	{
@@ -344,7 +352,7 @@ void GameSession::RecvGameReadyOK()
 
 void GameSession::RecvGameAttack( SPacket &packet )
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	if( m_myCharInfo == NULL )
 	{
@@ -465,7 +473,7 @@ void GameSession::RecvGameJustShoot()
 
 void GameSession::RecvGameChangeState( SPacket &packet )
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	int state;
 	packet >> state;
@@ -483,7 +491,7 @@ void GameSession::RecvGameChangeState( SPacket &packet )
 
 void GameSession::RecvGameAskRevival( SPacket &packet )
 {
-	SSynchronize sync( this );
+	//SSynchronize sync( this );
 
 	//우선 애를 부활시켜 준다.
 	if( m_myCharInfo == NULL )
@@ -505,7 +513,7 @@ void GameSession::RecvGameAskRevival( SPacket &packet )
 
 void GameSession::RecvGameChatting( SPacket &packet )
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	int size;
 	TCHAR tmpChatting[256] = {0,};
