@@ -49,6 +49,8 @@ void LoginSession::OnDestroy()
 
 void LoginSession::PacketParsing( SPacket& packet )
 {
+	SSynchronize Sync( this );
+
 	switch( packet.GetID() )
 	{
 	//======================================> LogServer
@@ -78,7 +80,7 @@ void LoginSession::PacketParsing( SPacket& packet )
 
 void LoginSession::RecvLogSrvConnectOK()
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	//log서버 셋팅해 주자
 	m_logSrv->SetSession( this );
@@ -90,7 +92,7 @@ void LoginSession::RecvLogSrvConnectOK()
 void LoginSession::RecvLogSrvShotdown()
 {
 	//로그서버 셋팅을 풀어 주자
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	//log서버 셋팅해 주자
 	m_logSrv->DisConnect();
@@ -110,7 +112,7 @@ void LoginSession::RecvCheckId( SPacket& packet )
 	TCHAR tstrID[64] = {0,};
 	int idSize;
 
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	//--------------------------------------
 	// 데이터 추출
@@ -136,7 +138,7 @@ void LoginSession::RecvCreateAccount( SPacket& packet )
 	TCHAR tstrMAIL[128] = {0,};
 	int tstrSize;
 
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	//--------------------------------------
 	// 데이터 추출
@@ -169,7 +171,7 @@ void LoginSession::RecvTryLogin( SPacket& packet )
 	TCHAR tstrPW[64];
 	int tstrSize;
 
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	//--------------------------------------
 	// 데이터 추출

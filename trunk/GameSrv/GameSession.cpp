@@ -374,6 +374,10 @@ void GameSession::RecvGameAttack( SPacket &packet )
 	packet >> attectedSessionID;
 	packet >> damage;
 
+	//데미지가 100이면 해드샷으로 넣어 준다.
+	if( damage >= 100 )
+		isHead = TRUE;
+
 	packet >> posX >> posY >> posZ;
 	packet >> normalX >> normalY >> normalZ;
 

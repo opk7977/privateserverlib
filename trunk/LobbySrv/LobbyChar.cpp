@@ -105,6 +105,8 @@ BOOL LobbyChar::GetReady() const
 
 void Room::SetNormal()
 {
+	SSynchronize sync( this );
+
 	m_roomState		= ROOM_STATE_NORMAL;
 	m_playerCount	= 0;
 }

@@ -28,6 +28,7 @@ public:
 	void SrvNetClear();
 	inline void SetSession( LobbySession* session ) { m_GameSrv = session; }
 	inline LobbySession* GetSession() const { return m_GameSrv; }
+	inline BOOL IsConnect() { return (m_GameSrv != NULL); }
 
 	BOOL SendToGameServer( SPacket &packet );
 

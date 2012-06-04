@@ -68,7 +68,7 @@ public:
 	//======================================
 	// 보내는 함수
 	//======================================
-	int SendPacket( SPacket& packet, BOOL tudp = FALSE );
+//	int SendPacket( SPacket& packet, BOOL tudp = FALSE );
 
 	//======================================
 	// 받은 패킷 처리 함수

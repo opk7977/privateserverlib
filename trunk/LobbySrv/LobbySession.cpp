@@ -37,6 +37,8 @@ LobbySession::~LobbySession(void)
 
 void LobbySession::OnCreate()
 {
+	SSynchronize Sync( this );
+
 	//sessionMgr에 저장하고
 	SSession::OnCreate();
 
@@ -146,6 +148,8 @@ void LobbySession::clear()
 //==============================================================
 void LobbySession::PacketParsing( SPacket& packet )
 {
+	SSynchronize Sync( this );
+
 	switch( packet.GetID() )
 	{
 	//==============================================================> GameSrv
@@ -211,12 +215,12 @@ void LobbySession::PacketParsing( SPacket& packet )
 
 //패킷보내는 함수 재 정의
 //==============================================================
-int LobbySession::SendPacket( SPacket& packet, BOOL tudp /*= FALSE */ )
-{
-	SSynchronize Sync( this );
-
-	return SSession::SendPacket( packet, tudp );
-}
+// int LobbySession::SendPacket( SPacket& packet, BOOL tudp /*= FALSE */ )
+// {
+// 	SSynchronize Sync( this );
+// 
+// 	return SSession::SendPacket( packet, tudp );
+// }
 
 //받은 패킷 처리 함수
 //==============================================================
@@ -252,19 +256,24 @@ void LobbySession::RecvStartFaild( SPacket& packet )
 						_T("LobbySession::RecvStartFaild()\n해당 방의 정보가 없습니다.\n\n") );
 		return;
 	}
-	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, 
-					_T("LobbySession::RecvStartFaild()\n%d번 방이 게임 시작에 실패했습니다.\n\n"), room );
 
-	//넘겨 받은 방의 방장에게 게임 시작 실패 패킷을 보낸다
-	tmpRoom->GetLeader()->GetSession()->SendStartGameResult();
-	//방의 상태를 바꿔주자
-	tmpRoom->SetNormal();
+	{
+		SSynchronize sync( tmpRoom );
+
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, 
+						_T("LobbySession::RecvStartFaild()\n%d번 방이 게임 시작에 실패했습니다.\n\n"), room );
+
+		//넘겨 받은 방의 방장에게 게임 시작 실패 패킷을 보낸다
+		tmpRoom->GetLeader()->GetSession()->SendStartGameResult();
+		//방의 상태를 바꿔주자
+		tmpRoom->SetNormal();
+	}
 
 }
 
 void LobbySession::RecvGameStart( SPacket& packet )
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	int room;
 	packet >> room;
@@ -278,28 +287,32 @@ void LobbySession::RecvGameStart( SPacket& packet )
 		return;
 	}
 
-	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, 
-					_T("LobbySession::RecvGameStart()\n%d번 방이 게임을 시작합니다.\n\n"), room );
+	{
+		SSynchronize sync( tmpRoom );
 
-	//그 방을 Play상태로 바꾼다
-	tmpRoom->SetPlay();
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, 
+						_T("LobbySession::RecvGameStart()\n%d번 방이 게임을 시작합니다.\n\n"), room );
 
-	//로비의 사람들에게 해당 방이 게임중이 되었다고 알린다
-	SendLobbyGameStart( room );
+		//그 방을 Play상태로 바꾼다
+		tmpRoom->SetPlay();
 
-	//방의 player들에게 게임서버로 이동하라는 패킷을 보낸다.
-	SendStartGameInRoom( room );
+		//로비의 사람들에게 해당 방이 게임중이 되었다고 알린다
+		SendLobbyGameStart( room );
 
-	//방에 있는 list를 비워주고, 인원수를 초기화 해 준다
-	//방으로 들어 오면 다시 캐릭터 정보를 갱신해야 하니 비워 준다
-	tmpRoom->ListReset();
+		//방의 player들에게 게임서버로 이동하라는 패킷을 보낸다.
+		SendStartGameInRoom( room );
+
+		//방에 있는 list를 비워주고, 인원수를 초기화 해 준다
+		//방으로 들어 오면 다시 캐릭터 정보를 갱신해야 하니 비워 준다
+		tmpRoom->ListReset();
+	}
 }
 
 void LobbySession::RecvGameEnd( SPacket& packet )
 {
 	//게임 안에 player가 모두 나갔을때 받는 패킷이다
 	//게임이 종료 되고 player가 모두 나갔다. 그러니 방을 다시 열어 준다.
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	int room;
 	packet >> room;
@@ -314,20 +327,24 @@ void LobbySession::RecvGameEnd( SPacket& packet )
 	}
 
 
-	if( !tmpRoom->IsOpen() )
 	{
-		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-			_T("LobbySession::RecvGameEnd()\n%d번 방은 이미 닫혔습니다.\n\n"), room );
-		return;
-	}
+		SSynchronize sync( this );
+
+		if( !tmpRoom->IsOpen() )
+		{
+			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+				_T("LobbySession::RecvGameEnd()\n%d번 방은 이미 닫혔습니다.\n\n"), room );
+			return;
+		}
 
 
-	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-					_T("LobbySession::RecvGameEnd()\n%d번 방이 게임을 종료했습니다.\n\n"), room );
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+						_T("LobbySession::RecvGameEnd()\n%d번 방이 게임을 종료했습니다.\n\n"), room );
 
-	//그 방의 play상태를 풀어 준다
-	tmpRoom->SetNormal();
-	
+		//그 방의 play상태를 풀어 준다
+		tmpRoom->SetNormal();
+
+	}		
 	//로비 사람들에게 방이 다시 열렸다고 알려 준다.
 	SendLobbyGameEnd( room );
 }
@@ -337,7 +354,7 @@ void LobbySession::RecvPlayerDiconnectInGame( SPacket& packet )
 	//================================================
 	// 게임 프로세스에서 player가 게임을 종료 한경우
 	//================================================
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	int room, session, team;
 	packet >> room;
@@ -358,6 +375,8 @@ void LobbySession::RecvPlayerDiconnectInGame( SPacket& packet )
 	}
 	else
 	{
+		SSynchronize sync( tmpRoom );
+
 		//방인원을 줄인다.
 		if( !tmpRoom->DelPlayerInRoomAtPlaying( team ) )
 		{
@@ -400,44 +419,50 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 					, roomNum );
 //#endif
 
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	//방번호를 확인해서 재 접속인지를 보자
 	if( roomNum > 0 )
 	{
-		//======================================
-		// 방으로 재 접속
-		//======================================
-		//--------------------------------------
-		// 캐릭터와 방의 정보를 다시 갱신
-		//--------------------------------------
-		//캐릭터 공간을 받아 온다
-		m_myCharInfo = m_charMgr->FindCharAsSessionId( sessionId );
-		if( m_myCharInfo == NULL )
 		{
-			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-							_T("LobbySession::RecvInsertLobby()\n%d번에 해당하는 캐릭터의 정보가 존재하지 않습니다.\n\n"),
-							sessionId );
-			return;
-		}
-		//방 공간도 받아 온다 
-		m_myRoom = m_roomMgr->FindRoom( roomNum );
-		if( m_myRoom == NULL )
-		{
-			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-				_T("LobbySession::RecvInsertLobby()\n%d번에 해당하는 방이 존재하지 않습니다.\n\n"),
-				roomNum );
-			return;
-		}
-		//--------------------------------------
+			SSynchronize sync( this );
 
-		//해당 캐릭터의 session정보를 다시 설정
-		SetSessionID( sessionId );
+			//======================================
+			// 방으로 재 접속
+			//======================================
+			//--------------------------------------
+			// 캐릭터와 방의 정보를 다시 갱신
+			//--------------------------------------
+			//캐릭터 공간을 받아 온다
+			m_myCharInfo = m_charMgr->FindCharAsSessionId( sessionId );
+			if( m_myCharInfo == NULL )
+			{
+				m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+								_T("LobbySession::RecvInsertLobby()\n%d번에 해당하는 캐릭터의 정보가 존재하지 않습니다.\n\n"),
+								sessionId );
+				return;
+			}
+			//방 공간도 받아 온다 
+			m_myRoom = m_roomMgr->FindRoom( roomNum );
+			if( m_myRoom == NULL )
+			{
+				m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+					_T("LobbySession::RecvInsertLobby()\n%d번에 해당하는 방이 존재하지 않습니다.\n\n"),
+					roomNum );
+				return;
+			}
+			//--------------------------------------
+
+			//해당 캐릭터의 session정보를 다시 설정
+			SetSessionID( sessionId );
+		}
+
 		m_myCharInfo->SetSession( this );
 
 		//캐릭터의 게임 실행 상태와 ready상태를 초기화 해주자
 		m_myCharInfo->SetIsPlay( FALSE );
 		m_myCharInfo->SetReady( FALSE );
+	
 
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 						_T("LobbySession::RecvInsertLobby()\n캐릭터 %s, %d번 방으로 접속.\n\n"),
@@ -516,7 +541,7 @@ void LobbySession::RecvCreateRoom( SPacket& packet )
 	int size;
 	TCHAR title[50]={0,};
 
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	if( m_myCharInfo == NULL )
 	{
@@ -541,7 +566,6 @@ void LobbySession::RecvCreateRoom( SPacket& packet )
 		SendResultCreate( -10 );
 		return;
 	}
-
 	//게임 모드 설정
 	m_myRoom->SetStageMap( stageMap );
 	m_myRoom->SetGameMode( gameMode );
@@ -562,7 +586,6 @@ void LobbySession::RecvCreateRoom( SPacket& packet )
 					, m_myCharInfo->GetID()
 					, m_myRoom->GetRoomNum()
 					, title );
-
 //#endif
 
 	//방만들기 성공
@@ -578,7 +601,7 @@ void LobbySession::RecvInsertRoom( SPacket& packet )
 	int room;
 	packet >> room;
 
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 	
 	//우선 방번호로 방을 받아 와 본다
 	m_myRoom = m_roomMgr->FindRoom( room );
@@ -642,7 +665,7 @@ void LobbySession::RecvInsertRoom( SPacket& packet )
 
 void LobbySession::RecvOutRoom()
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	if( m_myCharInfo == NULL )
 	{
@@ -690,6 +713,7 @@ void LobbySession::RecvOutRoom()
 	m_myCharInfo->SetReady(FALSE);
 
 	SendRoomOutResult();
+	
 
 	//방의 클라들에게 누가 사라졌는지 보낸다
 	SendRoomCharOut();
@@ -703,7 +727,7 @@ void LobbySession::RecvOutRoom()
 
 void LobbySession::RecvReady()
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	if( m_myCharInfo == NULL )
 	{
@@ -753,7 +777,7 @@ void LobbySession::RecvReady()
 					, m_myCharInfo->GetID()
 					, m_myCharInfo->GetSessionID()
 					, m_myCharInfo->GetReady() ? _T("시작") : _T("준비중") );
-//#endif
+	//#endif
 
 	SendRoomCharReady();
 
@@ -771,7 +795,7 @@ void LobbySession::RecvReady()
 
 void LobbySession::RecvMapChange( SPacket& packet )
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	if( m_myCharInfo == NULL )
 	{
@@ -821,7 +845,7 @@ void LobbySession::RecvMapChange( SPacket& packet )
 
 void LobbySession::RecvChangeMode( SPacket& packet )
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	if( m_myCharInfo == NULL )
 	{
@@ -880,7 +904,7 @@ void LobbySession::RecvChangeMode( SPacket& packet )
 
 void LobbySession::RecvTeamChange()
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	if( m_myCharInfo == NULL )
 	{
@@ -898,7 +922,7 @@ void LobbySession::RecvTeamChange()
 						m_myCharInfo->GetID() );
 		return;
 	}
-
+	
 	if( m_myRoom == NULL )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
@@ -906,6 +930,7 @@ void LobbySession::RecvTeamChange()
 						m_myCharInfo->GetID() );
 		return;
 	}
+
 
 	//방의 상태가 노말이 아니면 무시
 	if( m_myRoom->GetRoomState() != ROOM_STATE_NORMAL )
@@ -951,7 +976,7 @@ void LobbySession::RecvTeamChange()
 
 void LobbySession::RecvAllChat( SPacket& packet )
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	if( m_myCharInfo == NULL )
 	{
@@ -980,7 +1005,7 @@ void LobbySession::RecvAllChat( SPacket& packet )
 
 void LobbySession::RecvTargetChat( SPacket& packet )
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	if( m_myCharInfo == NULL )
 	{
@@ -1022,7 +1047,7 @@ void LobbySession::RecvTargetChat( SPacket& packet )
 
 void LobbySession::RecvRoomStartGame()
 {
-	SSynchronize Sync( this );
+	//SSynchronize Sync( this );
 
 	if( m_myCharInfo == NULL )
 	{
@@ -1040,12 +1065,22 @@ void LobbySession::RecvRoomStartGame()
 		return;
 	}
 
+	//서버와 연결되어 있는 상태인지 확인
+	if( !m_srvNet->IsConnect() )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("LobbySession::RecvRoomStartGame()\n게임 서버와 연결되어 있지 않습니다.\n\n") );
+		SendStartGameResult();
+		return;
+	}
+
 	//방의 상태가 노말이 아니면 무시
 	if( m_myRoom->GetRoomState() != ROOM_STATE_NORMAL )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("LobbySession::RecvRoomStartGame()\n%d번방은 이미 일반 상태가 아닙니다.\n\n"),
 						m_myRoom->GetRoomNum() );
+		SendStartGameResult();
 		return;
 	}
 
