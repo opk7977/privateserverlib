@@ -77,8 +77,8 @@ BOOL GameProc::Run()
 		//======================================
 
 		//게임 loop를 돈다
-		//우선 1판 기준
-		while( 1 )
+		BOOL isEnd = TRUE;
+		while( isEnd )
 		{
 			//게임
 			GameRun();
@@ -103,7 +103,7 @@ BOOL GameProc::Run()
 			{
 				// 로비로 가라는 패킷을 보낸다.
 				SendGotoLobbyPacket();
-				break;
+				isEnd = FALSE;
 			}
 		}
 
@@ -125,6 +125,7 @@ void GameProc::GameRun()
 	//시간이 다 되기 전까지 loop
 	while( m_nowPlayTimeCount > 0 )
 	{
+		Sleep(0);
 		//======================================
 		// 시간 처리
 		//======================================
@@ -152,18 +153,18 @@ void GameProc::GameRun()
 		//======================================
 		// hp를 1씩 올려 준다.
 		//======================================
-// 		lifeUpTime += m_timer.GetElapsedTime();
-// 		if( lifeUpTime >= 0.5f )
-// 		{
-// 			//우선 초기화
-// 			lifeUpTime = 0.f;
-// 
-// 			//부상당한 캐릭터를 모두 1씩 올려 준다
-// 			PlayerHeal();
-// 
-// 			//그애들만 보낸다.
-// 			SendPlayerHeal();
-// 		}
+		lifeUpTime += m_timer.GetElapsedTime();
+		if( lifeUpTime >= 0.5f )
+		{
+			//우선 초기화
+			lifeUpTime = 0.f;
+
+			//부상당한 캐릭터를 모두 1씩 올려 준다
+			PlayerHeal();
+
+			//그애들만 보낸다.
+			SendPlayerHeal();
+		}
 	}
 
 	//게임 셋팅을 바꿔 준다...새로이..여기서 해주는게 맞겠지?....
@@ -387,6 +388,8 @@ void GameProc::SendPlayerHeal()
 		sendPacket << (*iter)->GetMyInfo()->GetHP();
 		(*iter)->SendPacket( sendPacket );
 	}
+
+	m_SendList.Clear();
 }
 
 BOOL GameProc::SendStartPacket()

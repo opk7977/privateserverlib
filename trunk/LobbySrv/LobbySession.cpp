@@ -277,6 +277,7 @@ void LobbySession::RecvGameStart( SPacket& packet )
 						_T("LobbySession::RecvGameStart()\n해당 방의 정보가 없습니다.\n\n") );
 		return;
 	}
+
 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, 
 					_T("LobbySession::RecvGameStart()\n%d번 방이 게임을 시작합니다.\n\n"), room );
 
@@ -308,12 +309,21 @@ void LobbySession::RecvGameEnd( SPacket& packet )
 	if( tmpRoom == NULL )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-						_T("LobbySession::RecvGameStart()\n해당 방의 정보가 없습니다.\n\n") );
+						_T("LobbySession::RecvGameEnd()\n해당 방의 정보가 없습니다.\n\n") );
 		return;
 	}
 
+
+	if( !tmpRoom->IsOpen() )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("LobbySession::RecvGameEnd()\n%d번 방은 이미 닫혔습니다.\n\n"), room );
+		return;
+	}
+
+
 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-					_T("LobbySession::RecvGameStart()\n%d번 방이 게임을 종료했습니다.\n\n"), room );
+					_T("LobbySession::RecvGameEnd()\n%d번 방이 게임을 종료했습니다.\n\n"), room );
 
 	//그 방의 play상태를 풀어 준다
 	tmpRoom->SetNormal();

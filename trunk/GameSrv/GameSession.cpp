@@ -143,7 +143,7 @@ void GameSession::PacketParsing( SPacket& packet )
 		RecvGameTryAttack( packet );
 		break;
 	case CS_GAME_JUST_SHOOT:
-		//
+		RecvGameJustShoot();
 		break;
 	case CS_GAME_CHANGE_STATE:
 		RecvGameChangeState( packet );
@@ -398,6 +398,14 @@ void GameSession::RecvGameAttack( SPacket &packet )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 			_T("GameSession::RecvGameAttec()\n캐릭터%s의 피격대상이 같은 팀입니다.\n\n"), m_myCharInfo->GetID() );
+		return;
+	}
+
+	//맞은 애가 죽은애인지 확인하기
+	if( tmpChar->IsDie() )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameAttec()\n캐릭터%s는 이미 죽었습니다.\n\n"), tmpChar->GetID() );
 		return;
 	}
 

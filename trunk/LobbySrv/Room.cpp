@@ -28,10 +28,9 @@ void Room::Init()
 	m_playerCount = 0;
 
 	_tcsncpy_s( m_tstrRoomTitle, 50, _T("Empty Room"), 10 );
-	m_stageMap = 0;
 	m_readyCount = 0;
 	m_leader = NULL;
-	m_roomState = 0;
+	m_roomState = ROOM_STATE_NORMAL;
 
 	m_stageMap = 0;
 	m_gameMode = 0;

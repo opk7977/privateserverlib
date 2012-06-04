@@ -71,6 +71,12 @@ BOOL CharObj::IsDie()
 
 BOOL CharObj::HPUpOnePoint()
 {
+	SSynchronize sync( this );
+
+	//죽은애는 그냥 return
+	if( IsDie() )
+		return FALSE;
+
 	//이미 100이면 그냥 return
 	if( m_HP >= 100 )
 		return FALSE;
