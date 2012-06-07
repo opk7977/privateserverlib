@@ -628,7 +628,7 @@ void LobbySession::RecvInsertRoom( SPacket& packet )
 		return;
 	}
 	//지금의 readyCount를 받아 놓고
-	int oldReadyCount = m_myRoom->GetReadyCount();
+	//int oldReadyCount = m_myRoom->GetReadyCount();
 
 	//방이 정상으로 존재 한다면 넣자
 	m_myRoom->AddPlayerInRoom( m_myCharInfo );
@@ -660,7 +660,8 @@ void LobbySession::RecvInsertRoom( SPacket& packet )
 	SendRoomLeader();
 
 	//방장에게 start버튼관련 packet을 보내는 함수
-	SendStartBtnForVisible( oldReadyCount );
+	//SendStartBtnForVisible( oldReadyCount );
+	SendStartBtnForVisible();
 }
 
 void LobbySession::RecvOutRoom()
@@ -714,7 +715,6 @@ void LobbySession::RecvOutRoom()
 
 	SendRoomOutResult();
 	
-
 	//방의 클라들에게 누가 사라졌는지 보낸다
 	SendRoomCharOut();
 
@@ -765,7 +765,7 @@ void LobbySession::RecvReady()
 
 
 	//지금의 readyCount를 받아 놓고
-	int oldReadyCount = m_myRoom->GetReadyCount();
+	//int oldReadyCount = m_myRoom->GetReadyCount();
 
 	//방에 ready숫자를 변경해 준다.
 	m_myRoom->ChangReadyCount( m_myCharInfo->GetReady() );
@@ -790,7 +790,8 @@ void LobbySession::RecvReady()
 // 		if( m_myRoom->GetReadyCount() < oldReadyCount )
 // 			SendRoomStartInvisible();
 // 	}
-	SendStartBtnForVisible( oldReadyCount );
+//	SendStartBtnForVisible( oldReadyCount );
+	SendStartBtnForVisible();
 }
 
 void LobbySession::RecvMapChange( SPacket& packet )
@@ -1519,11 +1520,13 @@ BOOL LobbySession::SendRoomCharOut()
 						_T("%d번 방의 %s님이 방장이 되셨습니다.\n\n"),
 						m_myRoom->GetRoomNum(), m_myRoom->GetLeader()->GetID() );
 
-		//방상태가 시작 가능상태라면 방장에게 알린다
-		if( m_myRoom->PossiblePlay() )
-			SendRoomStartVisible();
+// 		//방상태가 시작 가능상태라면 방장에게 알린다
+// 		if( m_myRoom->PossiblePlay() )
+// 			SendRoomStartVisible();
 	}
 	//--------------------------------------------------------------
+
+	SendStartBtnForVisible();
 
 	return TRUE;
 }
@@ -1763,12 +1766,23 @@ BOOL LobbySession::SendStartBtnForVisible( int oldReadyCount )
 	//방이 실행가능 상태면 리더에게 보내주자
 	if( m_myRoom->PossiblePlay() )
 		SendRoomStartVisible();
+
 	else if( oldReadyCount == m_myRoom->GetPlayerCount()-1 )
 	{
 		//ready인원이 줄었다면 비활성을 보내준다
 		if( m_myRoom->GetReadyCount() < oldReadyCount )
 			SendRoomStartInvisible();
 	}
+
+	return TRUE;
+}
+
+BOOL LobbySession::SendStartBtnForVisible()
+{
+	if( m_myRoom->PossiblePlay() )
+		SendRoomStartVisible();
+	else
+		SendRoomStartInvisible();
 
 	return TRUE;
 }
@@ -1786,8 +1800,9 @@ BOOL LobbySession::SendRoomStartInvisible()
 {
 	SPacket sendPacket( SC_ROOM_START_INVISIBLE );
 
-	m_myRoom->GetLeader()->GetSession()->SendPacket( sendPacket );
-	
+	if( m_myRoom->GetPlayerCount() > 0 )
+		m_myRoom->GetLeader()->GetSession()->SendPacket( sendPacket );
+		
 	return TRUE;
 }
 

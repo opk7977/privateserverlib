@@ -224,6 +224,7 @@ enum GAME_SERVER
 	SC_GAME_CHAR_REVIVAL,
 
 	// client -> server
+	// int			-		All(0)/ Team(1)
 	// int			-		stringSize
 	// TCHAR		-		chattingString
 	CS_GAME_CHATTING,
@@ -270,6 +271,7 @@ enum GAME_SERVER
 
 	// server -> client
 	// 라디오 play
+	// int			-		sessionID
 	// int			-		라디오index
 	SC_GAME_RADIO_PLAY,
 

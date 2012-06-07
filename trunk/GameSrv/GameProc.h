@@ -200,7 +200,7 @@ public:
 	//나를 빼고 보내려면 자신의 session을 매개변수로 넘긴다
 	void SendAllPlayerInGame( SPacket& packet, GameSession* me = NULL );
 	//방에 있는 자신의 팀 사람들에게 패킷을 전송
-	void SendPacketToMyTeam( int team, SPacket& packet, GameSession* me );
+	void SendPacketToMyTeam( int team, SPacket& packet, GameSession* me = NULL );
 
 	//방에 있는 모든 player정보를 패킷에 담는다
 	//나를 빼고 담으려면 자신의 session을 매개변수로 넘긴다.

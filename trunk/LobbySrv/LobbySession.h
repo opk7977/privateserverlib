@@ -208,6 +208,7 @@ public:
 
 	//시작 버튼에 관련된 함수를 호출하는 함수
 	BOOL SendStartBtnForVisible( int oldReadyCount );
+	BOOL SendStartBtnForVisible();
 	//SC_ROOM_START_VISIBLE
 	BOOL SendRoomStartVisible();
 	//SC_ROOM_START_INVISIBLE

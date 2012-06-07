@@ -14,6 +14,13 @@ class ItemMgr;
 class CharObj;
 class GameProc;
 
+
+enum CHATTING_INDEX
+{
+	CHATTING_ALL = 0,
+	CHATTING_TEAM,
+};
+
 class GameSession : public SSessionObj
 {
 public:
@@ -165,7 +172,8 @@ public:
 	BOOL SendGameCharRevival( int pointIndex );
 
 	//SC_GAME_CHATTING
-	BOOL SendGameChatting( TCHAR* chatting, int size );
+	BOOL SendGameChatting( TCHAR* chatting );
+	BOOL SendGameTeamChat( TCHAR* chatting );
 
 	//SC_GAME_INSTALL_BOOM
 
@@ -174,7 +182,8 @@ public:
 	//SC_GAME_UNINSTALL_BOOM
 
 	//SC_GAME_RADIO_PLAY
-	BOOL SendGameRadioPlay( SPacket &packet );
+	//BOOL SendGameRadioPlay( SPacket &packet );
+	BOOL SendGameRadioPlay( int index );
 
 	//SC_GAME_TIME_COUNTDOWN
 	//게임Proc에 있음

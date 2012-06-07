@@ -303,6 +303,11 @@ void GameSession::RecvInGame( SPacket &packet )
 // 		tmpChar->SetID( _T("Unknown") );
 // 		tmpChar->SetTeam( (int)(sessionId % 2) );
 // 	}
+	if( roomNum == 0 )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("GameSession::RecvInGame()\n0번 방은 존재하지 않습니다.\n\n") );
+	}
 
 	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 					_T("GameSession::RecvInGame()\n%d번 캐릭터가 %d번게임으로 입장합니다.\n\n") 
@@ -515,11 +520,16 @@ void GameSession::RecvGameChatting( SPacket &packet )
 {
 	//SSynchronize Sync( this );
 
-	int size;
+	int target, size;
 	TCHAR tmpChatting[256] = {0,};
-	TCHAR Chatting[300] = {0,};
+	//TCHAR Chatting[300] = {0,};
 
+	packet >> target;
 	packet >> size;
+	//256이상은 잘라 버림
+	if( size > 256 )
+		size = 256;
+
 	packet.GetData( tmpChatting, size );
 
 	
@@ -530,20 +540,39 @@ void GameSession::RecvGameChatting( SPacket &packet )
 		return;
 	}
 
-	swprintf_s( Chatting, _T("[%s] %s"), m_myCharInfo->GetID(), tmpChatting );
-	size = _tcslen( Chatting )*sizeof( TCHAR );
+	switch( target )
+	{
+	case CHATTING_ALL:
+		//swprintf_s( Chatting, _T("[All][%s] %s"), m_myCharInfo->GetID(), tmpChatting );
+		SendGameChatting( tmpChatting );
+		break;
+	case CHATTING_TEAM:
+		//swprintf_s( Chatting, _T("[Team][%s] %s"), m_myCharInfo->GetID(), tmpChatting );
+		SendGameTeamChat( tmpChatting );
+		break;
+	default:
+		//이상한 데이터네?
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("GameSession::RecvGameChatting()\ntarget이 유효하지 않습니다.\n\n") );
+		return;
+	}
 
-	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-		_T("GameSession::RecvGameChatting()\n%s\n\n"), Chatting );
-
-	SendGameChatting( Chatting, size );
+// 	size = _tcslen( Chatting )*sizeof( TCHAR );
+// 
+// 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+// 		_T("GameSession::RecvGameChatting()\n%s\n\n"), Chatting );
+// 
+// 	SendGameChatting( Chatting, size );
 }
 
 void GameSession::RecvGameRadioPlay( SPacket &packet )
 {
-	packet.SetID( SC_GAME_RADIO_PLAY );
+	int index;
+	packet >> index;
+	//packet.SetID( SC_GAME_RADIO_PLAY );
 
-	SendGameRadioPlay( packet );
+	//SendGameRadioPlay( packet );
+	SendGameRadioPlay( index );
 }
 
 //======================================
@@ -753,13 +782,18 @@ BOOL GameSession::SendGameCharRevival( int pointIndex )
 	return TRUE;
 }
 
-BOOL GameSession::SendGameChatting( TCHAR* chatting, int size )
+BOOL GameSession::SendGameChatting( TCHAR* chatting )
 {
+	//채팅 문장 만들기
+	TCHAR ChattingMsg[300] = {0,};
+	swprintf_s( ChattingMsg, _T("[All][%s] %s"), m_myCharInfo->GetID(), chatting );
+	int size = _tcslen( ChattingMsg )*sizeof( TCHAR );
+
 	SPacket sendPacket;
 	sendPacket.SetID( SC_GAME_CHATTING );
 
 	sendPacket << size;
-	sendPacket.PutData( chatting, size );
+	sendPacket.PutData( ChattingMsg, size );
 
 	if( m_myGameProc == NULL )
 	{
@@ -772,7 +806,52 @@ BOOL GameSession::SendGameChatting( TCHAR* chatting, int size )
 	return TRUE;
 }
 
-BOOL GameSession::SendGameRadioPlay( SPacket &packet )
+BOOL GameSession::SendGameTeamChat( TCHAR* chatting )
+{
+	//채팅 문장 만들기
+	TCHAR ChattingMsg[300] = {0,};
+	swprintf_s( ChattingMsg, _T("[Team][%s] %s"), m_myCharInfo->GetID(), chatting );
+	int size = _tcslen( ChattingMsg )*sizeof( TCHAR );
+
+	SPacket sendPacket;
+	sendPacket.SetID( SC_GAME_CHATTING );
+
+	sendPacket << size;
+	sendPacket.PutData( ChattingMsg, size );
+
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::SendGameChatting()\n방 게임 proc정보가 유효하지 않습니다.\n\n") );
+		return FALSE;
+	}
+	m_myGameProc->SendPacketToMyTeam( m_myCharInfo->GetTeam(), sendPacket );
+
+	return TRUE;
+}
+
+// BOOL GameSession::SendGameRadioPlay( SPacket &packet )
+// {
+// 	if( m_myCharInfo == NULL )
+// 	{
+// 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+// 			_T("GameSession::SendGameRadioPlay()\n캐릭터 정보가 유효하지 않습니다.\n\n") );
+// 		return FALSE;
+// 	}
+// 
+// 	if( m_myGameProc == NULL )
+// 	{
+// 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+// 			_T("GameSession::SendGameRadioPlay()\n캐릭터 %s의 게임 proc정보가 유효하지 않습니다.\n\n"), m_myCharInfo->GetID() );
+// 		return FALSE;
+// 	}
+// 
+// 	//자신의 팀에만 보낸다
+// 	m_myGameProc->SendPacketToMyTeam( m_myCharInfo->GetTeam(), packet, this );
+// 
+// 	return TRUE;
+// }
+BOOL GameSession::SendGameRadioPlay( int index )
 {
 	if( m_myCharInfo == NULL )
 	{
@@ -787,9 +866,12 @@ BOOL GameSession::SendGameRadioPlay( SPacket &packet )
 			_T("GameSession::SendGameRadioPlay()\n캐릭터 %s의 게임 proc정보가 유효하지 않습니다.\n\n"), m_myCharInfo->GetID() );
 		return FALSE;
 	}
+	SPacket sendPacket( SC_GAME_RADIO_PLAY );
+	sendPacket << m_myCharInfo->GetSessionID();
+	sendPacket << index;
 
 	//자신의 팀에만 보낸다
-	m_myGameProc->SendPacketToMyTeam( m_myCharInfo->GetTeam(), packet, this );
+	m_myGameProc->SendPacketToMyTeam( m_myCharInfo->GetTeam(), sendPacket );
 
 	return TRUE;
 }

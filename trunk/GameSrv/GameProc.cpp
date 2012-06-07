@@ -442,7 +442,7 @@ void GameProc::SendAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL */
 	}
 }
 
-void GameProc::SendPacketToMyTeam( int team, SPacket& packet, GameSession* me )
+void GameProc::SendPacketToMyTeam( int team, SPacket& packet, GameSession* me/* = NULL*/ )
 {
 	SSynchronize Sync( this );
 
