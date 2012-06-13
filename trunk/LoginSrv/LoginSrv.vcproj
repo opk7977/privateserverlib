@@ -188,6 +188,10 @@
 				RelativePath=".\main.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\TmpSessionSpace.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="헤더 파일"
@@ -200,6 +204,10 @@
 			</File>
 			<File
 				RelativePath=".\LogMgr.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TmpSessionSpace.h"
 				>
 			</File>
 		</Filter>
@@ -237,7 +245,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="ConToSrv"
+				Name="ConToLogSrv"
 				>
 				<File
 					RelativePath=".\LogSrvNet.cpp"
@@ -245,6 +253,18 @@
 				</File>
 				<File
 					RelativePath=".\LogSrvNet.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ConToDBSrv"
+				>
+				<File
+					RelativePath=".\DBSrvMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DBSrvMgr.h"
 					>
 				</File>
 			</Filter>

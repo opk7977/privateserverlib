@@ -199,19 +199,19 @@ void DBSession::RecvLoginTryLogin( SPacket& packet )
 	if( sessionID == -1 )
 	{
 		//id없음
-		//SendLoginTryLoginResult( indexId, NONEXISTENT_ID );
+		SendLoginTryLoginResult( indexId, NONEXISTENT_ID );
 		return;
 	}
 	else if( sessionID == 0 )
 	{
 		//pw틀림
-		//SendLoginTryLoginResult( indexId, WRONG_PW );
+		SendLoginTryLoginResult( indexId, WRONG_PW );
 		return;
 	}
 	else if( sessionID == -10 )	
 	{
 		//서버오류
-		//SendLoginTryLoginResult( indexId, SERVER_ERROR );
+		SendLoginTryLoginResult( indexId, SERVER_ERROR );
 		return;
 	}
 
@@ -227,7 +227,7 @@ void DBSession::RecvLoginTryLogin( SPacket& packet )
 		m_playerMgr->AddPlayer( sessionID, tmpPlayer );
 
 		//로비에 알림
-		SendLobbyChacterLogin( tmpPlayer );
+		//SendLobbyChacterLogin( tmpPlayer );
 
 		//로그인서버에 결과를 알림
 		SendLoginTryLoginResult( indexId, sessionID );
@@ -291,6 +291,8 @@ BOOL DBSession::SendLoginTryLoginResult( int indexId, int result )
 
 	sendPacket << indexId;
 	sendPacket << result;
+
+	SendPacket( sendPacket );
 
 	return TRUE;
 }

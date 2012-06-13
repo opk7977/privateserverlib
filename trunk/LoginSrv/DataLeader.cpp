@@ -8,11 +8,13 @@ DataLeader::DataLeader(void)
 , GameSrvProtNum(0)
 , GamePlaySec(0)
 , LogSrvPortNum(0)
+, DBSrvPortNum(0)
 {
 	ZeroMemory( LoginSrvIP, 15 );
 	ZeroMemory( LobbySrvIP, 15 );
 	ZeroMemory( GameSrvIP, 15 );
 	ZeroMemory( LogSrvIP, 15 );
+	ZeroMemory( DBSrvIp, 15 );
 }
 
 DataLeader::~DataLeader(void)
@@ -99,6 +101,16 @@ BOOL DataLeader::DataSetting()
 	fgets( text, 256, fp );
 	sscanf_s( text, "%s %s", LogSrvIP, 15, tmpNum, 10 );
 	LogSrvPortNum = atoi( tmpNum );
+
+	//======================================
+	// DBSrv정보를 받아 온다
+	//======================================
+	//<<DB 서버>>
+	fgets( text, 256, fp );
+	//192.168.0.56	9000
+	fgets( text, 256, fp );
+	sscanf_s( text, "%s %s", DBSrvIp, 15, tmpNum, 10 );
+	DBSrvPortNum = atoi( tmpNum );
 
 	fclose( fp );
 
