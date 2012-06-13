@@ -851,6 +851,7 @@ BOOL GameSession::SendGameTeamChat( TCHAR* chatting )
 // 
 // 	return TRUE;
 // }
+
 BOOL GameSession::SendGameRadioPlay( int index )
 {
 	if( m_myCharInfo == NULL )
@@ -867,7 +868,7 @@ BOOL GameSession::SendGameRadioPlay( int index )
 		return FALSE;
 	}
 	SPacket sendPacket( SC_GAME_RADIO_PLAY );
-	sendPacket << m_myCharInfo->GetSessionID();
+	sendPacket   << m_myCharInfo->GetSessionID();
 	sendPacket << index;
 
 	//자신의 팀에만 보낸다

@@ -11,8 +11,8 @@ class LogSrvNet;
 class LogMgr;
 
 //======================================
-// 로그인 세션은 MultiConnect보다는
-// 1:1 Connect이기 때문에
+// 로그인 세션은 Multicommunication보다는
+// 1:1 communication이기 때문에
 // 브로드케스트 같은 것들은 필요 없음
 //======================================
 

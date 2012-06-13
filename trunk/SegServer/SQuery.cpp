@@ -102,6 +102,83 @@ BOOL SQuery::ConnectMdb( TCHAR* conStr )
 	return TRUE; 
 }
 
+BOOL SQuery::ConnectSrv( TCHAR* conStr, TCHAR* srvID, TCHAR* srvPW )
+{
+	SQLRETURN	retcode;
+
+	//환경핸들 할당 받기//////////////////////////////////////////////////////
+	retcode = SQLAllocHandle( SQL_HANDLE_ENV, SQL_NULL_HANDLE, &m_hEnv );
+	if( retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO )
+	{
+#ifdef _DEBUG
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Query] 환경핸들 할당 실패\n") );
+#endif
+		return FALSE;
+	}
+#ifdef _DEBUG
+	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Query] 환경핸들 할당 성공\n") );
+#endif
+	//////////////////////////////////////////////////////////////////////////
+
+	//환경핸들 버전을 3.0으로 설정////////////////////////////////////////////
+	retcode = SQLSetEnvAttr( m_hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, SQL_IS_INTEGER );
+	if( retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO )
+	{
+#ifdef _DEBUG
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Query] 환경핸들 버젼 설정 실패\n") );
+#endif
+		return FALSE;
+	}
+#ifdef _DEBUG
+	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Query] 환경핸들 버젼 설정 성공\n") );
+#endif
+	//////////////////////////////////////////////////////////////////////////
+
+	//연결핸들 할당하고 환경핸들에 연결하기///////////////////////////////////
+	retcode = SQLAllocHandle( SQL_HANDLE_DBC, m_hEnv, &m_hDbc );
+	if( retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO )
+	{
+#ifdef _DEBUG
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Query] 연결핸들 할당 실패\n") );
+#endif
+		return FALSE;
+	}
+#ifdef _DEBUG
+	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Query] 연결핸들 할당 성공\n") );
+#endif
+	//////////////////////////////////////////////////////////////////////////
+
+	//Srv에 연결//////////////////////////////////////////////////////////////
+	retcode = SQLConnect( m_hDbc, conStr, SQL_NTS, srvID, SQL_NTS, srvPW, SQL_NTS );
+	//연결에 문제가 있다면 return하고 log를 남긴다.
+	if( retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO )
+	{
+#ifdef _DEBUG
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Query] mdb연결 실패\n") );
+#endif
+		return FALSE;
+	}
+#ifdef _DEBUG
+	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Query] mdb연결 성공\n") );
+#endif
+
+	//명령 핸들을 할당하자
+	retcode = SQLAllocHandle( SQL_HANDLE_STMT, m_hDbc, &m_hStmt );
+	if( retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO )
+	{
+#ifdef _DEBUG
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Query] 명령핸들 할당 실패\n") );
+#endif
+		return FALSE;
+	}
+#ifdef _DEBUG
+	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Query] 명령핸들 할당 성공\n") );
+#endif
+
+	//끗
+	return TRUE; 
+}
+
 void SQuery::DisConnect()
 {
 	//정리는 할당 했던 반대 순서로 해 줘야 한다.
@@ -133,6 +210,31 @@ void SQuery::DisConnect()
 		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Query] 환경 핸들 할당 해제\n") );
 #endif
 	}
+}
+
+SQLRETURN SQuery::BindParamaterStr( int index, TCHAR* strParam, SQLINTEGER &jnk, BOOL isIn /*= TRUE */ )
+{
+	SQLSMALLINT inOut;
+	SQLINTEGER iJnk = SQL_NTS;
+
+	if( isIn )
+		inOut = SQL_PARAM_INPUT;
+	else
+		inOut = SQL_PARAM_OUTPUT;
+
+	return SQLBindParameter( m_hStmt, index, inOut, SQL_C_WCHAR, SQL_WCHAR, _tcslen(strParam), 0, strParam, 0, &jnk );
+}
+
+SQLRETURN SQuery::BindParamaterInt( int index, int &iParam, SQLINTEGER &jnk, BOOL isIn /*= TRUE */ )
+{
+	SQLSMALLINT inOut;
+
+	if( isIn )
+		inOut = SQL_PARAM_INPUT;
+	else
+		inOut = SQL_PARAM_OUTPUT;
+
+	return SQLBindParameter( m_hStmt, index, inOut, SQL_C_LONG, SQL_INTEGER, 0, 0, &iParam, 0, &jnk );
 }
 
 BOOL SQuery::Exec( TCHAR* szSQL )
@@ -289,4 +391,3 @@ int SQuery::FindCollasName( TCHAR* colName )
 	//일치하는 컬럼이 없으면 -1을 return한다.
 	return -1;
 }
-

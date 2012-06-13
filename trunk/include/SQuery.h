@@ -37,9 +37,16 @@ public:
 	
 	//mdb 연결( mdb에 직접 연결 )
 	BOOL ConnectMdb( TCHAR* conStr );
+	BOOL ConnectSrv( TCHAR* conStr, TCHAR* srvID, TCHAR* srvPW );
 	
 	//연결 끊기
 	void DisConnect();
+
+	SQLHSTMT GetHstmt() { return m_hStmt; }
+
+	//바인드
+	SQLRETURN BindParamaterStr( int index, TCHAR* strParam, SQLINTEGER &jnk, BOOL isIn = TRUE );
+	SQLRETURN BindParamaterInt( int index, int &iParam, SQLINTEGER &jnk, BOOL isIn = TRUE );
 
 	//쿼리분을 받아 실행
 	BOOL Exec( TCHAR* szSQL );
