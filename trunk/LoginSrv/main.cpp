@@ -40,8 +40,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	LoginMain* lMain = new LoginMain;
 	lMain->Init();
 
-
-
 	MSG Message;
 
 	while(1)

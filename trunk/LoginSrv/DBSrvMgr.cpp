@@ -57,7 +57,12 @@ BOOL DBSrvMgr::ConnectToDBSrv( char* ipAddr, int port )
 
 void DBSrvMgr::DisConnect()
 {
-	
+	if( m_dbSrv == NULL )
+		return;
+
+	m_dbSrv->OnDestroy();
+
+	m_dbSrv = NULL;
 }
 
 void DBSrvMgr::SetSession( LoginSession* session )

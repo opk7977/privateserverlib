@@ -13,8 +13,9 @@ class DataLeader;
 class LobbyMgr;
 class RoomMgr;
 class CharMgr;
-class CheckDB;
+//class CheckDB;
 class SrvNet;
+class DBSrvMgr;
 class SLogger;
 
 class LobbySession : public SSessionObj
@@ -28,8 +29,9 @@ private:
 	LobbyMgr*		m_lobbyMgr;
 	RoomMgr*		m_roomMgr;
 	CharMgr*		m_charMgr;
-	CheckDB*		m_DBMgr;
+	//CheckDB*		m_DBMgr;
 	SrvNet*			m_srvNet;
+	DBSrvMgr*		m_dbMgr;
 	SLogger*		m_logger;
 
 private:
@@ -74,7 +76,18 @@ public:
 	// 받은 패킷 처리 함수
 	//======================================
 	//--------------------------------------
-	// server와의 커뮤니케이션
+	// DBSrv와의 커뮤니케이션
+	//--------------------------------------
+	//DB_TO_OTHER_CONNECT_OK
+	void RecvDBConnectOK();
+
+	//DB_TO_LOBBY_CHARACTER_LOGIN
+	void RecvCharacterLogin( SPacket& packet );
+
+	//DB_TO_OTHER_DROP_PLAYER
+
+	//--------------------------------------
+	// GameSrv와의 커뮤니케이션
 	//--------------------------------------
 	//GL_CONNECT_SERVER
 	void RecvConnectServer();
@@ -131,7 +144,16 @@ public:
 	// 보내는 패킷 생성함수
 	//======================================
 	//--------------------------------------
-	// server와의 커뮤니케이션
+	// DBSrv와의 커뮤니케이션
+	//--------------------------------------
+	//LOBBY_TO_DB_CHARINSERT_READY_RESULT
+	BOOL SendToDBCharInsertReadyResult( int index, int sessionId );
+
+	//OTHER_TO_DB_DISCONNECT_CHARACTER
+	BOOL SendToDBCharDiscconect( int sessionID );
+
+	//--------------------------------------
+	// GameSrv의 커뮤니케이션
 	//--------------------------------------
 	//LG_START_GAME
 	BOOL SendCreateGameProc();

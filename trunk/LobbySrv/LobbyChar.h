@@ -41,6 +41,11 @@ private:
 	int				m_myTeam;
 	BOOL			m_ready;
 
+	int				m_rankID;
+	int				m_rankPoint;
+	int				m_AccumulatedKill;
+	int				m_AccumulatedDeath;
+
 	//백터의 index
 	int				m_vecIndex;
 
@@ -74,6 +79,12 @@ public:
 	void SetReady( BOOL ready );
 	BOOL GetReady() const;
 
+	void SetCharData( int rankID, int rankPoint, int AccumulKillCount, int AccumulDeathCount );
+	int GetRankID() const;
+	int GetRankPoint() const;
+	int GetAccumulatedKillCount() const;
+	int GetAccumulatedDeathCount() const;
+
 	//==============================================================
 
 	void PackageMyInfo( SPacket& packet );
@@ -101,11 +112,14 @@ private:
 
 private:
 	//캐릭터 공간
-	std::vector<LobbyChar*>		m_vecCharSpace;
+	std::vector<LobbyChar*>			m_vecCharSpace;
 	//공간 관리용 index
-	SIndexQueue					m_IndexQ;
+	SIndexQueue						m_IndexQ;
 	//접속해있는 전체 캐릭터 list
-	SList<int>					m_listPlayer;
+	SList<int>						m_listPlayer;
+
+	//접속을 기다리는 캐릭터들
+	ATL::CAtlMap<int, LobbyChar*>	m_waitChar;
 
 // 	std::list<int>				m_connectPlayer;
 // 	//접속해있는 전체 캐릭터의 수
@@ -129,7 +143,15 @@ public:
 	void ReturnCharSpace( LobbyChar* charspace );
 	void ReturnCharSpace( int sessionID );
 
-	//해당 session에 해당하는 character를 받음
+	//로그인후 로비서버로 접속되길 대기하고 있는 캐릭터 정보들
+	//추가
+	void AddWaitChar( int sessionId, LobbyChar* charspace );
+	//접속되어 캐릭터 정보를 list로 넘겨지고 지운다
+	void DelWaitChar( int sessionId );
+	//기다리를 애중에 검색
+	LobbyChar* GetWaitCharInfo( int sessionID );
+
+	//session에 해당하는 character를 받음
 	LobbyChar* FindCharAsSessionId( int session );
 
 	//모든 캐릭터를 담자

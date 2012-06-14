@@ -236,6 +236,7 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 		//방을 얻어 왔고 게임이 시작중이 아니라면 게임을 열고 캐릭터를 저장해 준다
 
 		int sessionId, size, team;
+		int rankId, rankPoint, accumulKillCount, accumulDeathCount;
 		TCHAR stringID[30];
 		//인원수에 맞게 캐릭터를 생성해 준다
 		for( int i=0; i<count; ++i )
@@ -245,6 +246,9 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 			packet >> size;
 			packet.GetData( stringID, size );
 			packet >> team;
+
+			packet >> rankId >> rankPoint;
+			packet >> accumulKillCount >> accumulDeathCount;
 
 			//캐릭터 생성
 			CharObj* tmpChar = m_charMgr->GetCharSpace();

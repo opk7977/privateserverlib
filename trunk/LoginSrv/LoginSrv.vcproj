@@ -270,18 +270,6 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Dtatbase"
-			>
-			<File
-				RelativePath=".\LoginDB.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LoginDB.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Window"
 			>
 			<File

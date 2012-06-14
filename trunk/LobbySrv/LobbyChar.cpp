@@ -103,6 +103,36 @@ BOOL LobbyChar::GetReady() const
 	return m_ready;
 }
 
+void LobbyChar::SetCharData( int rankID, int rankPoint, int AccumulKillCount, int AccumulDeathCount )
+{
+	SSynchronize sync( this );
+
+	m_rankID			= rankID;
+	m_rankPoint			= rankPoint;
+	m_AccumulatedKill	= AccumulKillCount;
+	m_AccumulatedDeath	= AccumulDeathCount;
+}
+
+int LobbyChar::GetRankID() const
+{
+	return m_rankID;
+}
+
+int LobbyChar::GetRankPoint() const
+{
+	return m_rankPoint;
+}
+
+int LobbyChar::GetAccumulatedKillCount() const
+{
+	return m_AccumulatedKill;
+}
+
+int LobbyChar::GetAccumulatedDeathCount() const
+{
+	return m_AccumulatedDeath;
+}
+
 void Room::SetNormal()
 {
 	SSynchronize sync( this );
@@ -135,6 +165,11 @@ void LobbyChar::PackageMyInfoForLobby( SPacket& packet )
 	else
 		packet << m_myRoom->GetRoomNum();
 	packet << m_isPlay;
+
+	packet << m_rankID;
+	packet << m_rankPoint;
+	packet << m_AccumulatedKill;
+	packet << m_AccumulatedDeath;
 }
 
 void LobbyChar::PackageMyInfoForRoom( SPacket& packet )
@@ -147,6 +182,11 @@ void LobbyChar::PackageMyInfoForRoom( SPacket& packet )
 	packet.PutData( m_tstrId, size );
 	packet << m_myTeam;
 	packet << m_ready;
+	
+	packet << m_rankID;
+	packet << m_rankPoint;
+	packet << m_AccumulatedKill;
+	packet << m_AccumulatedDeath;
 }
 
 void LobbyChar::PackageMyInfoForGame( SPacket& packet )
@@ -158,6 +198,11 @@ void LobbyChar::PackageMyInfoForGame( SPacket& packet )
 	packet << size;
 	packet.PutData( m_tstrId, size );
 	packet << m_myTeam;
+
+	packet << m_rankID;
+	packet << m_rankPoint;
+	packet << m_AccumulatedKill;
+	packet << m_AccumulatedDeath;
 }
 
 //==============================================================
@@ -185,10 +230,13 @@ void CharMgr::Init()
 
 		m_vecCharSpace.push_back( tmpChar );
 	}
+
+	m_waitChar.RemoveAll();
 }
 
 void CharMgr::Release()
 {
+	m_waitChar.RemoveAll();
 	for( int i=0; i<m_document->SessionCount; ++i )
 	{
 		delete m_vecCharSpace[i];
@@ -221,6 +269,34 @@ void CharMgr::ReturnCharSpace( LobbyChar* charspace )
 	m_listPlayer.DelItem( index );
 
 	m_IndexQ.PutIndex( index );
+}
+
+void CharMgr::AddWaitChar( int sessionId, LobbyChar* charspace )
+{
+	if( sessionId <= 0 )
+		return;
+
+	m_waitChar[sessionId] = charspace;
+}
+
+void CharMgr::DelWaitChar( int sessionId )
+{
+	if( sessionId <= 0 )
+		return;
+
+	m_waitChar.RemoveKey( sessionId );
+}
+
+LobbyChar* CharMgr::GetWaitCharInfo( int sessionID )
+{
+	if( sessionID <= 0 )
+		return NULL;
+
+	LobbyChar* tmpChar = NULL;
+	if( !m_waitChar.Lookup( sessionID, tmpChar ) )
+		return NULL;
+
+	return tmpChar;
 }
 
 void CharMgr::ReturnCharSpace( int sessionID )

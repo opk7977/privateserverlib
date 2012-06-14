@@ -9,6 +9,9 @@ class DBMgr;
 class PlayerObj;
 class PlayerMgr;
 
+class SLogger;
+class LogSrvMgr;
+
 class DBSession : public SSessionObj
 {
 public:
@@ -22,6 +25,12 @@ private:
 	static SrvMgr*			m_login;
 	static SrvMgr*			m_lobby;
 	static SrvMgr*			m_game;
+
+	//======================================
+	// Log
+	//======================================
+	static SLogger*			m_logger;
+	static LogSrvMgr*		m_logSrv;
 
 	//======================================
 	// single Ton들
@@ -42,6 +51,7 @@ public:
 	// 받아서 처리
 	//======================================
 	//LOG_SERVER_CONNECT_OK
+	void RecvLogSrvConnectOK();
 
 	//LOG_SERVER_SHOTDOWN
 
@@ -63,10 +73,13 @@ public:
 	//LOGIN_TO_DB_TRYLOGIN
 	void RecvLoginTryLogin( SPacket& packet );
 
+	//LOBBY_TO_DB_CHARINSERT_READY_RESULT
+	void RecvLobbyCharInsertReadyResult( SPacket& packet );
+
 	//GAME_TO_DB_UPDATE_USERDATA
 	
-
 	//OTHER_TO_DB_DISCONNECT_CHARACTER
+	void RecvOtherSrvCharDisconnect( SPacket& packet );
 
 	//======================================
 	// 보내는 처리
@@ -83,7 +96,7 @@ public:
 	BOOL SendLoginCreateAccountResult( int indexId, BOOL result );
 
 	//DB_TO_LOBBY_CHARACTER_LOGIN
-	BOOL SendLobbyChacterLogin( PlayerObj* playe );
+	BOOL SendLobbyChacterLogin( int index, PlayerObj* playe );
 
 	//DB_TO_LOGIN_LOGINRESULT
 	BOOL SendLoginTryLoginResult( int indexId, int result );

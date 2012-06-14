@@ -2,10 +2,13 @@
 
 #include "SServerStd.h"
 
+#define GAMESERVER_ID 9000
+
 class DataLeader;
 class PlayerMgr;
 class Network;
 class DBMgr;
+class LogSrvMgr;
 
 class DBMain
 {
@@ -16,7 +19,9 @@ class DBMain
 	PlayerMgr*			m_playerMgr;
 	Network*			m_network;
 	DBMgr*				m_dbMgr;
+	LogSrvMgr*			m_logSrv;
 	//======================================
+
 public:
 	DBMain(void);
 	~DBMain(void);

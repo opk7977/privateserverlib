@@ -1,5 +1,5 @@
 #include "LoginMain.h"
-#include "LoginDB.h"
+/*#include "LoginDB.h"*/
 #include "Network.h"
 #include "LogSrvNet.h"
 #include "TmpSessionSpace.h"
@@ -11,7 +11,7 @@
 LoginMain::LoginMain(void)
 {
 	m_network	= &GetNetwork;
-	m_dbMgr		= &GetDBMgr;
+/*	m_dbMgr		= &GetDBMgr;*/
 	m_document	= &GetDocument;
 	m_logSrv	= &GetSrvNet;
 	m_tmpSpace	= &GetTmpSpace;
@@ -72,5 +72,4 @@ BOOL LoginMain::Init()
 
 void LoginMain::Relase()
 {
-	m_dbMgr->Release();
 }

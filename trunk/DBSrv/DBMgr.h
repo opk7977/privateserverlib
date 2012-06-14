@@ -3,6 +3,7 @@
 #include "SQuery.h"
 
 class RankDataMgr;
+class SLogger;
 class PlayerObj;
 
 class DBMgr : public SSingleton <DBMgr>
@@ -15,6 +16,7 @@ private:
 	// db 싱글턴
 	//======================================
 	RankDataMgr*	m_rankMgr;
+	SLogger*		m_logger;
 	//======================================
 
 	SQuery			m_query;
@@ -41,6 +43,8 @@ public:
 	int TryLogin( TCHAR* _id, TCHAR* _pw );
 	//UserData를 받아 셋팅
 	BOOL SettingUserData( int sessionID, PlayerObj* player );
+	//DB를 업데이트
+	BOOL UpdateUserData( int sessionID, int rankId, int rankPoint, int accumulKill, int accumulDeath );
 };
 
 #define GetDBMgr DBMgr::GetInstance()

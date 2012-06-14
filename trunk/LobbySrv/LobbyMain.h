@@ -6,7 +6,8 @@ class Network;
 class RoomMgr;
 class CharMgr;
 class DataLeader;
-class CheckDB;
+class DBSrvMgr;
+//class CheckDB;
 
 class LobbyMain
 {
@@ -18,7 +19,8 @@ private:
 	RoomMgr*	m_roomMgr;
 	CharMgr*	m_charMgr;
 	DataLeader*	m_document;
-	CheckDB*	m_dbMgr;
+	DBSrvMgr*	m_dbMgr;
+	//CheckDB*	m_dbMgr;
 	//======================================
 
 public:

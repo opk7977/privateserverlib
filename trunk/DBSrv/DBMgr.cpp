@@ -1,9 +1,16 @@
 #include "DBMgr.h"
 #include "PlayerMgr.h"
 
+#include "SLogger.h"
+
+
 DBMgr::DBMgr(void)
 {
 	m_rankMgr = &GetRankMgr;
+
+#ifdef _DEBUG
+	m_logger = &GetLogger;
+#endif
 }
 
 DBMgr::~DBMgr(void)
@@ -13,7 +20,12 @@ DBMgr::~DBMgr(void)
 BOOL DBMgr::Init( TCHAR* dbname, TCHAR* _id, TCHAR* _pw )
 {
 	if( !m_query.ConnectSrv( dbname, _id, _pw ) )
+	{
+#ifdef _DEBUG
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("DBMgr::Init() DB연결 실패\n\n") );
+#endif
 		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -125,6 +137,23 @@ BOOL DBMgr::SettingUserData( int sessionID, PlayerObj* player )
 	}
 
 	m_query.Clear();
+
+	return TRUE;
+}
+
+BOOL DBMgr::UpdateUserData( int sessionID, int rankId, int rankPoint, int accumulKill, int accumulDeath )
+{
+	SQLINTEGER iJnk = SQL_NTS;
+	SQLRETURN sqlret;
+
+	sqlret = m_query.BindParamaterInt( 1, sessionID, iJnk, TRUE );
+	sqlret = m_query.BindParamaterInt( 2, rankId, iJnk, TRUE );
+	sqlret = m_query.BindParamaterInt( 3, rankPoint, iJnk, TRUE );
+	sqlret = m_query.BindParamaterInt( 4, accumulKill, iJnk, TRUE );
+	sqlret = m_query.BindParamaterInt( 5, accumulDeath, iJnk, TRUE );
+
+	if( !m_query.Exec( _T("{call UpdateUserData(?,?,?,?,?)};") ) )
+		return FALSE;
 
 	return TRUE;
 }

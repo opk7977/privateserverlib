@@ -1,25 +1,35 @@
 #pragma once
 
+#define CONNECT_LOG_SERVER
+
+//
 enum SERVER_CODE
 {
 	// 쿼리 오류 등 서버 자체적인 에러로
 	// 정상적인 처리가 되지 못한경우
 	// 결과값으로 들어가 있을 수 있다.
-	SERVER_ERROR	= -10,
+	SERVER_ERROR			= -10,
 	// 성공의 결과값
-	SUCCESSED_ACK	= 1,
+	SUCCESSED_ACK			= 1,
 
 	//--------------------------------------------------------------
 
 	// ID체크 결과로 ID가 중복될때
-	OVERLAPPED_ID	= -1,
+	OVERLAPPED_ID			= -1,
 
 	// 로그인 결과로 해당 ID가 이미 로그인 중에 있을때
-	PRE_LOGIN_ID	= -5,
+	PRE_LOGIN_ID			= -5,
 	// 로그인 결과로 ID가 없음
-	NONEXISTENT_ID	= -1,
+	NONEXISTENT_ID			= -1,
 	// 로그인 결과로 PW가 틀림
-	WRONG_PW		= 0,
+	WRONG_PW				= 0,
+
+	//--------------------------------------------------------------
+
+	// 더이상 로그인 할 수 없습니다
+	CHARAVER_SPACE_IS_FULL	= -20,
+
+	//--------------------------------------------------------------
 };
 
 enum LOG_SERVER
@@ -122,6 +132,7 @@ enum DB_SERVER
 
 	// DBSrv -> lobbySrv
 	// 로그인이 됬다면 lobby서버로 이 user의 data를 보낸다
+	// int			-		임시 index
 	// int			-		sessionId
 	// int			-		id데이터 크기
 	// TCHAR		-		id
@@ -131,8 +142,18 @@ enum DB_SERVER
 	// int			-		AccumulatedDeathPoint
 	DB_TO_LOBBY_CHARACTER_LOGIN,
 
+	// lobbySrv -> DBSrv
+	// 로비에 캐릭터 정보가 준비 되었다는 신호를 로비가 디비에게 전달
+	// int			-		임시 index
+	// int			-		sessionID
+	// int			-		결과
+	//						( 정상적으로 준비 완료 : 1
+	//						  캐릭터가 더이상 접속 할 수 없음 : -10 )
+	LOBBY_TO_DB_CHARINSERT_READY_RESULT,
+
 	// DBSrv -> loginSrv
 	// 로그인 결과를 보낸다
+	// int			-		임시 index
 	// int			-		result( 이미로그인중: PRE_LOGIN_ID(-5)
 	//							  / 없는 아이디 : NONEXISTENT_ID(-1)
 	//							  / 비번 틀림   : WRONG_PW(0)

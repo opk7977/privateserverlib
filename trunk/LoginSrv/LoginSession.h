@@ -4,7 +4,6 @@
 
 class SPacket;
 
-class LoginDB;
 class SLogger;
 class DataLeader;
 class LogSrvNet;
@@ -28,7 +27,6 @@ private:
 	//======================================
 	// Single Ton°´Ã¼
 	//======================================
-	LoginDB*			m_dbMgr;		//db°´Ã¼
 	SLogger*			m_logger;		//·Î±× °´Ã¼
 	DataLeader*			m_document;		//¼­¹ö data
 	LogSrvNet*			m_logSrv;		//·Î±× ¼­¹ö

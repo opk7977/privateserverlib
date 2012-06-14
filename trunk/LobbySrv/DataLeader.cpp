@@ -88,6 +88,27 @@ BOOL DataLeader::DataSetting()
 	sscanf_s( text, "%s", tmpNum, 10 );
 	GamePlaySec = atoi( tmpNum );
 
+	//======================================
+	// LogSrv정보를 받아 온다
+	//======================================
+	//<<로그 서버>>
+	fgets( text, 256, fp );
+	//192.168.0.56	7800
+	fgets( text, 256, fp );
+	sscanf_s( text, "%s %s", LogSrvIP, 15, tmpNum, 10 );
+	LogSrvPortNum = atoi( tmpNum );
+
+	//======================================
+	// DBSrv정보를 받아 온다
+	//======================================
+	//<<DB 서버>>
+	fgets( text, 256, fp );
+	//192.168.0.56	9000
+	fgets( text, 256, fp );
+	sscanf_s( text, "%s %s", DBSrvIp, 15, tmpNum, 10 );
+	DBSrvPortNum = atoi( tmpNum );
+
+
 	fclose( fp );
 
 	return TRUE;

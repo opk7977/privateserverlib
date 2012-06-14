@@ -5,7 +5,9 @@
 class LoginSession;
 class SPacket;
 
-class SLogger;
+#ifdef _DEBUG
+	class SLogger;
+#endif
 
 class DBSrvMgr : public SSingleton <DBSrvMgr>
 {
@@ -16,7 +18,9 @@ private:
 	//======================================
 	// singleTon°´Ã¼
 	//======================================
+#ifdef _DEBUG
 	SLogger*			m_logger;
+#endif
 
 private:
 	SSocket				m_sock;

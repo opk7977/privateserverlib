@@ -1,6 +1,5 @@
 #include "LoginSession.h"
 #include "LoginProtocol.h"
-#include "LoginDB.h"
 #include "DataLeader.h"
 
 #include "SPacket.h"
@@ -21,7 +20,6 @@ LoginSession::LoginSession(void)
 , m_isWaitting(FALSE)
 {
 	//singleTon객체를 미리 받아 논다.
-	m_dbMgr		= &GetDBMgr;
 	m_logger	= &GetLogger;
 	m_document	= &GetDocument;
 	m_logSrv	= &GetSrvNet;

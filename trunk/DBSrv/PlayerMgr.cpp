@@ -1,8 +1,10 @@
 #include "PlayerMgr.h"
 #include "SSynchronize.h"
 #include "SPacket.h"
+#include "DBMgr.h"
 
-RankDataMgr* PlayerObj::m_rankData = &GetRankMgr;
+RankDataMgr*	PlayerObj::m_rankData	= &GetRankMgr;
+DBMgr*			PlayerObj::m_dbMgr		= &GetDBMgr;
 
 PlayerObj::PlayerObj(void)
 {
@@ -77,6 +79,12 @@ void PlayerObj::AddRankPoint( int point )
 	//ID를 point에 맞게 새로 셋팅
 	m_Rank_ID = m_rankData->GetRank( m_Rank_ID, m_Rank_Point );
 }
+
+BOOL PlayerObj::DBDataUpdate()
+{
+	return m_dbMgr->UpdateUserData( m_sessionID, m_Rank_ID, m_Rank_Point, m_AccumulatedKill, m_AccumulatedDeath );
+}
+
 //==============================================================
 
 RankDataMgr::RankDataMgr()

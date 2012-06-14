@@ -3,6 +3,7 @@
 #include "SIndexQueue.h"
 
 class RankDataMgr;
+class DBMgr;
 class SPacket;
 
 //--------------------------------------
@@ -15,6 +16,7 @@ private:
 	// singleTon °´Ã¼µé
 	//======================================
 	static RankDataMgr*			m_rankData;
+	static DBMgr*				m_dbMgr;
 	//======================================
 	int		m_sessionID;
 	TCHAR	m_UserID[10];
@@ -51,6 +53,8 @@ public:
 	inline void AddDeathCount( int deathCount ) { m_AccumulatedDeath += deathCount; }
 
 	void AddRankPoint( int point );
+
+	BOOL DBDataUpdate();
 };
 
 //======================================
