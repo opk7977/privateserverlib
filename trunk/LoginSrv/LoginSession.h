@@ -6,8 +6,7 @@ class SPacket;
 
 class SLogger;
 class DataLeader;
-class LogSrvNet;
-class LogMgr;
+class LogSrvMgr;
 class DBSrvMgr;
 class TmpSessionSpace;
 
@@ -29,8 +28,7 @@ private:
 	//======================================
 	SLogger*			m_logger;		//로그 객체
 	DataLeader*			m_document;		//서버 data
-	LogSrvNet*			m_logSrv;		//로그 서버
-	LogMgr*				m_logMgr;		//로그메니져
+	LogSrvMgr*			m_logSrv;		//로그서버 메이져
 	DBSrvMgr*			m_dbSrvMgr;		//DB서버 메니져
 	TmpSessionSpace*	m_tmpSpace;		//데기를 할 session을 담을 공간
 	//======================================

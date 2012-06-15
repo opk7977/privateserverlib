@@ -136,7 +136,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SegClient.lib"
+				AdditionalDependencies="SegServer.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../Rlib"
 				GenerateDebugInformation="true"

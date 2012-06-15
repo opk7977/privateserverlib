@@ -11,7 +11,8 @@ SThreadMgr::SThreadMgr(void)
 SThreadMgr::~SThreadMgr(void)
 {
 	//list에 있는 모든 쓰레드를 종료 삭제
-	//while( m_listThread.size() > 0 )
+	IsEndAllThread();
+
 	while( !m_listThread.empty() )
 	{
 		CloseHandle( *m_listThread.begin() );

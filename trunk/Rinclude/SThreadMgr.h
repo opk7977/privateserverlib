@@ -32,7 +32,8 @@ public:
 	//-----------------------------------------------
 	// 쓰레드를 생성하여 list에 저장
 	//-----------------------------------------------
-	HANDLE Create( LPTHREAD_START_ROUTINE startAddress, LPVOID parameter, DWORD* threadID );
+	//HANDLE Create( LPTHREAD_START_ROUTINE startAddress, LPVOID parameter, DWORD* threadID );
+	HANDLE Create( LPVOID startAddress, LPVOID parameter, unsigned int *threadID );
 };
 
 //Mgr을 쉽게 부르기 위해 정의 해 둔다

@@ -11,6 +11,7 @@ SSession::SSession(void)
 , m_mySessionID(0)
 {
 	ZeroMemory( m_IPAddr, 20 );
+	ZeroMemory( m_tIPAddr, 40 );
 }
 
 SSession::~SSession(void)
@@ -44,6 +45,8 @@ void SSession::OnCreate()
 	{
 		//ip¿˙¿Â
 		CopyMemory( m_IPAddr, inet_ntoa(sockAddr.sin_addr), strlen( inet_ntoa(sockAddr.sin_addr) ) );
+		MultiByteToWideChar( CP_ACP, 0, m_IPAddr, strlen(m_IPAddr), m_tIPAddr, 20 );
+		
 		//logøÎ///////////////////////////////////////////////////////////
 #ifdef _DEBUG
 // 		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, "[Session::OnCreate()] Connect Client_IP: %s_Port: %d\n",

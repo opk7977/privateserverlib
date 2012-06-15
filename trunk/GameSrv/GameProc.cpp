@@ -33,7 +33,7 @@ GameProc::~GameProc(void)
 void GameProc::Init( int i )
 {
 	m_id	= i;
-	m_port	= GetDocument.GameSrvProtNum+i+10;
+	m_port	= GetDocument.GameSrvPortNum+i+10;
 
 	Init();
 }

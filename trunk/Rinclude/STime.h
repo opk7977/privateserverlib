@@ -1,5 +1,4 @@
-#ifndef __MY_TIME__
-#define __MY_TIME__
+#pragma once
 
 #include "SServerobj.h"
 
@@ -25,5 +24,4 @@ public:
 	void ProcessTime();
 };
 
-#endif
 

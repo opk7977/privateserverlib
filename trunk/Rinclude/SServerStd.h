@@ -7,18 +7,20 @@
 #include <Windows.h>
 #include <tchar.h>
 #include <string>
+#include <time.h>
 
 #include <vector>
 #include <list>
 #include <map>
 #include <atlcoll.h>
 
-#define WORKER_THREAD_COUNT			4
+#define WORKER_THREAD_COUNT			3
 #define MAX_SESSION_COUNT			200
 
 #define ASYNCFLAG_SEND				0x01
 #define ASYNCFLAG_RECEIVE			0x02
 
+#define BASIC_SESSIONSPACE			100
 
 // ΩÃ±€≈œ ≈€«√∏¥
 //----------------------------------------------------
@@ -64,5 +66,26 @@ typedef struct CUSTOMOVERLAPPED : OVERLAPPED
 	{
 	}
 }CUSTOMOVERLAPPED;
+
+struct POINT3
+{
+	float m_X, m_Y, m_Z;
+
+	POINT3() {}
+	POINT3( float x, float y, float z ) : m_X(x), m_Y(y), m_Z(z) {}
+	~POINT3() {}
+
+	void Clear()
+	{
+		m_X = m_Y = m_Z = 0.f;
+	}
+
+	void SetElement( float x, float y, float z )
+	{
+		m_X = x;
+		m_Y = y;
+		m_Z = z;
+	}
+};
 
 #endif

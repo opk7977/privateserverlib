@@ -11,18 +11,20 @@
 SIMPLEMENT_DYNAMIC(DBSession)
 SIMPLEMENT_DYNCREATE(DBSession)
 
-SrvMgr*		DBSession::m_login		= new SrvMgr;
-SrvMgr*		DBSession::m_lobby		= new SrvMgr;
-SrvMgr*		DBSession::m_game		= new SrvMgr;
+SrvMgr*		DBSession::m_login			= new SrvMgr;
+SrvMgr*		DBSession::m_lobby			= new SrvMgr;
+SrvMgr*		DBSession::m_game			= new SrvMgr;
 
-DBMgr*		DBSession::m_dbMgr		= &GetDBMgr;
-PlayerMgr*	DBSession::m_playerMgr	= &GetPlayerMgr;
+DBMgr*		DBSession::m_dbMgr			= &GetDBMgr;
+PlayerMgr*	DBSession::m_playerMgr		= &GetPlayerMgr;
 
 #ifdef _DEBUG
 	SLogger*	DBSession::m_logger		= &GetLogger;
 #endif
 #ifdef CONNECT_LOG_SERVER
 	LogSrvMgr*	DBSession::m_logSrv		= &GetLogSrvMgr;
+#else
+	LogSrvMgr*	DBSession::m_logSrv		= NULL;
 #endif
 
 
@@ -44,7 +46,52 @@ void DBSession::OnCreate()
 
 void DBSession::OnDestroy()
 {
-	//할일 합시돠...
+	if( m_login->GetSession() == this )
+	{
+#ifdef _DEBUG
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+						_T("DBSession::OnDestroy()\n로그 서버와 연결이 끈겼습니다.\n\n") );
+#endif
+#ifdef CONNECT_LOG_SERVER
+		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
+						_T("DBSession::OnDestroy() 로그 서버와 연결이 끈겼습니다") );
+#endif
+		m_login->Release();
+	}
+	else if( m_lobby->GetSession() == this )
+	{
+#ifdef _DEBUG
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+						_T("DBSession::OnDestroy()\n로비 서버와 연결이 끈겼습니다.\n\n") );
+#endif
+#ifdef CONNECT_LOG_SERVER
+		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
+						_T("DBSession::OnDestroy() 로비 서버와 연결이 끈겼습니다") );
+#endif
+		m_lobby->Release();
+	}
+	else if( m_game->GetSession() == this )
+	{
+#ifdef _DEBUG
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+			_T("DBSession::OnDestroy()\n게임 서버와 연결이 끈겼습니다.\n\n") );
+#endif
+#ifdef CONNECT_LOG_SERVER
+		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
+			_T("DBSession::OnDestroy() 게임 서버와 연결이 끈겼습니다") );
+#endif
+		m_game->Release();
+	}
+#ifdef CONNECT_LOG_SERVER
+	else if( m_logSrv->GetSession() == this )
+	{
+	#ifdef _DEBUG
+			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+				_T("DBSession::OnDestroy()\n로그 서버와 연결이 끈겼습니다.\n\n") );
+	#endif
+		m_logSrv->Release();
+	}
+#endif
 
 	SSession::OnDestroy();
 }
@@ -59,7 +106,7 @@ void DBSession::PacketParsing( SPacket& packet )
 		RecvLogSrvConnectOK();
 		break;
 	case LOG_SERVER_SHOTDOWN:
-		//
+		RecvLogServerShotdown();
 		break;
 	//==============================================================> Log서버
 	case SC_LOGIN_CONNECT_OK:
@@ -91,7 +138,12 @@ void DBSession::PacketParsing( SPacket& packet )
 		RecvOtherSrvCharDisconnect( packet );
 		break;
 	default:
-		//
+#ifdef _DEBUG
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("%d번은 정의되지 않은 패킷 id입니다.\n\n"), packet.GetID() );
+#endif
+#ifdef CONNECT_LOG_SERVER
+		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_WORRNING, _T("%d번은 정의되지 않은 패킷 id입니다."), packet.GetID() );
+#endif
 		break;
 	}
 }
@@ -100,13 +152,26 @@ void DBSession::PacketParsing( SPacket& packet )
 
 void DBSession::RecvLogSrvConnectOK()
 {
+#ifdef CONNECT_LOG_SERVER
 	m_logSrv->SetSession( this );
+#endif
 
 #ifdef _DEBUG
 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 					_T("DBSession::RecvLogSrvConnectOK()\n로그 서버와 연결되었습니다\n\n") );
 #endif
 
+}
+
+void DBSession::RecvLogServerShotdown()
+{
+#ifdef CONNECT_LOG_SERVER
+	#ifdef _DEBUG
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+			_T("DBSession::RecvLogServerShotdown()\n로그 서버와 연결이 끈겼습니다.\n\n") );
+	#endif
+	m_logSrv->Release();
+#endif
 }
 
 //==============================================================
@@ -321,17 +386,16 @@ void DBSession::RecvLoginTryLogin( SPacket& packet )
 	{
 		//이미 로그인 되어 있는 ID
 		//다른 서버로 애를 튕기라고 전한다
-		//
-		//
-		//
+		//SendLobbyNGameDropPlayer( sessionID );
+
 #ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-						_T("DBSession::RecvLoginTryLogin()\nID %s 이미 로그인 된 ID입니다.\n\n"), tmpId );
+						_T("DBSession::RecvLoginTryLogin()\nID %s 이미 로그인 된 ID입니다. 기존의 player의 접속을 끊습니다.\n\n"), tmpId );
 #endif
 
 #ifdef CONNECT_LOG_SERVER
 		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
-						_T("DBSession::RecvLoginTryLogin() ID %s 이미 로그인 된 ID입니다."), tmpId );
+						_T("DBSession::RecvLoginTryLogin() ID %s 이미 로그인 된 ID입니다. 기존의 player의 접속을 끊습니다."), tmpId );
 #endif
 
 		//id가 이미 사용중이었다고 보낸다
@@ -363,6 +427,63 @@ void DBSession::RecvLobbyCharInsertReadyResult( SPacket& packet )
 	SendLoginTryLoginResult( index, sessionId );
 }
 
+void DBSession::RecvGameCharDataUpdate( SPacket& packet )
+{
+	int roomNum, count;
+	int sessionId, rankPoint, killCount, deathCount;
+
+	packet >> roomNum;
+	packet >> count;
+
+	//게임서버로 다시 보낼 패킷( 아직 어떤 데이터를 보내야 하는지 결정이 X )
+//  	SPacket sendToGame( DB_TO_GAME_LEVEL_UP_PLAYER );
+	//로비로 보낼 패킷
+	SPacket sendToLobby( DB_TO_LOBBY_UPDATE_USERDATA );
+
+//  	sendToGame << roomNum << count;
+	sendToLobby << count;
+
+	for( int i=0; i<count; ++i )
+	{
+		//데이터 추출
+		packet >> sessionId >> rankPoint >> killCount >> deathCount;
+
+		//캐릭터를 받아 온다
+		PlayerObj* tmpPlayer = m_playerMgr->FindPlayerBySessionId( sessionId );
+		if( tmpPlayer == NULL )
+		{
+#ifdef _DEBUG
+			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+				_T("DBSession::RecvGameCharDataUpdate()\nSessionID %d번 player정보를 찾을 수 없습니다.\n\n"), sessionId );
+#endif
+			continue;
+		}
+
+		//캐릭터 정보 업데이트
+		tmpPlayer->AddRankPoint( rankPoint );
+		tmpPlayer->AddKillCount( killCount );
+		tmpPlayer->AddDeathCount( deathCount );
+
+		//--------------------------------------------------------------
+		//게임서버로 보낼 데이터를 넣어 준다
+// 		sendToGame << sessionId;
+// 		sendToGame << tmpPlayer->GetRankID();
+		//--------------------------------------------------------------
+		//로비로 보낼 데이터를 넣어 준다
+		sendToLobby << sessionId;
+		sendToLobby << tmpPlayer->GetRankID();
+		sendToLobby << tmpPlayer->GetRankPoint();
+		sendToLobby << tmpPlayer->GetAccumulKillCount();
+		sendToLobby << tmpPlayer->GetAccumulDeathCount();
+		//--------------------------------------------------------------		
+	}
+
+	//로비로 전송!
+// 	m_lobby->SendPacketToSrv( sendToLobby );
+
+	//게임 서버로 전송!
+}
+
 void DBSession::RecvOtherSrvCharDisconnect( SPacket& packet )
 {
 	int sessionId;
@@ -383,18 +504,18 @@ void DBSession::RecvOtherSrvCharDisconnect( SPacket& packet )
 
 #ifdef _DEBUG
 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-					_T("DBSession::RecvOtherSrvCharDisconnect()\nSessionID %d번 dataUPdate\n")
-					_T("rankID: %d/ rankPoint: %d/ KillCount: %d/ DeathCount: %d\n\n")
-					, sessionId
-					, tmpPlayer->GetRankID(), tmpPlayer->GetRankPoint(), tmpPlayer->GetAccumulKillCount(), tmpPlayer->GetAccumulDeathCount() );
+					_T("DBSession::RecvOtherSrvCharDisconnect()/n캐릭터%s dataUPdate/n")
+					_T("SessionID: %d/ rankID: %d/ rankPoint: %d/ KillCount: %d/ DeathCount: %d/n/n")
+					, tmpPlayer->GetUserID()
+					, sessionId, tmpPlayer->GetRankID(), tmpPlayer->GetRankPoint(), tmpPlayer->GetAccumulKillCount(), tmpPlayer->GetAccumulDeathCount() );
 #endif
 
 #ifdef CONNECT_LOG_SERVER
 	m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
-					_T("DBSession::RecvOtherSrvCharDisconnect()\nSessionID %d번 dataUPdate\t")
-					_T("rankID: %d/ rankPoint: %d/ KillCount: %d/ DeathCount: %d")
-					, sessionId
-					, tmpPlayer->GetRankID(), tmpPlayer->GetRankPoint(), tmpPlayer->GetAccumulKillCount(), tmpPlayer->GetAccumulDeathCount() );
+					_T("DBSession::RecvOtherSrvCharDisconnect() 캐릭터%s dataUPdate\t")
+					_T("SessionID: %d/ rankID: %d/ rankPoint: %d/ KillCount: %d/ DeathCount: %d")
+					, tmpPlayer->GetUserID()
+					, sessionId, tmpPlayer->GetRankID(), tmpPlayer->GetRankPoint(), tmpPlayer->GetAccumulKillCount(), tmpPlayer->GetAccumulDeathCount() );
 #endif
 	
 	if( !tmpPlayer->DBDataUpdate() )
@@ -402,14 +523,24 @@ void DBSession::RecvOtherSrvCharDisconnect( SPacket& packet )
 		//로그를 남긴다.
 #ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-						_T("DBSession::RecvOtherSrvCharDisconnect()\nSessionID %d번 dataUPdate실패.\n\n"), sessionId );
+						_T("DBSession::RecvOtherSrvCharDisconnect()\n캐릭터%s dataUPdate실패.\n\n"), tmpPlayer->GetUserID() );
 #endif
 
 #ifdef CONNECT_LOG_SERVER
 		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
-						_T("DBSession::RecvOtherSrvCharDisconnect() SessionID %d번 dataUPdate실패."), sessionId );
+						_T("DBSession::RecvOtherSrvCharDisconnect() 캐릭터%s dataUPdate실패."), tmpPlayer->GetUserID() );
 #endif
 	}
+
+#ifdef _DEBUG
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+		_T("DBSession::RecvOtherSrvCharDisconnect()\n캐릭터%s 님이 로그아웃 하셨습니다.\n\n"), tmpPlayer->GetUserID() );
+#endif
+
+#ifdef CONNECT_LOG_SERVER
+	m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
+		_T("DBSession::RecvOtherSrvCharDisconnect() 캐릭터%s 님이 로그아웃 하셨습니다."), tmpPlayer->GetUserID() );
+#endif
 
 	m_playerMgr->ReturnPlayerSpace( tmpPlayer );
 }
@@ -460,6 +591,19 @@ BOOL DBSession::SendLoginTryLoginResult( int indexId, int result )
 	sendPacket << result;
 
 	m_login->SendPacketToSrv( sendPacket );
+
+	return TRUE;
+}
+
+BOOL DBSession::SendLobbyNGameDropPlayer( int sessionID )
+{
+	SPacket sendPacket( DB_TO_OTHER_DROP_PLAYER );
+	
+	sendPacket << sessionID;
+
+	//저 아이디의 접속을 끊어버린다.
+	m_lobby->SendPacketToSrv( sendPacket );
+	m_game->SendPacketToSrv( sendPacket );
 
 	return TRUE;
 }

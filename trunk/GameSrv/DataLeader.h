@@ -20,9 +20,15 @@ public:
 	int		LobbySrvPortNum;
 	//--------------------------------------------------------------
 	char	GameSrvIP[15];
-	int		GameSrvProtNum;
+	int		GameSrvPortNum;
 	//--------------------------------------------------------------
-	int		GamePlaySec;
+	char	LogSrvIP[15];
+	int		LogSrvPortNum;
+	//--------------------------------------------------------------
+	char	DBSrvIp[15];
+	int		DBSrvPortNum;
+	//--------------------------------------------------------------
+
 
 public:
 	DataLeader(void);

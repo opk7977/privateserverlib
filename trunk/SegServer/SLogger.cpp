@@ -9,9 +9,7 @@ SLogger::SLogger(void) : m_pFile(0)
 {
 	//한글을 입력되게 선언해 줘야 한다!!!!!!!
 	_tsetlocale(LC_ALL, _T("Korean")); 
-
-	//콘솔 창을 띄움
-	AllocConsole();
+	
 }
 
 SLogger::~SLogger(void)
@@ -23,6 +21,9 @@ SLogger::~SLogger(void)
 void SLogger::Create( char* filename )
 {
 	SSynchronize Sync( this );
+
+	//콘솔 창을 띄움
+	AllocConsole();
 
 	//넘겨받은 filename의 길이 체크
 	int filenameLen = strlen( filename );

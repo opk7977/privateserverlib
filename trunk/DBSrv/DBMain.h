@@ -2,7 +2,7 @@
 
 #include "SServerStd.h"
 
-#define GAMESERVER_ID 9000
+#define DB_SERVER_ID 9000
 
 class DataLeader;
 class PlayerMgr;

@@ -30,6 +30,7 @@ protected:
 	//int					m_iIocpKey;
 	//자신의 ip주소
 	char				m_IPAddr[20];
+	TCHAR				m_tIPAddr[20];
 
 public:
 	SSession(void);

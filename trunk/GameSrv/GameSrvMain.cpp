@@ -36,7 +36,7 @@ BOOL GameSrvMain::Init()
 		return FALSE;
 
 	//서버 셋팅
-	if( !GetNetwork.SrvSetting( GetDocument.GameSrvProtNum ) )
+	if( !GetNetwork.SrvSetting( GetDocument.GameSrvPortNum ) )
 		return FALSE;
 
 	//로비서버와 접속

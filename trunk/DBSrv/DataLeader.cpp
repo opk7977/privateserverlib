@@ -33,6 +33,46 @@ BOOL DataLeader::DataSetting()
 	SessionCount = atoi( tmpNum );
 
 	//======================================
+	// 방갯수를 받아 온다
+	//======================================
+	//<<게임 방 갯수>>
+	fgets( text, 256, fp );
+	//4
+	fgets( text, 256, fp );
+	sscanf_s( text, "%s", tmpNum, 10 );
+	RoomCount = atoi( tmpNum );
+
+	//======================================
+	// LoginSrv정보를 받아 온다
+	//======================================
+	//<<로그인 서버>>
+	fgets( text, 256, fp );
+	//192.168.0.56	8800
+	fgets( text, 256, fp );
+	sscanf_s( text, "%s %s", LoginSrvIP, 15, tmpNum, 10 );
+	LoginSrvPortNum = atoi( tmpNum );
+
+	//======================================
+	// LobbySrv정보를 받아 온다
+	//======================================
+	//<<로비 서버>>
+	fgets( text, 256, fp );
+	//192.168.0.56	8900
+	fgets( text, 256, fp );
+	sscanf_s( text, "%s %s", LobbySrvIP, 15, tmpNum, 10 );
+	LobbySrvPortNum = atoi( tmpNum );
+
+	//======================================
+	// GameSrv정보를 받아 온다
+	//======================================
+	//<<게임 서버>>
+	fgets( text, 256, fp );
+	//192.168.0.56	7900
+	fgets( text, 256, fp );
+	sscanf_s( text, "%s %s", GameSrvIP, 15, tmpNum, 10 );
+	GameSrvPortNum = atoi( tmpNum );
+
+	//======================================
 	// LogSrv정보를 받아 온다
 	//======================================
 	//<<로그 서버>>
@@ -41,6 +81,16 @@ BOOL DataLeader::DataSetting()
 	fgets( text, 256, fp );
 	sscanf_s( text, "%s %s", LogSrvIP, 15, tmpNum, 10 );
 	LogSrvPortNum = atoi( tmpNum );
+
+	//======================================
+	// DBSrv정보를 받아 온다
+	//======================================
+	//<<DB 서버>>
+	fgets( text, 256, fp );
+	//192.168.0.56	9000
+	fgets( text, 256, fp );
+	sscanf_s( text, "%s %s", DBSrvIp, 15, tmpNum, 10 );
+	DBSrvPortNum = atoi( tmpNum );
 
 	fclose( fp );
 

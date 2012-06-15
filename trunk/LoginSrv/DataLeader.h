@@ -20,9 +20,7 @@ public:
 	int		LobbySrvPortNum;
 	//--------------------------------------------------------------
 	char	GameSrvIP[15];
-	int		GameSrvProtNum;
-	//--------------------------------------------------------------
-	int		GamePlaySec;
+	int		GameSrvPortNum;
 	//--------------------------------------------------------------
 	char	LogSrvIP[15];
 	int		LogSrvPortNum;

@@ -73,10 +73,10 @@ void LogSrvMgr::DisConnect()
 {
 	SSynchronize sync( this );
 
-	if( m_logSrv == NULL )
+	if( !m_isConnect )
 		return;
 
-	m_logSrv->OnDestroy();
+	//m_logSrv->OnDestroy();
 
 	m_isConnect = FALSE;
 	m_logSrv = NULL;

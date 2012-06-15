@@ -1,20 +1,23 @@
 #include "LoginMain.h"
-/*#include "LoginDB.h"*/
-#include "Network.h"
-#include "LogSrvNet.h"
-#include "TmpSessionSpace.h"
-#include "DBSrvMgr.h"
-
 #include "DataLeader.h"
+#include "Network.h"
+#include "LoginProtocol.h"
+#include "TmpSessionSpace.h"
+
+#include "SThreadMgr.h"
+
+#include "DBSrvMgr.h"
+#include "LogSrvMgr.h"
 
 
 LoginMain::LoginMain(void)
 {
 	m_network	= &GetNetwork;
-/*	m_dbMgr		= &GetDBMgr;*/
 	m_document	= &GetDocument;
-	m_logSrv	= &GetSrvNet;
 	m_tmpSpace	= &GetTmpSpace;
+#ifdef CONNECT_LOG_SERVER
+	m_logSrv	= &GetLogSrvMgr;
+#endif
 	m_dbSrvMgr	= &GetDBSrv;
 	
 }
@@ -26,12 +29,6 @@ LoginMain::~LoginMain(void)
 
 BOOL LoginMain::Init()
 {
-	//======================================
-	// db 초기화/ 설정
-	//======================================
-// 	if( !m_dbMgr->Init( _T("GameAccount.mdb") ) )
-// 		return FALSE;
-
 	//======================================
 	// 서버 초기화
 	//======================================
@@ -47,12 +44,14 @@ BOOL LoginMain::Init()
 	//======================================
 	// 로그 서버 접속
 	//======================================
-// 	if( !m_logSrv->Init() )
-// 		return FALSE;
-// 
-// 	if( !m_logSrv->ConnectToSrv( m_document->LogSrvIP, m_document->LogSrvPortNum ) )
-// 		return FALSE;
+#ifdef CONNECT_LOG_SERVER
+	if( !m_logSrv->Init( LOGIN_SERVER_ID ) )
+		return FALSE;
 
+	if( !m_logSrv->ConnectToLogSrv( m_document->LogSrvIP, m_document->LogSrvPortNum ) )
+		return FALSE;
+#endif
+	
 	//======================================
 	// 임시 session공간 초기화
 	//======================================

@@ -27,8 +27,10 @@ BOOL Network::Init( int sessionCount )
 	//======================================
 	if( !GetIOCP.Init() )
 	{
+#ifdef _DEBUG
 		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM,
-						_T("Network::Init()\nIOCP초기화에 실패 했습니다.\n\n") );
+			_T("Network::Init()\nIOCP초기화에 실패 했습니다.\n\n") );
+#endif
 		return FALSE;
 	}
 

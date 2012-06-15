@@ -1,6 +1,6 @@
 #pragma once
 
-#define CONNECT_LOG_SERVER
+//#define CONNECT_LOG_SERVER
 
 //
 enum SERVER_CODE
@@ -179,6 +179,7 @@ enum DB_SERVER
 
 	// DBSrv -> GameSrv
 	// 캐릭터들의 정보를 갱신하고 갱신된 캐릭터중 레벨이 없된 정보를 받는다
+	// int			-		game(room)Num
 	// int			-		playerCount
 	//--------------------------------------
 	// int			-		sessionID
@@ -188,7 +189,6 @@ enum DB_SERVER
 
 	// DBSrv -> lobbySrv
 	// 캐릭터 정보가 계산되어 갱신되면 로비에 새로운 데이터를 알린다
-	// int			-		game(room)Num
 	// int			-		playerCount
 	//--------------------------------------
 	// int			-		sessionID

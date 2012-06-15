@@ -2,11 +2,13 @@
 
 #include "SServerStd.h"
 
+#define LOGIN_SERVER_ID 8800
+
 class Network;
-/*class LoginDB;*/
 class DataLeader;
-class LogSrvNet;
 class TmpSessionSpace;
+
+class LogSrvMgr;
 class DBSrvMgr;
 
 class LoginMain
@@ -16,10 +18,9 @@ private:
 	// singleTon°´Ã¼µé
 	//======================================
 	Network*			m_network;
-/*	LoginDB*			m_dbMgr;*/
 	DataLeader*			m_document;
-	LogSrvNet*			m_logSrv;
 	TmpSessionSpace*	m_tmpSpace;
+	LogSrvMgr*			m_logSrv;
 	DBSrvMgr*			m_dbSrvMgr;
 	//======================================
 

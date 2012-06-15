@@ -5,8 +5,7 @@ DataLeader::DataLeader(void)
 , RoomCount(0)
 , LoginSrvPortNum(0)
 , LobbySrvPortNum(0)
-, GameSrvProtNum(0)
-, GamePlaySec(0)
+, GameSrvPortNum(0)
 , LogSrvPortNum(0)
 , DBSrvPortNum(0)
 {
@@ -80,17 +79,7 @@ BOOL DataLeader::DataSetting()
 	//192.168.0.56	7900
 	fgets( text, 256, fp );
 	sscanf_s( text, "%s %s", GameSrvIP, 15, tmpNum, 10 );
-	GameSrvProtNum = atoi( tmpNum );
-
-	//======================================
-	// 게임 play 시간
-	//======================================
-	//<<게임 play시간(초단위)>>
-	fgets( text, 256, fp );
-	//300
-	fgets( text, 256, fp );
-	sscanf_s( text, "%s", tmpNum, 10 );
-	GamePlaySec = atoi( tmpNum );
+	GameSrvPortNum = atoi( tmpNum );
 
 	//======================================
 	// LogSrv정보를 받아 온다

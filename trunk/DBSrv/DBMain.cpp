@@ -51,7 +51,7 @@ BOOL DBMain::Init()
 	//======================================
 	// 로그 서버 연결
 	//======================================
-	if( !m_logSrv->Init( GAMESERVER_ID ) )
+	if( !m_logSrv->Init( DB_SERVER_ID ) )
 		return FALSE;
 
 	if( !m_logSrv->ConnectToLogSrv( m_document->LogSrvIP, m_document->LogSrvPortNum ) )

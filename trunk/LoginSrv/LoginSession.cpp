@@ -5,8 +5,7 @@
 #include "SPacket.h"
 #include "SLogger.h"
 
-#include "LogSrvNet.h"
-#include "LogMgr.h"
+#include "LogSrvMgr.h"
 
 #include "DBSrvMgr.h"
 #include "TmpSessionSpace.h"
@@ -20,10 +19,13 @@ LoginSession::LoginSession(void)
 , m_isWaitting(FALSE)
 {
 	//singleTon객체를 미리 받아 논다.
+#ifdef _DEBUG
 	m_logger	= &GetLogger;
+#endif
 	m_document	= &GetDocument;
-	m_logSrv	= &GetSrvNet;
-	m_logMgr	= &GetLog;
+#ifdef CONNECT_LOG_SERVER
+	m_logSrv	= &GetLogSrvMgr;
+#endif
 	m_dbSrvMgr	= &GetDBSrv;
 	m_tmpSpace	= &GetTmpSpace;
 }
@@ -39,8 +41,10 @@ void LoginSession::OnCreate()
 	SSession::OnCreate();
 
 	//로그서버로 전송
-// 	m_logMgr->SendLog( 8800, LogMgr::LOG_LEVEL_INFORMATION, _T("[LoginSession::RecvLogSrvConnectOK()]_1. ID 접속이 정확히 잘 되나?.\n") );
-
+#ifdef CONNECT_LOG_SERVER
+	m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION, _T("LoginSession::OnCreate() IP:%s 접속."), m_tIPAddr );
+#endif
+ 
 	//연결에 성공했다는 packet을 보낸다.
 	SendPacket( SC_LOGIN_CONNECT_OK );
 }
@@ -92,8 +96,13 @@ void LoginSession::PacketParsing( SPacket& packet )
 		RecvTryLogin( packet );
 		break;
 	default:
-		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-						_T("정의되지 않은 패킷 id입니다.\n\n") );
+#ifdef _DEBUG
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("%d번은 정의되지 않은 패킷 id입니다.\n\n"), packet.GetID() );
+#endif
+#ifdef CONNECT_LOG_SERVER
+		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_WORRNING, _T("%d번은 정의되지 않은 패킷 id입니다."), packet.GetID() );
+#endif
+		break;
 	}
 }
 
@@ -101,25 +110,28 @@ void LoginSession::PacketParsing( SPacket& packet )
 
 void LoginSession::RecvLogSrvConnectOK()
 {
-	//SSynchronize Sync( this );
-
 	//log서버 셋팅해 주자
+#ifdef CONNECT_LOG_SERVER
 	m_logSrv->SetSession( this );
+#endif
 
-	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+#ifdef _DEBUG
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 					_T("LoginSession::RecvLogSrvConnectOK()\n로그 서버와 연결되었습니다.\n\n") );
+#endif
 }
 
 void LoginSession::RecvLogSrvShotdown()
 {
-	//로그서버 셋팅을 풀어 주자
-	//SSynchronize Sync( this );
-
-	//log서버 셋팅해 주자
+	//log서버 끊기
+#ifdef CONNECT_LOG_SERVER
 	m_logSrv->DisConnect();
-
-	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-					_T("LoginSession::RecvLogSrvConnectOK()\n로그 서버와의 연결이 종료 되었습니다.\n\n") );
+#endif
+	
+#ifdef _DEBUG
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+		_T("LoginSession::RecvLogSrvConnectOK()\n로그 서버와의 연결이 종료 되었습니다.\n\n") );
+#endif
 }
 //--------------------------------------------------------------
 
@@ -128,8 +140,10 @@ void LoginSession::RecvDBConnectOK()
 	//DB서버 접속 성공 셋팅해 주자
 	m_dbSrvMgr->SetSession( this );
 
-	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+#ifdef _DEBUG
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 		_T("LoginSession::RecvDBConnectOK()\nDB 서버와 연결되었습니다.\n\n") );
+#endif
 }
 
 void LoginSession::RecvDBCheckIDResult( SPacket& packet )
@@ -145,10 +159,19 @@ void LoginSession::RecvDBCheckIDResult( SPacket& packet )
 	LoginSession* tmpSession = m_tmpSpace->FindSessionByIndex( index );
 	if( tmpSession == NULL )
 	{
+#ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-			_T("LoginSession::RecvDBCheckIDResult()\nindex에 해당하는session이 없습니다.\n\n") );
+			_T("LoginSession::RecvDBCheckIDResult()\n%d번 index에 해당하는session이 없습니다.\n\n"), index );
+#endif
+
+#ifdef CONNECT_LOG_SERVER
+		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_WORRNING,
+			_T("LoginSession::RecvDBCheckIDResult() %d번 index에 해당하는session이 없습니다."), index );
+#endif
 		return;
 	}
+
+	m_isWaitting = FALSE;
 
 	tmpSession->SendCheckIdResult( index, result );
 }
@@ -165,10 +188,18 @@ void LoginSession::RecvDBCreateAccountResult( SPacket& packet )
 	LoginSession* tmpSession = m_tmpSpace->FindSessionByIndex( index );
 	if( tmpSession == NULL )
 	{
+#ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-			_T("LoginSession::RecvDBCheckIDResult()\nindex에 해당하는session이 없습니다.\n\n") );
+			_T("LoginSession::RecvDBCreateAccountResult()\n%d번 index에 해당하는session이 없습니다.\n\n"), index );
+#endif
+#ifdef CONNECT_LOG_SERVER
+		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_WORRNING,
+			_T("LoginSession::RecvDBCreateAccountResult() %d번 index에 해당하는session이 없습니다."), index );
+#endif
 		return;
 	}
+
+	m_isWaitting = FALSE;
 
 	tmpSession->SendCreateResult( index, result );
 }
@@ -184,10 +215,18 @@ void LoginSession::RecvDBLoginResult( SPacket& packet )
 	LoginSession* tmpSession = m_tmpSpace->FindSessionByIndex( index );
 	if( tmpSession == NULL )
 	{
+#ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-			_T("LoginSession::RecvDBCheckIDResult()\nindex에 해당하는session이 없습니다.\n\n") );
+			_T("LoginSession::RecvDBCheckIDResult()\n%d번 index에 해당하는session이 없습니다.\n\n"), index );
+#endif
+#ifdef CONNECT_LOG_SERVER
+		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_WORRNING,
+			_T("LoginSession::RecvDBCheckIDResult() %d번 index에 해당하는session이 없습니다."), index );
+#endif
 		return;
 	}
+
+	m_isWaitting = FALSE;
 
 	tmpSession->SendLoginResult( index, result );
 }
@@ -215,6 +254,15 @@ void LoginSession::RecvCheckId( SPacket& packet )
 	packet >> idSize;
 	packet.GetData( tstrID, idSize );
 	//--------------------------------------
+
+#ifdef _DEBUG
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+		_T("LoginSession::RecvCheckId()\n아이디 %s 중복 체크요청을 받음.\n\n"), tstrID );
+#endif
+#ifdef CONNECT_LOG_SERVER
+	m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
+		_T("LoginSession::RecvCheckId() 아이디 %s 중복 체크요청을 받음."), tstrID );
+#endif
 
 	SendToDBCheckID( idSize, tstrID );
 }
@@ -247,9 +295,16 @@ void LoginSession::RecvCreateAccount( SPacket& packet )
 	packet.GetData( tstrMAIL, MAILSize );
 	//--------------------------------------
 
-	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-					_T("LoginSession::RecvCheckId()\n아이디 : %s\n패스워드 : %s\n이메일 : %s\n"),
+#ifdef _DEBUG
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+					_T("LoginSession::RecvCheckId()\n아이디 : %s\n패스워드 : %s\n이메일 : %s 계정생성 요청을 받음\n\n"),
 					tstrID, tstrPW,	tstrMAIL );
+#endif
+#ifdef CONNECT_LOG_SERVER
+	m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
+					_T("LoginSession::RecvCheckId() 아이디 : %s\n패스워드 : %s\n이메일 : %s 계정생성 요청을 받음"),
+					tstrID, tstrPW,	tstrMAIL );
+#endif
 
 	SendToDBCreateAccount( IDSize, tstrID, PWSize, tstrPW, MAILSize, tstrMAIL );
 }
@@ -279,45 +334,22 @@ void LoginSession::RecvTryLogin( SPacket& packet )
 	packet.GetData( tstrPW, PWSize );
 	//--------------------------------------
 
-	SendToDBTryLogin( IDSize, tstrID, PWSize, tstrPW );
+#ifdef _DEBUG
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+		_T("LoginSession::RecvCheckId()\n아이디 %s 비번 %s 로그인 요청을 받음.\n\n"), tstrID, tstrPW );
+#endif
+#ifdef CONNECT_LOG_SERVER
+	m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
+		_T("LoginSession::RecvCheckId() 아이디 %s 비번 %s 로그인 요청을 받음."), tstrID, tstrPW );
+#endif
 
-// 	//로그인!
-// 	int sessionId = m_dbMgr->TryLogin( tstrID, tstrPW );
-// 
-// 	if( sessionId > 0 )
-// 	{
-// 		//로그인은 체크됬으니 중복인지 확인한다
-// 		int retval = m_dbMgr->IsLogin( sessionId );
-// 
-// 		if( retval < 0 )
-// 		{
-// 			//오류
-// 			sessionId = retval;
-// 		}
-// 		else if( retval > 0 )
-// 		{
-// 			//이미 로그인되어 있음
-// 			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LoginSession::RecvTryLogin()\nIsLogin이미 로그인 되어 있는 ID입니다.\n\n") );
-// 			sessionId = PRE_LOGIN_ID;
-// 		}
-// 		// retval == 0이면 로그인
-// 	}
-// 
-// 
-// 	if( sessionId > 0 )
-// 		SendLoginSuccess( sessionId );
-// 	else
-// 		SendLoginFailed( sessionId );
+	SendToDBTryLogin( IDSize, tstrID, PWSize, tstrPW );
 }
 
 //==============================================================
 
 BOOL LoginSession::SendToDBCheckID( int size, TCHAR* uid )
 {
-	//이미 DB의 응답을 기다리고 있는 중이므로 아무것도 받지 않는다
-// 	if( m_isWaitting )
-// 		return;
-
 	//index를 하나 받아 온다
 	int index = m_tmpSpace->GetIndex();
 	//우선 데기열에 집어 넣고
@@ -464,10 +496,6 @@ BOOL LoginSession::SendLoginSuccess( int result )
 
 	sendPacket.SetID( SC_LOGIN_LOGIN_RESULT );
 	sendPacket << result;
-
-	//로그인 처리
-	//DB에 표시
-	//m_dbMgr->UpdateLogin( result );
 
 	//ip주소와 port번호를 넣어 준다.
 	int size = strlen( m_document->LobbySrvIP );

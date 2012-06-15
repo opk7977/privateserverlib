@@ -4,7 +4,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "SIndexQueue.h"
 #include "SMap.h"
-#include "SIndexList.h"
+#include "SList.h"
 //////////////////////////////////////////////////////////////////////////
 
 #include "SSession.h"
@@ -13,23 +13,26 @@
 #define DEFUALT_INDEX_COUNT		100
 
 
-class SSessionMgr : public SSingleton <SSessionMgr>
+class SSessionMgr : public SSingleton <SSessionMgr>, public SServerObj
 {
 private:
 	friend class SSingleton<SSessionMgr>;
 
 private:
 	//모든 player 정보를 담을 공간
-	SMap					m_sessionMap;
+	//SMap							m_sessionMap;
+	ATL::CAtlMap<int, SServerObj*>	m_mapSession;
+	int								m_spaceSize;
 	//비어있는 공간의 인덱스를 관리
-	SIndexQueue				m_indexQueue;
+	SIndexQueue						m_indexQueue;
 	//접속한 player들을 저장한 공간
-	SIndexList				m_playerList;
+	SList<int>						m_listPlayer;
+	//SList<SServerObj*>				m_listPlayer;
 
 
 	//제한 인원이 모두 차있어서 수용을 못하는 경우
 	//접속불가를 전송하기 위한 임시 Session공간
-	SSession				m_tmpSession;
+	SSession						m_tmpSession;
 
 private:
 	SSessionMgr(void);
@@ -51,7 +54,10 @@ public:
 
 
 	//모든 세션에게 동일한 패킷 전송
-	void SendAllSession( SPacket packet );
+ 	void SendAllSession( SPacket &packet, SSession* itme = NULL );
+
+	//세션 ID로 세션을 찾는다
+	SServerObj* FindSession( int SessionId );
 
 	//모든 동적할당 해제
 	void Release();

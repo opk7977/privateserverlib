@@ -1,6 +1,7 @@
 #include "LobbyMain.h"
-//#include "CheckDB.h"
 #include "Network.h"
+#include "LobbyProtocol.h"
+#include "LogSrvMgr.h"
 #include "DBSrvMgr.h"
 
 #include "Room.h"
@@ -14,8 +15,10 @@ LobbyMain::LobbyMain(void)
 	m_roomMgr	= &GetRoomMgr;
 	m_charMgr	= &GetCharMgr;
 	m_document	= &GetDocument;
+#ifdef CONNECT_LOG_SERVER
+	m_logSrv	= &GetLogSrvMgr;
+#endif
 	m_dbMgr		= &GetDBSrv;
-	//m_dbMgr		= &GetDB;
 }
 
 LobbyMain::~LobbyMain(void)
@@ -38,6 +41,13 @@ BOOL LobbyMain::Init()
 	//======================================
 	// 로그서버 접속
 	//======================================
+#ifdef CONNECT_LOG_SERVER
+	if( !m_logSrv->Init( LOBBY_SERVER_ID ) )
+		return FALSE;
+
+	if( !m_logSrv->ConnectToLogSrv( m_document->LogSrvIP, m_document->LogSrvPortNum ) )
+		return FALSE;
+#endif
 
 	//======================================
 	// 서버 초기화
@@ -54,8 +64,6 @@ BOOL LobbyMain::Init()
 	//======================================
 	// db 초기화/ 설정
 	//======================================
-	// 	if( !m_dbMgr->Init( _T("GameAccount.mdb")) )
-	// 		return FALSE;
 	if( !m_dbMgr->Init() )
 		return FALSE;
 
@@ -67,6 +75,5 @@ BOOL LobbyMain::Init()
 
 void LobbyMain::Release()
 {
-	//m_dbMgr->Release();
 	m_dbMgr->DisConnect();
 }

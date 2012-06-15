@@ -27,7 +27,7 @@ void LogDataBase::Release()
 BOOL LogDataBase::CreateServerTbl()
 {
 	SQLWCHAR	strQuery[255];
-	wsprintf( (TCHAR*)strQuery, _T("CREATE TABLE tblServerID( ID INT, ServerName VARCHAR(20), PRIMARY KEY(ID, ServerName) );") );
+	wsprintf( (TCHAR*)strQuery, _T("CREATE TABLE tblServerID( ID INT, ServerName VARCHAR(20) unique, PRIMARY KEY(ID) );") );
 
 	if( !m_query.Exec( strQuery ) )
 	{
@@ -55,6 +55,14 @@ BOOL LogDataBase::CreateServerTbl()
 	//////////////////////////////////////////////////////////////////////////
 	ZeroMemory( strQuery, 255 );
 	wsprintf( (TCHAR*)strQuery, _T("INSERT INTO tblServerID (ID, ServerName) VALUES (7900, 'SegGameSrv');") );
+
+	if( !m_query.Exec( strQuery ) )
+		return FALSE;
+	m_query.Clear();
+
+	//////////////////////////////////////////////////////////////////////////
+	ZeroMemory( strQuery, 255 );
+	wsprintf( (TCHAR*)strQuery, _T("INSERT INTO tblServerID (ID, ServerName) VALUES (9000, 'SegDBSrv');") );
 
 	if( !m_query.Exec( strQuery ) )
 		return FALSE;

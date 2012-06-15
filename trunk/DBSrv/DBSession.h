@@ -54,6 +54,7 @@ public:
 	void RecvLogSrvConnectOK();
 
 	//LOG_SERVER_SHOTDOWN
+	void RecvLogServerShotdown();
 
 	//SC_LOGIN_CONNECT_OK
 	void RecvLoginConnectOK();
@@ -77,6 +78,7 @@ public:
 	void RecvLobbyCharInsertReadyResult( SPacket& packet );
 
 	//GAME_TO_DB_UPDATE_USERDATA
+	void RecvGameCharDataUpdate( SPacket& packet );
 	
 	//OTHER_TO_DB_DISCONNECT_CHARACTER
 	void RecvOtherSrvCharDisconnect( SPacket& packet );
@@ -85,6 +87,7 @@ public:
 	// 보내는 처리
 	//======================================
 	//RECV_SERVER_LOG
+	//LogSrvMgr에서 처리
 
 	//DB_TO_OTHER_CONNECT_OK
 	//함수는 없음
@@ -102,8 +105,11 @@ public:
 	BOOL SendLoginTryLoginResult( int indexId, int result );
 	
 	//DB_TO_OTHER_DROP_PLAYER
+	BOOL SendLobbyNGameDropPlayer( int sessionID );
 
 	//DB_TO_GAME_LEVEL_UP_PLAYER
+	////RecvOtherSrvCharDisconnect함수 내부에서 그냥 부름
 
 	//DB_TO_LOBBY_UPDATE_USERDATA
+	//RecvOtherSrvCharDisconnect함수 내부에서 그냥 부름
 };
