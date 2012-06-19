@@ -26,11 +26,11 @@ private:
 	//======================================
 	// Single Ton객체
 	//======================================
-	SLogger*			m_logger;		//로그 객체
-	DataLeader*			m_document;		//서버 data
-	LogSrvMgr*			m_logSrv;		//로그서버 메이져
-	DBSrvMgr*			m_dbSrvMgr;		//DB서버 메니져
-	TmpSessionSpace*	m_tmpSpace;		//데기를 할 session을 담을 공간
+	static SLogger*				m_logger;		//로그 객체
+	static DataLeader*			m_document;		//서버 data
+	static LogSrvMgr*			m_logSrv;		//로그서버 메이져
+	static DBSrvMgr*			m_dbSrvMgr;		//DB서버 메니져
+	static TmpSessionSpace*		m_tmpSpace;		//데기를 할 session을 담을 공간
 	//======================================
 	
 	//DB로그인 체크를 위한 flag

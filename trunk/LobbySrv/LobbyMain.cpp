@@ -39,17 +39,6 @@ BOOL LobbyMain::Init()
 	m_charMgr->Init();
 
 	//======================================
-	// 로그서버 접속
-	//======================================
-#ifdef CONNECT_LOG_SERVER
-	if( !m_logSrv->Init( LOBBY_SERVER_ID ) )
-		return FALSE;
-
-	if( !m_logSrv->ConnectToLogSrv( m_document->LogSrvIP, m_document->LogSrvPortNum ) )
-		return FALSE;
-#endif
-
-	//======================================
 	// 서버 초기화
 	//======================================
 	if( !m_network->Init( m_document->SessionCount ) )
@@ -60,6 +49,17 @@ BOOL LobbyMain::Init()
 	//======================================
 	if( !m_network->SrvSetting( m_document->LobbySrvPortNum ) )
 		return FALSE;
+
+	//======================================
+	// 로그서버 접속
+	//======================================
+#ifdef CONNECT_LOG_SERVER
+	if( !m_logSrv->Init( LOBBY_SERVER_ID ) )
+		return FALSE;
+
+	if( !m_logSrv->ConnectToLogSrv( m_document->LogSrvIP, m_document->LogSrvPortNum ) )
+		return FALSE;
+#endif
 
 	//======================================
 	// db 초기화/ 설정

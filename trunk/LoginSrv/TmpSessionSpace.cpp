@@ -37,6 +37,8 @@ int TmpSessionSpace::GetIndex()
 void TmpSessionSpace::WaitForDBSignal( int index, LoginSession* session )
 {
 	//해당 index번째 해당하는 벡터 공간에 session을 넣어 준다
+	SSynchronize sync( this );
+
 	m_waitSession[index] = session;
 }
 

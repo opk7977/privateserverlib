@@ -8,14 +8,14 @@ class Room;
 //--------------------------------------
 // For SingleTon
 //--------------------------------------
-class SSessionMgr;
+//class SSessionMgr;
 class DataLeader;
 class LobbyMgr;
 class RoomMgr;
 class CharMgr;
-//class CheckDB;
 class SrvNet;
 class DBSrvMgr;
+class LogSrvMgr;
 class SLogger;
 
 class LobbySession : public SSessionObj
@@ -24,15 +24,15 @@ private:
 	//======================================
 	// singleTon객체
 	//======================================
-	SSessionMgr*	m_sessionMgr;
-	DataLeader*		m_document;
-	LobbyMgr*		m_lobbyMgr;
-	RoomMgr*		m_roomMgr;
-	CharMgr*		m_charMgr;
-	//CheckDB*		m_DBMgr;
-	SrvNet*			m_srvNet;
-	DBSrvMgr*		m_dbMgr;
-	SLogger*		m_logger;
+	//SSessionMgr*	m_sessionMgr;
+	static DataLeader*		m_document;
+	static LobbyMgr*		m_lobbyMgr;
+	static RoomMgr*			m_roomMgr;
+	static CharMgr*			m_charMgr;
+	static SrvNet*			m_srvNet;
+	static DBSrvMgr*		m_dbMgr;
+	static LogSrvMgr*		m_logSrv;
+	static SLogger*			m_logger;
 
 private:
 	//--------------------------------------
@@ -68,13 +68,17 @@ public:
 	void PacketParsing( SPacket& packet );
 
 	//======================================
-	// 보내는 함수
-	//======================================
-//	int SendPacket( SPacket& packet, BOOL tudp = FALSE );
-
-	//======================================
 	// 받은 패킷 처리 함수
 	//======================================
+	//--------------------------------------
+	// LogSrv와의 커뮤니케이션
+	//--------------------------------------
+	//LOG_SERVER_CONNECT_OK
+	void RecvLogConnectOK();
+
+	//LOG_SERVER_SHOTDOWN
+	//없어도 될듯...
+
 	//--------------------------------------
 	// DBSrv와의 커뮤니케이션
 	//--------------------------------------

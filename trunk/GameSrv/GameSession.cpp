@@ -138,6 +138,9 @@ void GameSession::PacketParsing( SPacket& packet )
 	case CS_GAME_GAME_READY_OK:
 		RecvGameReadyOK();
 		break;
+	case CS_GAME_CHARACTER_SYNC:
+		//
+		break;
 	case CS_GAME_ATTACK:
 		RecvGameAttack( packet );
 		break;
@@ -259,10 +262,15 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 				SendStartFaild( roomNum );
 				return;
 			}
+			//캐릭터 셋팅
 			tmpChar->Init();
 			tmpChar->SetSessionID( sessionId );
 			tmpChar->SetID( stringID );
 			tmpChar->SetTeam( team );
+			tmpChar->SetRankID( rankId );
+			tmpChar->SetRankPoint( rankPoint );
+			tmpChar->SetAccumulKillCount( accumulKillCount );
+			tmpChar->SetAccumulDeathCount( accumulDeathCount );
 		}
 
 		//======================================

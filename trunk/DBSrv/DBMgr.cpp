@@ -7,10 +7,7 @@
 DBMgr::DBMgr(void)
 {
 	m_rankMgr = &GetRankMgr;
-
-#ifdef _DEBUG
 	m_logger = &GetLogger;
-#endif
 }
 
 DBMgr::~DBMgr(void)
@@ -21,9 +18,7 @@ BOOL DBMgr::Init( TCHAR* dbname, TCHAR* _id, TCHAR* _pw )
 {
 	if( !m_query.ConnectSrv( dbname, _id, _pw ) )
 	{
-#ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("DBMgr::Init() DB연결 실패\n\n") );
-#endif
 		return FALSE;
 	}
 

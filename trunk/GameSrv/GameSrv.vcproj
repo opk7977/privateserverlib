@@ -229,7 +229,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="ToSrv"
+				Name="ToLobby"
 				>
 				<File
 					RelativePath=".\SrvNet.cpp"
@@ -237,6 +237,30 @@
 				</File>
 				<File
 					RelativePath=".\SrvNet.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ToLog"
+				>
+				<File
+					RelativePath=".\LogSrvMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LogSrvMgr.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ToDB"
+				>
+				<File
+					RelativePath=".\DBSrvMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DBSrvMgr.h"
 					>
 				</File>
 			</Filter>

@@ -2,6 +2,7 @@
 
 #include "SSocket.h"
 
+class SLogger;
 class GameSession;
 class SPacket;
 
@@ -9,6 +10,9 @@ class SrvNet : public SSingleton <SrvNet>
 {
 private:
 	friend class SSingleton<SrvNet>;
+
+private:
+	SLogger*		m_logger;
 
 private:
 	SSocket			m_sock;

@@ -14,16 +14,21 @@ SLogger::SLogger(void) : m_pFile(0)
 
 SLogger::~SLogger(void)
 {
-	Release();
+#ifdef _DEBUG
 	FreeConsole();
+#endif
+
+	Release();
 }
 
 void SLogger::Create( char* filename )
 {
 	SSynchronize Sync( this );
 
+#ifdef _DEBUG 
 	//콘솔 창을 띄움
 	AllocConsole();
+#endif
 
 	//넘겨받은 filename의 길이 체크
 	int filenameLen = strlen( filename );
@@ -90,11 +95,15 @@ void SLogger::PutLog( short errLv, char* lpszFmt, ... )
 		//디버그 창에 한번 뿌려준다.
 		OutputDebugStringA( str );
 	}
+
+#ifdef _DEBUG 
 	if( errLv & LOG_FLAG_CONSOLE )
 	{
 		//콘솔창에 뿌림
 		_cprintf_s( "%s", str );
 	}
+#endif
+
 	if( errLv & LOG_FLAG_FILE )
 	{
 		//파일에 문자열 쓰기
@@ -124,11 +133,15 @@ void SLogger::PutLog( short errLv, TCHAR* lpszFmt, ... )
 		//디버그 창에 한번 뿌려준다.
 		OutputDebugString( tstr );
 	}
+
+#ifdef _DEBUG
 	if( errLv & LOG_FLAG_CONSOLE )
 	{
 		//콘솔창에 뿌림
 		_cwprintf( _T("%s"), tstr );
 	}
+#endif
+
 	if( errLv & LOG_FLAG_FILE )
 	{
 		char transStr[TMPSTRING_LENTH*2]={0,};
@@ -164,7 +177,9 @@ void SLogger::ErrorLog( INT32 errorcode, char* lpszFmt )
 
 	//에러는 전부 남겨야 한다//////////////////////////////////////
 	OutputDebugStringA( str );
+#ifdef _DEBUG
 	_cprintf_s( "%s", str );
+#endif
 	WriteToFile( str );
 	///////////////////////////////////////////////////////////////
 }
@@ -195,7 +210,9 @@ void SLogger::ErrorLog( INT32 errorcode, TCHAR* lpszFmt )
 
 	//에러는 전부 남겨야 한다//////////////////////////////////////
 	OutputDebugString( tstr );
+#ifdef _DEBUG
 	_cwprintf( _T("%s\n"), tstr );
+#endif
 	char transStr[TMPSTRING_LENTH*2]={0,};
 	WideCharToMultiByte( CP_ACP, 0, tstr, -1, transStr, _tcslen(tstr)*sizeof(TCHAR), NULL, NULL );
 	WriteToFile( transStr );

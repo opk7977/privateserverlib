@@ -219,6 +219,8 @@ CharMgr::~CharMgr()
 
 void CharMgr::Init()
 {
+	SSynchronize sync( this );
+
 	m_IndexQ.Create( m_document->SessionCount, 0);
 
 	m_vecCharSpace.reserve( m_document->SessionCount );
@@ -236,6 +238,8 @@ void CharMgr::Init()
 
 void CharMgr::Release()
 {
+	SSynchronize sync( this );
+
 	m_waitChar.RemoveAll();
 	for( int i=0; i<m_document->SessionCount; ++i )
 	{
@@ -246,6 +250,8 @@ void CharMgr::Release()
 
 LobbyChar* CharMgr::GetCharSPace()
 {
+	SSynchronize sync( this );
+
 	int index = m_IndexQ.GetIndex();
 	if( index < 0 )
 		return NULL;
@@ -258,6 +264,8 @@ LobbyChar* CharMgr::GetCharSPace()
 
 void CharMgr::ReturnCharSpace( LobbyChar* charspace )
 {
+	SSynchronize sync( this );
+
 	//받아온 공간에 문제가 있으면 return
 	if( charspace == NULL )
 		return;
@@ -273,6 +281,8 @@ void CharMgr::ReturnCharSpace( LobbyChar* charspace )
 
 void CharMgr::AddWaitChar( int sessionId, LobbyChar* charspace )
 {
+	SSynchronize sync( this );
+
 	if( sessionId <= 0 )
 		return;
 
@@ -281,6 +291,8 @@ void CharMgr::AddWaitChar( int sessionId, LobbyChar* charspace )
 
 void CharMgr::DelWaitChar( int sessionId )
 {
+	SSynchronize sync( this );
+
 	if( sessionId <= 0 )
 		return;
 
@@ -289,6 +301,8 @@ void CharMgr::DelWaitChar( int sessionId )
 
 LobbyChar* CharMgr::GetWaitCharInfo( int sessionID )
 {
+	SSynchronize sync( this );
+
 	if( sessionID <= 0 )
 		return NULL;
 
@@ -301,6 +315,8 @@ LobbyChar* CharMgr::GetWaitCharInfo( int sessionID )
 
 void CharMgr::ReturnCharSpace( int sessionID )
 {
+	SSynchronize sync( this );
+
 	//받아온 session번호에 문제가 있으면 return
 	if( sessionID < 0 || sessionID >= 100 )
 		return;
@@ -312,6 +328,8 @@ void CharMgr::ReturnCharSpace( int sessionID )
 
 LobbyChar* CharMgr::FindCharAsSessionId( int session )
 {
+	SSynchronize sync( this );
+
 	std::vector<LobbyChar*>::iterator iter;
 	iter = m_vecCharSpace.begin();
 	for( ; iter != m_vecCharSpace.end(); ++iter )

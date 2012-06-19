@@ -1,19 +1,16 @@
 #pragma once
 
-#include "SServerStd.h"
+#include "SServerObj.h"
 
 class GameProc;
 
-class GameMgr : public SSingleton <GameMgr>
+class GameMgr : public SSingleton <GameMgr>, public SServerObj
 {
 private:
 	friend class SSingleton<GameMgr>;
 
 private:
 	std::map<int, GameProc*>			m_mapGameRoom;
-
-	//항상 열려 있는 0번방//ㅋㅋ
-	GameProc*							m_zeroRoom;
 
 public:
 	GameMgr(void);

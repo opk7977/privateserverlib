@@ -86,6 +86,8 @@ public:
 	//CS_GAME_GAME_READY_OK
 	void RecvGameReadyOK();
 
+	//CS_GAME_CHARACTER_SYNC
+
 	//CS_GAME_ATTACK
 	void RecvGameAttack( SPacket &packet );
 

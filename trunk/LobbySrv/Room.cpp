@@ -126,36 +126,12 @@ LobbyChar* Room::ChangeLeader()
 	return m_leader;
 }
 
-// BOOL Room::SetPlayerSession( LobbySession* session, LobbyChar* charSpace )
-// {
-// 	SSynchronize Sync( this );
-// 	
-// // 	std::list<LobbyChar*>::iterator iter;
-// // 	iter = m_listPlayer.begin();
-// 
-// 
-// 	for( ; iter != m_listPlayer.end(); ++iter )
-// 	{
-// 		if( *iter == charSpace )
-// 		{
-// 			//해당 session을 찾으면 player의 session정보를 바꿔준다
-// 			(*iter)->SetSession( session );
-// 			return TRUE;
-// 		}
-// 	}
-// 
-// 	return FALSE;
-// }
-
 void Room::AddPlayerInRoom( LobbyChar* charspace )
 {
 	SSynchronize Sync( this );
 
 	//우선 팀 설정을 하고
 	charspace->SetTeam( GetTeam() );
-
-// 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-// 			_T("Room::AddPlayerInRoom()\n%s님이 %e팀으로 추가됩니다.\n\n"), charspace->GetID(),  );
 
 	//list에 저장
 	m_listPlayer.AddItem( charspace );
@@ -167,7 +143,7 @@ BOOL Room::DelPlayerInRoom( LobbyChar* charspace )
 
 	if( m_listPlayer.IsEmpty() )
 	{
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("Room::DelPlayerInRoom()\nlist가 비어 있습니다.지울수 엄써...\n\n") );
 		return FALSE;
 	}
@@ -197,7 +173,7 @@ BOOL Room::DelPlayerInRoom( int sessionId )
 
 	if( m_listPlayer.IsEmpty() )
 	{
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("Room::DelPlayerInRoom()\nlist가 비어 있습니다.지울수 엄써...\n\n") );
 		return FALSE;
 	}
@@ -206,7 +182,7 @@ BOOL Room::DelPlayerInRoom( int sessionId )
 
 	if( tmpChar == NULL )
 	{
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 				_T("Room::DelPlayerInRoom()\nsessionID %d번 캐릭터 정보가 존재 하지 않습니다..\n\n"), sessionId );
 		return TRUE;
 	}
@@ -239,9 +215,11 @@ void Room::ChangReadyCount( BOOL isReady )
 	else
 		--m_readyCount;
 
+#ifdef _DEBUG
 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 					_T("readyCount : %d"),
 					m_readyCount );
+#endif
 }
 
 BOOL Room::ChangeTeam( BOOL isATT )
@@ -272,10 +250,12 @@ BOOL Room::ChangeTeam( BOOL isATT )
 		++m_DefenceTeam;
 	}
 
+#ifdef _DEBUG
 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 					_T("Attect팀이 %d명이 되고 Defence팀이 %d명이 됩니다.\n\n"),
 					m_AttectTeam,
 					m_DefenceTeam );
+#endif
 
 	//혹시라도 어느팀이라도 0 아래로 내려가면 오류다
 	if( m_AttectTeam < 0 )
@@ -294,13 +274,17 @@ int Room::GetTeam()
 	if( m_AttectTeam > m_DefenceTeam )
 	{
 		++m_DefenceTeam;
+#ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("m_DefenceTeam팀이 %d명이 됩니다"), m_DefenceTeam );
+#endif
 		return ROOM_TEAM_DEF;
 	}
 	else
 	{
 		++m_AttectTeam;
+#ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("m_AttectTeam팀이 %d명이 됩니다"), m_AttectTeam );
+#endif
 		return ROOM_TEAM_ATT;
 	}
 }
@@ -365,9 +349,6 @@ void Room::PackagePlayerInRoom( SPacket &packet, LobbyChar* itme /*= NULL */ )
 	if( m_listPlayer.IsEmpty() )
 		return;
 
-	//우선 인원을 담는다
-	packet << m_listPlayer.GetItemCount();
-
 	std::list<LobbyChar*>::iterator iter = m_listPlayer.GetHeader();
 
 	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
@@ -389,9 +370,6 @@ void Room::PackagePlayerInRoomForGame( SPacket &packet, LobbyChar* itMe /*= NULL
 
 	if( m_listPlayer.IsEmpty() )
 		return;
-
-	//우선 인원을 담는다.
-	packet << m_listPlayer.GetItemCount();
 
 	std::list<LobbyChar*>::iterator iter = m_listPlayer.GetHeader();
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#define CONNECT_LOG_SERVER
+//#define CONNECT_LOG_SERVER
 
 enum SERVER_CODE
 {

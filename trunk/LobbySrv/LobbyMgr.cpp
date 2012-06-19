@@ -14,11 +14,15 @@ LobbyMgr::~LobbyMgr(void)
 
 void LobbyMgr::Init()
 {
+	SSynchronize sync( this );
+
 	m_iPlayerCountInLobby = 0;
 }
 
 void LobbyMgr::Release()
 {
+	SSynchronize sync( this );
+
 	m_listPlayerInLobby.clear();
 	m_iPlayerCountInLobby = 0;
 }

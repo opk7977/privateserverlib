@@ -17,10 +17,8 @@ SrvMgr*		DBSession::m_game			= new SrvMgr;
 
 DBMgr*		DBSession::m_dbMgr			= &GetDBMgr;
 PlayerMgr*	DBSession::m_playerMgr		= &GetPlayerMgr;
+SLogger*	DBSession::m_logger		= &GetLogger;
 
-#ifdef _DEBUG
-	SLogger*	DBSession::m_logger		= &GetLogger;
-#endif
 #ifdef CONNECT_LOG_SERVER
 	LogSrvMgr*	DBSession::m_logSrv		= &GetLogSrvMgr;
 #else
@@ -89,7 +87,7 @@ void DBSession::OnDestroy()
 			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 				_T("DBSession::OnDestroy()\n로그 서버와 연결이 끈겼습니다.\n\n") );
 	#endif
-		m_logSrv->Release();
+		m_logSrv->DisConnect();
 	}
 #endif
 
@@ -138,9 +136,7 @@ void DBSession::PacketParsing( SPacket& packet )
 		RecvOtherSrvCharDisconnect( packet );
 		break;
 	default:
-#ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("%d번은 정의되지 않은 패킷 id입니다.\n\n"), packet.GetID() );
-#endif
 #ifdef CONNECT_LOG_SERVER
 		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_WORRNING, _T("%d번은 정의되지 않은 패킷 id입니다."), packet.GetID() );
 #endif
@@ -170,7 +166,7 @@ void DBSession::RecvLogServerShotdown()
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 			_T("DBSession::RecvLogServerShotdown()\n로그 서버와 연결이 끈겼습니다.\n\n") );
 	#endif
-	m_logSrv->Release();
+	m_logSrv->DisConnect();
 #endif
 }
 
@@ -452,10 +448,8 @@ void DBSession::RecvGameCharDataUpdate( SPacket& packet )
 		PlayerObj* tmpPlayer = m_playerMgr->FindPlayerBySessionId( sessionId );
 		if( tmpPlayer == NULL )
 		{
-#ifdef _DEBUG
-			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 				_T("DBSession::RecvGameCharDataUpdate()\nSessionID %d번 player정보를 찾을 수 없습니다.\n\n"), sessionId );
-#endif
 			continue;
 		}
 
@@ -494,10 +488,8 @@ void DBSession::RecvOtherSrvCharDisconnect( SPacket& packet )
 	PlayerObj* tmpPlayer = m_playerMgr->FindPlayerBySessionId( sessionId );
 	if( tmpPlayer == NULL )
 	{
-#ifdef _DEBUG
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("DBSession::RecvOtherSrvCharDisconnect()\nSessionID %d번 player정보를 찾을 수 없습니다.\n\n"), sessionId );
-#endif
 
 		return;
 	}
@@ -521,13 +513,11 @@ void DBSession::RecvOtherSrvCharDisconnect( SPacket& packet )
 	if( !tmpPlayer->DBDataUpdate() )
 	{
 		//로그를 남긴다.
-#ifdef _DEBUG
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("DBSession::RecvOtherSrvCharDisconnect()\n캐릭터%s dataUPdate실패.\n\n"), tmpPlayer->GetUserID() );
-#endif
 
 #ifdef CONNECT_LOG_SERVER
-		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
+		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_WORRNING,
 						_T("DBSession::RecvOtherSrvCharDisconnect() 캐릭터%s dataUPdate실패."), tmpPlayer->GetUserID() );
 #endif
 	}

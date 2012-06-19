@@ -33,7 +33,8 @@ GameProc::~GameProc(void)
 void GameProc::Init( int i )
 {
 	m_id	= i;
-	m_port	= GetDocument.GameSrvPortNum+i+10;
+	//각 방의 udp포트 번호
+	m_port	= m_document->GameSrvPortNum+i+10;
 
 	Init();
 }
@@ -46,7 +47,7 @@ void GameProc::Init()
 	m_listPlayer.Clear();
 	//ClearItem();
 	m_nowIsPlaying		= FALSE;
-	m_playerCount		= 8;
+	m_playerCount		= 8;	//기본...
 	m_AttKillCount		= m_DefKillCount	= 0;
 	m_AttKillAllCount	= m_DefKillAllCount = 0;
 	m_AttWinCount		= m_DefWinCount		= 0;
@@ -62,54 +63,75 @@ BOOL GameProc::Run()
 {
 	while(1)
 	{
-		//시작 신호를 기다린다.
+		//======================================
+		// 시작 신호를 기다린다.
+		//======================================
 		WaitForSingleObject( m_hStartGame, INFINITE );
 		//게임 loop는 한번만 돌아야 하니까 바로 바꿔 준다
 		ResetEvent( m_hStartGame );
+		//======================================
 
-		//게임 시작 전에 모든 player가 접속하기를 기다린다.
-		//PreStartGame();
+		//======================================
+		// 모든 player가 접속하기를 기다린다.
+		//======================================
 		WaitForSingleObject( m_hStartEvent, INFINITE );
-		//======================================
+		//--------------------------------------
 		// 게임 시작 packet을 보낸다.
-		//======================================
+		//--------------------------------------
 		SendStartPacket();
 		//======================================
 
 		//게임 loop를 돈다
-		BOOL isEnd = TRUE;
-		while( isEnd )
+		BOOL isEnd = FALSE;
+		while( !isEnd )
 		{
-			//게임
+			//======================================
+			// 게임
+			//======================================
 			GameRun();
 
-			//끝난게 사람이 없어서 끝난거면 그냥 종료
+			//======================================
+			// 사람이 모두 나가서 끝난거면 그냥 종료
+			//======================================
 			if( m_listPlayer.IsEmpty() )
 				break;
 
-			//게임 종료
+			//======================================
+			// 현재 판(?)을 닫음
+			// 게임 횟수가 남아 있다면 TRUE를 return
+			//======================================
 			BOOL result = ResetGame();
 
-			//게임 종료 대기
+			//======================================
+			// 게임 종료 대기/ DB에 데이터를 보내
+			// user들의 정보를 갱신하고
+			// 렙업한 player의 정보를 받아 전송한다
+			//======================================
 			WaitTimeLogic();
 
 			if( result )
 			{
-				// 게임 새로 시작하는 패킷을 보낸다
+				//======================================
+				// 게임 새로 시작
+				//======================================
 				SendRestartPacket();
 				continue;
 			}
 			else
 			{
-				// 로비로 가라는 패킷을 보낸다.
+				//======================================
+				// 게임 끗. player들을 로비로 보낸다
+				//======================================
 				SendGotoLobbyPacket();
-				isEnd = FALSE;
+				isEnd = TRUE;
 			}
 		}
 
 		//게임이 종료됨
+#ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 			_T("GameProc::Run()\n%d번 게임이 종료됩니다. 게임 Proc이 일시적으로 닫힙니다.\n\n"), m_id );
+#endif
 	}
 
 	return TRUE;
@@ -122,10 +144,11 @@ void GameProc::GameRun()
 
 	SPacket sendPacket;
 
-	//시간이 다 되기 전까지 loop
+	//======================================
+	// 게임 play시간동안 loop
+	//======================================
 	while( m_nowPlayTimeCount > 0 )
 	{
-		//Sleep(0);
 		//======================================
 		// 시간 처리
 		//======================================
@@ -165,10 +188,11 @@ void GameProc::GameRun()
 			//그애들만 보낸다.
 			SendPlayerHeal();
 		}
-	}
 
-	//게임 셋팅을 바꿔 준다...새로이..여기서 해주는게 맞겠지?....
-	//게임 판수에 따라 판수를 다 하지 않았으면 FALSE를 return 해준다.
+		//======================================
+		// 지뢰 충돌체크
+		//======================================
+	}
 }
 
 void GameProc::AddReadyCount()
@@ -191,21 +215,6 @@ BOOL GameProc::StartGame()
 
 	return TRUE;
 }
-
-// BOOL GameProc::PreStartGame()
-// {
-// 	//모든 player가 준비완료가 되기를 기다려야 한다
-// 	//while( m_playerCount != m_listPlayer.GetItemCount() )
-// 	WaitForSingleObject( m_hStartEvent, INFINITE );
-// 
-// 	//게임 시작 packet을 보낸다.
-// 	SPacket sendPacket;
-// 	sendPacket.SetID( SC_GAME_START_GAME );
-// 
-// 	SendAllPlayerInGame( sendPacket );
-// 
-// 	return TRUE;
-// }
 
 BOOL GameProc::ResetGame()
 {
@@ -230,10 +239,10 @@ BOOL GameProc::ResetGame()
 	//초기화
 	m_AttKillCount		= m_DefKillCount = 0;
 	m_nowPlayTimeCount	= m_playTime;
-	ClearItem();
 	//////////////////////////////////////////////////////////////////////////
 	//게임내에서 사용된 item도 초기화 해 줘야 함
 	//////////////////////////////////////////////////////////////////////////
+	//ClearItem();
 
 	//게임을 모두 끝냈으면 FALSE를 return하여 게임을 종료 할 수 있게 한다.
 	if( --m_playCount <= 0 )

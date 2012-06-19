@@ -132,9 +132,6 @@ public:
 	LobbyChar* GetLeader() { return m_leader; }
 	LobbyChar* ChangeLeader();
 
-	//방에 들어있는 player의 세션 주소를 변경해 준다
-	//BOOL SetPlayerSession( LobbySession* session, LobbyChar* charSpace );
-
 	//player추가
 	void AddPlayerInRoom( LobbyChar* charspace );
 	//player제거

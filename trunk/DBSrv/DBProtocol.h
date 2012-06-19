@@ -2,7 +2,6 @@
 
 //#define CONNECT_LOG_SERVER
 
-//
 enum SERVER_CODE
 {
 	// 쿼리 오류 등 서버 자체적인 에러로

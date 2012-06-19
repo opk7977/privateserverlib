@@ -4,8 +4,10 @@
 #include "SPacket.h"
 
 class GameSession;
+class DataLeader;
+class SLogger;
 
-const int Character_Space = 100;
+//const int Character_Space = 100;
 
 enum SRV_CHAR_STATE
 {
@@ -23,8 +25,6 @@ enum SRV_CHAR_TEAM
 	SRV_CHAR_TEAM_DEF,
 };
 
-
-
 class CharObj : public SServerObj
 {
 private:
@@ -33,7 +33,16 @@ private:
 	int					m_sessionID;
 	TCHAR				m_tstrID[50];
 	int					m_iTeam;
-	int					m_startPoint;
+
+	//누적
+	int					m_rankID;
+	int					m_untilRankPoint;
+	int					m_accumulKillCount;
+	int					m_accumulDeathCount;
+	
+	//======================================
+	//현재의 게임
+	int					m_rankPoint;
 
 	int					m_killCount;
 	int					m_deathCount;
@@ -67,8 +76,17 @@ public:
 	inline void SetTeam( int team ) { m_iTeam = team; }
 	inline int GetTeam() { return m_iTeam; }
 
-	inline void SetStartPoint( int p ) { m_startPoint = p; }
-	inline int GetStartPoint() { return m_startPoint; }
+	inline void SetRankID( int rankID ) { m_rankID = rankID; }
+	inline int GetRankID() { return m_rankID; }
+
+	inline void SetRankPoint( int rankPoint ) { m_rankPoint = rankPoint; }
+	inline int GetRankPoint() { return m_rankPoint; }
+
+	inline void SetAccumulKillCount( int killCount ) { m_accumulKillCount = killCount; }
+	inline int GetAccumulKillCount() { return m_accumulKillCount; }
+
+	inline void SetAccumulDeathCount( int deathCount ) { m_accumulDeathCount = deathCount; }
+	inline int GetAccumulDeathCount() { return m_accumulDeathCount; }
 
 	//공간 관리용 index
 	inline int GetVecIndex() { return m_vecIndex; }
@@ -85,7 +103,7 @@ public:
 	BOOL HPUpOnePoint();
 
 	//죽은 횟수
-	void DeathCountUp();
+	//void DeathCountUp();
 	int GetDeathCount();
 
 	//죽인 횟수
@@ -99,10 +117,17 @@ public:
 };
 
 
-class CharMgr : public SSingleton <CharMgr>
+class CharMgr : public SSingleton <CharMgr>, public SServerObj
 {
 private:
 	friend class SSingleton<CharMgr>;
+
+private:
+	//======================================
+	// singleTon객체들
+	//======================================
+	DataLeader*			m_document;
+	SLogger*			m_logger;
 
 private:
 	//캐릭터 공간

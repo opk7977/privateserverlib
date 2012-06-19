@@ -5,8 +5,16 @@
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdParam, int nCmdShow )
 {
-	HWND hWnd;
+	//======================================
+	// 로그 초기화
+	//======================================
+	SLogger* m_logger = &GetLogger;
+	m_logger->Create( "GameSrv" );
 
+	//======================================
+	// 윈도우 생성
+	//======================================
+	HWND hWnd;
 	WinMgr window;
 	if( !window.CreateWindows( hInstance, _T("GameSrv"), _T("GameSrv"), hWnd, 800, 600, nCmdShow ) )
 	{
@@ -14,15 +22,21 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		return 0;
 	}
 
-	//로그초기화
-	GetLogger.Create( "GameSrv" );
-
-	//데이터 부터 셋팅 하자
+	//======================================
+	// 서버 데이터 로드
+	//======================================
 	if( !GetDocument.DataSetting() )
-		return -1;
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("main\n데이터 로드 실패!\n\n") );
+		return 0;
+	}
 
-	GameSrvMain  myMain;
-	myMain.Init();
+	//======================================
+	// Game 메인 실행
+	//======================================
+	GameSrvMain* myMain = new GameSrvMain;
+	myMain->Init();
 
 
 	MSG Message;
@@ -42,7 +56,10 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		}
 	}
 
-	myMain.Release();
+	//======================================
+	// 할당 해제
+	//======================================
+	delete myMain;
 
 	return (int)Message.wParam;
 }

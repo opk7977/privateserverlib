@@ -1,4 +1,5 @@
 #include "CharMgr.h"
+#include "DataLeader.h"
 #include "SLogger.h"
 #include "GameSession.h"
 
@@ -17,9 +18,9 @@ void CharObj::Init()
 	ZeroMemory( m_tstrID, 50 );
 	m_session			= NULL;
 	m_iTeam				= -1;
-	m_startPoint		= 0;
-	m_killCount			= 0;
-	m_deathCount		= 0;
+	m_rankID			= m_untilRankPoint		= 0;
+	m_accumulKillCount	= m_accumulDeathCount	= 0;
+	m_killCount			= m_deathCount			= 0;
 
 	m_HP = 100;
 }
@@ -31,27 +32,6 @@ void CharObj::Init( int index )
 	Init();
 }
 
-// void CharObj::PackageMyInfo( SPacket& packet )
-// {
-// 	SSynchronize Sync( this );
-// 
-// 	packet << m_sessionID;				//세션ID
-// 	//자신이 생성될 위치를 담는다
-// 	packet << m_startPoint;
-// 
-// // 	packet << m_State;				//캐릭터 상태
-// // 	packet << m_Position.m_X;		//위치값
-// // 	packet << m_Position.m_Y;
-// // 	packet << m_Position.m_Z;
-// // 	packet << m_Direction.m_X;		//방향값
-// // 	packet << m_Direction.m_Y;
-// // 	packet << m_Direction.m_Z;
-// // 	packet << m_DirInt;
-// 
-// 	//ip와 port번호를 넣는다
-// 	m_session->PackageMyNetInfo( packet );
-// }
-
 void CharObj::DownHP( int damage )
 {
 	SSynchronize sync( this );
@@ -59,7 +39,11 @@ void CharObj::DownHP( int damage )
 	m_HP -= damage;
 
 	if( m_HP <= 0 )
+	{
+		//죽었음
+		++m_deathCount;
 		m_HP = 0;
+	}
 }
 
 BOOL CharObj::IsDie()
@@ -86,10 +70,10 @@ BOOL CharObj::HPUpOnePoint()
 	return TRUE;
 }
 
-void CharObj::DeathCountUp()
-{
-	++m_deathCount;
-}
+// void CharObj::DeathCountUp()
+// {
+// 	++m_deathCount;
+// }
 
 int CharObj::GetDeathCount()
 {
@@ -117,6 +101,8 @@ int CharObj::GetKillCount()
 
 CharMgr::CharMgr(void)
 {
+	m_document	= &GetDocument;
+	m_logger	= &GetLogger;
 }
 
 CharMgr::~CharMgr(void)
@@ -126,11 +112,13 @@ CharMgr::~CharMgr(void)
 
 void CharMgr::Init()
 {
-	m_IndexQ.Create( Character_Space, 0 );
+	SSynchronize sync( this );
 
-	m_vecCharSpace.reserve( Character_Space );
+	m_IndexQ.Create( m_document->SessionCount, 0 );
 
-	for( int i=0; i<Character_Space; ++i )
+	m_vecCharSpace.reserve( m_document->SessionCount );
+
+	for( int i=0; i<m_document->SessionCount; ++i )
 	{
 		CharObj* tmpChar = new CharObj;
 		tmpChar->Init(i);
@@ -141,10 +129,12 @@ void CharMgr::Init()
 
 void CharMgr::Release()
 {
+	SSynchronize sync( this );
+
 	if( m_vecCharSpace.empty() )
 		return;
 
-	for( int i=0; i<Character_Space; ++i )
+	for( int i=0; i<m_document->SessionCount; ++i )
 	{
 		delete m_vecCharSpace[i];
 	}
@@ -153,6 +143,8 @@ void CharMgr::Release()
 
 CharObj* CharMgr::GetCharSpace()
 {
+	SSynchronize sync( this );
+
 	int index = m_IndexQ.GetIndex();
 	if( index < 0 )
 		return NULL;
@@ -162,6 +154,8 @@ CharObj* CharMgr::GetCharSpace()
 
 void CharMgr::ReturnCharSpace( CharObj* charspace )
 {
+	SSynchronize sync( this );
+
 	//받아온 공간에 문제가 있으면 return
 	if( charspace == NULL )
 		return;
@@ -174,10 +168,12 @@ void CharMgr::ReturnCharSpace( CharObj* charspace )
 
 CharObj* CharMgr::FindCharAsIndex( int index )
 {
+	SSynchronize sync( this );
+
 	//0보다 작고 초대값보다 크거나 같으면 index에러
-	if( index < 0 || index >= Character_Space )
+	if( index < 0 || index >= m_document->SessionCount )
 	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("CharMgr::FindChar()\nIndex가 이상합니다.\n\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("CharMgr::FindChar()\nIndex가 이상합니다.\n\n") );
 		return NULL;
 	}
 
@@ -186,6 +182,8 @@ CharObj* CharMgr::FindCharAsIndex( int index )
 
 CharObj* CharMgr::FindCharAsSessionId( int sessionID )
 {
+	SSynchronize sync( this );
+
 	std::vector<CharObj*>::iterator iter;
 	iter = m_vecCharSpace.begin();
 	for( ; iter != m_vecCharSpace.end(); ++iter )

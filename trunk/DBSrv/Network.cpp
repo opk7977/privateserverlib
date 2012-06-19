@@ -2,6 +2,7 @@
 #include "SSessionMgr.h"
 #include "DBSession.h"
 #include "SegIOCP.h"
+#include "SLogger.h"
 
 Network::Network(void)
 {
@@ -25,8 +26,8 @@ BOOL Network::Init( int sessionCount )
 	//======================================
 	if( !GetIOCP.Init() )
 	{
-// 		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM,
-// 			_T("Network::Init()\nIOCP초기화에 실패 했습니다.\n\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("Network::Init()\nIOCP초기화에 실패 했습니다.\n\n") );
 		return FALSE;
 	}
 

@@ -60,8 +60,6 @@ void DBSrvMgr::DisConnect()
 	if( m_dbSrv == NULL )
 		return;
 
-	//m_dbSrv->OnDestroy();
-
 	m_dbSrv = NULL;
 }
 
