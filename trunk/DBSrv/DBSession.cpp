@@ -17,7 +17,7 @@ SrvMgr*		DBSession::m_game			= new SrvMgr;
 
 DBMgr*		DBSession::m_dbMgr			= &GetDBMgr;
 PlayerMgr*	DBSession::m_playerMgr		= &GetPlayerMgr;
-SLogger*	DBSession::m_logger		= &GetLogger;
+SLogger*	DBSession::m_logger			= &GetLogger;
 
 #ifdef CONNECT_LOG_SERVER
 	LogSrvMgr*	DBSession::m_logSrv		= &GetLogSrvMgr;
@@ -130,7 +130,7 @@ void DBSession::PacketParsing( SPacket& packet )
 		RecvLobbyCharInsertReadyResult( packet );
 		break;
 	case GAME_TO_DB_UPDATE_USERDATA:
-		//
+		RecvGameCharDataUpdate( packet );
 		break;
 	case OTHER_TO_DB_DISCONNECT_CHARACTER:
 		RecvOtherSrvCharDisconnect( packet );
@@ -437,7 +437,7 @@ void DBSession::RecvGameCharDataUpdate( SPacket& packet )
 	SPacket sendToLobby( DB_TO_LOBBY_UPDATE_USERDATA );
 
 //  	sendToGame << roomNum << count;
-	sendToLobby << count;
+	sendToLobby << roomNum << count;
 
 	for( int i=0; i<count; ++i )
 	{
@@ -472,10 +472,11 @@ void DBSession::RecvGameCharDataUpdate( SPacket& packet )
 		//--------------------------------------------------------------		
 	}
 
-	//로비로 전송!
-// 	m_lobby->SendPacketToSrv( sendToLobby );
-
 	//게임 서버로 전송!
+
+
+	//로비로 전송!
+ 	m_lobby->SendPacketToSrv( sendToLobby );	
 }
 
 void DBSession::RecvOtherSrvCharDisconnect( SPacket& packet )

@@ -1,5 +1,5 @@
 create procedure InsertAccountItem
-	@user_ID nchar(10),
+	@user_ID nvarchar(10),
 	@user_PW nvarchar(15),
 	@email nvarchar(20)
 AS

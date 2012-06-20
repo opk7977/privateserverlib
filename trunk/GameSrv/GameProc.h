@@ -10,6 +10,7 @@ class SPacket;
 class CharObj;
 class SLogger;
 class DataLeader;
+class DBSrvMgr;
 
 #define WAIT_GAME_END_TIME	10
 
@@ -17,6 +18,15 @@ enum Team
 {
 	GAME_TEAM_ATT = 0,
 	GAME_TEAM_DEF,
+};
+
+enum GameMode
+{
+	GAME_MODE_DEATH_MATCH = 0,
+	GAME_MODE_BOOM_MISSION,
+	GAME_MODE_HACKING_MISSION,
+
+	GAME_MODE_COUNT,
 };
 
 class GameProc : public SThread
@@ -56,6 +66,9 @@ private:
 	// 각 팀 킬수
 	int						m_AttKillCount;
 	int						m_DefKillCount;
+	// 데스메치가 아닌경우 게임이 끝났을때의 결과
+	// -1:타임아웃/ 0:0팀승/ 1:1팀승
+	int						m_isWin;
 	//--------------------------------------
 
 	//--------------------------------------
@@ -86,14 +99,22 @@ private:
 
 	//======================================
 	// 쓰레드 이벤트 핸들
+	// 게임 오픈!
 	HANDLE					m_hStartGame;
-
 	//======================================
 	// 게임 flag
 	//======================================
 	//play인원이 모두 준비가 다 되었음
 	HANDLE					m_hStartEvent;
+	//로비서버로 부터 데이터 정산이 모두 완료 되었다는 신호를 받음
+	HANDLE					m_hReturnResult;
+	//======================================
 
+	//======================================
+	// 게임 모드에 따른
+	// 결과 정산 함수를 담는 Func배열
+	//======================================
+	void					(GameProc::*m_GameResult[GAME_MODE_COUNT])(int);
 	//======================================
 
 	//======================================
@@ -101,6 +122,7 @@ private:
 	//======================================
 	static SLogger*			m_logger;
 	static DataLeader*		m_document;
+	static DBSrvMgr*		m_dbMgr;
 	//======================================
 
 public:
@@ -161,7 +183,23 @@ public:
 	//게임 완전히 종료
 	void EndGame();
 	//게임이 한판(?)끝나고 다시시작 혹은 게임 종료
-	void WaitTimeLogic();
+	void WaitTimeLogic( int waitTime = WAIT_GAME_END_TIME );
+	//==============================================================
+
+	//==============================================================
+	// 게임 종료 정산 함수들
+	//--------------------------------------------------------------
+	// GAME_MODE_DEATH_MATCH
+	void GameEnd_DeathMatch( int winnerTeam );
+	// GAME_MODE_BOOM_MISSION
+	void GameEnd_BoomMission( int winnerTeam );
+	// GAME_MODE_HACKING_MISSION
+	void GameEnd_HackingMission( int winnerTeam );
+
+	// 정산된 내용을 DB서버로 전송
+	BOOL SendToDBGameResult();
+	// 로비에서 신호를 받음
+	inline void RecvLobbyEndReadyOK() { SetEvent( m_hReturnResult ); }
 	//==============================================================
 
 	//지금 플레이 중인지를 확인
@@ -177,6 +215,7 @@ public:
 	//플레이어 제거/ 현 게임 proc에 사람이 없으면 FALSE를 return
 	BOOL DelPlayer( GameSession* player );
 
+	void CharacterRestart();
 	void ClearItem();
 
 	//게임내의 캐릭터를 검색

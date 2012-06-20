@@ -63,10 +63,10 @@ void PlayerObj::SetPlayer( int sessionID, TCHAR* _id, int rank_id, int rank_poin
 	m_sessionID = sessionID;
 	int size = _tcslen(_id)*sizeof(TCHAR);
 	_tcsncpy_s( m_UserID, _id, size );
-	m_Rank_ID = 0;
-	m_Rank_Point = 0;
-	m_AccumulatedKill = 0;
-	m_AccumulatedDeath = 0;
+	m_Rank_ID = rank_id;
+	m_Rank_Point = rank_point;
+	m_AccumulatedKill = AccumulKill;
+	m_AccumulatedDeath = AccumulDeath;
 }
 
 void PlayerObj::AddRankPoint( int point )
@@ -114,7 +114,7 @@ void RankDataMgr::AddData( int rankID, int point )
 int RankDataMgr::GetRank( int nowRankID, int point )
 {
 	// 받아온 랭크를 먼저 체크
-	if( nowRankID <= 0 || nowRankID < 19 )
+	if( nowRankID < 1 || nowRankID > 20 )
 		return -1;
 
 	//20에서는 변화 없음
@@ -125,7 +125,7 @@ int RankDataMgr::GetRank( int nowRankID, int point )
 	for( int i=nowRankID; i<=20; ++i )
 	{
 		if( m_mapRank[i] >= point )
-			return (--i);
+			return --i;
 	}
 
 	//찾지 못하고 for문이 끝났다면 20레벨
@@ -138,7 +138,7 @@ int RankDataMgr::GetRank( int point )
 	for( int i=1; i<=20; ++i )
 	{
 		if( m_mapRank[i] >= point )
-			return (--i);
+			return --i;
 	}
 
 	//찾지 못하고 for문이 끝났다면 20레벨

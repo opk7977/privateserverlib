@@ -200,9 +200,9 @@ void LobbyChar::PackageMyInfoForGame( SPacket& packet )
 	packet << m_myTeam;
 
 	packet << m_rankID;
-	packet << m_rankPoint;
-	packet << m_AccumulatedKill;
-	packet << m_AccumulatedDeath;
+// 	packet << m_rankPoint;
+// 	packet << m_AccumulatedKill;
+// 	packet << m_AccumulatedDeath;
 }
 
 //==============================================================

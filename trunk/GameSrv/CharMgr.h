@@ -8,6 +8,14 @@ class DataLeader;
 class SLogger;
 
 //const int Character_Space = 100;
+enum INCREASE_POINT
+{
+	DEATHMATCH_WINNER_KILL_POINT	= 10,
+	DEATHMATCH_LOSER_KILL_POINT		= 5,
+	MISSION_WINNER_KILL_POINT		= 2,
+	MISSION_LOSER_KILL_POINT		= 1,
+	MISSION_WINNER_INCREASE_POINT	= 50,
+};
 
 enum SRV_CHAR_STATE
 {
@@ -34,14 +42,14 @@ private:
 	TCHAR				m_tstrID[50];
 	int					m_iTeam;
 
-	//누적
+	//현재의
 	int					m_rankID;
-	int					m_untilRankPoint;
-	int					m_accumulKillCount;
-	int					m_accumulDeathCount;
+// 	int					m_untilRankPoint;
+// 	int					m_accumulKillCount;
+// 	int					m_accumulDeathCount;
 	
 	//======================================
-	//현재의 게임
+	//이번 게임
 	int					m_rankPoint;
 
 	int					m_killCount;
@@ -81,12 +89,13 @@ public:
 
 	inline void SetRankPoint( int rankPoint ) { m_rankPoint = rankPoint; }
 	inline int GetRankPoint() { return m_rankPoint; }
+// 	inline int GetUntileRankPoint() { return m_untilRankPoint; }
 
-	inline void SetAccumulKillCount( int killCount ) { m_accumulKillCount = killCount; }
-	inline int GetAccumulKillCount() { return m_accumulKillCount; }
-
-	inline void SetAccumulDeathCount( int deathCount ) { m_accumulDeathCount = deathCount; }
-	inline int GetAccumulDeathCount() { return m_accumulDeathCount; }
+// 	inline void SetAccumulKillCount( int killCount ) { m_accumulKillCount = killCount; }
+// 	inline int GetAccumulKillCount() { return m_accumulKillCount; }
+// 
+// 	inline void SetAccumulDeathCount( int deathCount ) { m_accumulDeathCount = deathCount; }
+// 	inline int GetAccumulDeathCount() { return m_accumulDeathCount; }
 
 	//공간 관리용 index
 	inline int GetVecIndex() { return m_vecIndex; }
@@ -98,6 +107,7 @@ public:
 	//피가 다 달아서 죽었는지?
 	BOOL IsDie();
 	//살리기
+// 	void SetAlive();
 	void SetAlive() { m_HP = 100; }
 	//피1 올리기_ return FALSE는 원래 피가 100이라 올릴게 없을 경우
 	BOOL HPUpOnePoint();
@@ -113,6 +123,7 @@ public:
 	//==================================================
 	// 게임한판이 끝나고 지금까지의 결과를 넣는다.
 	//==================================================
+	void PackageMyInfoForDB( SPacket& packet );
 //	void PackageCharInfoForResult( SPacket& packet );
 };
 

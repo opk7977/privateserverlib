@@ -154,6 +154,7 @@ enum DB_SERVER
 
 	// DBSrv -> lobbySrv
 	// 캐릭터 정보가 계산되어 갱신되면 로비에 새로운 데이터를 알린다
+	// int			-		game(room)Num
 	// int			-		playerCount
 	//--------------------------------------
 	// int			-		sessionID

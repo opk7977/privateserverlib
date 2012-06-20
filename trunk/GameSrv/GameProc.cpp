@@ -2,6 +2,7 @@
 #include "GameSession.h"
 #include "GameProtocol.h"
 #include "DataLeader.h"
+#include "DBSrvMgr.h"
 
 #include "CharMgr.h"
 #include "ItemMgr.h"
@@ -14,13 +15,20 @@
 
 SLogger*	GameProc::m_logger		= &GetLogger;
 DataLeader* GameProc::m_document	= &GetDocument;
+DBSrvMgr*	GameProc::m_dbMgr		= &GetDBSrv;
 
 GameProc::GameProc(void)
 {
 	m_hStartGame	= ::CreateEvent( NULL, TRUE, FALSE, NULL );
 	m_hStartEvent	= ::CreateEvent( NULL, TRUE, FALSE, NULL );
+	m_hReturnResult	= ::CreateEvent( NULL, TRUE, FALSE, NULL );
 
 	m_logger = &GetLogger;
+
+	//결과 정산함수를 셋팅
+	m_GameResult[GAME_MODE_DEATH_MATCH]		= &GameProc::GameEnd_DeathMatch;
+	m_GameResult[GAME_MODE_BOOM_MISSION]	= &GameProc::GameEnd_BoomMission;
+	m_GameResult[GAME_MODE_HACKING_MISSION]	= &GameProc::GameEnd_HackingMission;
 
 	m_timer.Init();
 }
@@ -49,6 +57,7 @@ void GameProc::Init()
 	m_nowIsPlaying		= FALSE;
 	m_playerCount		= 8;	//기본...
 	m_AttKillCount		= m_DefKillCount	= 0;
+	m_isWin				= -1;
 	m_AttKillAllCount	= m_DefKillAllCount = 0;
 	m_AttWinCount		= m_DefWinCount		= 0;
 	m_nowPlayTimeCount	= 0;
@@ -57,6 +66,7 @@ void GameProc::Init()
 
 	ResetEvent( m_hStartGame );
 	ResetEvent( m_hStartEvent );
+	ResetEvent( m_hReturnResult );
 }
 
 BOOL GameProc::Run()
@@ -97,35 +107,67 @@ BOOL GameProc::Run()
 				break;
 
 			//======================================
+			// 우선은 게임을 멈춤
+			// 게임 타임아웃 packet을 보낸다.
+			//======================================
+			SPacket sendPacket( SC_TIME_OUT );
+			SendAllPlayerInGame( sendPacket );
+			//======================================
+
+			//======================================
 			// 현재 판(?)을 닫음
 			// 게임 횟수가 남아 있다면 TRUE를 return
 			//======================================
-			BOOL result = ResetGame();
-
-			//======================================
-			// 게임 종료 대기/ DB에 데이터를 보내
-			// user들의 정보를 갱신하고
-			// 렙업한 player의 정보를 받아 전송한다
-			//======================================
-			WaitTimeLogic();
-
-			if( result )
+			if( ResetGame() )
 			{
 				//======================================
-				// 게임 새로 시작
+				// 게임 다시 시작! 아직 판수가 남음
+				// 잠시 대기 후에 다시 시작 패킷을 보낸다.
 				//======================================
+				WaitTimeLogic( WAIT_GAME_END_TIME );
+
 				SendRestartPacket();
 				continue;
 			}
 			else
 			{
 				//======================================
-				// 게임 끗. player들을 로비로 보낸다
+				// 게임 끗/ DB서버로 보낸다.
+				// 캐릭터마다 승패를 따져 rankPoint를 정산
 				//======================================
-				SendGotoLobbyPacket();
+				int whosWin = -1;
+				if( m_AttWinCount > m_DefWinCount )
+				{
+					//공격팀이 이겼음
+					whosWin = 0;
+				}
+				else if( m_AttWinCount < m_DefWinCount )
+				{
+					//방어팀이 이겼음
+					whosWin = 1;
+				}
+				else
+				{
+					//비김
+					whosWin = 3;
+				}
+
+				(this->*m_GameResult[m_gameMode])(whosWin);
+				// 게임의 결과 rankPoint를 DB에 데이터를 보낸다
+				SendToDBGameResult();
 				isEnd = TRUE;
 			}
 		}
+		//DB서버에와 로비서버에 데이터가 정상적으로 저장되기까지의
+		//시간을 기다려줘야 한다
+		//로비에서 신호가 오기를 기다린다.
+		WaitForSingleObject( m_hReturnResult, INFINITE );
+
+		//이제 끝나기를 5초정도 기다렸다가 끝나는 신호를 클라들에게 전송한다.
+		WaitTimeLogic( 5 );
+
+		//클라들에게 로비로 돌아가라는 패킷을 보낸다.
+		SendGotoLobbyPacket();
 
 		//게임이 종료됨
 #ifdef _DEBUG
@@ -150,7 +192,29 @@ void GameProc::GameRun()
 	while( m_nowPlayTimeCount > 0 )
 	{
 		//======================================
-		// 시간 처리
+		// 0.5초 단위 처리
+		//======================================
+		lifeUpTime += m_timer.GetElapsedTime();
+		if( lifeUpTime >= 0.5f )
+		{
+			//우선 초기화
+			lifeUpTime = 0.f;
+
+			//======================================
+			// hp를 1씩 올려 준다.
+			//======================================
+			//부상당한 캐릭터를 모두 1씩 올려 준다
+			PlayerHeal();
+			//그애들만 보낸다.
+			SendPlayerHeal();
+
+			//======================================
+			// 지뢰 폭발
+			//======================================
+		}
+
+		//======================================
+		// 1초 단위 처리
 		//======================================
 		m_timer.ProcessTime();
 
@@ -164,34 +228,24 @@ void GameProc::GameRun()
 			if( --m_nowPlayTimeCount < 0 )
 				break;
 
+			//======================================
+			// 시간 처리
+			//======================================
 			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("보낸 시간: %d\n"), m_nowPlayTimeCount );
-
 			//시간 패킷 보내기
 			sendPacket.PacketClear();
 			sendPacket.SetID( SC_GAME_TIME_COUNTDOWN );
 			sendPacket << m_nowPlayTimeCount;
 			SendAllPlayerInGame( sendPacket );
+
+			// 만약 지뢰가 1초 단위로 터진다면			//
+			// 충돌 체크 전에 폭발체크부터 해 줘야 한다	//
+
+			//======================================
+			// 지뢰 충돌체크
+			//======================================
+			
 		}
-
-		//======================================
-		// hp를 1씩 올려 준다.
-		//======================================
-		lifeUpTime += m_timer.GetElapsedTime();
-		if( lifeUpTime >= 0.5f )
-		{
-			//우선 초기화
-			lifeUpTime = 0.f;
-
-			//부상당한 캐릭터를 모두 1씩 올려 준다
-			PlayerHeal();
-
-			//그애들만 보낸다.
-			SendPlayerHeal();
-		}
-
-		//======================================
-		// 지뢰 충돌체크
-		//======================================
 	}
 }
 
@@ -210,6 +264,9 @@ BOOL GameProc::StartGame()
 	//게임 시간을 셋팅
  	m_nowPlayTimeCount	= m_playTime;
  	m_nowIsPlaying		= TRUE;
+	
+	m_AttKillCount		= m_DefKillCount = 0;
+	m_isWin				= -1;
 
 	SetEvent( m_hStartGame );
 
@@ -218,70 +275,82 @@ BOOL GameProc::StartGame()
 
 BOOL GameProc::ResetGame()
 {
-	if( m_AttKillCount > m_DefKillCount )
-		++m_AttWinCount;		//어택팀이 이김
-	else if( m_AttKillCount < m_DefKillCount )
-		++m_DefKillCount;		//디펜스팀이 이김
-	else
-		++m_TieCount;			//비김
+// 	//======================================
+// 	// 게임 타임아웃 packet을 보낸다.
+// 	//======================================
+// 	SPacket sendPacket( SC_TIME_OUT );
+// 	SendAllPlayerInGame( sendPacket );
+// 	//======================================
 
-	//총 수에 넣어 준다
+	//======================================
+	// 포인트 정산!
+	//======================================
+	switch( m_gameMode )
+	{
+	case GAME_MODE_DEATH_MATCH:
+		{
+			//킬 /데스 비교
+			if( m_AttKillCount > m_DefKillCount )
+				++m_AttWinCount;		//어택팀이 이김
+			else if( m_AttKillCount < m_DefKillCount )
+				++m_DefWinCount;		//디펜스팀이 이김
+			else
+				++m_TieCount;			//비김
+		}
+		break;
+	case GAME_MODE_BOOM_MISSION:
+	case GAME_MODE_HACKING_MISSION:
+		{
+			// m_isWin확인
+			if( m_isWin == GAME_TEAM_ATT )
+				++m_AttWinCount;
+			else if( m_isWin == GAME_TEAM_DEF )
+				++m_DefWinCount;
+			else
+				++m_TieCount;
+		}
+		break;
+	default:
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameProc::ResetGame()\n게임 모드가 유효하지 않습니다\n\n") );
+		return FALSE;
+	}
+	
+	//총 킬/ 데스 카운터를 적립해준다.
 	m_AttKillAllCount	+= m_AttKillCount;
 	m_DefKillAllCount	+= m_DefKillCount;
 
-	//======================================
-	// 게임 타임아웃 packet을 보낸다.
-	//======================================
-	SPacket sendPacket( SC_TIME_OUT );
-	SendAllPlayerInGame( sendPacket );
-	//======================================
-
-	//초기화
-	m_AttKillCount		= m_DefKillCount = 0;
-	m_nowPlayTimeCount	= m_playTime;
-	//////////////////////////////////////////////////////////////////////////
-	//게임내에서 사용된 item도 초기화 해 줘야 함
-	//////////////////////////////////////////////////////////////////////////
-	//ClearItem();
 
 	//게임을 모두 끝냈으면 FALSE를 return하여 게임을 종료 할 수 있게 한다.
 	if( --m_playCount <= 0 )
 		return FALSE;
+
+	//게임을 더 해야 하는 경우는 다시 정보를 초기화
+	m_nowPlayTimeCount	= m_playTime;
+	m_nowIsPlaying		= TRUE;
+	m_AttKillCount		= m_DefKillCount = 0;
+	m_isWin				= -1;
+	m_SendList.Clear();
+
+	//캐릭터의 HP등을 모두 reset!
+	CharacterRestart();
+	//////////////////////////////////////////////////////////////////////////
+	//게임내에서 사용된 item도 초기화 해 줘야 함
+	//////////////////////////////////////////////////////////////////////////
+	//ClearItem();
 
 	return TRUE;
 }
 
 void GameProc::EndGame()
 {
-// 	//======================================
-// 	// 게임 종료 packet을 보낸다.
-// 	//======================================
-// 	int result;
-// 	if( m_AttWinCount > m_DefWinCount )
-// 		result = 0;		//red팀 승리
-// 	else if( m_AttWinCount < m_DefWinCount )
-// 		result = 1;		//blue팀 승리
-// 	else
-// 		result = -1;	//무승부
-// 
-// 	SPacket sendPacket( SC_GAME_END );
-// 	sendPacket << 0;				//타임 아웃
-// 	sendPacket << result;
-// 	sendPacket << m_AttKillAllCount;
-// 	sendPacket << m_DefKillAllCount;
-// 	sendPacket << m_AttWinCount;
-// 	sendPacket << m_DefWinCount;
-// 	sendPacket << m_TieCount;
-// 	SendAllPlayerInGame( sendPacket );
-// 	//======================================
-
-	//게임을 종료 하기 위해 약간의 시간을 두고 캐릭터들에게 로비로 돌아가라는 신호를 보낸다.
+	//게임 종료
+	m_nowPlayTimeCount = 0;
+// 	ResetEvent( m_hReturnResult );
 }
 
-void GameProc::WaitTimeLogic()
+void GameProc::WaitTimeLogic( int waitTime /*= WAIT_GAME_END_TIME */)
 {
 	float frameTime = 0.f;
-	float waitTime	= WAIT_GAME_END_TIME;
 
 	//시간이 다 되기 전까지 loop
 	while(1)
@@ -302,6 +371,92 @@ void GameProc::WaitTimeLogic()
 				return;
 		}
 	}
+}
+
+void GameProc::GameEnd_DeathMatch( int winnerTeam )
+{
+	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
+	CharObj* tmpObj = NULL;
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
+	{
+		tmpObj = (*iter)->GetMyInfo();
+
+		if( tmpObj->GetTeam() == winnerTeam )
+		{
+			//이긴팀
+			tmpObj->SetRankPoint( tmpObj->GetKillCount() * DEATHMATCH_WINNER_KILL_POINT );
+		}
+		else
+		{
+			//진팀/ 혹은 비겼을때
+			tmpObj->SetRankPoint( tmpObj->GetKillCount() * DEATHMATCH_LOSER_KILL_POINT );
+		}
+	}
+}
+
+void GameProc::GameEnd_BoomMission( int winnerTeam )
+{
+	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
+	CharObj* tmpObj = NULL;
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
+	{
+		tmpObj = (*iter)->GetMyInfo();
+
+		if( tmpObj->GetTeam() == winnerTeam )
+		{
+			//이긴팀
+			tmpObj->SetRankPoint( tmpObj->GetKillCount() * MISSION_WINNER_KILL_POINT + MISSION_WINNER_INCREASE_POINT );
+		}
+		else
+		{
+			//진팀/ 혹은 비겼을때
+			tmpObj->SetRankPoint( tmpObj->GetKillCount() * MISSION_LOSER_KILL_POINT );
+		}
+	}
+}
+
+void GameProc::GameEnd_HackingMission( int winnerTeam )
+{
+	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
+	CharObj* tmpObj = NULL;
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
+	{
+		tmpObj = (*iter)->GetMyInfo();
+
+		if( tmpObj->GetTeam() == winnerTeam )
+		{
+			//이긴팀
+			tmpObj->SetRankPoint( tmpObj->GetKillCount() * MISSION_WINNER_KILL_POINT + MISSION_WINNER_INCREASE_POINT );
+		}
+		else
+		{
+			//진팀/ 혹은 비겼을때
+			tmpObj->SetRankPoint( tmpObj->GetKillCount() * MISSION_LOSER_KILL_POINT );
+		}
+	}
+}
+
+BOOL GameProc::SendToDBGameResult()
+{
+	SPacket sendPacket( GAME_TO_DB_UPDATE_USERDATA );
+	//모든 캐릭터의 rankPoint정보를 담자!
+
+	//지금게임의 게임번호(방번호)를 담고
+	sendPacket << m_id;
+	//우선 인원수부터 담고
+	sendPacket << m_listPlayer.GetItemCount();
+
+	//정보를 담는다.
+	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
+	{
+		(*iter)->GetMyInfo()->PackageMyInfoForDB( sendPacket );
+	}
+
+	//DB서버로 데이터를 보낸다.
+	m_dbMgr->SendToDBServer( sendPacket );
+
+	return TRUE;
 }
 
 void GameProc::AddKillCount( BOOL deathTeam )
@@ -343,6 +498,18 @@ BOOL GameProc::DelPlayer( GameSession* player )
 		return FALSE;
 
 	return TRUE;
+}
+
+void GameProc::CharacterRestart()
+{
+	SSynchronize sync( this );
+
+	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
+	for( ; m_listPlayer.IsEnd( iter ); ++iter )
+	{
+		//HP회복!
+		(*iter)->GetMyInfo()->SetAlive();
+	}
 }
 
 void GameProc::ClearItem()

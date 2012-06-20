@@ -90,6 +90,9 @@ public:
 
 	//DB_TO_OTHER_DROP_PLAYER
 
+	//DB_TO_LOBBY_UPDATE_USERDATA
+	void RecvToDBUpdateUserData( SPacket& packet );
+
 	//--------------------------------------
 	// GameSrv와의 커뮤니케이션
 	//--------------------------------------
@@ -162,6 +165,9 @@ public:
 	//LG_START_GAME
 	BOOL SendCreateGameProc();
 
+	//LG_END_GAME_READY_OK
+	BOOL SendGameEndReadyOK( int roomNum );
+
 	//--------------------------------------
 	// client와의 커뮤니케이션
 	//--------------------------------------
@@ -209,6 +215,7 @@ public:
 
 	//SC_ROOM_CHAR_READY
 	BOOL SendRoomCharReady();
+	BOOL SendRoomCharReady( int sessionId, BOOL ready );
 
 	//SC_ROOM_MAP_CHANGE
 	BOOL SendRoomMapChange();
@@ -248,6 +255,9 @@ public:
 
 	//SC_LOBBY_GAME_START
 	BOOL SendLobbyGameStart( int roomNum );
+
+	//SC_LOBBY_UPDATE_USERDATA
+	BOOL SendLobbyUpdateUserData( SPacket& packet );
 
 	//SC_LOBBY_GAME_END
 	BOOL SendLobbyGameEnd( int roomNum );

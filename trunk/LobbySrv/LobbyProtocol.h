@@ -79,6 +79,11 @@ enum SERVER_TO_SERVER
 	// int			-		roomNum
 	GL_START_OK,
 
+	// lobbySrv -> gameSrv
+	// 로비서버에서 데이터 갱신이 모두 완료되고 게임서버에게 게임을 이제 종료해도 된다는 신호를 보냄
+	// int			-		roomNum
+	LG_END_GAME_READY_OK,
+
 	// gameSrv -> lobbySrv
 	// 게임이 종료되고 방을 다시 일반 상태로 바꿔 준다
 	// int			-		roomNum
@@ -196,6 +201,7 @@ enum DB_SERVER
 
 	// DBSrv -> lobbySrv
 	// 캐릭터 정보가 계산되어 갱신되면 로비에 새로운 데이터를 알린다
+	// int			-		game(room)Num
 	// int			-		playerCount
 	//--------------------------------------
 	// int			-		sessionID
@@ -496,6 +502,18 @@ enum LOBBY_SERVER
 	// 로비에 있는 player들에게 게임이 시작된 방의 번호를 알린다
 	// int			-		방번호
 	SC_LOBBY_GAME_START,
+
+	// server -> client
+	// 로비에 있는 player들에게 게임이 끝나고 캐릭터들의 data가 업데이트 된것을 알린다
+	// int			-		roomNum
+	// int			-		count
+	//--------------------------------------> count만큼
+	// int			-		sessionID
+	// int			-		rankID
+	// int			-		rankPoint
+	// int			-		accumulKillCount
+	// int			-		accumulDeathCount
+	SC_LOBBY_UPDATE_USERDATA,
 
 	// server -> client
 	// 로비에 있는 player들에게 게임이 끝난 방의 번호를 알린다.

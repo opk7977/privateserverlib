@@ -10,6 +10,8 @@ class SLogger;
 class GameMgr;
 class CharMgr;
 class ItemMgr;
+
+class DBSrvMgr;
 //--------------------------------------
 class CharObj;
 class GameProc;
@@ -36,6 +38,8 @@ private:
 	static GameMgr*			m_gameMgr;
 	static CharMgr*			m_charMgr;
 	static ItemMgr*			m_itemMgr;
+
+	static DBSrvMgr*		m_dbMgr;
 	//======================================
 
 	//내 정보
@@ -69,6 +73,12 @@ public:
 	// 받은 패킷 처리
 	//======================================
 	//--------------------------------------
+	// DB 서버와의 커뮤니케이션
+	//--------------------------------------
+	//DB_TO_OTHER_CONNECT_OK
+	void RecvDBConnectOK();
+
+	//--------------------------------------
 	// lobby 서버와의 커뮤니케이션
 	//--------------------------------------
 	//SC_LOBBY_CONNECT_OK
@@ -76,6 +86,9 @@ public:
 
 	//LG_START_GAME
 	void RecvLobbyStartGame( SPacket &packet );
+
+	//LG_END_GAME_READY_OK
+	void RecvLobbyEndReadyOK( SPacket &packet );
 
 	//--------------------------------------
 	// client와의 커뮤니케이션

@@ -18,8 +18,9 @@ void CharObj::Init()
 	ZeroMemory( m_tstrID, 50 );
 	m_session			= NULL;
 	m_iTeam				= -1;
-	m_rankID			= m_untilRankPoint		= 0;
-	m_accumulKillCount	= m_accumulDeathCount	= 0;
+	m_rankID			= 0;
+// 	m_rankID			= m_untilRankPoint		= 0;
+// 	m_accumulKillCount	= m_accumulDeathCount	= 0;
 	m_killCount			= m_deathCount			= 0;
 
 	m_HP = 100;
@@ -52,6 +53,13 @@ BOOL CharObj::IsDie()
 
 	return ( m_HP <= 0 ) ? TRUE : FALSE;
 }
+
+// void CharObj::SetAlive()
+// {
+// 	//HP와 은신수치 초기화
+// 	m_HP = 100;
+// 	//
+// }
 
 BOOL CharObj::HPUpOnePoint()
 {
@@ -88,6 +96,16 @@ void CharObj::KillCountUp()
 int CharObj::GetKillCount()
 {
 	return m_killCount;
+}
+
+void CharObj::PackageMyInfoForDB( SPacket& packet )
+{
+	SSynchronize sync( this );
+
+	packet << m_sessionID;
+	packet << m_rankPoint;
+	packet << m_killCount;
+	packet << m_deathCount;
 }
 
 // void CharObj::PackageCharInfoForResult( SPacket& packet )

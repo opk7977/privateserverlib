@@ -7,6 +7,8 @@
 #include "ItemMgr.h"
 #include "GameMgr.h"
 
+#include "DBSrvMgr.h"
+
 #include "GameProc.h"
 
 
@@ -18,6 +20,8 @@ SLogger*	GameSession::m_logger	= &GetLogger;
 GameMgr*	GameSession::m_gameMgr	= &GetGameMgr;
 CharMgr*	GameSession::m_charMgr	= &GetCharMgr;
 ItemMgr*	GameSession::m_itemMgr	= &GetItemMgr;
+
+DBSrvMgr*	GameSession::m_dbMgr	= &GetDBSrv;
 
 GameSession::GameSession(void)
 : m_myCharInfo(NULL)
@@ -124,13 +128,19 @@ void GameSession::PacketParsing( SPacket& packet )
 
 	switch( packet.GetID() )
 	{
+	case DB_TO_OTHER_CONNECT_OK:
+		RecvDBConnectOK();
+		break;
+	//==============================================================> DBSrv
 	case SC_LOBBY_CONNECT_OK:
 		RecvLobbyConnectOK();
 		break;
 	case LG_START_GAME:
 		RecvLobbyStartGame( packet );
 		break;
-
+	case LG_END_GAME_READY_OK:
+		RecvLobbyEndReadyOK( packet );
+		break;
 	//==============================================================> LobbySrv
 	case CS_GAME_INGAME:
 		RecvInGame( packet );
@@ -174,7 +184,6 @@ void GameSession::PacketParsing( SPacket& packet )
 // 	case CS_GAME_GOTO_LOBBY:
 // 		//
 // 		break;
-
 	//==============================================================> Client
 	default:
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::PacketParsing()\n(%d번 ID)받은 패킷의 아이디가 유효하지 않습니다.\n\n"), packet.GetID() );
@@ -184,6 +193,16 @@ void GameSession::PacketParsing( SPacket& packet )
 //======================================
 // 받은 패킷 처리
 //======================================
+//--------------------------------------
+// DB 서버와의 커뮤니케이션
+//--------------------------------------
+void GameSession::RecvDBConnectOK()
+{
+	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::RecvDBConnectOK()\nDB서버와 연결에 성공하였습니다\n\n") );
+
+	m_dbMgr->SetSession( this );
+}
+
 //--------------------------------------
 // Lobby Srv와의 커뮤니케이션
 //--------------------------------------
@@ -239,7 +258,7 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 		//방을 얻어 왔고 게임이 시작중이 아니라면 게임을 열고 캐릭터를 저장해 준다
 
 		int sessionId, size, team;
-		int rankId, rankPoint, accumulKillCount, accumulDeathCount;
+		int rankId/*, rankPoint, accumulKillCount, accumulDeathCount*/;
 		TCHAR stringID[30];
 		//인원수에 맞게 캐릭터를 생성해 준다
 		for( int i=0; i<count; ++i )
@@ -250,8 +269,8 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 			packet.GetData( stringID, size );
 			packet >> team;
 
-			packet >> rankId >> rankPoint;
-			packet >> accumulKillCount >> accumulDeathCount;
+			packet >> rankId/* >> rankPoint*/;
+// 			packet >> accumulKillCount >> accumulDeathCount;
 
 			//캐릭터 생성
 			CharObj* tmpChar = m_charMgr->GetCharSpace();
@@ -268,9 +287,9 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 			tmpChar->SetID( stringID );
 			tmpChar->SetTeam( team );
 			tmpChar->SetRankID( rankId );
-			tmpChar->SetRankPoint( rankPoint );
-			tmpChar->SetAccumulKillCount( accumulKillCount );
-			tmpChar->SetAccumulDeathCount( accumulDeathCount );
+// 			tmpChar->SetRankPoint( rankPoint );
+// 			tmpChar->SetAccumulKillCount( accumulKillCount );
+// 			tmpChar->SetAccumulDeathCount( accumulDeathCount );
 		}
 
 		//======================================
@@ -289,6 +308,21 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 
 	//게임을 시작해도 된다는 패킷을 Lobby로 보낸다
 	SendStartOK( roomNum );
+}
+
+void GameSession::RecvLobbyEndReadyOK( SPacket &packet )
+{
+	int roomNum;
+	packet >> roomNum;
+
+	GameProc* tmpGame = m_gameMgr->FindGame( roomNum );
+	if( tmpGame == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::RecvLobbyEndReadyOK()\n%d번 방은 없습니다.\n\n"), roomNum );
+		return;
+	}
+
+	tmpGame->RecvLobbyEndReadyOK();
 }
 
 //--------------------------------------
@@ -439,6 +473,7 @@ void GameSession::RecvGameAttack( SPacket &packet )
 	}
 
 	//에너지를 달게 한다
+	//죽으면 death가 오른다
 	tmpChar->DownHP( damage );
 
 	//attect패킷
@@ -455,8 +490,8 @@ void GameSession::RecvGameAttack( SPacket &packet )
 		m_myGameProc->AddKillCount( tmpChar->GetTeam() );
 		//캐릭터 killcount정리
 		m_myCharInfo->KillCountUp();
-		//캐릭터 deathcount정리
-		tmpChar->DeathCountUp();
+// 		//캐릭터 deathcount정리
+// 		tmpChar->DeathCountUp();
 
 		//die패킷
 		SendGameDie( isHead, tmpChar );

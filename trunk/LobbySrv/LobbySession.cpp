@@ -222,6 +222,9 @@ void LobbySession::PacketParsing( SPacket& packet )
 	case DB_TO_OTHER_DROP_PLAYER:
 		//
 		break;
+	case DB_TO_LOBBY_UPDATE_USERDATA:
+		RecvToDBUpdateUserData( packet );
+		break;
 	//==============================================================> GameSrv
 	case SC_GAME_CONNECT_OK:
 		RecvConnectServer();
@@ -356,18 +359,48 @@ void LobbySession::RecvCharacterLogin( SPacket& packet )
 	SendToDBCharInsertReadyResult( index, sessionId );
 }
 
+void LobbySession::RecvToDBUpdateUserData( SPacket& packet )
+{
+	int roomNum, count;
+	int sessionId, rankId, rankPoint, kill, death;
+
+	packet >> roomNum >> count;
+
+	for( int i=0; i<count; ++i )
+	{
+		//데이터를 뽑고
+		packet >> sessionId;
+		packet >> rankId >> rankPoint >> kill >> death;
+
+		//우선 캐릭터 부터 찾는다
+		LobbyChar* tmpChar = m_charMgr->FindCharAsSessionId( sessionId );
+		if( tmpChar == NULL )
+		{
+			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("LobbySession::RecvToDBUpdateUserData()\n%d번 캐릭터를 찾을 수 없습니다.\n\n"), sessionId );
+			continue;
+		}
+		tmpChar->SetCharData( rankId, rankPoint, kill, death );
+	}
+	//로비에 있는 사람들에게 변경된 캐릭터 데이터를 보낸다.
+	SendLobbyUpdateUserData( packet );
+
+	//게임서버로 잘 처리 되었다고 보낸다
+	SendGameEndReadyOK( roomNum );
+}
+
 //--------------------------------------------------------------
 
 void LobbySession::RecvConnectServer()
 {
 	//이미 연결되어 있는지를 확인하고
-#ifdef CONNECT_LOG_SERVER
+
 	if( m_srvNet->GetSession() != NULL )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("LobbySession::RecvConnectServer()\n게임서버설정이 이미 끝났습니다. 넌 누구냐...\n\n") );
 		return;
 	}
+
 	//내가 서버다!!
 #ifdef _DEBUG
 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
@@ -379,7 +412,7 @@ void LobbySession::RecvConnectServer()
 #endif
 	m_srvNet->SetSession( this );
 
-#endif
+
 }
 
 void LobbySession::RecvStartFaild( SPacket& packet )
@@ -1397,6 +1430,17 @@ BOOL LobbySession::SendCreateGameProc()
 	return TRUE;
 }
 
+BOOL LobbySession::SendGameEndReadyOK( int roomNum )
+{
+	SPacket sendPacket( LG_END_GAME_READY_OK );
+
+	sendPacket << roomNum;
+
+	m_srvNet->SendToGameServer( sendPacket );
+
+	return TRUE;
+}
+
 //--------------------------------------------------------------
 
 BOOL LobbySession::SendOtherCharInfo()
@@ -1639,8 +1683,25 @@ BOOL LobbySession::SendRoomCharOut()
 	// 이 녀석이 leader인지 확인한다.
 	if( m_myRoom->GetLeader() == m_myCharInfo )
 	{
-		//leader를 바꾸고 패킷을 보내준다.
-		SendRoomLeaderToAll( m_myRoom->ChangeLeader()->GetSessionID() );
+		//leader를 바꾸고
+		LobbyChar* tmpChar = m_myRoom->ChangeLeader();
+		if( tmpChar == NULL )
+		{
+			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+				_T("LobbySession::SendRoomCharOut()\n방장 바꾸는 중에 문제가 있습니다.\n\n") );
+			return FALSE;
+		}
+		//패킷을 보내준다.
+		SendRoomLeaderToAll( tmpChar->GetSessionID() );
+
+		//방장의 ready상태가 TRUE였다면 바꿔준다
+		if( tmpChar->GetReady() == TRUE )
+		{
+			tmpChar->SetReady( FALSE );
+			m_myRoom->ChangReadyCount( FALSE );
+
+			SendRoomCharReady( tmpChar->GetSessionID(), tmpChar->GetReady() );
+		}
 #ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 						_T("LobbySession::SendRoomCharOut()\n")
@@ -1677,6 +1738,17 @@ BOOL LobbySession::SendRoomCharReady()
 	SPacket sendPacket( SC_ROOM_CHAR_READY );
 	sendPacket << m_myCharInfo->GetSessionID();
 	sendPacket << m_myCharInfo->GetReady();
+
+	m_myRoom->SendPacketAllInRoom( sendPacket );
+
+	return TRUE;
+}
+
+BOOL LobbySession::SendRoomCharReady( int sessionId, BOOL ready )
+{
+	SPacket sendPacket( SC_ROOM_CHAR_READY );
+	sendPacket << sessionId;
+	sendPacket << ready;
 
 	m_myRoom->SendPacketAllInRoom( sendPacket );
 
@@ -1956,6 +2028,16 @@ BOOL LobbySession::SendLobbyGameStart( int roomNum )
 	sendPacket << roomNum;
 
 	m_lobbyMgr->SendPacketAllInLobby( sendPacket );
+
+	return TRUE;
+}
+
+BOOL LobbySession::SendLobbyUpdateUserData( SPacket& packet )
+{
+	//패킷의 ID만 바꿔서 보내면 된다.
+	packet.SetID( SC_LOBBY_UPDATE_USERDATA );
+
+	m_lobbyMgr->SendPacketAllInLobby( packet );
 
 	return TRUE;
 }
