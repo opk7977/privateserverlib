@@ -6,6 +6,8 @@
 
 #include "CharMgr.h"
 #include "ItemMgr.h"
+#include "MineItem.h"
+#include "CharMgr.h"
 
 #include "SPacket.h"
 #include "SLogger.h"
@@ -13,9 +15,11 @@
 
 #include "SLogger.h"
 
-SLogger*	GameProc::m_logger		= &GetLogger;
-DataLeader* GameProc::m_document	= &GetDocument;
-DBSrvMgr*	GameProc::m_dbMgr		= &GetDBSrv;
+SLogger*		GameProc::m_logger		= &GetLogger;
+DataLeader*		GameProc::m_document	= &GetDocument;
+DBSrvMgr*		GameProc::m_dbMgr		= &GetDBSrv;
+ItemMgr*		GameProc::m_itemMgr		= &GetItemMgr;
+CharMgr*		GameProc::m_charMgr		= &GetCharMgr;
 
 GameProc::GameProc(void)
 {
@@ -50,6 +54,9 @@ void GameProc::Init( int i )
 void GameProc::Init()
 {
 	SSynchronize sync( this );
+
+	//지뢰정보 초기화
+	MineClear();
 
 	//정보는 초기화
 	m_listPlayer.Clear();
@@ -207,10 +214,6 @@ void GameProc::GameRun()
 			PlayerHeal();
 			//그애들만 보낸다.
 			SendPlayerHeal();
-
-			//======================================
-			// 지뢰 폭발
-			//======================================
 		}
 
 		//======================================
@@ -236,16 +239,24 @@ void GameProc::GameRun()
 			sendPacket.PacketClear();
 			sendPacket.SetID( SC_GAME_TIME_COUNTDOWN );
 			sendPacket << m_nowPlayTimeCount;
-			SendAllPlayerInGame( sendPacket );
-
-			// 만약 지뢰가 1초 단위로 터진다면			//
-			// 충돌 체크 전에 폭발체크부터 해 줘야 한다	//
-
-			//======================================
-			// 지뢰 충돌체크
-			//======================================
-			
+			SendAllPlayerInGame( sendPacket );			
 		}
+
+		//==============================================================
+		// 지뢰 처리
+		//======================================
+		// 터질 예정인 애들 시간 줄이기
+		//======================================
+		CountDownRunningMine();
+		//======================================
+		// 폭발한 지뢰 충돌체크
+		//======================================
+		ExplosionMineCrashCheck();
+		//======================================
+		// 캐릭터와 충돌체크
+		//======================================
+		MineCrashCheck();
+		//==============================================================
 	}
 }
 
@@ -275,13 +286,6 @@ BOOL GameProc::StartGame()
 
 BOOL GameProc::ResetGame()
 {
-// 	//======================================
-// 	// 게임 타임아웃 packet을 보낸다.
-// 	//======================================
-// 	SPacket sendPacket( SC_TIME_OUT );
-// 	SendAllPlayerInGame( sendPacket );
-// 	//======================================
-
 	//======================================
 	// 포인트 정산!
 	//======================================
@@ -333,6 +337,8 @@ BOOL GameProc::ResetGame()
 
 	//캐릭터의 HP등을 모두 reset!
 	CharacterRestart();
+	//지뢰정보 reset!
+	MineReset();
 	//////////////////////////////////////////////////////////////////////////
 	//게임내에서 사용된 item도 초기화 해 줘야 함
 	//////////////////////////////////////////////////////////////////////////
@@ -371,6 +377,23 @@ void GameProc::WaitTimeLogic( int waitTime /*= WAIT_GAME_END_TIME */)
 				return;
 		}
 	}
+}
+
+void GameProc::MineClear()
+{
+	if( m_mapMine.IsEmpty() )
+		return;
+
+	POSITION pos = m_mapMine.GetStartPosition();
+	MineItem* tmp;
+	while( pos )
+	{
+		tmp = m_mapMine.GetNextValue( pos );
+		//모든 공간을 반납하고 나서!
+		m_itemMgr->ReturnMineSpace( tmp );
+	}
+	//다 지워
+	m_mapMine.RemoveAll();
 }
 
 void GameProc::GameEnd_DeathMatch( int winnerTeam )
@@ -479,6 +502,17 @@ void GameProc::AddPlayer( GameSession* player )
 		return;
 	}
 
+	//지뢰공간도 만들어 준다
+	MineItem* tmp = m_itemMgr->GetMineItemSpace();
+	if( tmp == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameProc::AddPlayer()\n지뢰 공간을 받아 올 수 없습니다.\n\n") );
+		return;
+	}
+	tmp->SetMineSpace( player->GetSessionID(), player->GetMyInfo()->GetTeam() );
+	tmp->Init();
+	m_mapMine[player->GetSessionID()] = tmp;
+
 	m_listPlayer.AddItem( player );
 }
 
@@ -502,7 +536,7 @@ BOOL GameProc::DelPlayer( GameSession* player )
 
 void GameProc::CharacterRestart()
 {
-	SSynchronize sync( this );
+	SSynchronize sync( &m_listPlayer );
 
 	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
 	for( ; m_listPlayer.IsEnd( iter ); ++iter )
@@ -512,23 +546,21 @@ void GameProc::CharacterRestart()
 	}
 }
 
-void GameProc::ClearItem()
+void GameProc::MineReset()
 {
-	if( m_listItem.IsEmpty() )
-		return;
+	SSynchronize Sync( &m_boomSoon );
 
-	std::list<ItemObj*>::iterator iter = m_listItem.GetHeader();
-	for( ; !m_listItem.IsEnd( iter ); ++iter )
+	POSITION pos = m_mapMine.GetStartPosition();
+	while( pos )
 	{
-		GetItemMgr.ReturnSpace( (*iter) );
+		MineItem* tmp = m_mapMine.GetNextValue( pos );
+		tmp->Reset();
 	}
-
-	m_listItem.Clear();
 }
 
 CharObj* GameProc::FindChar( int sessionID )
 {
-	SSynchronize Sync( this );
+	SSynchronize Sync( &m_listPlayer );
 
 	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
 	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
@@ -543,11 +575,14 @@ CharObj* GameProc::FindChar( int sessionID )
 
 void GameProc::PlayerHeal()
 {
+	SSynchronize sync( &m_listPlayer );
+
 	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
 	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
 	{
 		if( (*iter)->GetMyInfo()->HPUpOnePoint() )
 		{
+			SSynchronize sync( &m_SendList );
 			//hp를 올린애는 list에 넣어 준다
 			m_SendList.AddItem( (*iter) );
 		}
@@ -557,6 +592,8 @@ void GameProc::PlayerHeal()
 void GameProc::SendPlayerHeal()
 {
 	SPacket sendPacket;
+
+	SSynchronize sync( &m_SendList );
 
 	std::list<GameSession*>::iterator iter = m_SendList.GetHeader();
 	for( ; !m_SendList.IsEnd( iter ); ++iter )
@@ -569,6 +606,117 @@ void GameProc::SendPlayerHeal()
 	}
 
 	m_SendList.Clear();
+}
+
+void GameProc::CountDownRunningMine()
+{
+	float elapsed = m_timer.GetElapsedTime();
+
+	SSynchronize sync( &m_boomSoon );
+
+	std::list<MineItem*>::iterator iter = m_boomSoon.GetHeader();
+
+	for( ; !m_boomSoon.IsEnd( iter ); ++iter )
+	{
+		//실행중인게 아니면 안한다
+		if( !(*iter)->IsRun() )
+			continue;
+
+		//시간을 줄여 준다
+		(*iter)->DownTimer( elapsed );
+	}
+}
+
+void GameProc::ExplosionMineCrashCheck()
+{
+	SSynchronize sync( &m_boomSoon );
+
+	std::list<MineItem*>::iterator iterMine		= m_boomSoon.GetHeader();
+	std::list<GameSession*>::iterator iterChar	= m_listPlayer.GetHeader();
+	
+	for( ; !m_boomSoon.IsEnd( iterMine ); ++iterMine )
+	{
+		//실행중인게 아니면 안한다
+		if( !(*iterMine)->IsRun() )
+			continue;
+
+		//지금 터져도 되?
+		if( !(*iterMine)->IsBoom() )
+			continue;
+
+		//아니면 터뜨리고 전송
+		//게임에 있는 모두에게 전송
+		SendGameExplosionMine( (*iterMine) );
+
+// 		for( ; m_listPlayer.IsEnd( iterChar ); ++iterChar )
+// 		{
+// 			//지뢰주인을 찾고
+// 			CharObj* mineMaster = m_charMgr->FindChar( (*iterMine)->GetSessionID() );
+// 			//지뢰맞은애
+// 			CharObj* tmpChar = (*iterChar)->GetMyInfo();
+// 			POINT3 charpos = tmpChar->GetPos();
+// 
+// 			int damege = (*iterMine)->IsBoomCollision( charpos.m_X, charpos.m_Z );
+// 
+// 			if( damege > 0 )
+// 			{
+// 				tmpChar->DownHP( damege );
+// 
+// 				//나를 뺀 모두에게 폭탄터저 에너지가 달았다는 패킷을 보낸다
+// 				//나에게 너 폭탄 맞았다는 패킷을 보낸다.
+// 				SendGameCharDamegedByMine( tmpChar, damege );
+// 				
+// 
+// 				if( tmpChar->IsDie() )
+// 				{
+// 					//다른편이면
+// 					if( tmpChar->GetTeam() != mineMaster->GetTeam() )
+// 					{
+// 						//죽은캐릭터 반대 팀의 kill수를 올려 주고
+// 						(*iterChar)->GetMyGame()->AddKillCount( mineMaster->GetTeam() );
+// 
+// 						//지뢰 주인의 kill수를 올려 준다
+// 						mineMaster->KillCountUp();
+// 					}
+// 
+// 					//죽은것에 대한 패킷
+// 					SendGameCharDieByMine( tmpChar );
+// 				}
+// 			}
+// 		}
+		//list에서 지워준다
+		m_boomSoon.DelItem( (*iterMine ) );
+	}
+}
+
+void GameProc::MineCrashCheck()
+{
+	SSynchronize sync( &m_boomSoon );
+
+	std::list<MineItem*>::iterator iterMine		= m_boomSoon.GetHeader();
+	std::list<GameSession*>::iterator iterChar	= m_listPlayer.GetHeader();
+
+	for( ; !m_boomSoon.IsEnd( iterMine ); ++iterMine )
+	{
+		for( ; !m_listPlayer.IsEnd( iterChar ); ++iterChar )
+		{
+			//내 지뢰면 무시
+			if( (*iterMine)->GetSessionID() == (*iterChar)->GetSessionID() )
+				continue;
+
+			POINT3 charpos = (*iterChar)->GetMyInfo()->GetPos();
+
+			if( (*iterMine)->IsCollision( charpos.m_X, charpos.m_Z ) )
+			{
+				//충돌
+				//지뢰실행flog를 실행
+				(*iterMine)->SetRun();
+
+				//지뢰 실행 패킷을 보낸다.
+				SendGameRunMine( (*iterMine) );
+			}
+		}
+	}
 }
 
 BOOL GameProc::SendStartPacket()
@@ -604,9 +752,72 @@ BOOL GameProc::SendGotoLobbyPacket()
 	return TRUE;
 }
 
+BOOL GameProc::SendGameRunMine( MineItem* mine )
+{
+	SPacket sendPacket( SC_GAME_RUN_MINE );
+
+	sendPacket << mine->GetSessionID();
+	sendPacket << mine->GetX();
+	sendPacket << mine->GetY();
+	sendPacket << mine->GetZ();
+
+	SendAllPlayerInGame( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameProc::SendGameExplosionMine( MineItem* mine )
+{
+	SPacket sendPacket( SC_GAME_EXPLOSION_MINE );
+
+	sendPacket << mine->GetSessionID();
+	sendPacket << mine->GetX();
+	sendPacket << mine->GetY();
+	sendPacket << mine->GetZ();
+
+	SendAllPlayerInGame( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameProc::SendGameCharDamegedByMine( CharObj* damegedChar, int damege )
+{
+	//다른 애들한테 전송
+	SPacket sendPacket( SC_GAME_CHARACTER_DAMEGED_BY_MINE );
+	sendPacket << damegedChar->GetSessionID();
+
+	SendAllPlayerInGame( sendPacket, damegedChar->GetSession() );
+
+	//나한테 전송
+	sendPacket.PacketClear();
+	sendPacket.SetID( SC_GAME_YOU_DAMEGED_BY_MINE );
+	sendPacket << damege;
+
+	damegedChar->GetSession()->SendPacket( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameProc::SendGameCharDieByMine( CharObj* dieChar )
+{
+	//다른 애들한테 전송
+	SPacket sendPacket( SC_GAME_CHARACTER_DIE_BY_MINE );
+	sendPacket << dieChar->GetSessionID();
+
+	SendAllPlayerInGame( sendPacket, dieChar->GetSession() );
+
+	//나한테 전송
+	sendPacket.PacketClear();
+	sendPacket.SetID( SC_GAME_YOU_DAMEGED_BY_MINE );
+
+	dieChar->GetSession()->SendPacket( sendPacket );
+
+	return TRUE;
+}
+
 void GameProc::SendAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL */ )
 {
-	SSynchronize Sync( this );
+	SSynchronize Sync( &m_listPlayer );
 	
 	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
 	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
@@ -620,7 +831,7 @@ void GameProc::SendAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL */
 
 void GameProc::SendPacketToMyTeam( int team, SPacket& packet, GameSession* me/* = NULL*/ )
 {
-	SSynchronize Sync( this );
+	SSynchronize Sync( &m_listPlayer );
 
 	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
 	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
@@ -637,7 +848,7 @@ void GameProc::SendPacketToMyTeam( int team, SPacket& packet, GameSession* me/* 
 
 void GameProc::PackageAllPlayerInGame( SPacket& packet, GameSession* me /*= NULL */ )
 {
-	SSynchronize Sync( this );
+	SSynchronize Sync( &m_listPlayer );
 
 	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
 

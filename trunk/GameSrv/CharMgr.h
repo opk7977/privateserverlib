@@ -55,6 +55,10 @@ private:
 	int					m_killCount;
 	int					m_deathCount;
 
+	//======================================
+	//위치
+	POINT3				m_pos;
+
 	//에너지
 	int					m_HP;
 
@@ -119,6 +123,15 @@ public:
 	//죽인 횟수
 	void KillCountUp();
 	int GetKillCount();
+
+	//======================================
+	// pos
+	//======================================
+	inline void SetPos( float posX, float posY, float posZ ) { m_pos.SetElement( posX, posY, posZ ); }
+	inline POINT3 GetPos() { return m_pos; }
+	inline float GetPosX() { return m_pos.m_X; }
+	inline float GetPosY() { return m_pos.m_Y; }
+	inline float GetPosZ() { return m_pos.m_Z; }
 
 	//==================================================
 	// 게임한판이 끝나고 지금까지의 결과를 넣는다.

@@ -1,38 +1,14 @@
 #include "ItemMgr.h"
 #include "SSynchronize.h"
-
 #include "SLogger.h"
+#include "DataLeader.h"
+#include "MineItem.h"
 
-
-ItemObj::ItemObj()
-{
-	Init();
-}
-
-ItemObj::~ItemObj()
-{
-
-}
-
-void ItemObj::Init( int index )
-{
-	m_vecIndex = index;
-
-	Init();
-}
-
-void ItemObj::Init()
-{
-	m_iId = 0;
-	m_Position.Clear();
-
-	m_itemType = -1;
-}
-
-//==============================================================
 
 ItemMgr::ItemMgr(void)
 {
+	m_logger	= &GetLogger;
+	m_document	= &GetDocument;
 }
 
 ItemMgr::~ItemMgr(void)
@@ -42,64 +18,66 @@ ItemMgr::~ItemMgr(void)
 
 void ItemMgr::Init()
 {
-	m_IndexQ.Create( Item_Space, 0 );
-
-	m_vecItem.reserve( Item_Space );
-
-	for( int i=0; i<Item_Space; ++i )
+	//==============================================================
+	// MineItem
+	//--------------------------------------------------------------
 	{
-		ItemObj* tmpItem = new ItemObj;
-		tmpItem->Init(i);
+		SSynchronize sync( &m_IQMine );
 
-		m_vecItem.push_back(tmpItem);
+		m_IQMine.Create( m_document->SessionCount, 0 );
+		m_vecMine.reserve( m_document->SessionCount );
+		for( int i=0; i<m_document->SessionCount; ++i )
+		{
+			MineItem* tmpItem = new MineItem;
+			tmpItem->Init(i);
+			m_vecMine.push_back(tmpItem);
+		}
 	}
+	//==============================================================
 }
 
 void ItemMgr::Release()
 {
-	SSynchronize sync( this );
-
-	if( m_vecItem.empty() )
-		return;
-
-	for( int i=0; i<Item_Space; ++i )
 	{
-		delete m_vecItem[i];
+		SSynchronize sync( &m_IQMine );
+		if( m_vecMine.empty() )
+			return;
+
+		for( int i=0; i<m_document->SessionCount; ++i )
+		{
+			delete m_vecMine[i];
+		}
+		m_vecMine.clear();
 	}
-	m_vecItem.clear();
 }
 
-ItemObj* ItemMgr::GetItemSpace()
+MineItem* ItemMgr::GetMineItemSpace()
 {
-	SSynchronize sync( this );
+	SSynchronize sync( &m_IQMine );
 
-	int index = m_IndexQ.GetIndex();
+	int index = m_IQMine.GetIndex();
 	if( index < 0 )
 		return NULL;
 
-	return m_vecItem[index];
+	return m_vecMine[index];
 }
 
-void ItemMgr::ReturnSpace( ItemObj* item )
+void ItemMgr::ReturnMineSpace( MineItem* item )
 {
-	SSynchronize sync( this );
+	SSynchronize sync( &m_IQMine );
 
-	int index = item->GetVecIndex();
 	item->Init();
-
-	m_IndexQ.PutIndex( index );
+	m_IQMine.PutIndex( item->GetVecIndex() );
 }
 
-ItemObj* ItemMgr::FindItem( int index )
+MineItem* ItemMgr::FindMineItem( int index )
 {
-	SSynchronize sync( this );
-
-	//0보다 작고 초대값보다 크거나 같으면 index에러
-	if( index < 0 || index >= Item_Space )
-	{
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("ItemMgr::FindItem()\nIndex가 이상합니다.\n\n") );
+	//인덱스 확인
+	if( index < 0 || index > m_document->SessionCount )
 		return NULL;
-	}
 
-	return m_vecItem[index];
+	SSynchronize sync( &m_IQMine );
+
+	return m_vecMine[index];
 }
+

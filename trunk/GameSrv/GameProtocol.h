@@ -368,6 +368,57 @@ enum GAME_SERVER
 	SC_GAME_YOU_DIE,
 
 	// client -> server
+	// 지뢰를 설치
+	// float		-		posX
+	// float		-		posY
+	// float		-		posZ
+	CS_GAME_LAY_MINE,
+
+	// server -> client
+	// 누군가 지뢰를 설치하면 팀원에게 지뢰설치되었다는 메시지를 보냄
+	// int			-		설치자의sessionId
+	// float		-		posX
+	// float		-		posY
+	// float		-		posZ
+	SC_GAME_LAY_MINE,
+
+	// server -> client
+	// 누가 지뢰 밟았음
+	// int			-		설치자의 sessionId(지뢰의 ID)
+	// float		-		posX
+	// float		-		posY
+	// float		-		posZ
+	SC_GAME_RUN_MINE,
+
+	// server -> client
+	// 지뢰가 터짐
+	// int			-		설치자의 sessionId(지뢰의 ID)
+	// float		-		posX
+	// float		-		posY
+	// float		-		posZ
+	SC_GAME_EXPLOSION_MINE,
+
+	// server -> client
+	// 누군가 지뢰에 맞아 에너지가 감소됨
+	// int			-		지뢰에 맞은 캐릭터의 SessionID
+	SC_GAME_CHARACTER_DAMEGED_BY_MINE,
+
+	// server -> client
+	// 너 지뢰에 공격당했다는 패킷
+	// int			-		Damege
+	SC_GAME_YOU_DAMEGED_BY_MINE,
+
+	// server -> client
+	// 누군가 지뢰에 맞아 죽음
+	// int			-		지뢰에 맞은 캐릭터의 SessionID
+	SC_GAME_CHARACTER_DIE_BY_MINE,
+
+	// server -> client
+	// 너 지뢰에 맞아 죽었다
+	// 데이터 없음
+	SC_GAME_YOU_DIE_BY_MINE,
+
+	// client -> server
 	// 캐릭터 상태가 변함
 	// int			-		dirInt
 	CS_GAME_CHANGE_STATE,

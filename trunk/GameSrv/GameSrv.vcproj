@@ -312,6 +312,10 @@
 				RelativePath=".\DataLeader.h"
 				>
 			</File>
+			<File
+				RelativePath=".\myMath.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Object"
@@ -339,6 +343,18 @@
 					RelativePath=".\ItemMgr.h"
 					>
 				</File>
+				<Filter
+					Name="Mine"
+					>
+					<File
+						RelativePath=".\MineItem.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\MineItem.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 	</Files>

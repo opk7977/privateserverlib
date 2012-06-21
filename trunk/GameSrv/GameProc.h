@@ -5,12 +5,16 @@
 #include "STime.h"
 
 class GameSession;
-class ItemObj;
+class MineItem;
 class SPacket;
 class CharObj;
 class SLogger;
 class DataLeader;
 class DBSrvMgr;
+class ItemMgr;
+class MineItem;
+class CharMgr;
+
 
 #define WAIT_GAME_END_TIME	10
 
@@ -36,93 +40,102 @@ private:
 	// 지정값
 	//======================================
 	// 자신의 ID(방번호(key값))
-	int						m_id;
+	int								m_id;
 	// 이 방의 PORT번호값
-	int						m_port;
+	int								m_port;
 	//======================================
 
 	// playerlist
-	SList<GameSession*>		m_listPlayer;
+	SList<GameSession*>				m_listPlayer;
 	// 아이템 정보 list
-	SList<ItemObj*>			m_listItem;
+// 	SList<ItemObj*>					m_listItem;
+
+	//======================================
+	// 지뢰
+	ATL::CAtlMap<int, MineItem*>	m_mapMine;
+	// 설치된 지뢰
+	SList<MineItem*>				m_boomSoon;
+	//======================================
 
 	// 피 체운 대상 보내고 clear되고하는 패턴임
-	SList<GameSession*>		m_SendList;
+	SList<GameSession*>				m_SendList;
 
 	//======================================
 	// 게임중 flag
-	BOOL					m_nowIsPlaying;
+	BOOL							m_nowIsPlaying;
 
 	//======================================
 	// 게임을 play하는 인원(로비에서 받아온 인원)
-	int						m_playerCount;
+	int								m_playerCount;
 	// 게임을 시작할 준비가 되어 있는 인원수
-	int						m_readyCount;
+	int								m_readyCount;
 
 	//==============================================================
 	//--------------------------------------
 	// 이번 판
 	//--------------------------------------
 	// 각 팀 킬수
-	int						m_AttKillCount;
-	int						m_DefKillCount;
+	int								m_AttKillCount;
+	int								m_DefKillCount;
 	// 데스메치가 아닌경우 게임이 끝났을때의 결과
 	// -1:타임아웃/ 0:0팀승/ 1:1팀승
-	int						m_isWin;
+	int								m_isWin;
 	//--------------------------------------
 
 	//--------------------------------------
 	// 전체판수
 	//--------------------------------------
 	// 각 팀 킬수
-	int						m_AttKillAllCount;
-	int						m_DefKillAllCount;
+	int								m_AttKillAllCount;
+	int								m_DefKillAllCount;
 	// 스코어
-	int						m_AttWinCount;
-	int						m_DefWinCount;
-	int						m_TieCount;
+	int								m_AttWinCount;
+	int								m_DefWinCount;
+	int								m_TieCount;
 	//==============================================================
 
 	//======================================
 	// 맵 정보
-	int						m_gameStageMap;
+	int								m_gameStageMap;
 	// 게임 모드
-	int						m_gameMode;
+	int								m_gameMode;
 	//======================================
 	//======================================
 	// 시간
-	STime					m_timer;
+	STime							m_timer;
 	// 시간Count
-	int						m_playTime;				//한판당 playTime
-	int						m_nowPlayTimeCount;		//현재게임의 time
-	int						m_playCount;			//총 판수
+	int								m_playTime;				//한판당 playTime
+	int								m_nowPlayTimeCount;		//현재게임의 time
+	int								m_playCount;			//총 판수
 
 	//======================================
 	// 쓰레드 이벤트 핸들
 	// 게임 오픈!
-	HANDLE					m_hStartGame;
+	HANDLE							m_hStartGame;
 	//======================================
 	// 게임 flag
 	//======================================
 	//play인원이 모두 준비가 다 되었음
-	HANDLE					m_hStartEvent;
+	HANDLE							m_hStartEvent;
 	//로비서버로 부터 데이터 정산이 모두 완료 되었다는 신호를 받음
-	HANDLE					m_hReturnResult;
+	HANDLE							m_hReturnResult;
 	//======================================
 
 	//======================================
 	// 게임 모드에 따른
 	// 결과 정산 함수를 담는 Func배열
 	//======================================
-	void					(GameProc::*m_GameResult[GAME_MODE_COUNT])(int);
+	void							(GameProc::*m_GameResult[GAME_MODE_COUNT])(int);
 	//======================================
 
 	//======================================
 	// SingleTon 객체들
 	//======================================
-	static SLogger*			m_logger;
-	static DataLeader*		m_document;
-	static DBSrvMgr*		m_dbMgr;
+	static SLogger*					m_logger;
+	static DataLeader*				m_document;
+	static DBSrvMgr*				m_dbMgr;
+	static ItemMgr*					m_itemMgr;
+	static CharMgr*					m_charMgr;
 	//======================================
 
 public:
@@ -187,6 +200,12 @@ public:
 	//==============================================================
 
 	//==============================================================
+	// 지뢰 초기화
+	//--------------------------------------------------------------
+	void MineClear();
+	//==============================================================
+
+	//==============================================================
 	// 게임 종료 정산 함수들
 	//--------------------------------------------------------------
 	// GAME_MODE_DEATH_MATCH
@@ -216,7 +235,8 @@ public:
 	BOOL DelPlayer( GameSession* player );
 
 	void CharacterRestart();
-	void ClearItem();
+	//다음 게임을 위해 지뢰를 다시 사용할 수 있도록 만들어 준다
+	void MineReset();
 
 	//게임내의 캐릭터를 검색
 	CharObj* FindChar( int sessionID );
@@ -226,12 +246,34 @@ public:
 	//피가 올라간 애들만 보낸다.
 	void SendPlayerHeal();
 
+	//======================================
+	// 지뢰 로직
+	//======================================
+	//터질 예정인 애들 시간 줄이기
+	void CountDownRunningMine();
+	//폭발하는 지뢰 충돌 체크
+	void ExplosionMineCrashCheck();
+	//설치된 지뢰 캐릭터 충돌 체크
+	void MineCrashCheck();
+	//======================================
+
 	//SC_GAME_START_GAME
 	BOOL SendStartPacket();
 	//SC_GAME_RESTART
 	BOOL SendRestartPacket();
 	//SC_GAME_GOTO_LOBBY
 	BOOL SendGotoLobbyPacket();
+
+	//SC_GAME_RUN_MINE
+	BOOL SendGameRunMine( MineItem* mine );
+	//SC_GAME_EXPLOSION_MINE
+	BOOL SendGameExplosionMine( MineItem* mine );
+	//SC_GAME_CHARACTER_DAMEGED_BY_MINE
+	//SC_GAME_YOU_DAMEGED_BY_MINE
+	BOOL SendGameCharDamegedByMine( CharObj* damegedChar, int damege );
+	//SC_GAME_CHARACTER_DIE_BY_MINE
+	//SC_GAME_YOU_DIE_BY_MINE
+	BOOL SendGameCharDieByMine( CharObj* dieChar );
 
 	//방에 있는 모든 player에게 전송
 	//나를 빼고 보내려면 자신의 session을 매개변수로 넘긴다
