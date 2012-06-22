@@ -100,6 +100,7 @@ public:
 	void RecvGameReadyOK();
 
 	//CS_GAME_CHARACTER_SYNC
+	void RecvGameCharacterSync( SPacket &packet );
 
 	//CS_GAME_ATTACK
 	void RecvGameAttack( SPacket &packet );
@@ -109,6 +110,9 @@ public:
 
 	//CS_GAME_JUST_SHOOT
 	void RecvGameJustShoot();
+
+	//CS_GAME_LAY_MINE
+	void RecvGameLayMine( SPacket &packet );
 
 	//CS_GAME_CHANGE_STATE
 	void RecvGameChangeState( SPacket &packet );
@@ -180,8 +184,11 @@ public:
 	//SC_GAME_CHAR_DIE /SC_GAME_YOU_DIE
 	BOOL SendGameDie( BOOL isHead, CharObj* dieChar );
 
+	//SC_GAME_LAY_MINE
+	BOOL SendGameLayMine( float posX, float posY, float posZ );
+
 	//SC_GAME_CHANGE_STATE
-	BOOL SendGameChangeState( int state );
+	BOOL SendGameChangeState( int state, BOOL isJump, int objIndex );
 
 	//SC_GAME_CHAR_REVIVAL
 	BOOL SendGameCharRevival( int pointIndex );

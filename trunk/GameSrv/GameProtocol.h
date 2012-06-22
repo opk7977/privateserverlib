@@ -383,6 +383,11 @@ enum GAME_SERVER
 	SC_GAME_LAY_MINE,
 
 	// server -> client
+	// 지뢰 설치 실패/ 이미 한번 설치 했음
+	// 데이터 없음
+	SC_GAME_LAY_MINE_FAILD,
+
+	// server -> client
 	// 누가 지뢰 밟았음
 	// int			-		설치자의 sessionId(지뢰의 ID)
 	// float		-		posX
@@ -405,18 +410,30 @@ enum GAME_SERVER
 
 	// server -> client
 	// 너 지뢰에 공격당했다는 패킷
-	// int			-		Damege
+	// int			-		남은 에너지
 	SC_GAME_YOU_DAMEGED_BY_MINE,
 
 	// server -> client
 	// 누군가 지뢰에 맞아 죽음
+	// int			-		지뢰주인sessionID
 	// int			-		지뢰에 맞은 캐릭터의 SessionID
 	SC_GAME_CHARACTER_DIE_BY_MINE,
 
 	// server -> client
 	// 너 지뢰에 맞아 죽었다
-	// 데이터 없음
+	// int			-		지뢰주인sessionID
 	SC_GAME_YOU_DIE_BY_MINE,
+
+	// client -> server
+	// 무기 변경
+	// int			-		무기index
+	CS_GAME_WEAPON_CHANGE,
+
+	// server -> client
+	// 누군가 무기바꿈
+	// int			-		sessionId
+	// int			-		무기index
+	SC_GAME_WEAPON_CHANGE,
 
 	// client -> server
 	// 캐릭터 상태가 변함

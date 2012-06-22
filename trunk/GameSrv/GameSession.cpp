@@ -149,7 +149,7 @@ void GameSession::PacketParsing( SPacket& packet )
 		RecvGameReadyOK();
 		break;
 	case CS_GAME_CHARACTER_SYNC:
-		//
+		RecvGameCharacterSync( packet );
 		break;
 	case CS_GAME_ATTACK:
 		RecvGameAttack( packet );
@@ -159,6 +159,9 @@ void GameSession::PacketParsing( SPacket& packet )
 		break;
 	case CS_GAME_JUST_SHOOT:
 		RecvGameJustShoot();
+		break;
+	case CS_GAME_LAY_MINE:
+		RecvGameLayMine( packet );
 		break;
 	case CS_GAME_CHANGE_STATE:
 		RecvGameChangeState( packet );
@@ -401,6 +404,23 @@ void GameSession::RecvGameReadyOK()
 	m_myGameProc->AddReadyCount();
 }
 
+void GameSession::RecvGameCharacterSync( SPacket &packet )
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::RecvGameCharacterSync()\n해당 캐릭터 정보가 없습니다.\n\n") );
+		return;
+	}
+
+	//캐릭터 정보를 빼고
+	float posX, posY, posZ;
+
+	packet >> posX >> posY >> posZ;
+
+	//위치정보 수정
+	m_myCharInfo->SetPos( posX, posY, posZ );
+}
+
 void GameSession::RecvGameAttack( SPacket &packet )
 {
 	//SSynchronize Sync( this );
@@ -523,12 +543,49 @@ void GameSession::RecvGameJustShoot()
 	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
 }
 
+void GameSession::RecvGameLayMine( SPacket &packet )
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameLayMine()\n캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameLayMine()\n캐릭더 %s의 게임 프로세스를 찾지 못했습니다.\n\n"), m_myCharInfo->GetID() );
+		return;
+	}
+
+	float posX, posY, posZ;
+	packet >> posX >> posY >> posZ;
+
+	if( !m_myGameProc->SettingMine( m_myCharInfo->GetSessionID(), posX, posY, posZ ) )
+	{
+		//지뢰 설치 실패
+		SendPacket( SC_GAME_LAY_MINE_FAILD );
+		return;
+	}
+	
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+		_T("GameSession::RecvGameLayMine()\n캐릭더 %s이 %.2f/%.2f/%.2f/위치에 지뢰설치.\n\n"),
+		m_myCharInfo->GetID(), posX, posY, posZ );
+
+
+	//지뢰 설치 성공
+	SendGameLayMine( posX, posY, posZ );
+}
+
 void GameSession::RecvGameChangeState( SPacket &packet )
 {
 	//SSynchronize Sync( this );
 
-	int state;
+	int state, objIndex;
+	BOOL isJump;
 	packet >> state;
+	packet >> isJump;
+	packet >> objIndex;
 
 	if( m_myCharInfo == NULL )
 	{
@@ -538,7 +595,7 @@ void GameSession::RecvGameChangeState( SPacket &packet )
 		return;
 	}
 
-	SendGameChangeState( state );
+	SendGameChangeState( state, isJump, objIndex );
 }
 
 void GameSession::RecvGameAskRevival( SPacket &packet )
@@ -635,7 +692,7 @@ BOOL GameSession::SendStartFaild( int roomNum )
 	sendPacket.SetID( GL_START_FAILD );
 	sendPacket << roomNum;
 
-	GetSrvNet.SendToLobbyServer( sendPacket );
+	m_srvNet->SendToLobbyServer( sendPacket );
 
 	return TRUE;
 }
@@ -646,7 +703,7 @@ BOOL GameSession::SendStartOK( int roomNum )
 	sendPacket.SetID( GL_START_OK );
 	sendPacket << roomNum;
 
-	GetSrvNet.SendToLobbyServer( sendPacket );
+	m_srvNet->SendToLobbyServer( sendPacket );
 
 	return TRUE;
 }
@@ -657,7 +714,7 @@ BOOL GameSession::SendGameEnd( int roomNum )
 	sendPacket.SetID( GL_GAME_END );
 	sendPacket << roomNum;
 
-	GetSrvNet.SendToLobbyServer( sendPacket );
+	m_srvNet->SendToLobbyServer( sendPacket );
 
 	return TRUE;
 }
@@ -789,12 +846,31 @@ BOOL GameSession::SendGameDie( BOOL isHead, CharObj* dieChar )
 	return TRUE;
 }
 
-BOOL GameSession::SendGameChangeState( int state )
+BOOL GameSession::SendGameLayMine( float posX, float posY, float posZ )
+{
+	SPacket sendPacket( SC_GAME_LAY_MINE );
+
+	sendPacket << m_myCharInfo->GetSessionID();
+	sendPacket << posX;
+	sendPacket << posY;
+	sendPacket << posZ;
+
+	//======================================
+	// 내 팀만 보낸다
+	//======================================
+	//m_myGameProc->SendPacketToMyTeam( m_myCharInfo->GetTeam(), sendPacket );
+	m_myGameProc->SendAllPlayerInGame( sendPacket );
+	return TRUE;
+}
+
+BOOL GameSession::SendGameChangeState( int state, BOOL isJump, int objIndex )
 {
 	SPacket sendPacket;
 	sendPacket.SetID( SC_GAME_CHANGE_STATE );
 	sendPacket << m_myCharInfo->GetSessionID();
 	sendPacket << state;
+	sendPacket << isJump;
+	sendPacket << objIndex;
 
 	if( m_myGameProc == NULL )
 	{

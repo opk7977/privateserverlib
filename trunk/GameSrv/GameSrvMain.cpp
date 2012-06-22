@@ -7,6 +7,7 @@
 
 #include "Network.h"
 #include "GameProtocol.h"
+#include "ItemMgr.h"
 
 #include "SrvNet.h"
 #include "LogSrvMgr.h"
@@ -18,6 +19,7 @@ GameSrvMain::GameSrvMain(void)
 	m_gameMgr	= &GetGameMgr;
 	m_charMgr	= &GetCharMgr;
 	m_network	= &GetNetwork;
+	m_itemMgr	= &GetItemMgr;
 #ifdef CONNECT_LOG_SERVER
 	m_logSrv	= &GetLogSrvMgr;
 #endif
@@ -39,7 +41,7 @@ BOOL GameSrvMain::Init()
 	//======================================
 	// 지뢰ITEM(?) 공간 셋팅
 	//======================================
-	//
+	m_itemMgr->Init();
 
 	//======================================
 	// 게임proc셋팅

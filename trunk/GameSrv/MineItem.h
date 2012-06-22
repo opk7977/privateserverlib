@@ -4,13 +4,17 @@
 
 #define BOOM_TIME 0.5
 
+//사람 충돌 반경
+#define MINE_COLLISION_CHAR_ROUND	10
 //지뢰 충돌 반경
-#define MINE_COLLISION_ROUND	10
+#define MINE_COLLISION_ROUND		10
 //지뢰 폭발 반경
-#define MINE_BOOM_COL_ROUNT		50
+#define MINE_BOOM_COL_ROUND			50
+//캐릭터 구 반경
+// #define MINE_CHAR_ROUND				
 
 //데미지
-#define MINE_BOOM_DAMEGE		70
+#define MINE_BOOM_DAMEGE		100
 
 class MineItem : public SServerObj
 {
@@ -43,6 +47,8 @@ public:
 
 	void Reset();
 
+	inline BOOL CanUse() { return m_isUseable; }
+
 	inline int GetSessionID() { return m_masterSessionID; }
 
 	int GetVecIndex() { return m_vecIndex; }
@@ -67,7 +73,7 @@ public:
 	BOOL IsBoom();
 
 	//캐릭터와의 지뢰 충돌체크
-	BOOL IsCollision( float posX, float posZ );
+	BOOL IsCollision( float posX, float posY, float posZ );
 
 	//터질예정에 있는 지뢰들의 시간을 줄임
 	void DownTimer( float ElapsedTime );
@@ -76,6 +82,6 @@ public:
 
 	//캐릭터와 폭발범위의 충돌체크
 	//return 되는 값은 damege )
-	int IsBoomCollision( float posX, float posZ );
-	int GetDamege( float posX, float posZ );
+	int IsBoomCollision( float posX, float posY, float posZ );
+	int GetDamege( float posX, float posY, float posZ );
 };

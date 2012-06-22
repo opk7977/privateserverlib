@@ -249,6 +249,9 @@ public:
 	//======================================
 	// 지뢰 로직
 	//======================================
+	//지뢰 설치
+	BOOL SettingMine( int sessionId, float posX, float posY, float posZ );
+	//--------------------------------------
 	//터질 예정인 애들 시간 줄이기
 	void CountDownRunningMine();
 	//폭발하는 지뢰 충돌 체크
@@ -270,10 +273,10 @@ public:
 	BOOL SendGameExplosionMine( MineItem* mine );
 	//SC_GAME_CHARACTER_DAMEGED_BY_MINE
 	//SC_GAME_YOU_DAMEGED_BY_MINE
-	BOOL SendGameCharDamegedByMine( CharObj* damegedChar, int damege );
+	BOOL SendGameCharDamegedByMine( CharObj* damegedChar );
 	//SC_GAME_CHARACTER_DIE_BY_MINE
 	//SC_GAME_YOU_DIE_BY_MINE
-	BOOL SendGameCharDieByMine( CharObj* dieChar );
+	BOOL SendGameCharDieByMine( int masterID, CharObj* dieChar );
 
 	//방에 있는 모든 player에게 전송
 	//나를 빼고 보내려면 자신의 session을 매개변수로 넘긴다

@@ -1234,9 +1234,11 @@ void LobbySession::RecvAllChat( SPacket& packet )
 		return;
 	}
 	int size;
-	TCHAR chatText[200] = {0,};
+	TCHAR chatText[256] = {0,};
 
 	packet >> size;
+	if( size > 255 )
+		size = 256;
 	packet.GetData( chatText, size );
 
 #ifdef _DEBUG

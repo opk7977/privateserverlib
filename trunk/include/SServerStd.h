@@ -88,24 +88,4 @@ struct POINT3
 	}
 };
 
-struct POINT2
-{
-	float m_X, m_Y;
-
-	POINT2() {}
-	POINT2( float x, float y ) : m_X(x), m_Y(y){}
-	~POINT2() {}
-
-	void Clear()
-	{
-		m_X = m_Y = 0.f;
-	}
-
-	void SetElement( float x, float y )
-	{
-		m_X = x;
-		m_Y = y;
-	}
-};
-
 #endif

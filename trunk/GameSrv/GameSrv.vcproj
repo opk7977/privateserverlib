@@ -312,10 +312,6 @@
 				RelativePath=".\DataLeader.h"
 				>
 			</File>
-			<File
-				RelativePath=".\myMath.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Object"

@@ -8,7 +8,7 @@ class DataLeader;
 
 class GameMgr;
 class CharMgr;
-//class ItemMgr;
+class ItemMgr;
 
 class Network;
 class LogSrvMgr;
@@ -24,7 +24,7 @@ private:
 
 	GameMgr*	m_gameMgr;
 	CharMgr*	m_charMgr;
-	//
+	ItemMgr*	m_itemMgr;
 
 	Network*	m_network;
 	LogSrvMgr*	m_logSrv;

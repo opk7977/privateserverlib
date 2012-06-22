@@ -509,8 +509,9 @@ void GameProc::AddPlayer( GameSession* player )
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameProc::AddPlayer()\n지뢰 공간을 받아 올 수 없습니다.\n\n") );
 		return;
 	}
-	tmp->SetMineSpace( player->GetSessionID(), player->GetMyInfo()->GetTeam() );
+
 	tmp->Init();
+	tmp->SetMineSpace( player->GetSessionID(), player->GetMyInfo()->GetTeam() );
 	m_mapMine[player->GetSessionID()] = tmp;
 
 	m_listPlayer.AddItem( player );
@@ -608,6 +609,31 @@ void GameProc::SendPlayerHeal()
 	m_SendList.Clear();
 }
 
+BOOL GameProc::SettingMine( int sessionId, float posX, float posY, float posZ )
+{
+	MineItem* tmpMine;
+
+	//sessionID확인
+	if( !m_mapMine.Lookup( sessionId, tmpMine ) )
+		return FALSE;
+
+	//지뢰를 이미 사용했다면 사용할 수 없다
+	if( !tmpMine->CanUse() )
+		return FALSE;
+
+	//아니면 사용하자
+	tmpMine->SetMine( posX, posY, posZ );
+
+	{
+		SSynchronize sync( &m_boomSoon );
+
+		//list에 추가해 준다
+		m_boomSoon.AddItem( tmpMine );
+	}
+
+	return TRUE;
+}
+
 void GameProc::CountDownRunningMine()
 {
 	float elapsed = m_timer.GetElapsedTime();
@@ -631,61 +657,64 @@ void GameProc::ExplosionMineCrashCheck()
 {
 	SSynchronize sync( &m_boomSoon );
 
-	std::list<MineItem*>::iterator iterMine		= m_boomSoon.GetHeader();
-	std::list<GameSession*>::iterator iterChar	= m_listPlayer.GetHeader();
+	std::list<MineItem*>::iterator PreiterMine, iterMine = m_boomSoon.GetHeader();
+	std::list<GameSession*>::iterator iterChar = m_listPlayer.GetHeader();
 	
-	for( ; !m_boomSoon.IsEnd( iterMine ); ++iterMine )
+	for( ; !m_boomSoon.IsEnd( iterMine ); )
 	{
+		PreiterMine = iterMine++;
+
 		//실행중인게 아니면 안한다
-		if( !(*iterMine)->IsRun() )
+		if( !(*PreiterMine)->IsRun() )
 			continue;
 
 		//지금 터져도 되?
-		if( !(*iterMine)->IsBoom() )
+		if( !(*PreiterMine)->IsBoom() )
 			continue;
 
 		//아니면 터뜨리고 전송
 		//게임에 있는 모두에게 전송
-		SendGameExplosionMine( (*iterMine) );
+		SendGameExplosionMine( (*PreiterMine) );
 
-// 		for( ; m_listPlayer.IsEnd( iterChar ); ++iterChar )
-// 		{
-// 			//지뢰주인을 찾고
-// 			CharObj* mineMaster = m_charMgr->FindChar( (*iterMine)->GetSessionID() );
-// 			//지뢰맞은애
-// 			CharObj* tmpChar = (*iterChar)->GetMyInfo();
-// 			POINT3 charpos = tmpChar->GetPos();
-// 
-// 			int damege = (*iterMine)->IsBoomCollision( charpos.m_X, charpos.m_Z );
-// 
-// 			if( damege > 0 )
-// 			{
-// 				tmpChar->DownHP( damege );
-// 
-// 				//나를 뺀 모두에게 폭탄터저 에너지가 달았다는 패킷을 보낸다
-// 				//나에게 너 폭탄 맞았다는 패킷을 보낸다.
-// 				SendGameCharDamegedByMine( tmpChar, damege );
-// 				
-// 
-// 				if( tmpChar->IsDie() )
-// 				{
-// 					//다른편이면
-// 					if( tmpChar->GetTeam() != mineMaster->GetTeam() )
-// 					{
-// 						//죽은캐릭터 반대 팀의 kill수를 올려 주고
-// 						(*iterChar)->GetMyGame()->AddKillCount( mineMaster->GetTeam() );
-// 
-// 						//지뢰 주인의 kill수를 올려 준다
-// 						mineMaster->KillCountUp();
-// 					}
-// 
-// 					//죽은것에 대한 패킷
-// 					SendGameCharDieByMine( tmpChar );
-// 				}
-// 			}
-// 		}
+		//폭발 충돌체크하자
+		for( ; !m_listPlayer.IsEnd( iterChar ); ++iterChar )
+		{
+			//지뢰주인을 찾고
+			CharObj* mineMaster = m_charMgr->FindCharAsSessionId( (*PreiterMine)->GetSessionID() );
+			//지뢰맞은애
+			CharObj* tmpChar = (*iterChar)->GetMyInfo();
+			POINT3 charpos = tmpChar->GetPos();
+
+			int damege = (*PreiterMine)->IsBoomCollision( charpos.m_X, charpos.m_Y, charpos.m_Z );
+
+			if( damege > 0 )
+			{
+				tmpChar->DownHP( damege );
+
+				//나를 뺀 모두에게 폭탄터저 에너지가 달았다는 패킷을 보낸다
+				//나에게 너 폭탄 맞았다는 패킷을 보낸다.
+				SendGameCharDamegedByMine( tmpChar );
+				
+
+				if( tmpChar->IsDie() )
+				{
+					//다른편이면
+					if( tmpChar->GetTeam() != mineMaster->GetTeam() )
+					{
+						//죽은캐릭터 반대 팀의 kill수를 올려 주고
+						(*iterChar)->GetMyGame()->AddKillCount( mineMaster->GetTeam() );
+
+						//지뢰 주인의 kill수를 올려 준다
+						mineMaster->KillCountUp();
+					}
+
+					//죽은것에 대한 패킷
+					SendGameCharDieByMine( mineMaster->GetSessionID(), tmpChar );
+				}
+			}
+		}
 		//list에서 지워준다
-		m_boomSoon.DelItem( (*iterMine ) );
+		m_boomSoon.DelItem( (*PreiterMine ) );
 	}
 }
 
@@ -693,11 +722,16 @@ void GameProc::MineCrashCheck()
 {
 	SSynchronize sync( &m_boomSoon );
 
+
 	std::list<MineItem*>::iterator iterMine		= m_boomSoon.GetHeader();
 	std::list<GameSession*>::iterator iterChar	= m_listPlayer.GetHeader();
 
 	for( ; !m_boomSoon.IsEnd( iterMine ); ++iterMine )
 	{
+		//이미 실행중인 지뢰면 넘어 간다
+		if( (*iterMine)->IsRun() )
+			continue;
+
 		for( ; !m_listPlayer.IsEnd( iterChar ); ++iterChar )
 		{
 			//내 지뢰면 무시
@@ -706,7 +740,7 @@ void GameProc::MineCrashCheck()
 
 			POINT3 charpos = (*iterChar)->GetMyInfo()->GetPos();
 
-			if( (*iterMine)->IsCollision( charpos.m_X, charpos.m_Z ) )
+			if( (*iterMine)->IsCollision( charpos.m_X, charpos.m_Y, charpos.m_Z ) )
 			{
 				//충돌
 				//지뢰실행flog를 실행
@@ -780,7 +814,7 @@ BOOL GameProc::SendGameExplosionMine( MineItem* mine )
 	return TRUE;
 }
 
-BOOL GameProc::SendGameCharDamegedByMine( CharObj* damegedChar, int damege )
+BOOL GameProc::SendGameCharDamegedByMine( CharObj* damegedChar )
 {
 	//다른 애들한테 전송
 	SPacket sendPacket( SC_GAME_CHARACTER_DAMEGED_BY_MINE );
@@ -791,24 +825,26 @@ BOOL GameProc::SendGameCharDamegedByMine( CharObj* damegedChar, int damege )
 	//나한테 전송
 	sendPacket.PacketClear();
 	sendPacket.SetID( SC_GAME_YOU_DAMEGED_BY_MINE );
-	sendPacket << damege;
+	sendPacket << damegedChar->GetHP();
 
 	damegedChar->GetSession()->SendPacket( sendPacket );
 
 	return TRUE;
 }
 
-BOOL GameProc::SendGameCharDieByMine( CharObj* dieChar )
+BOOL GameProc::SendGameCharDieByMine( int masterID, CharObj* dieChar )
 {
 	//다른 애들한테 전송
 	SPacket sendPacket( SC_GAME_CHARACTER_DIE_BY_MINE );
+	sendPacket << masterID;
 	sendPacket << dieChar->GetSessionID();
 
 	SendAllPlayerInGame( sendPacket, dieChar->GetSession() );
 
 	//나한테 전송
 	sendPacket.PacketClear();
-	sendPacket.SetID( SC_GAME_YOU_DAMEGED_BY_MINE );
+	sendPacket.SetID( SC_GAME_YOU_DIE_BY_MINE );
+	sendPacket << masterID;
 
 	dieChar->GetSession()->SendPacket( sendPacket );
 

@@ -1,5 +1,4 @@
 #include "MineItem.h"
-#include "myMath.h"
 
 MineItem::MineItem(void)
 {
@@ -62,14 +61,26 @@ BOOL MineItem::IsBoom()
 	return FALSE;
 }
 
-BOOL MineItem::IsCollision( float posX, float posZ )
+BOOL MineItem::IsCollision( float posX, float posY, float posZ )
 {
-	float tmpX = myAbs( m_pos.m_X - posX );
-	float tmpZ = myAbs( m_pos.m_Z - posZ );
+	//원과 점(캐릭터)
+// 	float tmpX = ( m_pos.m_X - posX )*( m_pos.m_X - posX );
+// 	float tmpZ = ( m_pos.m_Z - posZ )*( m_pos.m_Z - posZ );
+// 
+// 	float dist = tmpX + tmpZ;
+// 
+// 	if( dist <= MINE_COLLISION_ROUND*MINE_COLLISION_ROUND )
+// 		return TRUE;
+// 	else
+// 		return FALSE;
 
-	int dist = tmpX*tmpX + tmpZ*tmpZ;
+	//원과 원(캐릭터)
+ 	float tmpX = ( m_pos.m_X - posX )*( m_pos.m_X - posX );
+	float tmpZ = ( m_pos.m_Z - posZ )*( m_pos.m_Z - posZ );
 
-	if( dist <= MINE_COLLISION_ROUND*MINE_COLLISION_ROUND )
+	float dist = tmpX + tmpZ;
+
+	if( dist <= (MINE_COLLISION_ROUND+MINE_COLLISION_CHAR_ROUND)*(MINE_COLLISION_ROUND+MINE_COLLISION_CHAR_ROUND) )
 		return TRUE;
 	else
 		return FALSE;
@@ -85,20 +96,21 @@ void MineItem::Boom()
 	m_boomTime = 0;
 }
 
-int MineItem::IsBoomCollision( float posX, float posZ )
+int MineItem::IsBoomCollision( float posX, float posY, float posZ )
 {
-	float tmpX = myAbs( m_pos.m_X - posX );
-	float tmpZ = myAbs( m_pos.m_Z - posZ );
+	//원과 원(캐릭터)
+	float tmpX = ( m_pos.m_X - posX )*( m_pos.m_X - posX );
+	float tmpZ = ( m_pos.m_Z - posZ )*( m_pos.m_Z - posZ );
 
-	int dist = tmpX*tmpX + tmpZ*tmpZ;
+	float dist = tmpX + tmpZ;
 
-	if( dist <= MINE_BOOM_COL_ROUNT*MINE_BOOM_COL_ROUNT )
+	if( dist <= (MINE_BOOM_COL_ROUND+MINE_COLLISION_CHAR_ROUND)*(MINE_BOOM_COL_ROUND+MINE_COLLISION_CHAR_ROUND) )
 		return MINE_BOOM_DAMEGE;
 	else
 		return 0;
 }
 
-int MineItem::GetDamege( float posX, float posZ )
+int MineItem::GetDamege( float posX, float posY, float posZ )
 {
 	//점과 점의 거리를 구한다
 	
