@@ -33,6 +33,18 @@ enum SRV_CHAR_TEAM
 	SRV_CHAR_TEAM_DEF,
 };
 
+enum SRV_CHAR_WEAPON
+{
+	SWEAPON_BLASTER		= 0,
+	SWEAPON_MACHINEGUN,
+	SWEAPON_DARKMATTER,
+	SWEAPON_GRENADE,
+	SWEAPON_NAILGUN,
+	SWEAPON_RAILGUN,
+	SWEAPON_SHOTGUN,
+};
+
+
 class CharObj : public SServerObj
 {
 private:
@@ -47,6 +59,10 @@ private:
 // 	int					m_untilRankPoint;
 // 	int					m_accumulKillCount;
 // 	int					m_accumulDeathCount;
+
+	//무기
+	int					m_weapon[2];
+	int					m_onWeapon;
 	
 	//======================================
 	//이번 게임
@@ -100,6 +116,10 @@ public:
 // 
 // 	inline void SetAccumulDeathCount( int deathCount ) { m_accumulDeathCount = deathCount; }
 // 	inline int GetAccumulDeathCount() { return m_accumulDeathCount; }
+
+	void SetWeapon( int first, int second );
+	inline void SetOnWeapon( int weapon ) { m_onWeapon = weapon; }
+	inline int GetWeapon() { return m_onWeapon; }
 
 	//공간 관리용 index
 	inline int GetVecIndex() { return m_vecIndex; }

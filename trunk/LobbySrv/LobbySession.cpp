@@ -264,6 +264,9 @@ void LobbySession::PacketParsing( SPacket& packet )
 	case CS_ROOM_MODE_CHANGE:
 		RecvChangeMode( packet );
 		break;
+	case CS_ROOM_CHANGE_WEAPON:
+		RecvWeaponChange( packet );
+		break;
 	case CS_ROOM_TEAM_CHANGE:
 		RecvTeamChange();
 		break;
@@ -440,13 +443,12 @@ void LobbySession::RecvStartFaild( SPacket& packet )
 						_T("LobbySession::RecvStartFaild() %d번 방이 게임 시작에 실패했습니다."), room );
 
 #endif
+		//방의 상태를 바꿔주자
+		tmpRoom->SetNormal();
 
 		//넘겨 받은 방의 방장에게 게임 시작 실패 패킷을 보낸다
 		tmpRoom->GetLeader()->GetSession()->SendStartGameResult();
-		//방의 상태를 바꿔주자
-		tmpRoom->SetNormal();
 	}
-
 }
 
 void LobbySession::RecvGameStart( SPacket& packet )
@@ -1138,6 +1140,41 @@ void LobbySession::RecvChangeMode( SPacket& packet )
 	SendLobbyModeChange();
 }
 
+void LobbySession::RecvWeaponChange( SPacket& packet )
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("LobbySession::RecvWeaponChange()\nIP:%s님의 캐릭터 정보가 존재하지 않습니다.\n\n"),
+			m_tIPAddr );
+	}
+
+	if( m_myRoom == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("LobbySession::RecvWeaponChange()\n[캐릭터 %s] 방 정보가 존재하지 않습니다.\n\n"),
+			m_myCharInfo->GetID() );
+		return;
+	}
+
+	//자신의 ready상태를 확인한다
+	if( m_myCharInfo->GetReady() == ROOM_READY_OK )
+		return;
+
+	//현재 방의 상태를 확인한다
+	if( m_myRoom->GetRoomState() != ROOM_STATE_NORMAL )
+		return;
+
+	int fWeapon, sWeapon;
+
+	packet >> fWeapon;
+	packet >> sWeapon;
+
+	m_myCharInfo->SetWeapon( fWeapon, sWeapon );
+
+	SendRoomWeaponChange();
+}
+
 void LobbySession::RecvTeamChange()
 {
 	if( m_myCharInfo == NULL )
@@ -1803,6 +1840,19 @@ BOOL LobbySession::SendLobbyModeChange()
 	return TRUE;
 }
 
+BOOL LobbySession::SendRoomWeaponChange()
+{
+	SPacket sendPacket( SC_ROOM_CHANGE_WEAPON );
+
+	sendPacket << m_myCharInfo->GetSessionID();
+	sendPacket << m_myCharInfo->GetFirstWeapon();
+	sendPacket << m_myCharInfo->GetSecondWeapon();
+
+	m_myRoom->SendPacketAllInRoom( sendPacket );
+
+	return TRUE;
+}
+
 BOOL LobbySession::SendRoomTeamChange()
 {
 	SPacket sendPacket( SC_ROOM_TEAM_CHANGE );
@@ -1932,22 +1982,6 @@ BOOL LobbySession::SendTargetChatToMe( int target, TCHAR* chat )
 // 	SendPacket( sendPacket );
  
  	return TRUE;
-}
-
-BOOL LobbySession::SendStartBtnForVisible( int oldReadyCount )
-{
-	//방이 실행가능 상태면 리더에게 보내주자
-	if( m_myRoom->PossiblePlay() )
-		SendRoomStartVisible();
-
-	else if( oldReadyCount == m_myRoom->GetPlayerCount()-1 )
-	{
-		//ready인원이 줄었다면 비활성을 보내준다
-		if( m_myRoom->GetReadyCount() < oldReadyCount )
-			SendRoomStartInvisible();
-	}
-
-	return TRUE;
 }
 
 BOOL LobbySession::SendStartBtnForVisible()

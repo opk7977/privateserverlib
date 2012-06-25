@@ -151,6 +151,15 @@ void GameSession::PacketParsing( SPacket& packet )
 	case CS_GAME_CHARACTER_SYNC:
 		RecvGameCharacterSync( packet );
 		break;
+	case CS_GAME_CHARACTER_JUMP:
+		RecvGameCharacterJump();
+		break;
+	case CS_GAME_CHARACTER_LAND:
+		RecvGameCharacterLand( packet );
+		break;
+	case CS_GAME_CHAR_CHANGE_OBJ:
+		RecvGameCharChangeObj( packet );
+		break;
 	case CS_GAME_ATTACK:
 		RecvGameAttack( packet );
 		break;
@@ -162,6 +171,9 @@ void GameSession::PacketParsing( SPacket& packet )
 		break;
 	case CS_GAME_LAY_MINE:
 		RecvGameLayMine( packet );
+		break;
+	case CS_GAME_WEAPON_CHANGE:
+		RecvGameChangeWeapon( packet );
 		break;
 	case CS_GAME_CHANGE_STATE:
 		RecvGameChangeState( packet );
@@ -421,6 +433,71 @@ void GameSession::RecvGameCharacterSync( SPacket &packet )
 	m_myCharInfo->SetPos( posX, posY, posZ );
 }
 
+void GameSession::RecvGameCharacterJump()
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameCharacterJump()\n해당 캐릭터를 찾지 못했습니다.\n\n") );
+		return;
+	}
+
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameCharacterJump()\n캐릭더 %s의 게임 프로세스를 찾지 못했습니다.\n\n"), m_myCharInfo->GetID() );
+		return;
+	}
+
+	SendGameCharacterJump();
+}
+
+void GameSession::RecvGameCharacterLand( SPacket &packet )
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameCharacterLand()\n해당 캐릭터를 찾지 못했습니다.\n\n") );
+		return;
+	}
+
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameCharacterLand()\n캐릭더 %s의 게임 프로세스를 찾지 못했습니다.\n\n"), m_myCharInfo->GetID() );
+		return;
+	}
+
+	int objIndex, charState;
+
+	packet >> objIndex;
+	packet >> charState;
+
+	SendGameCharacterLand( objIndex, charState );
+}
+
+void GameSession::RecvGameCharChangeObj( SPacket &packet )
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameCharacterLand()\n해당 캐릭터를 찾지 못했습니다.\n\n") );
+		return;
+	}
+
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameCharacterLand()\n캐릭더 %s의 게임 프로세스를 찾지 못했습니다.\n\n"), m_myCharInfo->GetID() );
+		return;
+	}
+
+	int objIndex;
+	packet >> objIndex;
+
+	SendGameCharChangeObj( objIndex );
+}
+
 void GameSession::RecvGameAttack( SPacket &packet )
 {
 	//SSynchronize Sync( this );
@@ -510,8 +587,9 @@ void GameSession::RecvGameAttack( SPacket &packet )
 		m_myGameProc->AddKillCount( tmpChar->GetTeam() );
 		//캐릭터 killcount정리
 		m_myCharInfo->KillCountUp();
-// 		//캐릭터 deathcount정리
-// 		tmpChar->DeathCountUp();
+
+		//캐릭터가 설치한 지뢰가 있으면 지워주고 새로 설치할 수 있게 한다
+		m_myGameProc->MineResetTarget( tmpChar->GetSessionID() );
 
 		//die패킷
 		SendGameDie( isHead, tmpChar );
@@ -559,22 +637,38 @@ void GameSession::RecvGameLayMine( SPacket &packet )
 	}
 
 	float posX, posY, posZ;
+	float dirX, dirY, dirZ;
+
 	packet >> posX >> posY >> posZ;
+	packet >> dirX >> dirY >> dirZ;
 
-	if( !m_myGameProc->SettingMine( m_myCharInfo->GetSessionID(), posX, posY, posZ ) )
-	{
-		//지뢰 설치 실패
-		SendPacket( SC_GAME_LAY_MINE_FAILD );
-		return;
-	}
+	m_myGameProc->SettingMine( this, posX, posY, posZ, dirX, dirY, dirZ );
+
+// 	if( !m_myGameProc->SettingMine( m_myCharInfo->GetSessionID(), posX, posY, posZ, dirX, dirY, dirZ ) )
+// 	{
+// 		//지뢰 설치 실패
+// 		SendPacket( SC_GAME_LAY_MINE_FAILD );
+// 		return;
+// 	}
+// 	
+// 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+// 		_T("GameSession::RecvGameLayMine()\n캐릭더 %s이 %.2f/%.2f/%.2f/위치에 지뢰설치.\n\n"),
+// 		m_myCharInfo->GetID(), posX, posY, posZ );
+// 
+// 
+// 	//지뢰 설치 성공
+// 	SendGameLayMine( posX, posY, posZ, dirX, dirY, dirZ );
+}
+
+void GameSession::RecvGameChangeWeapon( SPacket &packet )
+{
+	int weapon;
 	
-	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-		_T("GameSession::RecvGameLayMine()\n캐릭더 %s이 %.2f/%.2f/%.2f/위치에 지뢰설치.\n\n"),
-		m_myCharInfo->GetID(), posX, posY, posZ );
+	packet >> weapon;
 
+	//설정
 
-	//지뢰 설치 성공
-	SendGameLayMine( posX, posY, posZ );
+	SendGameChangeWeapon( weapon );
 }
 
 void GameSession::RecvGameChangeState( SPacket &packet )
@@ -786,6 +880,42 @@ BOOL GameSession::SendMyCharInfoToInGamePlayer()
 	return TRUE;
 }
 
+BOOL GameSession::SendGameCharacterJump()
+{
+	SPacket sendPacket( SC_GAME_CHARACTER_JUMP );
+
+	sendPacket << m_myCharInfo->GetSessionID();
+
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendGameCharacterLand( int objIndex, int charState )
+{
+	SPacket sendPacket( SC_GAME_CHARACTER_LAND );
+
+	sendPacket << m_myCharInfo->GetSessionID();
+	sendPacket << objIndex;
+	sendPacket << charState;
+
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendGameCharChangeObj( int objIndex )
+{
+	SPacket sendPacket( SC_GAME_CHAR_CHANGE_OBJ );
+
+	sendPacket << m_myCharInfo->GetSessionID();
+	sendPacket << objIndex;
+
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
+
+	return TRUE;
+}
+
 BOOL GameSession::SendGameAttack( BOOL isHead, CharObj* attactedChar, float posX, float posY, float posZ, float normalX, float normalY, float normalZ )
 {
 	SPacket sendPacket( SC_GAME_ATTACK );
@@ -846,14 +976,14 @@ BOOL GameSession::SendGameDie( BOOL isHead, CharObj* dieChar )
 	return TRUE;
 }
 
-BOOL GameSession::SendGameLayMine( float posX, float posY, float posZ )
+BOOL GameSession::SendGameLayMine( float posX, float posY, float posZ, float dirX, float dirY, float dirZ )
 {
 	SPacket sendPacket( SC_GAME_LAY_MINE );
 
 	sendPacket << m_myCharInfo->GetSessionID();
-	sendPacket << posX;
-	sendPacket << posY;
-	sendPacket << posZ;
+	sendPacket << m_myCharInfo->GetTeam();
+	sendPacket << posX << posY << posZ;
+	sendPacket << dirX << dirY << dirZ;
 
 	//======================================
 	// 내 팀만 보낸다
@@ -863,10 +993,20 @@ BOOL GameSession::SendGameLayMine( float posX, float posY, float posZ )
 	return TRUE;
 }
 
+BOOL GameSession::SendGameChangeWeapon( int weapon )
+{
+	SPacket sendPacket( SC_GAME_WEAPON_CHANGE );
+	sendPacket << m_myCharInfo->GetSessionID();
+	sendPacket << weapon;
+
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
+
+	return TRUE;
+}
+
 BOOL GameSession::SendGameChangeState( int state, BOOL isJump, int objIndex )
 {
-	SPacket sendPacket;
-	sendPacket.SetID( SC_GAME_CHANGE_STATE );
+	SPacket sendPacket( SC_GAME_CHANGE_STATE );
 	sendPacket << m_myCharInfo->GetSessionID();
 	sendPacket << state;
 	sendPacket << isJump;

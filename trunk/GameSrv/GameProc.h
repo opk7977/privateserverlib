@@ -51,10 +51,12 @@ private:
 // 	SList<ItemObj*>					m_listItem;
 
 	//======================================
+	// 동기화를 위한 객체
+	SServerObj*						m_mineCritical;
 	// 지뢰
 	ATL::CAtlMap<int, MineItem*>	m_mapMine;
 	// 설치된 지뢰
-	SList<MineItem*>				m_boomSoon;
+	//SList<MineItem*>				m_boomSoon;
 	//======================================
 
 	// 피 체운 대상 보내고 clear되고하는 패턴임
@@ -234,12 +236,21 @@ public:
 	//플레이어 제거/ 현 게임 proc에 사람이 없으면 FALSE를 return
 	BOOL DelPlayer( GameSession* player );
 
+	//======================================
+	// 초기화 로직
+	//======================================
 	void CharacterRestart();
 	//다음 게임을 위해 지뢰를 다시 사용할 수 있도록 만들어 준다
+	//지정캐릭터 지뢰
+	BOOL MineResetTarget( int sessionID );
+	//전체 지뢰
 	void MineReset();
+	//======================================
 
 	//게임내의 캐릭터를 검색
 	CharObj* FindChar( int sessionID );
+	//지뢰검색
+	MineItem* FindMine( int sessionID );
 
 	//모든 캐릭터의 피를 올려 주고 피가 올라간 애들을 list에 넣어 준다
 	void PlayerHeal();
@@ -250,7 +261,8 @@ public:
 	// 지뢰 로직
 	//======================================
 	//지뢰 설치
-	BOOL SettingMine( int sessionId, float posX, float posY, float posZ );
+	//BOOL SettingMine( int sessionId, float posX, float posY, float posZ, float dirX, float dirY, float dirZ );
+	BOOL SettingMine( GameSession* session, float posX, float posY, float posZ, float dirX, float dirY, float dirZ );
 	//--------------------------------------
 	//터질 예정인 애들 시간 줄이기
 	void CountDownRunningMine();

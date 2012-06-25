@@ -35,6 +35,9 @@ GameProc::GameProc(void)
 	m_GameResult[GAME_MODE_HACKING_MISSION]	= &GameProc::GameEnd_HackingMission;
 
 	m_timer.Init();
+
+	//지뢰를 위한 Sync객체
+	m_mineCritical = new SServerObj;
 }
 
 GameProc::~GameProc(void)
@@ -168,6 +171,10 @@ BOOL GameProc::Run()
 		//DB서버에와 로비서버에 데이터가 정상적으로 저장되기까지의
 		//시간을 기다려줘야 한다
 		//로비에서 신호가 오기를 기다린다.
+		//m_nowIsPlaying가 FALSE이면 애들이 다 나가서 꺼진거니까 로비의 결과를 기다리지 않는다
+		if( !m_nowIsPlaying )
+			continue;
+
 		WaitForSingleObject( m_hReturnResult, INFINITE );
 
 		//이제 끝나기를 5초정도 기다렸다가 끝나는 신호를 클라들에게 전송한다.
@@ -339,10 +346,6 @@ BOOL GameProc::ResetGame()
 	CharacterRestart();
 	//지뢰정보 reset!
 	MineReset();
-	//////////////////////////////////////////////////////////////////////////
-	//게임내에서 사용된 item도 초기화 해 줘야 함
-	//////////////////////////////////////////////////////////////////////////
-	//ClearItem();
 
 	return TRUE;
 }
@@ -381,6 +384,8 @@ void GameProc::WaitTimeLogic( int waitTime /*= WAIT_GAME_END_TIME */)
 
 void GameProc::MineClear()
 {
+	SSynchronize sync( m_mineCritical );
+
 	if( m_mapMine.IsEmpty() )
 		return;
 
@@ -547,9 +552,29 @@ void GameProc::CharacterRestart()
 	}
 }
 
+BOOL GameProc::MineResetTarget( int sessionID )
+{
+	//SSynchronize Sync( &m_boomSoon );
+	SSynchronize sync( m_mineCritical );
+
+	MineItem* tmpMine = NULL;
+
+	if( !m_mapMine.Lookup( sessionID, tmpMine ) )
+	{
+		return FALSE;
+	}
+
+	tmpMine->Reset();
+
+	//m_boomSoon.DelItem( tmpMine );
+
+	return TRUE;
+}
+
 void GameProc::MineReset()
 {
-	SSynchronize Sync( &m_boomSoon );
+	//SSynchronize Sync( &m_boomSoon );
+	SSynchronize sync( m_mineCritical );
 
 	POSITION pos = m_mapMine.GetStartPosition();
 	while( pos )
@@ -572,6 +597,20 @@ CharObj* GameProc::FindChar( int sessionID )
 
 	//없으면 NULL
 	return NULL;
+}
+
+MineItem* GameProc::FindMine( int sessionID )
+{
+	//SSynchronize sync( &m_boomSoon );
+	SSynchronize sync( m_mineCritical );
+
+	MineItem* tmpMine = NULL;
+	if( !m_mapMine.Lookup( sessionID, tmpMine ) )
+	{
+		return NULL;
+	}
+
+	return tmpMine;
 }
 
 void GameProc::PlayerHeal()
@@ -609,83 +648,124 @@ void GameProc::SendPlayerHeal()
 	m_SendList.Clear();
 }
 
-BOOL GameProc::SettingMine( int sessionId, float posX, float posY, float posZ )
+BOOL GameProc::SettingMine( GameSession* session, float posX, float posY, float posZ, float dirX, float dirY, float dirZ )
 {
+	SSynchronize sync( m_mineCritical );
+
 	MineItem* tmpMine;
 
 	//sessionID확인
-	if( !m_mapMine.Lookup( sessionId, tmpMine ) )
-		return FALSE;
+	if( !m_mapMine.Lookup( session->GetSessionID(), tmpMine ) )
+		session->SendPacket( SC_GAME_LAY_MINE_FAILD );
 
 	//지뢰를 이미 사용했다면 사용할 수 없다
 	if( !tmpMine->CanUse() )
-		return FALSE;
+		session->SendPacket( SC_GAME_LAY_MINE_FAILD );
 
 	//아니면 사용하자
-	tmpMine->SetMine( posX, posY, posZ );
+	tmpMine->SetMine( posX, posY, posZ, dirX, dirY, dirZ );
 
-	{
-		SSynchronize sync( &m_boomSoon );
+	//설치 성공
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+		_T("GameProc::SettingMine()\n캐릭더 %s이 %.2f/%.2f/%.2f/위치에 지뢰설치.\n\n"),
+		session->GetMyInfo()->GetID(), posX, posY, posZ );
 
-		//list에 추가해 준다
-		m_boomSoon.AddItem( tmpMine );
-	}
+
+	//지뢰 설치 성공
+	session->SendGameLayMine( posX, posY, posZ, dirX, dirY, dirZ );
 
 	return TRUE;
 }
+
+// BOOL GameProc::SettingMine( int sessionId, float posX, float posY, float posZ, float dirX, float dirY, float dirZ )
+// {
+// 	SSynchronize sync( m_mineCritical );
+// 
+// 	MineItem* tmpMine;
+// 
+// 	//sessionID확인
+// 	if( !m_mapMine.Lookup( sessionId, tmpMine ) )
+// 		return FALSE;
+// 
+// 	//지뢰를 이미 사용했다면 사용할 수 없다
+// 	if( !tmpMine->CanUse() )
+// 		return FALSE;
+// 
+// 	//아니면 사용하자
+// 	tmpMine->SetMine( posX, posY, posZ, dirX, dirY, dirZ );
+// 
+// 	//설치 성공
+// 
+// 	return TRUE;
+// }
 
 void GameProc::CountDownRunningMine()
 {
 	float elapsed = m_timer.GetElapsedTime();
 
-	SSynchronize sync( &m_boomSoon );
+	SSynchronize sync( m_mineCritical );
 
-	std::list<MineItem*>::iterator iter = m_boomSoon.GetHeader();
+	POSITION pos = m_mapMine.GetStartPosition();
 
-	for( ; !m_boomSoon.IsEnd( iter ); ++iter )
+	while( pos )
 	{
+		MineItem* tmpMine = m_mapMine.GetNextValue( pos );
+
+		//설치된 지뢰가 맞는가?
+		if( !tmpMine->IsInstall() )
+			continue;
+
 		//실행중인게 아니면 안한다
-		if( !(*iter)->IsRun() )
+		if( !tmpMine->IsRun() )
 			continue;
 
 		//시간을 줄여 준다
-		(*iter)->DownTimer( elapsed );
+		tmpMine->DownTimer( elapsed );
 	}
 }
 
 void GameProc::ExplosionMineCrashCheck()
 {
-	SSynchronize sync( &m_boomSoon );
+	SSynchronize sync( m_mineCritical );
 
-	std::list<MineItem*>::iterator PreiterMine, iterMine = m_boomSoon.GetHeader();
-	std::list<GameSession*>::iterator iterChar = m_listPlayer.GetHeader();
+	POSITION pos = m_mapMine.GetStartPosition();
+	std::list<GameSession*>::iterator iterChar;
 	
-	for( ; !m_boomSoon.IsEnd( iterMine ); )
+	while( pos )
 	{
-		PreiterMine = iterMine++;
+		MineItem* tmpMine = m_mapMine.GetNextValue( pos );
+
+		//설치된 지뢰가 맞는가?
+		if( !tmpMine->IsInstall() )
+			continue;
 
 		//실행중인게 아니면 안한다
-		if( !(*PreiterMine)->IsRun() )
+		if( !tmpMine->IsRun() )
 			continue;
 
 		//지금 터져도 되?
-		if( !(*PreiterMine)->IsBoom() )
+		if( !tmpMine->IsBoom() )
 			continue;
 
 		//아니면 터뜨리고 전송
 		//게임에 있는 모두에게 전송
-		SendGameExplosionMine( (*PreiterMine) );
+		SendGameExplosionMine( tmpMine );
 
 		//폭발 충돌체크하자
-		for( ; !m_listPlayer.IsEnd( iterChar ); ++iterChar )
+		for( iterChar = m_listPlayer.GetHeader(); !m_listPlayer.IsEnd( iterChar ); ++iterChar )
 		{
-			//지뢰주인을 찾고
-			CharObj* mineMaster = m_charMgr->FindCharAsSessionId( (*PreiterMine)->GetSessionID() );
 			//지뢰맞은애
 			CharObj* tmpChar = (*iterChar)->GetMyInfo();
+			//죽은 애는 패스
+			if( tmpChar->IsDie() )
+				continue;
+
 			POINT3 charpos = tmpChar->GetPos();
 
-			int damege = (*PreiterMine)->IsBoomCollision( charpos.m_X, charpos.m_Y, charpos.m_Z );
+			//지뢰주인을 찾고
+			CharObj* mineMaster = m_charMgr->FindCharAsSessionId( tmpMine->GetSessionID() );
+			
+			int damege = tmpMine->IsBoomCollision( charpos.m_X, charpos.m_Y, charpos.m_Z );
 
 			if( damege > 0 )
 			{
@@ -706,6 +786,9 @@ void GameProc::ExplosionMineCrashCheck()
 
 						//지뢰 주인의 kill수를 올려 준다
 						mineMaster->KillCountUp();
+
+						//죽으면 지뢰정보를 초기화 해 줘야 한다
+						MineResetTarget( tmpChar->GetSessionID() );
 					}
 
 					//죽은것에 대한 패킷
@@ -713,41 +796,56 @@ void GameProc::ExplosionMineCrashCheck()
 				}
 			}
 		}
+		//터졌으몇 지뢰data를 변경해 준다.
 		//list에서 지워준다
-		m_boomSoon.DelItem( (*PreiterMine ) );
+		tmpMine->SetExplosion();
 	}
 }
 
 void GameProc::MineCrashCheck()
 {
-	SSynchronize sync( &m_boomSoon );
+	SSynchronize sync( m_mineCritical );
 
+	POSITION pos = m_mapMine.GetStartPosition();
+	std::list<GameSession*>::iterator iterChar;
 
-	std::list<MineItem*>::iterator iterMine		= m_boomSoon.GetHeader();
-	std::list<GameSession*>::iterator iterChar	= m_listPlayer.GetHeader();
-
-	for( ; !m_boomSoon.IsEnd( iterMine ); ++iterMine )
+	while( pos )
 	{
-		//이미 실행중인 지뢰면 넘어 간다
-		if( (*iterMine)->IsRun() )
+		MineItem* tmpMine = m_mapMine.GetNextValue( pos );
+
+		//설치되어 있는 지뢰가 맞음?
+		if( !tmpMine->IsInstall() )
 			continue;
 
-		for( ; !m_listPlayer.IsEnd( iterChar ); ++iterChar )
+		//이미 실행중인 지뢰면 넘어 간다
+		if( tmpMine->IsRun() )
+			continue;
+
+		for( iterChar= m_listPlayer.GetHeader(); !m_listPlayer.IsEnd( iterChar ); ++iterChar )
 		{
-			//내 지뢰면 무시
-			if( (*iterMine)->GetSessionID() == (*iterChar)->GetSessionID() )
+			//지뢰맞은애
+			CharObj* tmpChar = (*iterChar)->GetMyInfo();
+			//죽은 애는 패스
+			if( tmpChar->IsDie() )
 				continue;
 
-			POINT3 charpos = (*iterChar)->GetMyInfo()->GetPos();
+			//내 팀이면 무시
+			if( tmpMine->GetTeam() == tmpChar->GetTeam() )
+				continue;
 
-			if( (*iterMine)->IsCollision( charpos.m_X, charpos.m_Y, charpos.m_Z ) )
+			//죽은 애는 무시
+			
+			POINT3 charpos= tmpChar->GetPos();
+
+			//지뢰와 캐릭터의 충돌 체크
+			if( tmpMine->IsCollision( charpos.m_X, charpos.m_Y, charpos.m_Z ) )
 			{
 				//충돌
 				//지뢰실행flog를 실행
-				(*iterMine)->SetRun();
+				tmpMine->SetRun();
 
 				//지뢰 실행 패킷을 보낸다.
-				SendGameRunMine( (*iterMine) );
+				SendGameRunMine( tmpMine );
 			}
 		}
 	}

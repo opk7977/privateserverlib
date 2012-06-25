@@ -21,6 +21,8 @@ void CharObj::Init()
 	m_rankID			= 0;
 // 	m_rankID			= m_untilRankPoint		= 0;
 // 	m_accumulKillCount	= m_accumulDeathCount	= 0;
+	m_weapon[0]			= SWEAPON_SHOTGUN;
+	m_weapon[1]			= SWEAPON_RAILGUN;
 	m_killCount			= m_deathCount			= 0;
 
 	m_HP = 100;
@@ -31,6 +33,14 @@ void CharObj::Init( int index )
 	m_vecIndex = index;
 
 	Init();
+}
+
+void CharObj::SetWeapon( int first, int second )
+{
+	m_weapon[0] = first;
+	m_weapon[1] = second;
+
+	m_onWeapon = m_weapon[0];
 }
 
 void CharObj::DownHP( int damage )

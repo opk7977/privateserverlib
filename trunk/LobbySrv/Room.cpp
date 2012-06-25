@@ -96,6 +96,14 @@ void Room::SetReady()
 	m_playerCount = m_listPlayer.GetItemCount();
 }
 
+void Room::SetNormal()
+{
+	SSynchronize sync( this );
+
+	m_roomState		= ROOM_STATE_NORMAL;
+	m_playerCount	= 0;
+}
+
 BOOL Room::CanInsert()
 {
 	//방상태가 normal이 아니면 들어 올 수 없음

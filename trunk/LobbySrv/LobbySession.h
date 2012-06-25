@@ -135,6 +135,9 @@ public:
 	//CS_ROOM_MODE_CHANGE
 	void RecvChangeMode( SPacket& packet );
 
+	//CS_ROOM_CHANGE_WEAPON
+	void RecvWeaponChange( SPacket& packet );
+
 	//CS_ROOM_TEAM_CHANGE
 	void RecvTeamChange();
 
@@ -229,6 +232,9 @@ public:
 	//SC_LOBBY_MODE_CHANGE
 	BOOL SendLobbyModeChange();
 
+	//SC_ROOM_CHANGE_WEAPON
+	BOOL SendRoomWeaponChange();
+
 	//SC_ROOM_TEAM_CHANGE
 	BOOL SendRoomTeamChange();
 
@@ -240,7 +246,6 @@ public:
 	BOOL SendTargetChatToMe( int target, TCHAR* chat );
 
 	//시작 버튼에 관련된 함수를 호출하는 함수
-	BOOL SendStartBtnForVisible( int oldReadyCount );
 	BOOL SendStartBtnForVisible();
 	//SC_ROOM_START_VISIBLE
 	BOOL SendRoomStartVisible();

@@ -37,13 +37,16 @@ void LobbyChar::Init()
 {
 	SSynchronize Sync( this );
 
-	m_session	= NULL;
-	m_myRoom	= NULL;
-	m_isPlay	= FALSE;
-	m_sessionId	= 0;
+	m_session		= NULL;
+	m_myRoom		= NULL;
+	m_isPlay		= FALSE;
+	m_sessionId		= 0;
 	ZeroMemory( m_tstrId, 30 );
-	m_myTeam	= -1;
-	m_ready		= FALSE;
+	m_myTeam		= -1;
+	m_ready			= FALSE;
+
+	m_firstWeapon	= SWEAPON_MACHINEGUN;
+	m_secondWeapon	= SWEAPON_DARKMATTER;
 }
 
 void LobbyChar::Init( int i )
@@ -133,24 +136,6 @@ int LobbyChar::GetAccumulatedDeathCount() const
 	return m_AccumulatedDeath;
 }
 
-void Room::SetNormal()
-{
-	SSynchronize sync( this );
-
-	m_roomState		= ROOM_STATE_NORMAL;
-	m_playerCount	= 0;
-}
-
-void LobbyChar::PackageMyInfo( SPacket& packet )
-{
-	SSynchronize Sync( this );
-
-	packet << m_sessionId;
-	int size = _tcslen( m_tstrId ) * sizeof( TCHAR );
-	packet << size;
-	packet.PutData( m_tstrId, size );
-}
-
 void LobbyChar::PackageMyInfoForLobby( SPacket& packet )
 {
 	SSynchronize Sync( this );
@@ -187,6 +172,9 @@ void LobbyChar::PackageMyInfoForRoom( SPacket& packet )
 	packet << m_rankPoint;
 	packet << m_AccumulatedKill;
 	packet << m_AccumulatedDeath;
+
+	packet << m_firstWeapon;
+	packet << m_secondWeapon;
 }
 
 void LobbyChar::PackageMyInfoForGame( SPacket& packet )
@@ -203,6 +191,14 @@ void LobbyChar::PackageMyInfoForGame( SPacket& packet )
 // 	packet << m_rankPoint;
 // 	packet << m_AccumulatedKill;
 // 	packet << m_AccumulatedDeath;
+}
+
+void LobbyChar::SetWeapon( int fWeapon, int sWeapon )
+{
+	SSynchronize Sync( this );
+
+	m_firstWeapon	= fWeapon;
+	m_secondWeapon	= sWeapon;
 }
 
 //==============================================================

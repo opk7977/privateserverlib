@@ -5,16 +5,16 @@
 #define BOOM_TIME 0.5
 
 //사람 충돌 반경
-#define MINE_COLLISION_CHAR_ROUND	10
+#define MINE_COLLISION_CHAR_ROUND	35
 //지뢰 충돌 반경
-#define MINE_COLLISION_ROUND		10
+#define MINE_COLLISION_ROUND		20
 //지뢰 폭발 반경
 #define MINE_BOOM_COL_ROUND			50
 //캐릭터 구 반경
 // #define MINE_CHAR_ROUND				
 
 //데미지
-#define MINE_BOOM_DAMEGE		100
+#define MINE_BOOM_DAMEGE			100
 
 class MineItem : public SServerObj
 {
@@ -22,15 +22,16 @@ private:
 	//이미 사용한애면 FALSE
 	BOOL		m_isUseable;
 
+	//설치 했나?
+	BOOL		m_isInstall;
+
  	//터질 준비중?
  	BOOL		m_isRun;
-
-	//활성 ITEM?
-/*	BOOL		m_isVisible;*/
 
 	int			m_masterSessionID;
 	int			m_masterTeam;
 	POINT3		m_pos;
+	POINT3		m_dir;
 
 	//실행(?)되고 터지기까지의 시간, 기본 0.5
 	float		m_boomTime;
@@ -50,11 +51,12 @@ public:
 	inline BOOL CanUse() { return m_isUseable; }
 
 	inline int GetSessionID() { return m_masterSessionID; }
+	inline int GetTeam() { return m_masterTeam; }
 
 	int GetVecIndex() { return m_vecIndex; }
 	void SetMineSpace( int sessionId, int team );
 	//지뢰를 설치, 설치에 실패하면 FALSE를 return
-	BOOL SetMine( float posX, float posY, float posZ );
+	BOOL SetMine( float posX, float posY, float posZ, float dirX, float dirY, float dirZ );
 	inline float GetX() { return m_pos.m_X; }
 	inline float GetY() { return m_pos.m_Y; }
 	inline float GetZ() { return m_pos.m_Z; }
@@ -63,10 +65,15 @@ public:
 	inline BOOL IsRun() { return m_isRun; }
 	inline void SetRun() { m_isRun = TRUE; }
 
-// 	//이미 다 터졌나?
-// 	inline BOOL IsVisible() { return m_isVisible; }
-// 	//사용 완료
-// 	inline void SetUesd() { m_isVisible = FALSE; }
+	//지뢰 설치됨?
+	inline BOOL IsInstall() { return m_isInstall; }
+
+	//지뢰 터짐
+	inline void SetExplosion()
+	{
+		m_isInstall = FALSE;
+		m_isRun		= FALSE;
+	}
 	
 	//지금 터져도 되는 조건인지?
 	//터져도 되면 TRUE를 return
@@ -83,5 +90,4 @@ public:
 	//캐릭터와 폭발범위의 충돌체크
 	//return 되는 값은 damege )
 	int IsBoomCollision( float posX, float posY, float posZ );
-	int GetDamege( float posX, float posY, float posZ );
 };

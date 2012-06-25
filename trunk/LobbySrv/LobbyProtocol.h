@@ -354,6 +354,12 @@ enum LOBBY_SERVER
 	// TCHAR		-		id
 	// int			-		Team
 	// int			-		Ready
+	// int			-		rankID
+	// int			-		rankPoint
+	// int			-		accumulKillCount
+	// int			-		accumulDeathCount
+	// int			-		firstWeapon
+	// int			-		secondWeapon
 	//--------------------------------------> playerCount만큼 반복
 	SC_ROOM_OTHER_CHARINFO,
 
@@ -432,6 +438,19 @@ enum LOBBY_SERVER
 	// int			-		playTime
 	// int			-		playCount
 	SC_LOBBY_MODE_CHANGE,
+
+	// client -> server
+	// 방에서 무기 변경
+	// int			-		firstWeapon
+	// int			-		seccondWeapon
+	CS_ROOM_CHANGE_WEAPON,
+
+	// server -> client
+	// 누군가 방에서 무기 변경했음
+	// int			-		sessionId
+	// int			-		firstWeapon
+	// int			-		secondWeapon
+	SC_ROOM_CHANGE_WEAPON,
 
 	// client -> server
 	// 팀 변경에 대한 상태를 알림

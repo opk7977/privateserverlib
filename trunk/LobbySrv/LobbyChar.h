@@ -12,16 +12,26 @@ class Room;
 
 enum ROOM_TEAM
 {
-	ROOM_TEAM_ATT	=	0,
+	ROOM_TEAM_ATT		=	0,
 	ROOM_TEAM_DEF,
 };
 
 enum ROOM_READY
 {
-	ROOM_READY_NON	=	0,
+	ROOM_READY_NON		=	0,
 	ROOM_READY_OK,
 };
 
+enum CHAR_WEAPON
+{
+	SWEAPON_BLASTER		= 0,
+	SWEAPON_MACHINEGUN,
+	SWEAPON_DARKMATTER,
+	SWEAPON_GRENADE,
+	SWEAPON_NAILGUN,
+	SWEAPON_RAILGUN,
+	SWEAPON_SHOTGUN,
+};
 
 class LobbyChar : public SServerObj
 {
@@ -40,6 +50,9 @@ private:
 	TCHAR			m_tstrId[30];
 	int				m_myTeam;
 	BOOL			m_ready;
+
+	int				m_firstWeapon;
+	int				m_secondWeapon;
 
 	int				m_rankID;
 	int				m_rankPoint;
@@ -85,9 +98,11 @@ public:
 	int GetAccumulatedKillCount() const;
 	int GetAccumulatedDeathCount() const;
 
-	//==============================================================
+	void SetWeapon( int fWeapon, int sWeapon );
+	inline int GetFirstWeapon() { return m_firstWeapon; }
+	inline int GetSecondWeapon() { return m_secondWeapon; }
 
-	void PackageMyInfo( SPacket& packet );
+	//==============================================================
 	//로비를 위해 필요한 정보를 담기
 	void PackageMyInfoForLobby( SPacket& packet );
 	//방에 필요한 정보(team, ready)포함해서 담기

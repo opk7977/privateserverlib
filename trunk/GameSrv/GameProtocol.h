@@ -291,6 +291,40 @@ enum GAME_SERVER
 	CS_GAME_CHARACTER_SYNC,
 
 	// client -> server
+	// 캐릭터 점프
+	// 데이터 없음
+	CS_GAME_CHARACTER_JUMP,
+
+	// server -> client
+	// 캐릭터 점프
+	// int			-		sessionID
+	SC_GAME_CHARACTER_JUMP,
+
+	// client -> server
+	// 캐릭터 착지
+	// int			-		metIndex
+	// int			-		charState
+	CS_GAME_CHARACTER_LAND,
+
+	// server -> client
+	// 캐릭터 착지
+	// int			-		sessionID
+	// int			-		metIndex
+	// int			-		charState
+	SC_GAME_CHARACTER_LAND,
+
+	// client -> server
+	// 바닥 오브젝트가 바뀜
+	// int			-		objIndex
+	CS_GAME_CHAR_CHANGE_OBJ,
+
+	// server -> client
+	// 캐릭터 바닥 오브젝트가 바뀜
+	// int			-		sessionID
+	// int			-		objIndex
+	SC_GAME_CHAR_CHANGE_OBJ,
+
+	// client -> server
 	// 캐릭터의 공격
 	// int			-		헤드샷?
 	// int			-		피격대상 sessionID
@@ -372,14 +406,21 @@ enum GAME_SERVER
 	// float		-		posX
 	// float		-		posY
 	// float		-		posZ
+	// float		-		dirX
+	// float		-		dirY
+	// float		-		dirZ
 	CS_GAME_LAY_MINE,
 
 	// server -> client
 	// 누군가 지뢰를 설치하면 팀원에게 지뢰설치되었다는 메시지를 보냄
 	// int			-		설치자의sessionId
+	// int			-		설치자의 팀
 	// float		-		posX
 	// float		-		posY
 	// float		-		posZ
+	// float		-		dirX
+	// float		-		dirY
+	// float		-		dirZ
 	SC_GAME_LAY_MINE,
 
 	// server -> client
@@ -390,17 +431,11 @@ enum GAME_SERVER
 	// server -> client
 	// 누가 지뢰 밟았음
 	// int			-		설치자의 sessionId(지뢰의 ID)
-	// float		-		posX
-	// float		-		posY
-	// float		-		posZ
 	SC_GAME_RUN_MINE,
 
 	// server -> client
 	// 지뢰가 터짐
 	// int			-		설치자의 sessionId(지뢰의 ID)
-	// float		-		posX
-	// float		-		posY
-	// float		-		posZ
 	SC_GAME_EXPLOSION_MINE,
 
 	// server -> client

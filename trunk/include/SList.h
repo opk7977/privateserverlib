@@ -25,7 +25,7 @@ public:
 	void		Clear();
 
 	void		AddItem( T item );
-	T			DelItem( T item );
+	typename std::list<T>::iterator			DelItem( T item );
 	BOOL		IsEmpty();
 	int			GetItemCount();
 
@@ -58,20 +58,18 @@ void SList<T>::AddItem( T item )
 }
 
 template <typename T>
-T SList<T>::DelItem( T item )
+typename std::list<T>::iterator SList<T>::DelItem( T item )
 {
 	std::list<T>::iterator iter = m_list.begin();
 	for( ; iter != m_list.end(); ++iter )
 	{
 		if( *iter == item )
 		{
-			T tmp = *iter;
-			m_list.erase( iter );
 			--m_itemCount;
-			return tmp;
+			return m_list.erase( iter );
 		}
 	}
-	return 0;
+	return m_list.end();
 }
 
 template <typename T>

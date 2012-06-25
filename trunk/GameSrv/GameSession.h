@@ -78,6 +78,8 @@ public:
 	//DB_TO_OTHER_CONNECT_OK
 	void RecvDBConnectOK();
 
+	//DB_TO_OTHER_DROP_PLAYER
+
 	//--------------------------------------
 	// lobby 서버와의 커뮤니케이션
 	//--------------------------------------
@@ -102,6 +104,15 @@ public:
 	//CS_GAME_CHARACTER_SYNC
 	void RecvGameCharacterSync( SPacket &packet );
 
+	//CS_GAME_CHARACTER_JUMP
+	void RecvGameCharacterJump();
+	
+	//CS_GAME_CHARACTER_LAND
+	void RecvGameCharacterLand( SPacket &packet );
+
+	//CS_GAME_CHAR_CHANGE_OBJ
+	void RecvGameCharChangeObj( SPacket &packet );
+
 	//CS_GAME_ATTACK
 	void RecvGameAttack( SPacket &packet );
 
@@ -113,6 +124,9 @@ public:
 
 	//CS_GAME_LAY_MINE
 	void RecvGameLayMine( SPacket &packet );
+
+	//CS_GAME_WEAPON_CHANGE
+	void RecvGameChangeWeapon( SPacket &packet );
 
 	//CS_GAME_CHANGE_STATE
 	void RecvGameChangeState( SPacket &packet );
@@ -169,6 +183,15 @@ public:
 	//SC_GAME_START_GAME
 	//게임Proc에 있음
 
+	//SC_GAME_CHARACTER_JUMP
+	BOOL SendGameCharacterJump();
+
+	//SC_GAME_CHARACTER_LAND
+	BOOL SendGameCharacterLand( int objIndex, int charState );
+
+	//SC_GAME_CHAR_CHANGE_OBJ
+	BOOL SendGameCharChangeObj( int objIndex );
+
 	//SC_GAME_ATTACK
 	BOOL SendGameAttack( BOOL isHead, CharObj* attactedChar, float posX, float posY, float posZ, float normalX, float normalY, float normalZ );
 
@@ -181,11 +204,35 @@ public:
 	//SC_GAME_JUST_SHOOT
 	//함수 없음
 
-	//SC_GAME_CHAR_DIE /SC_GAME_YOU_DIE
+	//SC_GAME_CHAR_DIE //SC_GAME_YOU_DIE
 	BOOL SendGameDie( BOOL isHead, CharObj* dieChar );
 
 	//SC_GAME_LAY_MINE
-	BOOL SendGameLayMine( float posX, float posY, float posZ );
+	BOOL SendGameLayMine( float posX, float posY, float posZ, float dirX, float dirY, float dirZ );
+
+	//SC_GAME_LAY_MINE_FAILD
+	//함수 없음
+
+	//SC_GAME_RUN_MINE
+	//게임proc에 있음
+
+	//SC_GAME_EXPLOSION_MINE
+	//게임proc에 있음
+
+	//SC_GAME_CHARACTER_DAMEGED_BY_MINE
+	//게임proc에 있음
+
+	//SC_GAME_YOU_DAMEGED_BY_MINE
+	//게임proc에 있음
+
+	//SC_GAME_CHARACTER_DIE_BY_MINE
+	//게임proc에 있음
+
+	//SC_GAME_YOU_DIE_BY_MINE
+	//게임proc에 있음
+
+	//SC_GAME_WEAPON_CHANGE
+	BOOL SendGameChangeWeapon( int weapon );
 
 	//SC_GAME_CHANGE_STATE
 	BOOL SendGameChangeState( int state, BOOL isJump, int objIndex );
@@ -209,6 +256,9 @@ public:
 
 	//SC_GAME_TIME_COUNTDOWN
 	//게임Proc에 있음
+
+	//SC_TIME_OUT
+	//게임proc에 있음
 
 //	//SC_GAME_END
 
