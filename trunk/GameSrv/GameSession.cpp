@@ -175,6 +175,12 @@ void GameSession::PacketParsing( SPacket& packet )
 	case CS_GAME_WEAPON_CHANGE:
 		RecvGameChangeWeapon( packet );
 		break;
+	case CS_GAME_VISIBLE_HIDE:
+		RecvGameVisibleHide();
+		break;
+	case CS_GAME_INVISIBLE_HIDE:
+		RecvGameInvisibleHide();
+		break;
 	case CS_GAME_CHANGE_STATE:
 		RecvGameChangeState( packet );
 		break;
@@ -431,6 +437,14 @@ void GameSession::RecvGameCharacterSync( SPacket &packet )
 
 	//위치정보 수정
 	m_myCharInfo->SetPos( posX, posY, posZ );
+
+	if( posY <= -100 )
+	{
+		//죽음
+		m_myCharInfo->DownHP( 100 );
+
+		SendGameDie();
+	}
 }
 
 void GameSession::RecvGameCharacterJump()
@@ -569,6 +583,14 @@ void GameSession::RecvGameAttack( SPacket &packet )
 		return;
 	}
 
+	//맞은 애가 무적인지 확인하기
+	if( tmpChar->IsInvincible() )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameAttec()\n캐릭터%s는 무적상태 입니다.\n\n"), tmpChar->GetID() );
+		return;
+	}
+
 	//에너지를 달게 한다
 	//죽으면 death가 오른다
 	tmpChar->DownHP( damage );
@@ -690,6 +712,70 @@ void GameSession::RecvGameChangeState( SPacket &packet )
 	}
 
 	SendGameChangeState( state, isJump, objIndex );
+}
+
+void GameSession::RecvGameVisibleHide()
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameVisibleHide()\n")
+			_T("캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameVisibleHide()\n")
+			_T("게임 proc정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+	
+	//이놈이 지금 NONE상태가 아니면 안됨
+	if( m_myCharInfo->GetSkillState() != SKILL_NONE )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameVisibleHide()\n")
+			_T("넌 지금 기본 상태가 아님\n\n") );
+		return;
+	}
+
+	//나 은신 설정
+	m_myCharInfo->SetSkillHide();
+
+	GameCharVisibleHide();
+}
+
+void GameSession::RecvGameInvisibleHide()
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameInvisibleHide()\n")
+			_T("캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameInvisibleHide()\n")
+			_T("게임 proc정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	//은신 상태가 아니면 무시해
+	if( m_myCharInfo->GetSkillState() != SKILL_HIDE )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameVisibleHide()\n")
+			_T("넌 지금 은신 상태가 아님\n\n") );
+		return;
+	}
+
+	//나 은신 설정 해제
+	m_myCharInfo->SetSkillNone();
+
+	GameCharInvisibleHide();
 }
 
 void GameSession::RecvGameAskRevival( SPacket &packet )
@@ -976,6 +1062,32 @@ BOOL GameSession::SendGameDie( BOOL isHead, CharObj* dieChar )
 	return TRUE;
 }
 
+BOOL GameSession::SendGameDie()
+{
+	//======================================
+	// 남들에게 보냄
+	//======================================
+	SPacket sendPacket( SC_GAME_CHAR_DIE );
+
+	sendPacket << TRUE;
+	sendPacket << m_myCharInfo->GetSessionID();
+	sendPacket << m_myCharInfo->GetSessionID();
+
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
+
+	//======================================
+	// 나에게 보냄
+	//======================================
+	sendPacket.PacketClear();
+	sendPacket.SetID( SC_GAME_YOU_DIE );
+
+	sendPacket << TRUE;
+	sendPacket << m_myCharInfo->GetSessionID();
+	SendPacket( sendPacket );
+
+	return TRUE;
+}
+
 BOOL GameSession::SendGameLayMine( float posX, float posY, float posZ, float dirX, float dirY, float dirZ )
 {
 	SPacket sendPacket( SC_GAME_LAY_MINE );
@@ -998,6 +1110,29 @@ BOOL GameSession::SendGameChangeWeapon( int weapon )
 	SPacket sendPacket( SC_GAME_WEAPON_CHANGE );
 	sendPacket << m_myCharInfo->GetSessionID();
 	sendPacket << weapon;
+
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
+
+	return TRUE;
+}
+
+BOOL GameSession::GameCharVisibleHide()
+{
+	SPacket sendPacket( SC_GAME_CHAR_VISIBLE_HIDE );
+
+	sendPacket << m_myCharInfo->GetSessionID();
+
+	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
+
+	return TRUE;
+}
+
+BOOL GameSession::GameCharInvisibleHide()
+{
+	SPacket sendPacket( SC_GAME_CHAR_INVISIBLE_HIDE );
+
+	sendPacket << m_myCharInfo->GetSessionID();
+	sendPacket << m_myCharInfo->GetHidePoint();
 
 	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
 

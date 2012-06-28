@@ -63,7 +63,7 @@ void GameProc::Init()
 
 	//정보는 초기화
 	m_listPlayer.Clear();
-	//ClearItem();
+	
 	m_nowIsPlaying		= FALSE;
 	m_playerCount		= 8;	//기본...
 	m_AttKillCount		= m_DefKillCount	= 0;
@@ -96,9 +96,18 @@ BOOL GameProc::Run()
 		//======================================
 		WaitForSingleObject( m_hStartEvent, INFINITE );
 		//--------------------------------------
+		// 게임 준비가 완료 되었다는 신호를 보낸다
+		//--------------------------------------
+		//SendReadyPacket();
+		SendStartPacket();
+		//--------------------------------------
+		// 무기 고를 시간 줍니다.
+		//--------------------------------------
+		CountDownLogin( 15, SENDTIME_TEN, LASTTIME_THREE );
+		//--------------------------------------
 		// 게임 시작 packet을 보낸다.
 		//--------------------------------------
-		SendStartPacket();
+		//SendStartPacket();
 		//======================================
 
 		//게임 loop를 돈다
@@ -178,7 +187,7 @@ BOOL GameProc::Run()
 		WaitForSingleObject( m_hReturnResult, INFINITE );
 
 		//이제 끝나기를 5초정도 기다렸다가 끝나는 신호를 클라들에게 전송한다.
-		WaitTimeLogic( 5 );
+		WaitTimeLogic( WAIT_GAME_END_TIME );
 
 		//클라들에게 로비로 돌아가라는 패킷을 보낸다.
 		SendGotoLobbyPacket();
@@ -246,8 +255,26 @@ void GameProc::GameRun()
 			sendPacket.PacketClear();
 			sendPacket.SetID( SC_GAME_TIME_COUNTDOWN );
 			sendPacket << m_nowPlayTimeCount;
-			SendAllPlayerInGame( sendPacket );			
+			SendAllPlayerInGame( sendPacket );
+
+			//======================================
+			// 은신/ 스캔 수치처리
+			//======================================
+			//CountUpDownHide();
+			//SendHideSkillPoint();
+			
+			//======================================
+			//  전송 처리
+			//======================================
 		}
+		//==============================================================
+		// 무적처리
+		//======================================
+		// 캐릭터 무적상태인 애들 시간을 줄이고
+		// 시간이 다 되면 무적을 풀어 준다
+		//======================================
+		CountDownCharInvincible();
+		//==============================================================
 
 		//==============================================================
 		// 지뢰 처리
@@ -357,7 +384,7 @@ void GameProc::EndGame()
 // 	ResetEvent( m_hReturnResult );
 }
 
-void GameProc::WaitTimeLogic( int waitTime /*= WAIT_GAME_END_TIME */)
+void GameProc::WaitTimeLogic( int waitTime )
 {
 	float frameTime = 0.f;
 
@@ -374,6 +401,46 @@ void GameProc::WaitTimeLogic( int waitTime /*= WAIT_GAME_END_TIME */)
 		{
 			//우선 초기화
 			frameTime = 0.f;
+
+			//시간 줄이고 다 줄었으면 return
+			if( --waitTime <= 0 )
+				return;
+		}
+	}
+}
+
+void GameProc::CountDownLogin( int waitTime, SendTime sendTime, LastTime lastTime )
+{
+	float framTime = 0.f;
+	TCHAR TmpChar[64]={0,};
+
+	while(1)
+	{
+		//======================================
+		// 시간 처리
+		//======================================
+		m_timer.ProcessTime();
+
+		framTime += m_timer.GetElapsedTime();
+		if( framTime > 1.0f )
+		{
+			//우선 초기화
+			framTime = 0.f;
+
+			//정해진 시간단위로 남은 시간을 공지형식으로 보낸다
+			if( (waitTime % sendTime) == 0 )
+			{
+				ZeroMemory( TmpChar, 64*2 );
+				_stprintf_s( TmpChar, 64, _T("%d초 남았습니다."), waitTime );
+
+				SendNotice( TmpChar );
+			}
+
+			//마지막 카운트는 그냥 숫사를 보낸다
+			if( waitTime <= lastTime )
+			{
+				SendTimeRemain( waitTime );
+			}
 
 			//시간 줄이고 다 줄었으면 return
 			if( --waitTime <= 0 )
@@ -648,6 +715,71 @@ void GameProc::SendPlayerHeal()
 	m_SendList.Clear();
 }
 
+void GameProc::CountUpDownHide()
+{
+	SSynchronize sync( &m_listPlayer );
+
+	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
+
+	//모든 캐릭터
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
+	{
+		//은신수치 증감
+		if( !(*iter)->GetMyInfo()->HideUpDownOnePoint() )
+		{
+			//은신이 풀림
+			SendInvisibleHide( (*iter) );
+		}
+	}
+}
+
+BOOL GameProc::SendInvisibleHide( GameSession* session )
+{
+	//======================================
+	// 해당 세션에게 너 은신 풀렸다고 알림
+	//======================================
+	SPacket sendPacket( SC_GAME_TIMEOUT_HIDE );
+	session->SendPacket( sendPacket );
+
+	//======================================
+	// 다른 모두에게 은신이 풀렸다는 것을 알림
+	//======================================
+	sendPacket.PacketClear();
+	sendPacket.SetID( SC_GAME_CHAR_INVISIBLE_HIDE );
+	sendPacket << session->GetMyInfo()->GetSessionID();
+	sendPacket << session->GetMyInfo()->GetHidePoint();
+	SendAllPlayerInGame( sendPacket, session );
+
+	return TRUE;
+}
+
+BOOL GameProc::SendHideSkillPoint()
+{
+	SPacket sendPacket( SC_GAME_HIDE_POINT );
+
+	SSynchronize sync( &m_listPlayer );
+
+	//캐릭터 인원을 넣고
+	sendPacket << m_listPlayer.GetItemCount();
+
+	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
+	{
+		sendPacket << (*iter)->GetMyInfo()->GetSessionID();
+		sendPacket << (*iter)->GetMyInfo()->GetHidePoint();
+	}
+
+	SendAllPlayerInGame( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameProc::SendScanSkillPoint()
+{
+	//SPacket sendPacket( 
+	return TRUE;
+}
+
 BOOL GameProc::SettingMine( GameSession* session, float posX, float posY, float posZ, float dirX, float dirY, float dirZ )
 {
 	SSynchronize sync( m_mineCritical );
@@ -656,11 +788,17 @@ BOOL GameProc::SettingMine( GameSession* session, float posX, float posY, float 
 
 	//sessionID확인
 	if( !m_mapMine.Lookup( session->GetSessionID(), tmpMine ) )
+	{
 		session->SendPacket( SC_GAME_LAY_MINE_FAILD );
+		return TRUE;
+	}
 
 	//지뢰를 이미 사용했다면 사용할 수 없다
 	if( !tmpMine->CanUse() )
+	{
 		session->SendPacket( SC_GAME_LAY_MINE_FAILD );
+		return TRUE;
+	}
 
 	//아니면 사용하자
 	tmpMine->SetMine( posX, posY, posZ, dirX, dirY, dirZ );
@@ -703,7 +841,7 @@ void GameProc::CountDownRunningMine()
 {
 	float elapsed = m_timer.GetElapsedTime();
 
-	SSynchronize sync( m_mineCritical );
+	SSynchronize Sync( this );
 
 	POSITION pos = m_mapMine.GetStartPosition();
 
@@ -758,6 +896,10 @@ void GameProc::ExplosionMineCrashCheck()
 			CharObj* tmpChar = (*iterChar)->GetMyInfo();
 			//죽은 애는 패스
 			if( tmpChar->IsDie() )
+				continue;
+
+			//무적인 애도 패스
+			if( tmpChar->IsInvincible() )
 				continue;
 
 			POINT3 charpos = tmpChar->GetPos();
@@ -851,10 +993,92 @@ void GameProc::MineCrashCheck()
 	}
 }
 
+void GameProc::CountDownCharInvincible()
+{
+	//캐릭터를 돌면서 시간을 줄여 준다
+	float elapsed = m_timer.GetElapsedTime();
+
+	SSynchronize sync( &m_listPlayer );
+
+	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
+
+	CharObj* tmpChar;
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
+	{
+		tmpChar = (*iter)->GetMyInfo();
+
+		//무적이 아니면 됬음
+		if( !tmpChar->IsInvincible() )
+			continue;
+
+		//무적이면 시간 다운
+		tmpChar->CountDownInvincibleTime( elapsed );
+
+		//다시 검사해서 무적이 풀렸으면 패킷을 보내 준다
+		if( !tmpChar->IsInvincible() )
+			SendEndInvincible( tmpChar );
+	}
+}
+
+void GameProc::SendEndInvincible( CharObj* uChar )
+{
+	SSynchronize Sync( &m_listPlayer );
+
+	//======================================
+	// 다른 애들에게
+	//======================================
+	SPacket sendPacket( SC_GAME_CHAR_END_INVINCIBLE );
+	sendPacket << uChar->GetSessionID();
+
+	SendAllPlayerInGame( sendPacket, uChar->GetSession() );
+
+	//======================================
+	// 나에게
+	//======================================
+	sendPacket.PacketClear();
+	sendPacket.SetID( SC_GAME_END_INVINCIBLE );
+
+	uChar->GetSession()->SendPacket( sendPacket );
+}
+
+BOOL GameProc::SendReadyPacket()
+{
+	SPacket sendPacket( SC_GAME_GAME_READY );
+
+	SendAllPlayerInGame( sendPacket );
+
+	return TRUE;
+}
+
 BOOL GameProc::SendStartPacket()
 {
 	SPacket sendPacket( SC_GAME_START_GAME );
 	
+	SendAllPlayerInGame( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameProc::SendTimeRemain( int remainTime )
+{
+	SPacket sendPacket( SC_GAME_TIME_REMAIN );
+
+	sendPacket << remainTime;
+
+	SendAllPlayerInGame( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameProc::SendNotice( TCHAR* notice )
+{
+	SPacket sendPacket( SC_GAME_NOTICE );
+
+	int size = _tcslen( notice ) * sizeof( TCHAR );
+
+	sendPacket << size;
+	sendPacket.PutData( notice, size );
+
 	SendAllPlayerInGame( sendPacket );
 
 	return TRUE;

@@ -19,13 +19,15 @@ void CharObj::Init()
 	m_session			= NULL;
 	m_iTeam				= -1;
 	m_rankID			= 0;
-// 	m_rankID			= m_untilRankPoint		= 0;
-// 	m_accumulKillCount	= m_accumulDeathCount	= 0;
-	m_weapon[0]			= SWEAPON_SHOTGUN;
-	m_weapon[1]			= SWEAPON_RAILGUN;
+	m_invincibleTime	= CHARACTER_INVINCIBLE_TIME;
+	m_isInvincible		= FALSE;
 	m_killCount			= m_deathCount			= 0;
 
 	m_HP = 100;
+
+	m_skillState		= SKILL_NONE;
+	m_hideTime			= CHARACTER_HIDE_TIME;
+	m_scanTime			= CHARACTER_SCAN_TIME;
 }
 
 void CharObj::Init( int index )
@@ -35,12 +37,17 @@ void CharObj::Init( int index )
 	Init();
 }
 
-void CharObj::SetWeapon( int first, int second )
+void CharObj::CountDownInvincibleTime( float elaps )
 {
-	m_weapon[0] = first;
-	m_weapon[1] = second;
+	m_invincibleTime -= elaps;
 
-	m_onWeapon = m_weapon[0];
+	//시간이 0보다 작으면
+	if( m_invincibleTime <= 0 )
+	{
+		//이제 무적 끗
+		m_isInvincible		= FALSE;
+		m_invincibleTime	= CHARACTER_INVINCIBLE_TIME;
+	}
 }
 
 void CharObj::DownHP( int damage )
@@ -64,12 +71,19 @@ BOOL CharObj::IsDie()
 	return ( m_HP <= 0 ) ? TRUE : FALSE;
 }
 
-// void CharObj::SetAlive()
-// {
-// 	//HP와 은신수치 초기화
-// 	m_HP = 100;
-// 	//
-// }
+void CharObj::SetAlive()
+{
+	//HP
+	m_HP = 100;
+	
+	//무적 설정
+	m_isInvincible		= TRUE;
+	m_invincibleTime	= CHARACTER_INVINCIBLE_TIME;
+
+	//은신/ 스캔 수치 초기화
+	m_hideTime			= CHARACTER_HIDE_TIME;
+	m_scanTime			= CHARACTER_SCAN_TIME;
+}
 
 BOOL CharObj::HPUpOnePoint()
 {
@@ -88,10 +102,71 @@ BOOL CharObj::HPUpOnePoint()
 	return TRUE;
 }
 
-// void CharObj::DeathCountUp()
-// {
-// 	++m_deathCount;
-// }
+BOOL CharObj::HideUpDownOnePoint()
+{
+	SSynchronize sync( this );
+
+	//죽은애는 그냥 return
+	if( IsDie() )
+		return TRUE;
+
+	if( m_skillState != SKILL_HIDE )
+	{
+		//현재 은신 사용중이 아니면 증가
+		//이미 10이면 그냥 return
+		if( m_hideTime >= CHARACTER_HIDE_TIME )
+			return TRUE;
+
+		//올려 주고
+		++m_hideTime;
+	}
+	else
+	{
+		//현재 은신 사용중
+		//이미 0이면 줄일게 없음
+		if( --m_hideTime <= 0 )
+		{
+			m_hideTime		= 0;
+			m_skillState	= SKILL_NONE;
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+BOOL CharObj::ScanUpDownOnePoint()
+{
+	SSynchronize sync( this );
+
+	//죽은애는 그냥 return
+	if( IsDie() )
+		return TRUE;
+
+	if( m_skillState != SKILL_SCAN )
+	{
+		//현재 은신 사용중이 아니면 증가
+		//이미 10이면 그냥 return
+		if( m_scanTime >= CHARACTER_SCAN_TIME )
+			return TRUE;
+
+		//올려 주고
+		++m_scanTime;
+	}
+	else
+	{
+		//현재 은신 사용중
+		//이미 0이면 줄일게 없음
+		if( --m_scanTime <= 0 )
+		{
+			m_scanTime		= 0;
+			m_skillState	= SKILL_NONE;
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
 
 int CharObj::GetDeathCount()
 {

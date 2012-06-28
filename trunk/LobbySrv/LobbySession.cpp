@@ -487,9 +487,8 @@ void LobbySession::RecvGameStart( SPacket& packet )
 		//방의 player들에게 게임서버로 이동하라는 패킷을 보낸다.
 		SendStartGameInRoom( room );
 
-		//방에 있는 list를 비워주고, 인원수를 초기화 해 준다
-		//방으로 들어 오면 다시 캐릭터 정보를 갱신해야 하니 비워 준다
-		tmpRoom->ListReset();
+		//방에 있는 list의 캐릭터 정보에서 session정보를 초기화 해 준다
+		tmpRoom->ResetSession();
 	}
 }
 
@@ -570,10 +569,17 @@ void LobbySession::RecvPlayerDiconnectInGame( SPacket& packet )
 	}
 	else
 	{
-		SSynchronize sync( tmpRoom );
+		LobbyChar* tmpChar = m_charMgr->FindCharAsSessionId( session );
+		if( tmpChar == NULL )
+		{
+			m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("LobbySession::RecvPlayerDiconnectInGame()%d번 캐릭터의 정보가 존재하지 않습니다.\n\n"),
+						session );
+			return;
+		}
 
-		//방인원을 줄인다.
-		if( !tmpRoom->DelPlayerInRoomAtPlaying( team ) )
+		//방에서 지워준다
+		if( !tmpRoom->DelPlayerInRoom( tmpChar ) )
 		{
 			//방에 남아있는 인원이 없음
 			//방 닫고
@@ -581,18 +587,44 @@ void LobbySession::RecvPlayerDiconnectInGame( SPacket& packet )
 
 #ifdef _DEBUG
 			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-							_T("LobbySession::RecvPlayerDiconnectInGame()\n%d번 방이 닫힙니다.\n\n"),
-							room );
+				_T("LobbySession::RecvPlayerDiconnectInGame()\n%d번 방이 닫힙니다.\n\n"),
+				room );
 #endif
 #ifdef CONNECT_LOG_SERVER
 			m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
-							_T("LobbySession::RecvPlayerDiconnectInGame() %d번 방이 닫힙니다."), 
-							room );
-
+				_T("LobbySession::RecvPlayerDiconnectInGame() %d번 방이 닫힙니다."),
+				room );
 #endif
 
 			//방이 닫혔다는 정보를 로비의 사람들에게 보낸다.
 			SendCloseRoom( room );
+		}
+		else
+		{
+			//방에 사람이 있음
+			//리더인지 체크
+			if( tmpRoom->GetLeader() == tmpChar )
+			{
+				//leader를 바꾸고
+				LobbyChar* tmpleader = tmpRoom->ChangeLeader();
+				if( tmpleader == NULL )
+				{
+					m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("LobbySession::RecvPlayerDiconnectInGame()\n방장 바꾸는 중에 문제가 있습니다.\n\n") );
+					return;
+				}
+#ifdef _DEBUG
+				m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+					_T("LobbySession::RecvPlayerDiconnectInGame()\n")
+					_T("%d번 방의 %s님이 방장이 되셨습니다.\n\n"),
+					tmpRoom->GetRoomNum(), tmpRoom->GetLeader()->GetID() );
+#endif
+#ifdef CONNECT_LOG_SERVER
+				m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
+					_T("LobbySession::SendRoomCharOut() %d번 방의 %s님이 방장이 되셨습니다."),
+					m_myRoom->GetRoomNum(), m_myRoom->GetLeader()->GetID() );
+#endif
+			}
 		}
 	}
 
@@ -672,7 +704,7 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 #endif
 
 		//방에 나를 추가
-		m_myRoom->AddPlayerInRoom( m_myCharInfo );
+		//m_myRoom->AddPlayerInRoom( m_myCharInfo );
 
 		//내 정보를 내 방 사람들에게 전송
 		SendRoomMyInfoToOtherChar();

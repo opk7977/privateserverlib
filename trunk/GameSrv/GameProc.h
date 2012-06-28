@@ -16,7 +16,7 @@ class MineItem;
 class CharMgr;
 
 
-#define WAIT_GAME_END_TIME	10
+#define WAIT_GAME_END_TIME	5
 
 enum Team
 {
@@ -31,6 +31,17 @@ enum GameMode
 	GAME_MODE_HACKING_MISSION,
 
 	GAME_MODE_COUNT,
+};
+
+enum SendTime
+{
+	SENDTIME_TEN	= 10,
+	SENDTIME_FIVE	= 5,
+};
+
+enum LastTime
+{
+	LASTTIME_THREE	= 3,
 };
 
 class GameProc : public SThread
@@ -197,8 +208,11 @@ public:
 	BOOL ResetGame();
 	//게임 완전히 종료
 	void EndGame();
-	//게임이 한판(?)끝나고 다시시작 혹은 게임 종료
-	void WaitTimeLogic( int waitTime = WAIT_GAME_END_TIME );
+	//그냥 시간을 기다리는 함수 지정된 시간만큼 기다림
+	void WaitTimeLogic( int waitTime );
+	//시간을 세서 SendTime단위마다 패킷을 보내는데 LastCount설정부터 하나씩 보낸다.
+	//SendTime은 10과 5/ LastCount는 3정도가 적당하다
+	void CountDownLogin( int waitTime, SendTime sendTime, LastTime lastTime );
 	//==============================================================
 
 	//==============================================================
@@ -258,6 +272,22 @@ public:
 	void SendPlayerHeal();
 
 	//======================================
+	// 은신
+	//======================================
+	//은신수치를 올리든 내리든
+	void CountUpDownHide();
+	//은신이 시간이 다 되서 풀림
+	BOOL SendInvisibleHide( GameSession* session );
+	//은신 수치를 모두에게 모두의 수치를 보낸다
+	BOOL SendHideSkillPoint();
+
+	//======================================
+	// 스캔
+	//======================================
+	void CountUpDownScan();
+	BOOL SendScanSkillPoint();
+
+	//======================================
 	// 지뢰 로직
 	//======================================
 	//지뢰 설치
@@ -272,8 +302,24 @@ public:
 	void MineCrashCheck();
 	//======================================
 
+	//======================================
+	// 캐릭터 무적
+	//======================================
+	void CountDownCharInvincible();
+	//======================================
+	// 무적 풀렸으면 모두에게 알린다
+	//======================================
+	void SendEndInvincible( CharObj* uChar );
+	//======================================
+
+	//SC_GAME_GAME_READY
+	BOOL SendReadyPacket();
 	//SC_GAME_START_GAME
 	BOOL SendStartPacket();
+	//SC_GAME_TIME_REMAIN
+	BOOL SendTimeRemain( int remainTime );
+	//SC_GAME_NOTICE
+	BOOL SendNotice( TCHAR* notice );
 	//SC_GAME_RESTART
 	BOOL SendRestartPacket();
 	//SC_GAME_GOTO_LOBBY

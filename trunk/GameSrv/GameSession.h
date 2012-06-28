@@ -128,6 +128,12 @@ public:
 	//CS_GAME_WEAPON_CHANGE
 	void RecvGameChangeWeapon( SPacket &packet );
 
+	//CS_GAME_VISIBLE_HIDE
+	void RecvGameVisibleHide();
+
+	//CS_GAME_INVISIBLE_HIDE
+	void RecvGameInvisibleHide();
+
 	//CS_GAME_CHANGE_STATE
 	void RecvGameChangeState( SPacket &packet );
 
@@ -206,6 +212,8 @@ public:
 
 	//SC_GAME_CHAR_DIE //SC_GAME_YOU_DIE
 	BOOL SendGameDie( BOOL isHead, CharObj* dieChar );
+	//캐릭터 자살( 지형 아래로 떨어짐 )
+	BOOL SendGameDie();
 
 	//SC_GAME_LAY_MINE
 	BOOL SendGameLayMine( float posX, float posY, float posZ, float dirX, float dirY, float dirZ );
@@ -233,6 +241,16 @@ public:
 
 	//SC_GAME_WEAPON_CHANGE
 	BOOL SendGameChangeWeapon( int weapon );
+
+	//SC_GAME_CHAR_VISIBLE_HIDE
+	BOOL GameCharVisibleHide();
+
+	//SC_GAME_TIMEOUT_HIDE
+
+	//SC_GAME_CHAR_INVISIBLE_HIDE
+	BOOL GameCharInvisibleHide();
+
+	//SC_GAME_HIDE_POINT
 
 	//SC_GAME_CHANGE_STATE
 	BOOL SendGameChangeState( int state, BOOL isJump, int objIndex );

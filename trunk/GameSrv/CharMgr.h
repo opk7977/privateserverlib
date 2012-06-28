@@ -7,7 +7,10 @@ class GameSession;
 class DataLeader;
 class SLogger;
 
-//const int Character_Space = 100;
+#define CHARACTER_INVINCIBLE_TIME	5
+#define CHARACTER_HIDE_TIME			10
+#define CHARACTER_SCAN_TIME			10
+
 enum INCREASE_POINT
 {
 	DEATHMATCH_WINNER_KILL_POINT	= 10,
@@ -17,25 +20,15 @@ enum INCREASE_POINT
 	MISSION_WINNER_INCREASE_POINT	= 50,
 };
 
-enum SRV_CHAR_STATE
-{
-	SRV_CHAR_STATE_STAND = 0,
-	SRV_CHAR_STATE_MOVE,
-
-	SRV_CHAR_STATE_ATTECT,
-	SRV_CHAR_STATE_DAMAGE,
-	SRV_CHAR_STATE_DIE,
-};
-
 enum SRV_CHAR_TEAM
 {
-	SRV_CHAR_TEAM_ATT = 0,
+	SRV_CHAR_TEAM_ATT				= 0,
 	SRV_CHAR_TEAM_DEF,
 };
 
 enum SRV_CHAR_WEAPON
 {
-	SWEAPON_BLASTER		= 0,
+	SWEAPON_BLASTER					= 0,
 	SWEAPON_MACHINEGUN,
 	SWEAPON_DARKMATTER,
 	SWEAPON_GRENADE,
@@ -44,46 +37,53 @@ enum SRV_CHAR_WEAPON
 	SWEAPON_SHOTGUN,
 };
 
+enum SRV_CHAR_SKILL_STATE
+{
+	SKILL_NONE						= 100,
+	SKILL_HIDE,
+	SKILL_SCAN,
+};
 
 class CharObj : public SServerObj
 {
 private:
-	GameSession*		m_session;
+	GameSession*			m_session;
 
-	int					m_sessionID;
-	TCHAR				m_tstrID[50];
-	int					m_iTeam;
+	int						m_sessionID;
+	TCHAR					m_tstrID[50];
+	int						m_iTeam;
 
+	//======================================
 	//현재의
-	int					m_rankID;
-// 	int					m_untilRankPoint;
-// 	int					m_accumulKillCount;
-// 	int					m_accumulDeathCount;
-
-	//무기
-	int					m_weapon[2];
-	int					m_onWeapon;
-	
+	int						m_rankID;
 	//======================================
 	//이번 게임
-	int					m_rankPoint;
+	int						m_rankPoint;
 
-	int					m_killCount;
-	int					m_deathCount;
+	int						m_killCount;
+	int						m_deathCount;
+	//======================================
+
+	//위치
+	POINT3					m_pos;
+	//에너지
+	int						m_HP;
 
 	//======================================
-	//위치
-	POINT3				m_pos;
+	// 무적
+	BOOL					m_isInvincible;
+	float					m_invincibleTime;
+	//======================================
 
-	//에너지
-	int					m_HP;
-
-	//은신 수치 등등
-	//
-	//
+	//은신 수치
+	int						m_hideTime;
+	//스캔 수치
+	int						m_scanTime;
+	//스킬 상태
+	SRV_CHAR_SKILL_STATE	m_skillState;
 
 	//vec의 Index_공간 관리용 index
-	int					m_vecIndex;
+	int						m_vecIndex;
 
 public:
 	CharObj();
@@ -109,20 +109,14 @@ public:
 
 	inline void SetRankPoint( int rankPoint ) { m_rankPoint = rankPoint; }
 	inline int GetRankPoint() { return m_rankPoint; }
-// 	inline int GetUntileRankPoint() { return m_untilRankPoint; }
-
-// 	inline void SetAccumulKillCount( int killCount ) { m_accumulKillCount = killCount; }
-// 	inline int GetAccumulKillCount() { return m_accumulKillCount; }
-// 
-// 	inline void SetAccumulDeathCount( int deathCount ) { m_accumulDeathCount = deathCount; }
-// 	inline int GetAccumulDeathCount() { return m_accumulDeathCount; }
-
-	void SetWeapon( int first, int second );
-	inline void SetOnWeapon( int weapon ) { m_onWeapon = weapon; }
-	inline int GetWeapon() { return m_onWeapon; }
 
 	//공간 관리용 index
 	inline int GetVecIndex() { return m_vecIndex; }
+
+	//무적
+	inline void SetInvincible() { m_isInvincible = TRUE; }
+	inline BOOL IsInvincible() { return m_isInvincible; }
+	void CountDownInvincibleTime( float elaps );
 
 	//공격을 당해 데이지를 입음
 	void DownHP( int damage );
@@ -131,13 +125,23 @@ public:
 	//피가 다 달아서 죽었는지?
 	BOOL IsDie();
 	//살리기
-// 	void SetAlive();
-	void SetAlive() { m_HP = 100; }
+ 	void SetAlive();
 	//피1 올리기_ return FALSE는 원래 피가 100이라 올릴게 없을 경우
 	BOOL HPUpOnePoint();
+	//은신 수치 1올리기
+	BOOL HideUpDownOnePoint();
+	//스캔 수치 1올리기
+	BOOL ScanUpDownOnePoint();
+
+	inline int GetSkillState() { return m_skillState; }
+	inline void SetSkillNone() { m_skillState = SKILL_NONE; }
+	inline void SetSkillHide() { m_skillState = SKILL_HIDE; }
+	inline void SetSkillScan() { m_skillState = SKILL_SCAN; }
+
+	inline int GetHidePoint() { return m_hideTime; }
+	inline int GetScanPoint() { return m_scanTime; }
 
 	//죽은 횟수
-	//void DeathCountUp();
 	int GetDeathCount();
 
 	//죽인 횟수

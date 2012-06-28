@@ -13,7 +13,7 @@ class LobbySession;
 
 
 //방의 정원
-#define MIN_PLAYER_COUNT	2
+#define MIN_PLAYER_COUNT	1
 #define MAX_PLAYER_COUNT	8
 #define MAX_TIME_COUNT		4
 
@@ -106,6 +106,8 @@ public:
 	BOOL PossiblePlay();
 	//방을 play상태로 만들어 준다.
 	void SetPlay();
+	//캐릭터의 세션 정보를 NULL로 초기화
+	void ResetSession();
 	inline void ListReset() 
 	{
 		m_listPlayer.Clear();

@@ -55,7 +55,7 @@ BOOL Room::PossiblePlay()
 	SSynchronize Sync( this );
 
 	//모두(-방장) ready상태가 아니면 시작할 수 없음
-	if( (m_listPlayer.GetItemCount()-1) != m_readyCount )
+	if( (m_listPlayer.GetItemCount()-1) > m_readyCount )
 		return FALSE;
 
 	//최소인원보다 적으면 시작할 수 없음
@@ -63,8 +63,8 @@ BOOL Room::PossiblePlay()
 		return FALSE;
 
 	//팀인원이 0인경우도 시작 할 수 없음
-	if( m_AttectTeam <= 0 || m_DefenceTeam <= 0 )
-		return FALSE;
+// 	if( m_AttectTeam <= 0 || m_DefenceTeam <= 0 )
+// 		return FALSE;
 
 	return TRUE;
 }
@@ -75,6 +75,8 @@ void Room::SetPlay()
 
 	//방을 게임중으로 만들고
 	m_roomState = ROOM_STATE_PLAYING;
+	//레디상태 초기화
+	m_readyCount = 0;
 
 	//방의 모든 플레이어의 세션에 표시한다.
 	std::list<LobbyChar*>::iterator iter = m_listPlayer.GetHeader();
@@ -83,6 +85,21 @@ void Room::SetPlay()
 	{
 		//캐릭터를 게임 중 상태로 만들어 준다
 		(*iter)->SetIsPlay();
+		//캐릭터의 상태는 모두 초기와
+		(*iter)->SetReady( FALSE );
+	}
+}
+
+void Room::ResetSession()
+{
+	SSynchronize Sync( this );
+
+	//방의 모든 플레이어의 세션 정보를 초기화
+	std::list<LobbyChar*>::iterator iter = m_listPlayer.GetHeader();
+
+	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
+	{
+		(*iter)->SetSession( NULL );
 	}
 }
 
@@ -341,6 +358,10 @@ void Room::SendPacketAllInRoom( SPacket &packet, LobbyChar* itMe /*= NULL */ )
 	{
 		//나를 넘겼으면 나는 보내지 않아야 한다
 		if( *iter == itMe )
+			continue;
+
+		//세젼 정보가 제대로 있지 않으면 넘어 간다
+		if( (*iter)->GetSession() == NULL )
 			continue;
 
 		(*iter)->GetSession()->SendPacket( packet );

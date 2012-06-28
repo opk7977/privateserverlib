@@ -124,7 +124,7 @@ int RankDataMgr::GetRank( int nowRankID, int point )
 	//원래의 rank부터 확인을 하기 시작한다.
 	for( int i=nowRankID; i<=20; ++i )
 	{
-		if( m_mapRank[i] >= point )
+		if( m_mapRank[i] > point )
 			return --i;
 	}
 

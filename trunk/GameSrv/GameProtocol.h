@@ -277,6 +277,11 @@ enum GAME_SERVER
 	// 데이터 없음
 	CS_GAME_GAME_READY_OK,
 
+	// client -> server
+	// 게임 시작 준비가 됨, 무기 고를 시간
+	// 데이터 없음
+	SC_GAME_GAME_READY,
+
 	// server -> client
 	// 게임에 모든 player가 접속했으므로 게임을 시작하라는 명령
 	// 데이터 없음
@@ -471,6 +476,41 @@ enum GAME_SERVER
 	SC_GAME_WEAPON_CHANGE,
 
 	// client -> server
+	// 은신 스킬 사용
+	// 데이터 없음
+	CS_GAME_VISIBLE_HIDE,
+
+	// server -> client
+	// 누군가 은신 스킬을 사용
+	// int			-		sessionID
+	SC_GAME_CHAR_VISIBLE_HIDE,
+
+	// server -> client
+	// 은신 스킬 종료
+	// 데이터 없음
+	CS_GAME_INVISIBLE_HIDE,
+
+	// server -> client
+	// 은신 시간이 다 되서 스킬이 종료됨
+	// 데이터 없음
+	SC_GAME_TIMEOUT_HIDE,
+
+	// server -> client
+	// 누군가 은신 스킬이 취소됨
+	// int			-		sessionId
+	// int			-		hideTime
+	SC_GAME_CHAR_INVISIBLE_HIDE,
+
+	// server -> client
+	// 은신 수치를 보냄
+	// int			-		count
+	//--------------------------------------> count만큼 있음
+	// int			-		sessionID
+	// int			-		hidePoint
+	//--------------------------------------
+	SC_GAME_HIDE_POINT,
+
+	// client -> server
 	// 캐릭터 상태가 변함
 	// int			-		dirInt
 	CS_GAME_CHANGE_STATE,
@@ -492,6 +532,17 @@ enum GAME_SERVER
 	// int			-		부활 위치 index
 	SC_GAME_CHAR_REVIVAL,
 
+	// server -> client
+	// 무적 종료
+	// 캐릭터의 무적상태가 종료됨
+	// int			-		sessionID
+	SC_GAME_CHAR_END_INVINCIBLE,
+
+	// server -> client
+	// 너 이제 무적 아님
+	// 데이터 없음
+	SC_GAME_END_INVINCIBLE,
+
 	// client -> server
 	// int			-		All(0)/ Team(1)
 	// int			-		stringSize
@@ -502,6 +553,12 @@ enum GAME_SERVER
 	// int			-		stringSize
 	// TCHAR		-		chattingString
 	SC_GAME_CHATTING,
+
+	// server -> client
+	// 공지(?)
+	// int			-		size
+	// TCHAR		-		공지문자
+	SC_GAME_NOTICE,
 
 	// client -> server
 	// 공격팀의 player가 폭탄을 설치했음
@@ -548,6 +605,11 @@ enum GAME_SERVER
 	// 게임중 시간 어택
 	// 데이터 없음( or int	- 남은 카운트 )
 	SC_GAME_TIME_COUNTDOWN,
+
+	// server -> client
+	// 게임 카운트 다운 3!2!1!
+	// int			-		remainTime
+	SC_GAME_TIME_REMAIN,
 
 	// server -> client
 	// 타임 아웃!/ 현재게임의 종료
