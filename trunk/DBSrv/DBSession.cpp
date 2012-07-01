@@ -382,7 +382,7 @@ void DBSession::RecvLoginTryLogin( SPacket& packet )
 	{
 		//이미 로그인 되어 있는 ID
 		//다른 서버로 애를 튕기라고 전한다
-		//SendLobbyNGameDropPlayer( sessionID );
+		SendLobbyNGameDropPlayer( sessionID );
 
 #ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
@@ -398,7 +398,7 @@ void DBSession::RecvLoginTryLogin( SPacket& packet )
 		SendLoginTryLoginResult( indexId, PRE_LOGIN_ID );
 
 		//캐릭터 삭제
-		m_playerMgr->ReturnPlayerSpace( tmpPlayer );
+		//m_playerMgr->ReturnPlayerSpace( tmpPlayer );
 	}
 }
 

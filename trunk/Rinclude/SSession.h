@@ -40,8 +40,6 @@ public:
 	virtual	void	OnCreate();
 	virtual void	OnDestroy();
 
-// 	inline void		SetKey( int i ) { m_iIocpKey = i; }
-// 	inline int		GetKey() { return m_iIocpKey; }
 	inline void		SetSessionID( int sessionID ) { m_mySessionID = sessionID; }
 	inline int		GetSessionID() { return m_mySessionID; }
 

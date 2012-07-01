@@ -102,69 +102,73 @@ BOOL CharObj::HPUpOnePoint()
 	return TRUE;
 }
 
-BOOL CharObj::HideUpDownOnePoint()
+void CharObj::PointUpSkillPoint()
 {
 	SSynchronize sync( this );
+	//죽은애는 그냥 return
+	if( IsDie() )
+		return;
 
+	if( m_skillState == SKILL_HIDE )
+	{
+		//은신 사용중 -> 스캔 수치만 올림
+		if( ++m_scanTime > CHARACTER_SCAN_TIME )
+			m_scanTime = CHARACTER_SCAN_TIME;
+	}
+	else if( m_skillState == SKILL_SCAN )
+	{
+		//스캔 사용중 -> 은신 수치만 올림
+		if( ++m_hideTime > CHARACTER_HIDE_TIME )
+			m_hideTime = CHARACTER_HIDE_TIME;
+	}
+	else
+	{
+		//아니면 스킬사용중이 아님 -> 다 올림
+		if( ++m_hideTime > CHARACTER_HIDE_TIME )
+			m_hideTime = CHARACTER_HIDE_TIME;
+		if( ++m_scanTime > CHARACTER_SCAN_TIME )
+			m_scanTime = CHARACTER_SCAN_TIME;
+	}
+}
+
+BOOL CharObj::HidePointDown()
+{
+	SSynchronize sync( this );
 	//죽은애는 그냥 return
 	if( IsDie() )
 		return TRUE;
 
+	//은신중이 아니면 return
 	if( m_skillState != SKILL_HIDE )
-	{
-		//현재 은신 사용중이 아니면 증가
-		//이미 10이면 그냥 return
-		if( m_hideTime >= CHARACTER_HIDE_TIME )
-			return TRUE;
+		return TRUE;
 
-		//올려 주고
-		++m_hideTime;
-	}
-	else
+	if( --m_hideTime <= 0 )
 	{
-		//현재 은신 사용중
-		//이미 0이면 줄일게 없음
-		if( --m_hideTime <= 0 )
-		{
-			m_hideTime		= 0;
-			m_skillState	= SKILL_NONE;
-			return FALSE;
-		}
+		m_hideTime		= 0;
+		m_skillState	= SKILL_NONE;
+		return FALSE;
 	}
-
 	return TRUE;
 }
 
-BOOL CharObj::ScanUpDownOnePoint()
+BOOL CharObj::ScanPointDown()
 {
 	SSynchronize sync( this );
-
 	//죽은애는 그냥 return
 	if( IsDie() )
 		return TRUE;
 
 	if( m_skillState != SKILL_SCAN )
-	{
-		//현재 은신 사용중이 아니면 증가
-		//이미 10이면 그냥 return
-		if( m_scanTime >= CHARACTER_SCAN_TIME )
-			return TRUE;
+		return TRUE;
 
-		//올려 주고
-		++m_scanTime;
-	}
-	else
+	//현재 스캔 사용중
+	//이미 0이면 줄일게 없음
+	if( --m_scanTime <= 0 )
 	{
-		//현재 은신 사용중
-		//이미 0이면 줄일게 없음
-		if( --m_scanTime <= 0 )
-		{
-			m_scanTime		= 0;
-			m_skillState	= SKILL_NONE;
-			return FALSE;
-		}
+		m_scanTime		= 0;
+		m_skillState	= SKILL_NONE;
+		return FALSE;
 	}
-
 	return TRUE;
 }
 

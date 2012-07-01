@@ -131,6 +131,9 @@ void GameSession::PacketParsing( SPacket& packet )
 	case DB_TO_OTHER_CONNECT_OK:
 		RecvDBConnectOK();
 		break;
+	case DB_TO_OTHER_DROP_PLAYER:
+		RecvCharDrop( packet );
+		break;
 	//==============================================================> DBSrv
 	case SC_LOBBY_CONNECT_OK:
 		RecvLobbyConnectOK();
@@ -181,6 +184,15 @@ void GameSession::PacketParsing( SPacket& packet )
 	case CS_GAME_INVISIBLE_HIDE:
 		RecvGameInvisibleHide();
 		break;
+	case CS_GAME_SKILL_SCAN_ON:
+		RecvGameSkillScanOn();
+		break;
+	case CS_GAME_SKILL_SCAN_OFF:
+		RecvGameSkillScanOff();
+		break;
+	case CS_GAME_KILL_MYSELF:
+		RecvGameKillMyself();
+		break;
 	case CS_GAME_CHANGE_STATE:
 		RecvGameChangeState( packet );
 		break;
@@ -222,6 +234,24 @@ void GameSession::RecvDBConnectOK()
 	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::RecvDBConnectOK()\nDB서버와 연결에 성공하였습니다\n\n") );
 
 	m_dbMgr->SetSession( this );
+}
+
+void GameSession::RecvCharDrop( SPacket &packet )
+{
+	int sessionId;
+	packet >> sessionId;
+
+	CharObj* tmpChar = m_charMgr->FindCharAsSessionId( sessionId );
+	//캐릭터를 찾을 수 없다면 그건 로비에 있는 캐릭터니까 신경쓰지 말자
+	if( tmpChar == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+						_T("GameSession::RecvCharDrop()\n") );
+		return;
+	}
+
+	//아니면 접속을 끊으라는 명령을 보낸다.
+	tmpChar->GetSession()->SendGameSelfDisconnect();
 }
 
 //--------------------------------------
@@ -437,14 +467,6 @@ void GameSession::RecvGameCharacterSync( SPacket &packet )
 
 	//위치정보 수정
 	m_myCharInfo->SetPos( posX, posY, posZ );
-
-	if( posY <= -100 )
-	{
-		//죽음
-		m_myCharInfo->DownHP( 100 );
-
-		SendGameDie();
-	}
 }
 
 void GameSession::RecvGameCharacterJump()
@@ -544,10 +566,6 @@ void GameSession::RecvGameAttack( SPacket &packet )
 	packet >> attectedSessionID;
 	packet >> damage;
 
-	//데미지가 100이면 해드샷으로 넣어 준다.
-	if( damage >= 100 )
-		isHead = TRUE;
-
 	packet >> posX >> posY >> posZ;
 	packet >> normalX >> normalY >> normalZ;
 
@@ -591,16 +609,18 @@ void GameSession::RecvGameAttack( SPacket &packet )
 		return;
 	}
 
+// 	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("받음 : %d\n\n"), GetTickCount() );
+
 	//에너지를 달게 한다
 	//죽으면 death가 오른다
 	tmpChar->DownHP( damage );
 
 	//attect패킷
 	//모두에게
-	SendGameAttack( isHead, tmpChar, posX, posY, posZ, normalX, normalY, normalZ );
+	SendGameAttack( tmpChar, posX, posY, posZ, normalX, normalY, normalZ );
 
 	//맞은 놈에게
-	SendGameYouAttack( isHead, tmpChar );
+	SendGameYouAttack( tmpChar );
 
 	//피격대상의 피를 확인한다
 	if( tmpChar->IsDie() )
@@ -693,27 +713,6 @@ void GameSession::RecvGameChangeWeapon( SPacket &packet )
 	SendGameChangeWeapon( weapon );
 }
 
-void GameSession::RecvGameChangeState( SPacket &packet )
-{
-	//SSynchronize Sync( this );
-
-	int state, objIndex;
-	BOOL isJump;
-	packet >> state;
-	packet >> isJump;
-	packet >> objIndex;
-
-	if( m_myCharInfo == NULL )
-	{
-		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-						_T("GameSession::RecvGameChangeDir()\n")
-						_T("캐릭터 정보가 유효하지 않습니다\n\n") );
-		return;
-	}
-
-	SendGameChangeState( state, isJump, objIndex );
-}
-
 void GameSession::RecvGameVisibleHide()
 {
 	if( m_myCharInfo == NULL )
@@ -730,15 +729,18 @@ void GameSession::RecvGameVisibleHide()
 			_T("게임 proc정보가 유효하지 않습니다\n\n") );
 		return;
 	}
+
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+			_T("%s님이 은신 사용"), m_myCharInfo->GetID() );
 	
-	//이놈이 지금 NONE상태가 아니면 안됨
-	if( m_myCharInfo->GetSkillState() != SKILL_NONE )
-	{
-		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-			_T("GameSession::RecvGameVisibleHide()\n")
-			_T("넌 지금 기본 상태가 아님\n\n") );
-		return;
-	}
+// 	//이놈이 지금 NONE상태가 아니면 안됨
+// 	if( m_myCharInfo->GetSkillState() != SKILL_NONE )
+// 	{
+// 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+// 			_T("GameSession::RecvGameVisibleHide()\n")
+// 			_T("넌 지금 기본 상태가 아님\n\n") );
+// 		return;
+// 	}
 
 	//나 은신 설정
 	m_myCharInfo->SetSkillHide();
@@ -763,19 +765,94 @@ void GameSession::RecvGameInvisibleHide()
 		return;
 	}
 
-	//은신 상태가 아니면 무시해
-	if( m_myCharInfo->GetSkillState() != SKILL_HIDE )
-	{
-		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-			_T("GameSession::RecvGameVisibleHide()\n")
-			_T("넌 지금 은신 상태가 아님\n\n") );
-		return;
-	}
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+		_T("%s님이 은신 취소"), m_myCharInfo->GetID() );
+
+// 	//은신 상태가 아니면 무시해
+// 	if( m_myCharInfo->GetSkillState() != SKILL_HIDE )
+// 	{
+// 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+// 			_T("GameSession::RecvGameVisibleHide()\n")
+// 			_T("넌 지금 은신 상태가 아님\n\n") );
+// 		return;
+// 	}
 
 	//나 은신 설정 해제
 	m_myCharInfo->SetSkillNone();
 
 	GameCharInvisibleHide();
+}
+
+void GameSession::RecvGameSkillScanOn()
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameSkillScanOn()\n")
+			_T("캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	//나 은신 설정
+	m_myCharInfo->SetSkillScan();
+}
+
+void GameSession::RecvGameSkillScanOff()
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameSkillScanOff()\n")
+			_T("캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	//나 은신 해제
+	m_myCharInfo->SetSkillNone();
+}
+
+void GameSession::RecvGameKillMyself()
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameKillMyself()\n")
+			_T("캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameKillMyself()\n")
+			_T("게임 proc정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	m_myCharInfo->DownHP( 100 );
+
+	SendGameDie();
+}
+
+void GameSession::RecvGameChangeState( SPacket &packet )
+{
+	//SSynchronize Sync( this );
+
+	int state, objIndex;
+	BOOL isJump;
+	packet >> state;
+	packet >> isJump;
+	packet >> objIndex;
+
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameChangeDir()\n")
+			_T("캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	SendGameChangeState( state, isJump, objIndex );
 }
 
 void GameSession::RecvGameAskRevival( SPacket &packet )
@@ -1002,10 +1079,9 @@ BOOL GameSession::SendGameCharChangeObj( int objIndex )
 	return TRUE;
 }
 
-BOOL GameSession::SendGameAttack( BOOL isHead, CharObj* attactedChar, float posX, float posY, float posZ, float normalX, float normalY, float normalZ )
+BOOL GameSession::SendGameAttack( CharObj* attactedChar, float posX, float posY, float posZ, float normalX, float normalY, float normalZ )
 {
 	SPacket sendPacket( SC_GAME_ATTACK );
-	sendPacket << isHead;
 	sendPacket << m_myCharInfo->GetSessionID();
 	sendPacket << attactedChar->GetSessionID();
 
@@ -1014,13 +1090,15 @@ BOOL GameSession::SendGameAttack( BOOL isHead, CharObj* attactedChar, float posX
 
 	m_myGameProc->SendAllPlayerInGame( sendPacket, attactedChar->GetSession() );
 
+// 	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("보냄 : %d\n\n"), GetTickCount() );
+
+
 	return TRUE;
 }
 
-BOOL GameSession::SendGameYouAttack( BOOL isHead, CharObj* attactedChar )
+BOOL GameSession::SendGameYouAttack( CharObj* attactedChar )
 {
 	SPacket sendPacket( SC_GAME_YOU_ATTACKED );
-	sendPacket << isHead;
 	sendPacket << m_myCharInfo->GetSessionID();
 	sendPacket << attactedChar->GetHP();		//남은 HP
 
@@ -1271,6 +1349,17 @@ BOOL GameSession::SendGameRadioPlay( int index )
 
 	//자신의 팀에만 보낸다
 	m_myGameProc->SendPacketToMyTeam( m_myCharInfo->GetTeam(), sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendGameSelfDisconnect()
+{
+	SSynchronize sync( this );
+
+	SPacket sendPacket( SC_LOBBY_GAME_SELF_DISCONNECT );
+
+	SendPacket( sendPacket );
 
 	return TRUE;
 }

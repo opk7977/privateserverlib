@@ -272,20 +272,19 @@ public:
 	void SendPlayerHeal();
 
 	//======================================
-	// 은신
+	// 은신/ 스캔
 	//======================================
-	//은신수치를 올리든 내리든
-	void CountUpDownHide();
-	//은신이 시간이 다 되서 풀림
-	BOOL SendInvisibleHide( GameSession* session );
-	//은신 수치를 모두에게 모두의 수치를 보낸다
-	BOOL SendHideSkillPoint();
+	//은신/ 스캔 수치 올림
+	void CountUpSkillPoint();
+	//은신/ 스캔 수치 내림
+	void CountDownSkillPoint();
 
-	//======================================
-	// 스캔
-	//======================================
-	void CountUpDownScan();
-	BOOL SendScanSkillPoint();
+	//스킬풀린 애들 확인하고 전송
+	BOOL SendHideOff( GameSession* session );
+	BOOL SendScanOff( GameSession* session );
+	//은신과 스캔 수치 전송
+	//BOOL SendSkillPoint();
+	BOOL SendSkillPoint( GameSession* session );
 
 	//======================================
 	// 지뢰 로직
@@ -322,6 +321,8 @@ public:
 	BOOL SendNotice( TCHAR* notice );
 	//SC_GAME_RESTART
 	BOOL SendRestartPacket();
+	//캐릭터 상태를 종료가 아니라 로비로 돌아가는 상태로 바꿔 줌
+	void SetGotoLobby();
 	//SC_GAME_GOTO_LOBBY
 	BOOL SendGotoLobbyPacket();
 
@@ -331,7 +332,7 @@ public:
 	BOOL SendGameExplosionMine( MineItem* mine );
 	//SC_GAME_CHARACTER_DAMEGED_BY_MINE
 	//SC_GAME_YOU_DAMEGED_BY_MINE
-	BOOL SendGameCharDamegedByMine( CharObj* damegedChar );
+	BOOL SendGameCharDamegedByMine( int mineSessionID, CharObj* damegedChar );
 	//SC_GAME_CHARACTER_DIE_BY_MINE
 	//SC_GAME_YOU_DIE_BY_MINE
 	BOOL SendGameCharDieByMine( int masterID, CharObj* dieChar );

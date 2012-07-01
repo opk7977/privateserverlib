@@ -220,7 +220,7 @@ void LobbySession::PacketParsing( SPacket& packet )
 		RecvCharacterLogin( packet );
 		break;
 	case DB_TO_OTHER_DROP_PLAYER:
-		//
+		RecvCharDrop( packet );
 		break;
 	case DB_TO_LOBBY_UPDATE_USERDATA:
 		RecvToDBUpdateUserData( packet );
@@ -360,6 +360,33 @@ void LobbySession::RecvCharacterLogin( SPacket& packet )
 
 	//로비로 준비 완료 패킷을 보낸다
 	SendToDBCharInsertReadyResult( index, sessionId );
+}
+
+void LobbySession::RecvCharDrop( SPacket& packet )
+{
+	//만약 캐릭터가 게임중이면 게임서버에서의 신호를 받아야 하는 거니까 무시
+
+	int sessionid;
+	packet >> sessionid;
+
+	LobbyChar* tmpChar = m_charMgr->FindCharAsSessionId( sessionid );
+
+	if( tmpChar == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("LobbySession::RecvCharDrop()\n%d번 캐릭터는 접속중인 캐릭터가 아닙니다\n캐릭터 정보를 찾을 수 없습니다.\n\n") );
+		//DB서버로 여기는 그런애 없다고 보낸다. DB서버에선 지워야 하니까
+		//
+		return;
+	}
+
+	//캐릭터가 게임서버에 있다면 우선은 지우지 않는다
+	//어차피 게임서버에서 연결이 끊긴다고 신호가 올것이기 때문에
+	if( tmpChar->GetIsPlay() )
+		return;
+
+	//아니면 캐릭터에게 연결 종료 명령을 내려야 한다.
+	tmpChar->GetSession()->SendLobbySelfDisconnect();
 }
 
 void LobbySession::RecvToDBUpdateUserData( SPacket& packet )
@@ -707,7 +734,7 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 		//m_myRoom->AddPlayerInRoom( m_myCharInfo );
 
 		//내 정보를 내 방 사람들에게 전송
-		SendRoomMyInfoToOtherChar();
+		//SendRoomMyInfoToOtherChar();
 
 		//방사람들의 정보를 나에게 전송
 		SendRoomOtherCharInfo();
@@ -969,6 +996,11 @@ void LobbySession::RecvOutRoom()
 			m_myRoom->GetRoomNum() );
 #endif
 	}
+	else
+	{
+		//방의 클라들에게 누가 사라졌는지 보낸다
+		SendRoomCharOut();
+	}
 
 	//팀/ ready정보 초기화
 	m_myCharInfo->SetRoom(NULL);
@@ -976,9 +1008,6 @@ void LobbySession::RecvOutRoom()
 	m_myCharInfo->SetReady(FALSE);
 
 	SendRoomOutResult();
-	
-	//방의 클라들에게 누가 사라졌는지 보낸다
-	SendRoomCharOut();
 
 	//로비의 클라들에게 누가 어떤방에서 나왔는지를 알린다
 	SendLobbyRoomCharOut();
@@ -2030,7 +2059,11 @@ BOOL LobbySession::SendRoomStartVisible()
 {
 	SPacket sendPacket( SC_ROOM_START_VISIBLE );
 
-	m_myRoom->GetLeader()->GetSession()->SendPacket( sendPacket );
+	LobbySession* tmpSession = m_myRoom->GetLeader()->GetSession();
+	if( tmpSession == NULL )
+		return FALSE;
+
+	tmpSession->SendPacket( sendPacket );
 
 	return TRUE;
 }
@@ -2039,8 +2072,15 @@ BOOL LobbySession::SendRoomStartInvisible()
 {
 	SPacket sendPacket( SC_ROOM_START_INVISIBLE );
 
+	LobbySession* tmpSession = m_myRoom->GetLeader()->GetSession();
+
+	if( tmpSession == NULL )
+		return FALSE;
+
+	tmpSession->SendPacket( sendPacket );
+
 	if( m_myRoom->GetPlayerCount() > 0 )
-		m_myRoom->GetLeader()->GetSession()->SendPacket( sendPacket );
+		tmpSession->SendPacket( sendPacket );
 		
 	return TRUE;
 }
@@ -2126,6 +2166,16 @@ BOOL LobbySession::SendPlayerDisconnect()
 	sendPacket << m_myCharInfo->GetSessionID();
 
 	m_lobbyMgr->SendPacketAllInLobby( sendPacket, m_myCharInfo );
+
+	return TRUE;
+}
+
+BOOL LobbySession::SendLobbySelfDisconnect()
+{
+	SSynchronize sync( this );
+
+	SPacket sendPacket( SC_LOBBY_GAME_SELF_DISCONNECT );
+	SendPacket( sendPacket );
 
 	return TRUE;
 }

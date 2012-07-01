@@ -95,6 +95,11 @@ enum LOBBY_SERVER
 {
 	//로비서버와의 연결을 확인
 	SC_LOBBY_CONNECT_OK = 200,
+
+	// server -> client
+	// 캐릭터가 중복 로그인 되어 접속을 종료하라는 패킷
+	// 데이터 없음
+	SC_LOBBY_GAME_SELF_DISCONNECT = 241,
 };
 
 enum DB_SERVER
@@ -344,7 +349,6 @@ enum GAME_SERVER
 
 	// server -> client
 	// 캐릭터의 공격성공시 모두에게 결과를 보낸다
-	// int			-		헤드샷?
 	// int			-		공격자SessionID
 	// int			-		피격대상SessionID
 	// float		-		PosX
@@ -357,7 +361,6 @@ enum GAME_SERVER
 
 	// server -> client
 	// 공격당한 캐릭터에게 너 맞았다고 알려줌
-	// int			-		헤드샷?
 	// int			-		공격자SessionID
 	// int			-		남은 에너지
 	SC_GAME_YOU_ATTACKED,
@@ -450,6 +453,7 @@ enum GAME_SERVER
 
 	// server -> client
 	// 너 지뢰에 공격당했다는 패킷
+	// int			-		지뢰주인 sessionId
 	// int			-		남은 에너지
 	SC_GAME_YOU_DAMEGED_BY_MINE,
 
@@ -498,17 +502,43 @@ enum GAME_SERVER
 	// server -> client
 	// 누군가 은신 스킬이 취소됨
 	// int			-		sessionId
-	// int			-		hideTime
 	SC_GAME_CHAR_INVISIBLE_HIDE,
 
+	// client -> server
+	// 스캔스킬 사용
+	// 데이터 없음
+	CS_GAME_SKILL_SCAN_ON,
+
+	// client -> server
+	// 스캔 스킬 종료
+	// 데이터 없음
+	CS_GAME_SKILL_SCAN_OFF,
+
 	// server -> client
-	// 은신 수치를 보냄
-	// int			-		count
-	//--------------------------------------> count만큼 있음
-	// int			-		sessionID
-	// int			-		hidePoint
-	//--------------------------------------
-	SC_GAME_HIDE_POINT,
+	// 스캔 스킬 강종, 타임아웃
+	// 데이터 없음
+	SC_GAME_TIMEOUTL_SCAN,
+
+// 	// server -> client
+// 	// 은신/ 스캔수치를 보냄
+// 	// int			-		count
+// 	//--------------------------------------> count만큼 있음
+// 	// int			-		sessionID
+// 	// int			-		hidePoint
+// 	//--------------------------------------
+// 	// int			-		자신의 스캔 point
+// 	SC_GAME_SKILL_POINT,
+
+	// server -> client
+	// 은신/ 스캔수치를 보냄
+	// int			-		자신의 은신 Point
+	// int			-		자신의 스캔 point
+	SC_GAME_SKILL_POINT,
+
+	// client -> server
+	// 자살!
+	// 데이터 없음
+	CS_GAME_KILL_MYSELF,
 
 	// client -> server
 	// 캐릭터 상태가 변함

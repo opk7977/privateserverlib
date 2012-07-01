@@ -14,7 +14,7 @@
 #include <map>
 #include <atlcoll.h>
 
-#define WORKER_THREAD_COUNT			3
+#define WORKER_THREAD_COUNT			8
 #define MAX_SESSION_COUNT			200
 
 #define ASYNCFLAG_SEND				0x01

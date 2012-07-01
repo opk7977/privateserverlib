@@ -63,6 +63,8 @@ public:
 	CharObj*	GetMyInfo() const { return m_myCharInfo; }
 	GameProc*	GetMyGame() const { return m_myGameProc; }
 
+	inline void SetGotoGame() { isEndGame = FALSE; }
+
 	//내 ip정보를 담자
 	void PackageMyNetInfo( SPacket& packet );
 
@@ -79,6 +81,7 @@ public:
 	void RecvDBConnectOK();
 
 	//DB_TO_OTHER_DROP_PLAYER
+	void RecvCharDrop( SPacket &packet );
 
 	//--------------------------------------
 	// lobby 서버와의 커뮤니케이션
@@ -133,6 +136,15 @@ public:
 
 	//CS_GAME_INVISIBLE_HIDE
 	void RecvGameInvisibleHide();
+
+	//CS_GAME_SKILL_SCAN_ON
+	void RecvGameSkillScanOn();
+
+	//CS_GAME_SKILL_SCAN_OFF
+	void RecvGameSkillScanOff();
+
+	//CS_GAME_KILL_MYSELF
+	void RecvGameKillMyself();
 
 	//CS_GAME_CHANGE_STATE
 	void RecvGameChangeState( SPacket &packet );
@@ -199,10 +211,10 @@ public:
 	BOOL SendGameCharChangeObj( int objIndex );
 
 	//SC_GAME_ATTACK
-	BOOL SendGameAttack( BOOL isHead, CharObj* attactedChar, float posX, float posY, float posZ, float normalX, float normalY, float normalZ );
+	BOOL SendGameAttack( CharObj* attactedChar, float posX, float posY, float posZ, float normalX, float normalY, float normalZ );
 
 	//SC_GAME_YOU_ATTACKED
-	BOOL SendGameYouAttack( BOOL isHead, CharObj* attactedChar );
+	BOOL SendGameYouAttack( CharObj* attactedChar );
 
 	//SC_GAME_TRY_ATTACK
 	BOOL SendGameTryAttact( SPacket& packet );
@@ -212,7 +224,7 @@ public:
 
 	//SC_GAME_CHAR_DIE //SC_GAME_YOU_DIE
 	BOOL SendGameDie( BOOL isHead, CharObj* dieChar );
-	//캐릭터 자살( 지형 아래로 떨어짐 )
+	//캐릭터 자살
 	BOOL SendGameDie();
 
 	//SC_GAME_LAY_MINE
@@ -289,6 +301,9 @@ public:
 
 	//SC_GAME_GOTO_LOBBY
 	//게임Proc에 있음
+
+	//SC_LOBBY_GAME_SELF_DISCONNECT
+	BOOL SendGameSelfDisconnect();
 
 //	//SC_GAME_CHAR_GOTO_LOBBY
 

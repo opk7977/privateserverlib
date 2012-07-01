@@ -20,14 +20,12 @@ private:
 
 private:
 	//모든 player 정보를 담을 공간
-	//SMap							m_sessionMap;
 	ATL::CAtlMap<int, SServerObj*>	m_mapSession;
 	int								m_spaceSize;
 	//비어있는 공간의 인덱스를 관리
 	SIndexQueue						m_indexQueue;
 	//접속한 player들을 저장한 공간
 	SList<int>						m_listPlayer;
-	//SList<SServerObj*>				m_listPlayer;
 
 
 	//제한 인원이 모두 차있어서 수용을 못하는 경우

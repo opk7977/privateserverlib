@@ -100,10 +100,10 @@ void SSession::DispatchReceive( DWORD bytesTransfer )
 	if( getpeername( m_socket, (SOCKADDR*)&sockAddr, &size ) != SOCKET_ERROR )
 	{
 		//log용///////////////////////////////////////////////////////////
-#ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, "[Session::DispatchReceive()] Reciev Packet From IP: %s / bytes: %d\n",
-			inet_ntoa( sockAddr.sin_addr ), bytesTransfer );
-#endif
+// #ifdef _DEBUG
+// 		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, "[Session::DispatchReceive()] Reciev Packet From IP: %s / bytes: %d\n",
+// 			inet_ntoa( sockAddr.sin_addr ), bytesTransfer );
+// #endif
 	}
 
 	SPacket recvPacket;
@@ -207,10 +207,10 @@ int SSession::SendPacket( SPacket& packet, BOOL tudp /*= FALSE*/ )
 
 	if( getpeername( m_socket, (SOCKADDR*)&sockAddr, &size ) != SOCKET_ERROR )
 	{
-#ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, "[Session::SendPacket()] Completed Send Pakcet To IP: %s / socket: %d / bytes: %d\n\n",
-			inet_ntoa( sockAddr.sin_addr ), m_socket, writtenBytes );
-#endif
+// #ifdef _DEBUG
+// 		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, "[Session::SendPacket()] Completed Send Pakcet To IP: %s / socket: %d / bytes: %d\n\n",
+// 			inet_ntoa( sockAddr.sin_addr ), m_socket, writtenBytes );
+// #endif
 	}
 
 	//다 성공했으면 전송된 크기가 return된다

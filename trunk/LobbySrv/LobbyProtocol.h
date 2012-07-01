@@ -540,6 +540,11 @@ enum LOBBY_SERVER
 	SC_LOBBY_GAME_END,
 
 	// server -> client
+	// 캐릭터가 중복 로그인 되어 접속을 종료하라는 패킷
+	// 데이터 없음
+	SC_LOBBY_GAME_SELF_DISCONNECT,
+
+	// server -> client
 	// player(내)가 로비에서 접속을 끊으면 알려 준다.
 	// int			-		SessionID;
 	SC_LOBBY_PLAYER_DISCONNECT,

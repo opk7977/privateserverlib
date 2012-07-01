@@ -89,6 +89,7 @@ public:
 	void RecvCharacterLogin( SPacket& packet );
 
 	//DB_TO_OTHER_DROP_PLAYER
+	void RecvCharDrop( SPacket& packet );
 
 	//DB_TO_LOBBY_UPDATE_USERDATA
 	void RecvToDBUpdateUserData( SPacket& packet );
@@ -266,6 +267,9 @@ public:
 
 	//SC_LOBBY_GAME_END
 	BOOL SendLobbyGameEnd( int roomNum );
+
+	//SC_LOBBY_GAME_SELF_DISCONNECT
+	BOOL SendLobbySelfDisconnect();
 
 	//SC_LOBBY_PLAYER_DISCONNECT
 	BOOL SendPlayerDisconnect();

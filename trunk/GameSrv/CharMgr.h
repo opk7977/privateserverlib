@@ -8,8 +8,8 @@ class DataLeader;
 class SLogger;
 
 #define CHARACTER_INVINCIBLE_TIME	5
-#define CHARACTER_HIDE_TIME			10
-#define CHARACTER_SCAN_TIME			10
+#define CHARACTER_HIDE_TIME			15
+#define CHARACTER_SCAN_TIME			15
 
 enum INCREASE_POINT
 {
@@ -128,10 +128,13 @@ public:
  	void SetAlive();
 	//피1 올리기_ return FALSE는 원래 피가 100이라 올릴게 없을 경우
 	BOOL HPUpOnePoint();
-	//은신 수치 1올리기
-	BOOL HideUpDownOnePoint();
-	//스캔 수치 1올리기
-	BOOL ScanUpDownOnePoint();
+
+	//스캔과 은신 수치 올리기
+	void PointUpSkillPoint();
+	//은신 수치 내리기
+	BOOL HidePointDown();
+	//스캔 수치 내리기
+	BOOL ScanPointDown();
 
 	inline int GetSkillState() { return m_skillState; }
 	inline void SetSkillNone() { m_skillState = SKILL_NONE; }

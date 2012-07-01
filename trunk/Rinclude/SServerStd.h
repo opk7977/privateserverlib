@@ -86,6 +86,22 @@ struct POINT3
 		m_Y = y;
 		m_Z = z;
 	}
+
+	float DotVector( POINT3 r )
+	{
+		return m_X*r.m_X + m_Y*r.m_X + m_Z*r.m_Z;
+	}
+
+	float DotVector( float x, float y, float z )
+	{
+		return m_X*x + m_Y*y + m_Z*z;
+	}
+
+	POINT3 operator - ( POINT3 &r )
+	{
+		return POINT3( m_X-r.m_X, m_Y-r.m_Y, m_Z-r.m_Z );
+	}
+
 };
 
 #endif
