@@ -19,15 +19,25 @@ void CharObj::Init()
 	m_session			= NULL;
 	m_iTeam				= -1;
 	m_rankID			= 0;
-	m_invincibleTime	= CHARACTER_INVINCIBLE_TIME;
-	m_isInvincible		= FALSE;
 	m_killCount			= m_deathCount			= 0;
+
+	//--------------------------------------
 
 	m_HP = 100;
 
+	m_invincibleTime	= CHARACTER_INVINCIBLE_TIME;
+	m_isInvincible		= FALSE;
+
+	//--------------------------------------
 	m_skillState		= SKILL_NONE;
-	m_hideTime			= CHARACTER_HIDE_TIME;
-	m_scanTime			= CHARACTER_SCAN_TIME;
+
+	m_hidePoint			= CHARACTER_HIDE_POINT;
+	m_hideOnTime		= CHARACTER_HIDEON_TIME;
+	m_hideOffTime		= CHARACTER_HIDEOFF_TIME;
+
+	m_scanPoint			= CHARACTER_SCAN_POINT;
+	m_scanOnTime		= CHARACTER_SCANON_TIME;
+	m_scanOffTime		= CHARACTER_SCANOFF_TIME;
 }
 
 void CharObj::Init( int index )
@@ -73,6 +83,8 @@ BOOL CharObj::IsDie()
 
 void CharObj::SetAlive()
 {
+	SSynchronize sync( this );
+
 	//HP
 	m_HP = 100;
 	
@@ -81,8 +93,15 @@ void CharObj::SetAlive()
 	m_invincibleTime	= CHARACTER_INVINCIBLE_TIME;
 
 	//은신/ 스캔 수치 초기화
-	m_hideTime			= CHARACTER_HIDE_TIME;
-	m_scanTime			= CHARACTER_SCAN_TIME;
+	m_skillState		= SKILL_NONE;
+
+	m_hidePoint			= CHARACTER_HIDE_POINT;
+	m_hideOnTime		= CHARACTER_HIDEON_TIME;
+	m_hideOffTime		= CHARACTER_HIDEOFF_TIME;
+
+	m_scanPoint			= CHARACTER_SCAN_POINT;
+	m_scanOnTime		= CHARACTER_SCANON_TIME;
+	m_scanOffTime		= CHARACTER_SCANOFF_TIME;
 }
 
 BOOL CharObj::HPUpOnePoint()
@@ -102,74 +121,161 @@ BOOL CharObj::HPUpOnePoint()
 	return TRUE;
 }
 
-void CharObj::PointUpSkillPoint()
+BOOL CharObj::CountSkillPoint( float elaps )
 {
 	SSynchronize sync( this );
-	//죽은애는 그냥 return
-	if( IsDie() )
-		return;
 
+	if( IsDie() )
+		return FALSE;
+
+	BOOL isChange = FALSE;
+
+	//상태에 따라 처리함
 	if( m_skillState == SKILL_HIDE )
 	{
-		//은신 사용중 -> 스캔 수치만 올림
-		if( ++m_scanTime > CHARACTER_SCAN_TIME )
-			m_scanTime = CHARACTER_SCAN_TIME;
+		//--------------------------------------
+		// 은신 중
+		//--------------------------------------
+		//======================================
+		// 은신 수치는 줄이고
+		//======================================
+		m_hideOnTime -= elaps;
+		//다 줄었는지 확인한다
+		if( m_hideOnTime <= 0 )
+		{
+			m_hideOnTime = CHARACTER_SCANON_TIME;
+			if( --m_hidePoint <= 0 )
+			{
+				m_hidePoint = 0;
+				//은신 포인트가 0이면 작거나 같으면 스캔 풀어줘야 함
+				//SetSkillNone();
+			}
+			isChange = TRUE;
+		}
+
+		//======================================
+		// 스캔 수치는 차야 함
+		//======================================
+		//스캔 point가 풀이 아니면 함
+		if( m_scanPoint < CHARACTER_SCAN_POINT )
+		{
+			//스캔 대기 시간을 줄이고
+			m_scanOffTime -= elaps;
+			if( m_scanOffTime <= 0 )
+			{
+				m_scanOffTime = CHARACTER_SCANOFF_TIME;
+				if( ++m_scanPoint > CHARACTER_SCAN_POINT )
+					m_scanPoint = CHARACTER_SCAN_POINT;
+
+				isChange = TRUE;
+			}
+		}
 	}
 	else if( m_skillState == SKILL_SCAN )
 	{
-		//스캔 사용중 -> 은신 수치만 올림
-		if( ++m_hideTime > CHARACTER_HIDE_TIME )
-			m_hideTime = CHARACTER_HIDE_TIME;
+		//--------------------------------------
+		// 스캔 중
+		//--------------------------------------
+		//======================================
+		// 스캔 시간을 줄이고
+		//======================================
+		m_scanOnTime -= elaps;
+		//다 줄었는지 확인
+		if( m_scanOnTime <= 0 )
+		{
+			m_scanOnTime = CHARACTER_SCANON_TIME;
+			if( --m_scanPoint <= 0)
+			{
+				m_scanPoint = 0;
+				//스캔 포인트가 0보다 작거나 같으면 스캔 풀어줘야 함
+				//SetSkillNone();
+			}
+			isChange = TRUE;
+		}
+
+		//======================================
+		// 은신 수치는 차야 함
+		//======================================
+		//은신point가 풀이 아니면 함
+		if( m_hidePoint < CHARACTER_HIDE_POINT )
+		{
+			//은신 대기 시간을 줄이고
+			m_hideOffTime -= elaps;
+			if( m_hideOffTime <= 0 )
+			{
+				m_hideOffTime = CHARACTER_HIDEOFF_TIME;
+				if( ++m_hidePoint > CHARACTER_HIDE_POINT )
+					m_hidePoint = CHARACTER_HIDE_POINT;
+
+				isChange = TRUE;
+			}
+		}
 	}
 	else
 	{
-		//아니면 스킬사용중이 아님 -> 다 올림
-		if( ++m_hideTime > CHARACTER_HIDE_TIME )
-			m_hideTime = CHARACTER_HIDE_TIME;
-		if( ++m_scanTime > CHARACTER_SCAN_TIME )
-			m_scanTime = CHARACTER_SCAN_TIME;
+		//--------------------------------------
+		// 스킬 사용중이 아님
+		//--------------------------------------
+		//은신point가 풀이 아니면 함
+		if( m_hidePoint < CHARACTER_HIDE_POINT )
+		{
+			//은신 대기 시간을 줄이고
+			m_hideOffTime -= elaps;
+			if( m_hideOffTime <= 0 )
+			{
+				m_hideOffTime = CHARACTER_HIDEOFF_TIME;
+				if( ++m_hidePoint > CHARACTER_HIDE_POINT )
+					m_hidePoint = CHARACTER_HIDE_POINT;
+
+				isChange = TRUE;
+			}
+		}
+
+		//스캔 point가 풀이 아니면 함
+		if( m_scanPoint < CHARACTER_SCAN_POINT )
+		{
+			//스캔 대기 시간을 줄이고
+			m_scanOffTime -= elaps;
+			if( m_scanOffTime <= 0 )
+			{
+				m_scanOffTime = CHARACTER_SCANOFF_TIME;
+				if( ++m_scanPoint > CHARACTER_SCAN_POINT )
+					m_scanPoint = CHARACTER_SCAN_POINT;
+
+				isChange = TRUE;
+			}
+		}
 	}
+
+	return isChange;
 }
 
-BOOL CharObj::HidePointDown()
+void CharObj::SetSkillNone()
 {
 	SSynchronize sync( this );
-	//죽은애는 그냥 return
-	if( IsDie() )
-		return TRUE;
 
-	//은신중이 아니면 return
-	if( m_skillState != SKILL_HIDE )
-		return TRUE;
-
-	if( --m_hideTime <= 0 )
-	{
-		m_hideTime		= 0;
-		m_skillState	= SKILL_NONE;
-		return FALSE;
-	}
-	return TRUE;
+	m_skillState		= SKILL_NONE;
+	//시간 초기화
+	m_hideOnTime		= CHARACTER_HIDEON_TIME;
+	m_scanOnTime		= CHARACTER_SCANON_TIME;
 }
 
-BOOL CharObj::ScanPointDown()
+void CharObj::SetSkillHide()
 {
 	SSynchronize sync( this );
-	//죽은애는 그냥 return
-	if( IsDie() )
-		return TRUE;
 
-	if( m_skillState != SKILL_SCAN )
-		return TRUE;
+	m_skillState		= SKILL_HIDE;
+	//시간 초기화
+	m_hideOffTime		= CHARACTER_HIDEOFF_TIME;
+}
 
-	//현재 스캔 사용중
-	//이미 0이면 줄일게 없음
-	if( --m_scanTime <= 0 )
-	{
-		m_scanTime		= 0;
-		m_skillState	= SKILL_NONE;
-		return FALSE;
-	}
-	return TRUE;
+void CharObj::SetSkillScan()
+{
+	SSynchronize sync( this );
+
+	m_skillState		= SKILL_SCAN;
+	//시간 초기화
+	m_scanOffTime		= CHARACTER_SCANOFF_TIME;
 }
 
 int CharObj::GetDeathCount()

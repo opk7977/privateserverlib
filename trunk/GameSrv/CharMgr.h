@@ -8,8 +8,14 @@ class DataLeader;
 class SLogger;
 
 #define CHARACTER_INVINCIBLE_TIME	5
-#define CHARACTER_HIDE_TIME			15
-#define CHARACTER_SCAN_TIME			15
+
+#define CHARACTER_HIDE_POINT		15
+#define CHARACTER_HIDEON_TIME		1.0f
+#define CHARACTER_HIDEOFF_TIME		3.0f
+
+#define CHARACTER_SCAN_POINT		15
+#define CHARACTER_SCANON_TIME		0.75f
+#define CHARACTER_SCANOFF_TIME		3.0f
 
 enum INCREASE_POINT
 {
@@ -75,13 +81,20 @@ private:
 	float					m_invincibleTime;
 	//======================================
 
+	//======================================
 	//은신 수치
-	int						m_hideTime;
+	int						m_hidePoint;
+	float					m_hideOnTime;
+	float					m_hideOffTime;
+	//======================================
 	//스캔 수치
-	int						m_scanTime;
+	int						m_scanPoint;
+	float					m_scanOnTime;
+	float					m_scanOffTime;
+	//======================================
 	//스킬 상태
 	SRV_CHAR_SKILL_STATE	m_skillState;
-
+	//======================================
 	//vec의 Index_공간 관리용 index
 	int						m_vecIndex;
 
@@ -118,6 +131,7 @@ public:
 	inline BOOL IsInvincible() { return m_isInvincible; }
 	void CountDownInvincibleTime( float elaps );
 
+	//==============================================================
 	//공격을 당해 데이지를 입음
 	void DownHP( int damage );
 	//내 hp return
@@ -128,21 +142,22 @@ public:
  	void SetAlive();
 	//피1 올리기_ return FALSE는 원래 피가 100이라 올릴게 없을 경우
 	BOOL HPUpOnePoint();
+	//==============================================================
 
-	//스캔과 은신 수치 올리기
-	void PointUpSkillPoint();
-	//은신 수치 내리기
-	BOOL HidePointDown();
-	//스캔 수치 내리기
-	BOOL ScanPointDown();
-
+	//==============================================================
+	//skill 포인트 증감 변화가 있으면 TRUE를 return한다.
+	// 그때 클라에게 전송하면 됨
+	BOOL CountSkillPoint( float elaps );
+	
+	//--------------------------------------------------------------
 	inline int GetSkillState() { return m_skillState; }
-	inline void SetSkillNone() { m_skillState = SKILL_NONE; }
-	inline void SetSkillHide() { m_skillState = SKILL_HIDE; }
-	inline void SetSkillScan() { m_skillState = SKILL_SCAN; }
+	void SetSkillNone();// { m_skillState = SKILL_NONE; }
+	void SetSkillHide();// { m_skillState = SKILL_HIDE; }
+	void SetSkillScan();// { m_skillState = SKILL_SCAN; }
 
-	inline int GetHidePoint() { return m_hideTime; }
-	inline int GetScanPoint() { return m_scanTime; }
+	inline int GetHidePoint() { return m_hidePoint; }
+	inline int GetScanPoint() { return m_scanPoint; }
+	//==============================================================
 
 	//죽은 횟수
 	int GetDeathCount();

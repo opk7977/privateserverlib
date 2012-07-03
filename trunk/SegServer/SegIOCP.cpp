@@ -1,6 +1,8 @@
 #include "SegIOCP.h"
 
-SegIOCP::SegIOCP(void) : m_hIOCP(NULL)
+SegIOCP::SegIOCP(void)
+: m_hIOCP(NULL)
+, m_workThreadCount(0)
 {
 }
 
@@ -9,16 +11,20 @@ SegIOCP::~SegIOCP(void)
 	Release();
 }
 
-BOOL SegIOCP::Init()
+BOOL SegIOCP::Init( int threadCount /*= WORKER_THREAD_COUNT */ )
 {
+	m_workThreadCount = threadCount;
+	if( m_workThreadCount > WORKER_THREAD_COUNT )
+		m_workThreadCount = WORKER_THREAD_COUNT;
+
 	//IOCP를 생성!
-	m_hIOCP = CreateIoCompletionPort( INVALID_HANDLE_VALUE, 0, 0, WORKER_THREAD_COUNT );
+	m_hIOCP = CreateIoCompletionPort( INVALID_HANDLE_VALUE, 0, 0, m_workThreadCount );
 	//생성 실패면 돌아가자
 	if( m_hIOCP == 0 )
 		return FALSE;
 
 	//work Thread를 지정된 개수만큼 생성한다
-	for( int i=0; i<WORKER_THREAD_COUNT; ++i )
+	for( int i=0; i<m_workThreadCount; ++i )
 	{
 		m_pWorkThread[i] = new SWorkThread;
 		m_pWorkThread[i]->BeginThread();
@@ -34,7 +40,7 @@ BOOL SegIOCP::Run()
 
 void SegIOCP::Release()
 {
-	for( int i=0; i<WORKER_THREAD_COUNT; ++i )
+	for( int i=0; i<m_workThreadCount; ++i )
 		delete m_pWorkThread[i];
 }
 

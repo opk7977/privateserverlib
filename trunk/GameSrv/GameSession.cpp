@@ -731,7 +731,7 @@ void GameSession::RecvGameVisibleHide()
 	}
 
 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-			_T("%s님이 은신 사용"), m_myCharInfo->GetID() );
+			_T("%s님이 은신 사용\n\n"), m_myCharInfo->GetID() );
 	
 // 	//이놈이 지금 NONE상태가 아니면 안됨
 // 	if( m_myCharInfo->GetSkillState() != SKILL_NONE )
@@ -766,7 +766,7 @@ void GameSession::RecvGameInvisibleHide()
 	}
 
 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-		_T("%s님이 은신 취소"), m_myCharInfo->GetID() );
+		_T("%s님이 은신 취소\n\n"), m_myCharInfo->GetID() );
 
 // 	//은신 상태가 아니면 무시해
 // 	if( m_myCharInfo->GetSkillState() != SKILL_HIDE )
@@ -1268,6 +1268,7 @@ BOOL GameSession::SendGameChatting( TCHAR* chatting )
 	SPacket sendPacket;
 	sendPacket.SetID( SC_GAME_CHATTING );
 
+	sendPacket << (int)CHATTING_ALL;
 	sendPacket << size;
 	sendPacket.PutData( ChattingMsg, size );
 
@@ -1292,6 +1293,7 @@ BOOL GameSession::SendGameTeamChat( TCHAR* chatting )
 	SPacket sendPacket;
 	sendPacket.SetID( SC_GAME_CHATTING );
 
+	sendPacket << (int)CHATTING_TEAM;
 	sendPacket << size;
 	sendPacket.PutData( ChattingMsg, size );
 

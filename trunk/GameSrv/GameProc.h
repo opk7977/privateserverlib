@@ -212,7 +212,8 @@ public:
 	void WaitTimeLogic( int waitTime );
 	//시간을 세서 SendTime단위마다 패킷을 보내는데 LastCount설정부터 하나씩 보낸다.
 	//SendTime은 10과 5/ LastCount는 3정도가 적당하다
-	void CountDownLogin( int waitTime, SendTime sendTime, LastTime lastTime );
+	//void CountDownLogin( int waitTime, SendTime sendTime, LastTime lastTime );
+	void CountDownLogic( int waitTime );
 	//==============================================================
 
 	//==============================================================
@@ -274,17 +275,14 @@ public:
 	//======================================
 	// 은신/ 스캔
 	//======================================
-	//은신/ 스캔 수치 올림
-	void CountUpSkillPoint();
-	//은신/ 스캔 수치 내림
-	void CountDownSkillPoint();
+	//은신/ 스캔 수치 증감
+	void CountSkillPoints( float elaps );	
 
+	//은신과 스캔 수치 전송
+	BOOL SendSkillPoint( GameSession* session );
 	//스킬풀린 애들 확인하고 전송
 	BOOL SendHideOff( GameSession* session );
 	BOOL SendScanOff( GameSession* session );
-	//은신과 스캔 수치 전송
-	//BOOL SendSkillPoint();
-	BOOL SendSkillPoint( GameSession* session );
 
 	//======================================
 	// 지뢰 로직

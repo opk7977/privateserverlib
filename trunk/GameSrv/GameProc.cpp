@@ -103,7 +103,8 @@ BOOL GameProc::Run()
 		//--------------------------------------
 		// 무기 고를 시간 줍니다.
 		//--------------------------------------
-		CountDownLogin( 15, SENDTIME_TEN, LASTTIME_THREE );
+		//CountDownLogin( 29, SENDTIME_TEN, LASTTIME_THREE );
+		CountDownLogic( 99 );
 		//--------------------------------------
 		// 게임 시작 packet을 보낸다.
 		//--------------------------------------
@@ -207,9 +208,8 @@ BOOL GameProc::Run()
 
 void GameProc::GameRun()
 {
-	float TimePointFive		= 0.f;
-	float TimeOneSec		= 0.f;
-	float TimeThreeSec		= 0.f;
+	float TimePointFive			= 0.f;
+	float TimeOneSec			= 0.f;
 
 
 	float ElapsedTime;
@@ -232,9 +232,9 @@ void GameProc::GameRun()
 			//우선 초기화
 			TimePointFive = 0.f;
 
-			//======================================
+			//--------------------------------------
 			// hp를 1씩 올려 준다.
-			//======================================
+			//--------------------------------------
 			//부상당한 캐릭터를 모두 1씩 올려 준다
 			PlayerHeal();
 			//그애들만 보낸다.
@@ -256,64 +256,49 @@ void GameProc::GameRun()
 			if( --m_nowPlayTimeCount < 0 )
 				break;
 
-			//======================================
+			//--------------------------------------
 			// 시간 처리
-			//======================================
+			//--------------------------------------
 			//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("보낸 시간: %d\n"), m_nowPlayTimeCount );
 			//시간 패킷 보내기
 			sendPacket.PacketClear();
 			sendPacket.SetID( SC_GAME_TIME_COUNTDOWN );
 			sendPacket << m_nowPlayTimeCount;
 			SendAllPlayerInGame( sendPacket );
-
-			//======================================
-			// 은신/ 스캔 수치 다운
-			//======================================
-			CountDownSkillPoint();
 		}
-
-		//======================================
-		// 3초 단위 처리
-		//======================================
-		TimeThreeSec += ElapsedTime;
-		if( TimeThreeSec >= 3.f )
-		{
-			//우선 초기화
-			TimeThreeSec = 0.f;
-
-			//======================================
-			// 은신/ 스캔 수치 업
-			//======================================
-			CountUpSkillPoint();
-		}
-
 		//======================================
 		// 프레임 단위로 처리
 		//======================================
-		//==============================================================
-		// 무적처리
+
 		//======================================
+		// 은신/ 스캔 수치
+		//--------------------------------------
+		CountSkillPoints( ElapsedTime );
+
+		//======================================
+		// 무적처리
+		//--------------------------------------
 		// 캐릭터 무적상태인 애들 시간을 줄이고
 		// 시간이 다 되면 무적을 풀어 준다
-		//======================================
+		//--------------------------------------
 		CountDownCharInvincible();
-		//==============================================================
+		//======================================
 
-		//==============================================================
+		//======================================
 		// 지뢰 처리
-		//======================================
+		//--------------------------------------
 		// 터질 예정인 애들 시간 줄이기
-		//======================================
+		//--------------------------------------
 		CountDownRunningMine();
-		//======================================
+		//--------------------------------------
 		// 폭발한 지뢰 충돌체크
-		//======================================
+		//--------------------------------------
 		ExplosionMineCrashCheck();
-		//======================================
+		//--------------------------------------
 		// 캐릭터와 충돌체크
-		//======================================
+		//--------------------------------------
 		MineCrashCheck();
-		//==============================================================
+		//======================================
 	}
 }
 
@@ -432,10 +417,52 @@ void GameProc::WaitTimeLogic( int waitTime )
 	}
 }
 
-void GameProc::CountDownLogin( int waitTime, SendTime sendTime, LastTime lastTime )
+// void GameProc::CountDownLogin( int waitTime, SendTime sendTime, LastTime lastTime )
+// {
+// 	float framTime = 0.f;
+// 	TCHAR TmpChar[64]={0,};
+// 
+// 	while(1)
+// 	{
+// 		//======================================
+// 		// 시간 처리
+// 		//======================================
+// 		m_timer.ProcessTime();
+// 
+// 		framTime += m_timer.GetElapsedTime();
+// 		if( framTime > 1.0f )
+// 		{
+// 			//우선 초기화
+// 			framTime = 0.f;
+// 
+// 			//정해진 시간단위로 남은 시간을 공지형식으로 보낸다
+// 			if( (waitTime % sendTime) == 0 )
+// 			{
+// 				ZeroMemory( TmpChar, 64*2 );
+// 				_stprintf_s( TmpChar, 64, _T("[Notice] %d초 남았습니다."), waitTime );
+// 
+// 				SendNotice( TmpChar );
+// 			}
+// 
+// 			//마지막 카운트는 그냥 숫사를 보낸다
+// 			if( waitTime <= lastTime )
+// 			{
+// 				SendTimeRemain( waitTime );
+// 			}
+// 
+// 			//시간 줄이고 다 줄었으면 return
+// 			if( --waitTime <= 0 )
+// 				return;
+// 		}
+// 	}
+// }
+
+void GameProc::CountDownLogic( int waitTime )
 {
 	float framTime = 0.f;
 	TCHAR TmpChar[64]={0,};
+
+	SendTimeRemain( waitTime );
 
 	while(1)
 	{
@@ -450,24 +477,11 @@ void GameProc::CountDownLogin( int waitTime, SendTime sendTime, LastTime lastTim
 			//우선 초기화
 			framTime = 0.f;
 
-			//정해진 시간단위로 남은 시간을 공지형식으로 보낸다
-			if( (waitTime % sendTime) == 0 )
-			{
-				ZeroMemory( TmpChar, 64*2 );
-				_stprintf_s( TmpChar, 64, _T("[Notice] %d초 남았습니다."), waitTime );
-
-				SendNotice( TmpChar );
-			}
-
-			//마지막 카운트는 그냥 숫사를 보낸다
-			if( waitTime <= lastTime )
-			{
-				SendTimeRemain( waitTime );
-			}
-
 			//시간 줄이고 다 줄었으면 return
 			if( --waitTime <= 0 )
 				return;
+			
+			SendTimeRemain( waitTime );
 		}
 	}
 }
@@ -625,6 +639,7 @@ BOOL GameProc::DelPlayer( GameSession* player )
 	}
 
 	m_listPlayer.DelItem( player );
+	m_mapMine.RemoveKey( player->GetSessionID() );
 
 	if( m_listPlayer.IsEmpty() )
 		return FALSE;
@@ -740,7 +755,7 @@ void GameProc::SendPlayerHeal()
 	m_SendList.Clear();
 }
 
-void GameProc::CountUpSkillPoint()
+void GameProc::CountSkillPoints( float elaps )
 {
 	SSynchronize sync( &m_listPlayer );
 
@@ -749,36 +764,48 @@ void GameProc::CountUpSkillPoint()
 	//모든 캐릭터를 돌면서 올려줄 스킬 수치는 올려준다
 	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
 	{
-		(*iter)->GetMyInfo()->PointUpSkillPoint();
-
-		SendSkillPoint( (*iter) );
+		//증감의 변화가 있다면 TRUE를 return받아 스킬 포인트를 전송한다
+		if( (*iter)->GetMyInfo()->CountSkillPoint( elaps ) )
+			SendSkillPoint( (*iter) );
 	}
 }
 
-void GameProc::CountDownSkillPoint()
+BOOL GameProc::SendSkillPoint( GameSession* session )
 {
-	SSynchronize sync( &m_listPlayer );
+	CharObj* tmpChar = session->GetMyInfo();
 
-	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
-
-	//모든 캐릭터
-	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
+	int hidePoint = tmpChar->GetHidePoint();
+	int scanPoint = tmpChar->GetScanPoint();
+	if( tmpChar->GetSkillState() == SKILL_HIDE )
 	{
-		//은신수치 감소
-		if( !(*iter)->GetMyInfo()->HidePointDown() )
+		//지금이 Hide상태이고
+		if( hidePoint <= 0 )
 		{
-			//은신 풀림
-			SendHideOff( (*iter) );
+			//포인트를 모두 소비했다면 스킬 취소
+			tmpChar->SetSkillNone();
+			SendHideOff( session );
 		}
-		//스캔수치 감소
-		if( !(*iter)->GetMyInfo()->ScanPointDown() )
-		{
-			//스캔 풀림
-			SendScanOff( (*iter) );
-		}
-
-		SendSkillPoint( (*iter) );
 	}
+	else if( tmpChar->GetSkillState() == SKILL_SCAN )
+	{
+		//지금이 scan상태이고
+		if( scanPoint <= 0 )
+		{
+			//포인트를 모두 소비했다면 스킬 취소
+			tmpChar->SetSkillNone();
+			SendScanOff( session );
+		}
+	}
+
+	//그리고 skill의 포인트를 전송
+	SPacket sendPacket( SC_GAME_SKILL_POINT );
+
+	sendPacket << hidePoint;
+	sendPacket << scanPoint;
+
+	session->SendPacket( sendPacket );
+
+	return TRUE;
 }
 
 BOOL GameProc::SendHideOff( GameSession* session )
@@ -806,52 +833,6 @@ BOOL GameProc::SendScanOff( GameSession* session )
 	// 해당 세션에게 너 스캔 풀렸다고 알림
 	//======================================
 	SPacket sendPacket( SC_GAME_TIMEOUTL_SCAN );
-	session->SendPacket( sendPacket );
-
-	return TRUE;
-}
-
-// BOOL GameProc::SendSkillPoint()
-// {
-// 	SSynchronize sync( &m_listPlayer );
-// 
-// 	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
-// 
-// 	SPacket sendPacket( SC_GAME_SKILL_POINT );
-// 	//======================================
-// 	// 모든 애들의 은신 포인트를 담고
-// 	//======================================
-// 	sendPacket << m_listPlayer.GetItemCount();
-// 	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
-// 	{
-// 		sendPacket << (*iter)->GetMyInfo()->GetSessionID();
-// 		sendPacket << (*iter)->GetMyInfo()->GetHidePoint();
-// 	}
-// 
-// 	iter = m_listPlayer.GetHeader();
-// 	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
-// 	{
-// 		//======================================
-// 		// 나의 스캔 포인트를 담아 날린다
-// 		//======================================
-// 		sendPacket << (*iter)->GetMyInfo()->GetScanPoint();
-// 
-// 		(*iter)->SendPacket( sendPacket );
-// 
-// 		//보내고 내스캔포인트는 뒤로 가자
-// 		sendPacket.MoveWritePosBack( sizeof( int ) );
-// 	}
-// 
-// 	return TRUE;
-// }
-
-BOOL GameProc::SendSkillPoint( GameSession* session )
-{
-	SPacket sendPacket( SC_GAME_SKILL_POINT );
-
-	sendPacket << session->GetMyInfo()->GetHidePoint();
-	sendPacket << session->GetMyInfo()->GetScanPoint();
-
 	session->SendPacket( sendPacket );
 
 	return TRUE;

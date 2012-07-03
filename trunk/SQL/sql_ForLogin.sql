@@ -6,7 +6,7 @@ create procedure TryLogin
 	@U_pw nvarchar(15)
 AS
 	declare @tmpID int=0,@tmpUPW nvarchar(15);
-	select @tmpUPW=USER_PW, @tmpID=ID from AccountTbl where USER_ID=@U_id;
+	select @tmpUPW=USER_PW, @tmpID=ID from AccountTbl where USER_ID=@U_id COLLATE Korean_Wansung_CS_AS;
 	
 	-- id가 없으면 -1 return
 	IF ( @tmpID <= 0 )
@@ -14,7 +14,7 @@ AS
 	--END IF;
 	
 	--비밀번호가 틀리면 0 return
-	IF ( @tmpUPW <> @U_pw )
+	IF ( @tmpUPW COLLATE Korean_Wansung_CS_AS <> @U_pw COLLATE Korean_Wansung_CS_AS )
 		return 0;
 	ELSE
 		return @tmpID;

@@ -3,8 +3,40 @@
 #include "SLogger.h"
 #include "DataLeader.h"
 
+HANDLE m_hMutex;
+
+void ReleaseMutex()
+{
+	::ReleaseMutex( m_hMutex );
+	::CloseHandle( m_hMutex );
+	m_hMutex = NULL;
+}
+
+BOOL CheckValid( TCHAR* mutexText )
+{
+	m_hMutex = ::CreateMutex( NULL, TRUE, mutexText );
+	DWORD dwError = ::GetLastError();
+
+	if( m_hMutex == NULL )
+		return FALSE;
+
+	if( dwError == ERROR_ALREADY_EXISTS )
+	{
+		ReleaseMutex();
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdParam, int nCmdShow )
 {
+	//======================================
+	// 뮤텍스 검사
+	//======================================
+	if( !CheckValid( _T("DBSrv") ) )
+		return 0;
+
 	//======================================
 	// 로그 초기화
 	//======================================
@@ -60,6 +92,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	// 할당 해제
 	//======================================
 	delete myMain;
+	ReleaseMutex();
 
 	return (int)Message.wParam;
 }

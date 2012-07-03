@@ -25,7 +25,7 @@ BOOL Network::Init( int sessionCount )
 	//======================================
 	// IOCP
 	//======================================
-	if( !GetIOCP.Init() )
+	if( !GetIOCP.Init( 2 ) )
 	{
 		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("Network::Init()\nIOCP초기화에 실패 했습니다.\n\n") );

@@ -520,14 +520,14 @@ enum GAME_SERVER
 	SC_GAME_TIMEOUTL_SCAN,
 
 // 	// server -> client
-// 	// 은신/ 스캔수치를 보냄
-// 	// int			-		count
-// 	//--------------------------------------> count만큼 있음
-// 	// int			-		sessionID
-// 	// int			-		hidePoint
-// 	//--------------------------------------
+// 	// 은신 추치를 전송
+// 	// int			-		자신의 은신 point
+// 	SC_GAME_HIDE_POINT,
+// 
+// 	// server -> client
+// 	// 스캔 수치를 전송
 // 	// int			-		자신의 스캔 point
-// 	SC_GAME_SKILL_POINT,
+// 	SC_GAME_SCAN_POINT,
 
 	// server -> client
 	// 은신/ 스캔수치를 보냄
@@ -580,6 +580,7 @@ enum GAME_SERVER
 	CS_GAME_CHATTING,
 
 	// server -> client
+	// int			-		All(0)/ Team(1)
 	// int			-		stringSize
 	// TCHAR		-		chattingString
 	SC_GAME_CHATTING,

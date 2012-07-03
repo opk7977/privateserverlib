@@ -11,15 +11,17 @@ private:
 private:
 	//IOCP핸들
 	HANDLE			m_hIOCP;
-	//WORKER_THREAD_COUNT = 3
+	//WORKER_THREAD_COUNT = 8
 	SWorkThread*	m_pWorkThread[WORKER_THREAD_COUNT];
+	int				m_workThreadCount;
 
 private:
 	SegIOCP(void);
 	virtual ~SegIOCP(void);
 
 public:
-	BOOL	Init();
+	//최대 WORKER_THREAD_COUNT까지 설정가능합니다
+	BOOL	Init( int threadCount = WORKER_THREAD_COUNT );
 	BOOL	Run();
 	void	Release();
 	HANDLE	GetIOCPWorkHandle();
