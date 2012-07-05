@@ -12,3 +12,9 @@
 192.168.0.56 7800
 <<DB ¼­¹ö>>
 192.168.0.56 9000
+<<DB connect mdbFile:0 / SQLServer2008DB:1>>
+0
+<<DB NAME>>
+Unknown
+<<DB Server ID/ Password>>
+sa 1234

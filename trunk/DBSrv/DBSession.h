@@ -4,11 +4,13 @@
 #include "SPacket.h"
 
 class SrvMgr;
-class DBMgr;
+class DataBaseObj;
+//class DBMgr;
 
 class PlayerObj;
 class PlayerMgr;
 
+class DataLeader;
 class SLogger;
 class LogSrvMgr;
 
@@ -35,7 +37,9 @@ private:
 	//======================================
 	// single Tonµé
 	//======================================
-	static DBMgr*			m_dbMgr;
+	static DataLeader*		m_document;
+	//static DBMgr*			m_dbMgr;
+	static DataBaseObj*		m_dbMgr;
 	static PlayerMgr*		m_playerMgr;
 
 public:

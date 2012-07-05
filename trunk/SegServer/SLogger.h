@@ -54,6 +54,8 @@ public:
 
 	//파일 저장 공간 생성, 저장될 TickTime셋팅
 	void Create( char* filename );
+	//해제
+	void Release();
 	//저장 파일 열기
 	BOOL OpenFile();
 
@@ -67,8 +69,7 @@ public:
 	//파일에 쓰는 함수
 	void WriteToFile( char* _string );
 
-	//해제
-	void Release();
+	
 };
 
 #define GetLogger SLogger::GetInstance()

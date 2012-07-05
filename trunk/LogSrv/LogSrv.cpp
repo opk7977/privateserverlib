@@ -11,7 +11,6 @@
 #include "LogSrvView.h"
 
 #include "PacketParser.h"
-#include "SLogger.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -104,10 +103,6 @@ BOOL CLogSrvApp::InitInstance()
 	m_pMainWnd->UpdateWindow();
 	// 접미사가 있을 경우에만 DragAcceptFiles를 호출합니다.
 	//  SDI 응용 프로그램에서는 ProcessShellCommand 후에 이러한 호출이 발생해야 합니다.
-
-	//로그 초기화
-	GetLogger.Create( "LogSrv" );
-
 	m_timer.Init();
 
 	m_parser = &GetParser;

@@ -166,6 +166,14 @@ public:
 
 //	//CS_GAME_GOTO_LOBBY
 
+	//test
+	//CS_GAME_END_GUNSELECT
+	void RecvGameEndGunSelect();
+
+	//test
+	//CS_GAME_START_TIME_COUNTDOWN
+	void RecvGameStartCountDown();
+
 
 	//======================================
 	// 보낼 패킷 처리

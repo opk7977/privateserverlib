@@ -8,10 +8,10 @@ class RankDataMgr;
 class SLogger;
 class PlayerObj;
 
-class DBMgr : public DataBaseObj, public SSingleton <DBMgr>
+class DBFileMgr : public DataBaseObj, public SSingleton <DBFileMgr>
 {
 private:
-	friend class SSingleton<DBMgr>;
+	friend class SSingleton<DBFileMgr>;
 
 private:
 	//======================================
@@ -24,12 +24,12 @@ private:
 	SQuery*			m_query;
 
 private:
-	DBMgr(void);
-	~DBMgr(void);
+	DBFileMgr(void);
+	~DBFileMgr(void);
 
-public:	
+public:
 	// DB연결 및 초기화
-	//sql db와 연결
+	//mdb 파일과 연결
 	virtual BOOL Init( TCHAR* dbname, TCHAR* _id, TCHAR* _pw );
 	virtual void Release();
 
@@ -51,5 +51,5 @@ public:
 	virtual BOOL UpdateUserData( int sessionID, int rankId, int rankPoint, int accumulKill, int accumulDeath );
 };
 
-#define GetDBMgr DBMgr::GetInstance()
+#define GetDBFileMgr DBFileMgr::GetInstance()
 

@@ -217,6 +217,12 @@ void GameSession::PacketParsing( SPacket& packet )
 // 	case CS_GAME_GOTO_LOBBY:
 // 		//
 // 		break;
+// 	case CS_GAME_END_GUNSELECT:
+// 		RecvGameEndGunSelect();
+// 		break;
+// 	case CS_GAME_START_TIME_COUNTDOWN:
+// 		RecvGameStartCountDown();
+// 		break;
 	//==============================================================> Client
 	default:
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::PacketParsing()\n(%d번 ID)받은 패킷의 아이디가 유효하지 않습니다.\n\n"), packet.GetID() );
@@ -934,6 +940,34 @@ void GameSession::RecvGameRadioPlay( SPacket &packet )
 
 	//SendGameRadioPlay( packet );
 	SendGameRadioPlay( index );
+}
+
+//test
+void GameSession::RecvGameEndGunSelect()
+{
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameEndGunSelect()\n")
+			_T("게임 proc정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	m_myGameProc->SetIsSelectGun();
+}
+
+//test
+void GameSession::RecvGameStartCountDown()
+{
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameStartCountDown()\n")
+			_T("게임 proc정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	m_myGameProc->SetIsStartGame();
 }
 
 //======================================

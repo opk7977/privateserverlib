@@ -151,6 +151,13 @@ private:
 	static CharMgr*					m_charMgr;
 	//======================================
 
+
+	//test
+	//총고르는 시간이 흐르면 안됨
+	BOOL							m_isSelectCountDown;
+	//게임 시간이 흐르면 안됨
+	BOOL							m_isGameCountDown;
+
 public:
 	GameProc(void);
 	~GameProc(void);
@@ -344,4 +351,9 @@ public:
 	//방에 있는 모든 player정보를 패킷에 담는다
 	//나를 빼고 담으려면 자신의 session을 매개변수로 넘긴다.
 	void PackageAllPlayerInGame( SPacket& packet, GameSession* me = NULL  );
+
+
+	//test
+	void SetIsSelectGun() { m_isSelectCountDown = TRUE; }
+	void SetIsStartGame() { m_isGameCountDown = TRUE; }
 };

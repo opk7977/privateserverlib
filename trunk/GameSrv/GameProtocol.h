@@ -708,4 +708,15 @@ enum GAME_SERVER
 	// player가 게임을 끄고 접속을 끊었을때 사람들에게 알림
 	// int			-		SessionID
 	SC_GAME_CHAR_DISCONNECT,
+
+	//test
+	// client -> server
+	// 총기 고르는 시간 end
+	// 데이터 없음
+	CS_GAME_END_GUNSELECT,
+
+	//test
+	// client -> server
+	// 게임 시간 Count Down Start
+	CS_GAME_START_TIME_COUNTDOWN,
 };

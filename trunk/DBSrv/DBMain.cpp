@@ -4,6 +4,7 @@
 #include "PlayerMgr.h"
 #include "Network.h"
 #include "DBMgr.h"
+#include "DBFileMgr.h"
 #include "LogSrvMgr.h"
 
 #include "DBProtocol.h"
@@ -13,7 +14,11 @@ DBMain::DBMain(void)
 	m_document	= &GetDocument;
 	m_playerMgr = &GetPlayerMgr;
 	m_network	= &GetNetwork;
-	m_dbMgr		= &GetDBMgr;
+
+	if( m_document->isConnectSrv )
+		m_dbMgr		= &GetDBMgr;
+	else
+		m_dbMgr		= &GetDBFileMgr;
 
 #ifdef CONNECT_LOG_SERVER
 	m_logSrv	= &GetLogSrvMgr;
@@ -30,7 +35,8 @@ BOOL DBMain::Init()
 	//======================================
 	// db¼³Á¤
 	//======================================
-	if( !m_dbMgr->Init( _T("Unknown"), _T("sa"), _T("1234") ) )
+	//if( !m_dbMgr->Init( _T("Unknown"), _T("sa"), _T("1234") ) )
+	if( !m_dbMgr->Init( m_document->DBName, m_document->DBSrvID, m_document->DBSrvPW ) )
 		return FALSE;
 
 	//======================================

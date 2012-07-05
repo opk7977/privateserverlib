@@ -2,8 +2,9 @@
 
 #include "SIndexQueue.h"
 
+class DataLeader;
 class RankDataMgr;
-class DBMgr;
+class DataBaseObj;
 class SPacket;
 
 //--------------------------------------
@@ -15,8 +16,9 @@ private:
 	//======================================
 	// singleTon °´Ã¼µé
 	//======================================
-	static RankDataMgr*			m_rankData;
-	static DBMgr*				m_dbMgr;
+	DataLeader*				m_document;
+	RankDataMgr*			m_rankData;
+	DataBaseObj*			m_dbMgr;
 	//======================================
 	int		m_sessionID;
 	TCHAR	m_UserID[10];

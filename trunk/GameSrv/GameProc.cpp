@@ -77,6 +77,10 @@ void GameProc::Init()
 	ResetEvent( m_hStartGame );
 	ResetEvent( m_hStartEvent );
 	ResetEvent( m_hReturnResult );
+
+	//test
+	m_isSelectCountDown	= FALSE;
+	m_isGameCountDown	= FALSE;
 }
 
 BOOL GameProc::Run()
@@ -104,7 +108,7 @@ BOOL GameProc::Run()
 		// 무기 고를 시간 줍니다.
 		//--------------------------------------
 		//CountDownLogin( 29, SENDTIME_TEN, LASTTIME_THREE );
-		CountDownLogic( 99 );
+		CountDownLogic( 19 );
 		//--------------------------------------
 		// 게임 시작 packet을 보낸다.
 		//--------------------------------------
@@ -221,6 +225,7 @@ void GameProc::GameRun()
 	//======================================
 	while( m_nowPlayTimeCount > 0 )
 	{
+		m_timer.ProcessTime();
 		ElapsedTime = m_timer.GetElapsedTime();
 
 		//======================================
@@ -244,28 +249,29 @@ void GameProc::GameRun()
 		//======================================
 		// 1초 단위 처리
 		//======================================
-		m_timer.ProcessTime();
+// 		if( m_isGameCountDown )
+// 		{
+			TimeOneSec += ElapsedTime;
+			if( TimeOneSec >= 1.0f )
+			{
+				//우선 초기화
+				TimeOneSec = 0.f;
 
-		TimeOneSec += ElapsedTime;
-		if( TimeOneSec >= 1.0f )
-		{
-			//우선 초기화
-			TimeOneSec = 0.f;
+				//시간 줄이고
+				if( --m_nowPlayTimeCount < 0 )
+					break;
 
-			//시간 줄이고
-			if( --m_nowPlayTimeCount < 0 )
-				break;
-
-			//--------------------------------------
-			// 시간 처리
-			//--------------------------------------
-			//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("보낸 시간: %d\n"), m_nowPlayTimeCount );
-			//시간 패킷 보내기
-			sendPacket.PacketClear();
-			sendPacket.SetID( SC_GAME_TIME_COUNTDOWN );
-			sendPacket << m_nowPlayTimeCount;
-			SendAllPlayerInGame( sendPacket );
-		}
+				//--------------------------------------
+				// 시간 처리
+				//--------------------------------------
+				//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("보낸 시간: %d\n"), m_nowPlayTimeCount );
+				//시간 패킷 보내기
+				sendPacket.PacketClear();
+				sendPacket.SetID( SC_GAME_TIME_COUNTDOWN );
+				sendPacket << m_nowPlayTimeCount;
+				SendAllPlayerInGame( sendPacket );
+			}
+// 		}
 		//======================================
 		// 프레임 단위로 처리
 		//======================================
@@ -403,7 +409,6 @@ void GameProc::WaitTimeLogic( int waitTime )
 		// 시간 처리
 		//======================================
 		m_timer.ProcessTime();
-
 		frameTime += m_timer.GetElapsedTime();
 		if( frameTime >= 1.0f )
 		{
@@ -411,7 +416,7 @@ void GameProc::WaitTimeLogic( int waitTime )
 			frameTime = 0.f;
 
 			//시간 줄이고 다 줄었으면 return
-			if( --waitTime <= 0 )
+			if( --frameTime <= 0 )
 				return;
 		}
 	}
@@ -461,6 +466,7 @@ void GameProc::CountDownLogic( int waitTime )
 {
 	float framTime = 0.f;
 	TCHAR TmpChar[64]={0,};
+	int m_wait = waitTime;
 
 	SendTimeRemain( waitTime );
 
@@ -471,6 +477,9 @@ void GameProc::CountDownLogic( int waitTime )
 		//======================================
 		m_timer.ProcessTime();
 
+// 		if( !m_isSelectCountDown )
+// 			m_wait = waitTime;
+
 		framTime += m_timer.GetElapsedTime();
 		if( framTime > 1.0f )
 		{
@@ -478,10 +487,10 @@ void GameProc::CountDownLogic( int waitTime )
 			framTime = 0.f;
 
 			//시간 줄이고 다 줄었으면 return
-			if( --waitTime <= 0 )
+			if( --m_wait <= 0 )
 				return;
 			
-			SendTimeRemain( waitTime );
+			SendTimeRemain( m_wait );
 		}
 	}
 }

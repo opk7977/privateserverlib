@@ -1,13 +1,19 @@
 #include "PlayerMgr.h"
+#include "DataLeader.h"
 #include "SSynchronize.h"
 #include "SPacket.h"
 #include "DBMgr.h"
+#include "DBFileMgr.h"
 
-RankDataMgr*	PlayerObj::m_rankData	= &GetRankMgr;
-DBMgr*			PlayerObj::m_dbMgr		= &GetDBMgr;
 
 PlayerObj::PlayerObj(void)
 {
+	m_document	= &GetDocument;
+	m_rankData	= &GetRankMgr;
+	if( m_document->isConnectSrv )
+		m_dbMgr		= &GetDBMgr;
+	else
+		m_dbMgr		= &GetDBFileMgr;
 }
 
 PlayerObj::~PlayerObj(void)

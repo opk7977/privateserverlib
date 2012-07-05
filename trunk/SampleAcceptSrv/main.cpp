@@ -17,4 +17,7 @@ void main()
 	mySample.Run();
 
 	mySample.Release();
+
+	//로그해제
+	GetLogger.Release();
 }

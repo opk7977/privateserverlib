@@ -14,11 +14,7 @@ SLogger::SLogger(void) : m_pFile(0)
 
 SLogger::~SLogger(void)
 {
-#ifdef _DEBUG
-	FreeConsole();
-#endif
-
-	Release();
+	//Release();
 }
 
 void SLogger::Create( char* filename )
@@ -44,6 +40,19 @@ void SLogger::Create( char* filename )
 
 	//디렉토리 만든다
 	_mkdir( m_chFilename );
+}
+
+void SLogger::Release()
+{
+#ifdef _DEBUG
+	FreeConsole();
+#endif
+
+	if( m_pFile == 0 )
+		return;
+
+	fclose( m_pFile );
+	m_pFile = 0;
 }
 
 BOOL SLogger::OpenFile()
@@ -233,13 +242,4 @@ void SLogger::WriteToFile( char* _string )
 	fwrite( _string, strlen( _string ), 1, m_pFile );
 
 	Release();
-}
-
-void SLogger::Release()
-{
-	if( m_pFile == 0 )
-		return;
-
-	fclose( m_pFile );
-	m_pFile = 0;
 }

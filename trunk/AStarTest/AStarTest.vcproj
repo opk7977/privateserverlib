@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="DBSrv"
-	ProjectGUID="{29510D74-C804-4B83-8051-80D0E89E5863}"
-	RootNamespace="DBSrv"
+	Name="AStarTest"
+	ProjectGUID="{64895793-E708-486C-9F79-5AF25FE30BC9}"
+	RootNamespace="AStarTest"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="../output/DBSrv"
-			IntermediateDirectory="../output/DBSrv"
+			OutputDirectory="../output/AStarTest"
+			IntermediateDirectory="../output/AStarTest"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
@@ -92,8 +92,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="../Release/DBSrv"
-			IntermediateDirectory="../Release/DBSrv"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -117,7 +117,6 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="../Rinclude"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -136,9 +135,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SegServer.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="../Rlib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -177,11 +174,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\DBMain.cpp"
+				RelativePath=".\main.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\main.cpp"
+				RelativePath=".\MyData.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WinMgr.cpp"
 				>
 			</File>
 		</Filter>
@@ -191,21 +192,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\DBMain.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="府家胶 颇老"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
-		</Filter>
-		<Filter
-			Name="Window"
-			>
-			<File
-				RelativePath=".\WinMgr.cpp"
+				RelativePath=".\MyData.h"
 				>
 			</File>
 			<File
@@ -214,112 +201,10 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Data"
+			Name="府家胶 颇老"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-			<File
-				RelativePath=".\DataLeader.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DataLeader.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Network"
-			>
-			<File
-				RelativePath=".\DBProtocol.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Network.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Network.h"
-				>
-			</File>
-			<Filter
-				Name="LogSrv"
-				>
-				<File
-					RelativePath=".\LogSrvMgr.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\LogSrvMgr.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Session"
-				>
-				<File
-					RelativePath=".\DBSession.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DBSession.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="SrvMgr"
-				>
-				<File
-					RelativePath=".\SrvMgr.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SrvMgr.h"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="Player"
-			>
-			<File
-				RelativePath=".\PlayerMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\PlayerMgr.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="DataBase"
-			>
-			<File
-				RelativePath=".\DataBaseObj.h"
-				>
-			</File>
-			<Filter
-				Name="DBFileMgr"
-				>
-				<File
-					RelativePath=".\DBFileMgr.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DBFileMgr.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="DBMgr"
-				>
-				<File
-					RelativePath=".\DBMgr.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DBMgr.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

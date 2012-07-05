@@ -249,7 +249,7 @@ BOOL SQuery::Exec( TCHAR* szSQL )
 	if( ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO && ret != SQL_NO_DATA )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Query] Äõ¸® ½ÇÆÐ\n") );
+		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Query] Äõ¸® ½ÇÆÐ\n%s\n\n"), szSQL );
 #endif
 		return FALSE;
 	}

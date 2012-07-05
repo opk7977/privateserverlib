@@ -34,7 +34,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	// 뮤텍스 검사
 	//======================================
-	if( !CheckValid( _T("DBSrv") ) )
+	if( !CheckValid( _T("GameSrv") ) )
 		return 0;
 
 	//======================================

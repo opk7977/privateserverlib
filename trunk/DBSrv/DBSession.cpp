@@ -1,8 +1,10 @@
 #include "DBSession.h"
 #include "DBProtocol.h"
 
+#include "DataLeader.h"
 #include "SrvMgr.h"
 #include "DBMgr.h"
+#include "DBFileMgr.h"
 #include "PlayerMgr.h"
 
 #include "SLogger.h"
@@ -11,13 +13,15 @@
 SIMPLEMENT_DYNAMIC(DBSession)
 SIMPLEMENT_DYNCREATE(DBSession)
 
-SrvMgr*		DBSession::m_login			= new SrvMgr;
-SrvMgr*		DBSession::m_lobby			= new SrvMgr;
-SrvMgr*		DBSession::m_game			= new SrvMgr;
+SrvMgr*			DBSession::m_login			= new SrvMgr;
+SrvMgr*			DBSession::m_lobby			= new SrvMgr;
+SrvMgr*			DBSession::m_game			= new SrvMgr;
 
-DBMgr*		DBSession::m_dbMgr			= &GetDBMgr;
-PlayerMgr*	DBSession::m_playerMgr		= &GetPlayerMgr;
-SLogger*	DBSession::m_logger			= &GetLogger;
+DataLeader*		DBSession::m_document		= &GetDocument;
+DataBaseObj*	DBSession::m_dbMgr			= NULL;
+
+PlayerMgr*		DBSession::m_playerMgr		= &GetPlayerMgr;
+SLogger*		DBSession::m_logger			= &GetLogger;
 
 #ifdef CONNECT_LOG_SERVER
 	LogSrvMgr*	DBSession::m_logSrv		= &GetLogSrvMgr;
@@ -28,6 +32,10 @@ SLogger*	DBSession::m_logger			= &GetLogger;
 
 DBSession::DBSession(void)
 {
+	if( m_document->isConnectSrv )
+		m_dbMgr	= &GetDBMgr;
+	else
+		m_dbMgr	= &GetDBFileMgr;
 }
 
 DBSession::~DBSession(void)
@@ -259,7 +267,7 @@ void DBSession::RecvLoginCheckID( SPacket& packet )
 void DBSession::RecvLoginCreateAccount( SPacket& packet )
 {
 	int indexId, size;
-	TCHAR tmpId[10]={0,}, tmpPw[15]={0,}, tmpMail[20]={0,};
+	TCHAR tmpId[10]={0,}, tmpPw[15]={0,}, tmpMail[50]={0,};
 
 	packet >> indexId;
 	//id추출
@@ -279,16 +287,16 @@ void DBSession::RecvLoginCreateAccount( SPacket& packet )
 		SendLoginCreateAccountResult( indexId, FALSE );
 		return;
 	}
-	packet.GetData( tmpId, size );
+	packet.GetData( tmpPw, size );
 	//email추출
 	packet >> size;
-	if( size > 40 )
+	if( size > 50 )
 	{
 		//email불량
 		SendLoginCreateAccountResult( indexId, FALSE );
 		return;
 	}
-	packet.GetData( tmpId, size );
+	packet.GetData( tmpMail, size );
 
 	//db에 계정 생성
 	BOOL result = m_dbMgr->CreateAccount( tmpId, tmpPw, tmpMail );

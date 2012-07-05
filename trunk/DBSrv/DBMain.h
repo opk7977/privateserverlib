@@ -7,7 +7,7 @@
 class DataLeader;
 class PlayerMgr;
 class Network;
-class DBMgr;
+class DataBaseObj;
 class LogSrvMgr;
 
 class DBMain
@@ -18,7 +18,7 @@ class DBMain
 	DataLeader*			m_document;
 	PlayerMgr*			m_playerMgr;
 	Network*			m_network;
-	DBMgr*				m_dbMgr;
+	DataBaseObj*		m_dbMgr;
 	LogSrvMgr*			m_logSrv;
 	//======================================
 
