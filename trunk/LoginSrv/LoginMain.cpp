@@ -71,4 +71,8 @@ BOOL LoginMain::Init()
 
 void LoginMain::Relase()
 {
+	//======================================
+	// networkÇØÁ¦
+	//======================================
+	m_network->Release();
 }

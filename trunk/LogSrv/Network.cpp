@@ -4,6 +4,7 @@
 
 #include "SSessionMgr.h"
 #include "SegIOCP.h"
+#include "SThreadMgr.h"
 
 #include "SPacket.h"
 
@@ -18,7 +19,6 @@ Network::Network(void)
 
 Network::~Network(void)
 {
-	Release();
 }
 
 BOOL Network::Init( int sessionCount, int port )
@@ -55,7 +55,30 @@ BOOL Network::Init( int sessionCount, int port )
 
 void Network::Release()
 {
+	//======================================
+	// accept 해제
+	//======================================
 	m_accept.Release();
+
+	//======================================
+	// IOCP해제
+	//======================================
+	GetIOCP.Release();
+
+	//======================================
+	// 쓰레드 종료
+	//======================================
+	GetThreadMgr.EndAllThread();
+
+	//======================================
+	// 세션 공간 삭제
+	//======================================
+	GetSessionMgr.Release();
+
+	//======================================
+	// 패킷 큐 해제
+	//======================================
+	GetPacketQ.Release();
 }
 
 void Network::SendShotdownMsg()

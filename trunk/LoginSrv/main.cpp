@@ -91,6 +91,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	// 할당 해제
 	//======================================
 	delete lMain;
+
+	//======================================
+	// 로그 해제
+	//======================================
+	m_logger->Release();
+
 	ReleaseMutex();
 
 	return (int)Message.wParam;

@@ -44,6 +44,8 @@ void SLogger::Create( char* filename )
 
 void SLogger::Release()
 {
+	SSynchronize Sync( this );
+
 #ifdef _DEBUG
 	FreeConsole();
 #endif

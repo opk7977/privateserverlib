@@ -10,10 +10,10 @@ SWorkThread::SWorkThread(void)
 
 SWorkThread::~SWorkThread(void)
 {
-	Release();
-
+	m_bThreadLoop = FALSE;
 	//쓰레드가 죽길 기다린다.
 	WaitForSingleObject( GetThreadHandle(), 1000 );
+	Release();
 }
 
 BOOL SWorkThread::Init()
@@ -40,7 +40,7 @@ BOOL SWorkThread::Run()
 		//완료포트의 결과를 받아 온다.
 		retval = GetQueuedCompletionStatus( handleIOCP, &bytesTransfer, &keyValue, &overlapped, INFINITE );
 
-		Sleep(0);
+		//Sleep(0);
 
 		//완료포트가 TRUE를 return 하고 받아온 결과들에 데이터가 있는지 체크해서 처리한다
 		if( retval == TRUE && keyValue != 0 && bytesTransfer != 0 && overlapped != 0 )
@@ -63,6 +63,8 @@ BOOL SWorkThread::Run()
 				GetSessionMgr.RemoveSession( (int)keyValue );
 		}
 	}
+
+	OutputDebugString( _T("workThread종료") );
 
 	return TRUE;
 }

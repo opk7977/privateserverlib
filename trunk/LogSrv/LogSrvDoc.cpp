@@ -53,6 +53,7 @@ CLogSrvDoc::CLogSrvDoc()
 
 CLogSrvDoc::~CLogSrvDoc()
 {
+	m_network->Release();
 	m_database->Release();
 }
 

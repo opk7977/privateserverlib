@@ -75,5 +75,8 @@ BOOL LobbyMain::Init()
 
 void LobbyMain::Release()
 {
-	m_dbMgr->DisConnect();
+	//======================================
+	// networkÇØÁ¦
+	//======================================
+	m_network->Release();
 }

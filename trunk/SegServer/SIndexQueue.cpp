@@ -7,7 +7,6 @@ SIndexQueue::SIndexQueue(void) : m_iReadPos(0)
 
 SIndexQueue::~SIndexQueue(void)
 {
-	Release();
 }
 
 BOOL SIndexQueue::Create( int count, int startindex )
@@ -28,6 +27,9 @@ BOOL SIndexQueue::Create( int count, int startindex )
 void SIndexQueue::Release()
 {
 	//vectorºüÀÌ
+	if( m_vecIndex.empty() )
+		return;
+
 	m_vecIndex.clear();
 }
 

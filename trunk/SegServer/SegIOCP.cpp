@@ -8,7 +8,7 @@ SegIOCP::SegIOCP(void)
 
 SegIOCP::~SegIOCP(void)
 {
-	Release();
+	//Release();
 }
 
 BOOL SegIOCP::Init( int threadCount /*= WORKER_THREAD_COUNT */ )
@@ -41,7 +41,17 @@ BOOL SegIOCP::Run()
 void SegIOCP::Release()
 {
 	for( int i=0; i<m_workThreadCount; ++i )
-		delete m_pWorkThread[i];
+	{
+		//delete m_pWorkThread[i];
+		//m_pWorkThread[i] = 0;
+		m_pWorkThread[i]->Release();
+	}
+
+	if ( m_hIOCP )
+	{
+		::CloseHandle( m_hIOCP );
+		m_hIOCP = NULL;
+	}
 }
 
 HANDLE SegIOCP::GetIOCPWorkHandle()

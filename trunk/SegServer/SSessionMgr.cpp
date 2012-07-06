@@ -10,9 +10,6 @@ SSessionMgr::SSessionMgr(void)
 
 SSessionMgr::~SSessionMgr(void)
 {
-	//GetThreadMgr.IsEndAllThread();
-
-	Release();
 }
 
 void SSessionMgr::Create( SRTClass* pRTC, int _size )
@@ -22,7 +19,7 @@ void SSessionMgr::Create( SRTClass* pRTC, int _size )
 
 	//indexQueue를 만들어 놓자
 	// 개수와 시작 숫자를 넘겨 준다.
-	m_indexQueue.Create( _size, 1 );
+	m_indexQueue.Create( m_spaceSize, 1 );
 
 	//Session을 담을 공간을 미리 만들어 놓는다!
 	//map은 1부터 시작해야 하니까 1~size+1까지 만들어 넣어 둬야 한다
@@ -88,6 +85,10 @@ void SSessionMgr::RemoveSession( int index )
 	//해당 index의 session을 받아 온다
 	{
 		SSynchronize sync( this );
+
+		if( m_mapSession.IsEmpty() )
+			return;
+
 		newSession = (SSession*)m_mapSession[index];
 		if( newSession == 0 )
 			return;
@@ -115,11 +116,10 @@ SServerObj* SSessionMgr::GetSession( int index )
 	SServerObj* newSession = 0;
 
 	SSynchronize sync( this );
-
-	newSession = m_mapSession[index];
-	if( newSession == 0 )
+	if( m_mapSession.IsEmpty() )
 		return NULL;
 
+	newSession = m_mapSession[index];
 	return newSession;
 }
 
@@ -170,6 +170,9 @@ void SSessionMgr::Release()
 	//m_sessionMap.Release();
 	SSynchronize sync( this );
 
+	if( m_mapSession.IsEmpty() )
+		return;
+
 	SServerObj* tmpSession;
 	POSITION pos = m_mapSession.GetStartPosition();
 	while( pos )
@@ -180,5 +183,5 @@ void SSessionMgr::Release()
 	}
 	m_mapSession.RemoveAll();
 
-	m_indexQueue.Release();
+	//m_indexQueue.Release();
 }

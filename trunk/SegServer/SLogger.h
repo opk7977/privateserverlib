@@ -48,7 +48,7 @@ public:
 
 private:
 	SLogger(void);
-	virtual ~SLogger(void);
+	~SLogger(void);
 
 public:
 

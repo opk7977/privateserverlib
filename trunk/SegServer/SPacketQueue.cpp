@@ -28,6 +28,9 @@ void SPacketQueue::Init( int PoolSize /*= VECBUFFER_SIZE */ )
 
 void SPacketQueue::Release()
 {
+	if( m_vecPacketPool.size() <= 0 )
+		return;
+
 	for( int i=0; i<m_iQueueSize; ++i )
 	{
 		delete m_vecPacketPool[i];

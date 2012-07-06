@@ -1,6 +1,7 @@
 #include "Network.h"
 #include "LoginSession.h"
 #include "SSessionMgr.h"
+#include "SThreadMgr.h"
 #include "SegIOCP.h"
 
 #include "SLogger.h"
@@ -44,4 +45,27 @@ BOOL Network::SrvSetting( int port )
 		return FALSE;
 
 	return TRUE;
+}
+
+void Network::Release()
+{
+	//======================================
+	// accept 해제
+	//======================================
+	m_accept.Release();
+
+	//======================================
+	// IOCP해제
+	//======================================
+	GetIOCP.Release();
+
+	//======================================
+	// 쓰레드 종료
+	//======================================
+	GetThreadMgr.EndAllThread();
+
+	//======================================
+	// 세션 공간 삭제
+	//======================================
+	GetSessionMgr.Release();
 }

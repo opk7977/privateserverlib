@@ -11,13 +11,13 @@ SThreadMgr::SThreadMgr(void)
 SThreadMgr::~SThreadMgr(void)
 {
 	//list에 있는 모든 쓰레드를 종료 삭제
-	IsEndAllThread();
-
-	while( !m_listThread.empty() )
-	{
-		CloseHandle( *m_listThread.begin() );
-		m_listThread.erase( m_listThread.begin() );
-	}
+// 	IsEndAllThread();
+// 
+// 	while( !m_listThread.empty() )
+// 	{
+// 		CloseHandle( *m_listThread.begin() );
+// 		m_listThread.erase( m_listThread.begin() );
+// 	}
 }
 
 void SThreadMgr::IsEndAllThread()
@@ -51,7 +51,11 @@ BOOL SThreadMgr::EndAllThread()
 // 	{
 // 		PostThreadMessage( 
 // 	}
-	//모든 쓰레드가 종료 됨 return 된다
+	while( !m_listThread.empty() )
+	{
+		CloseHandle( *m_listThread.begin() );
+		m_listThread.erase( m_listThread.begin() );
+	}
 
 	return TRUE;
 }

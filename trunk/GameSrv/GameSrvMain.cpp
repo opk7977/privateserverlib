@@ -88,6 +88,8 @@ BOOL GameSrvMain::Init()
 
 void GameSrvMain::Release()
 {
-	//서버연결을 끊음
-	GetSrvNet.DisConnect();
+	//======================================
+	// network해제
+	//======================================
+	m_network->Release();
 }

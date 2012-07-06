@@ -2,6 +2,7 @@
 #include "SSessionMgr.h"
 #include "DBSession.h"
 #include "SegIOCP.h"
+#include "SThreadMgr.h"
 #include "SLogger.h"
 
 Network::Network(void)
@@ -43,4 +44,27 @@ BOOL Network::SrvSetting( int port )
 		return FALSE;
 
 	return TRUE;
+}
+
+void Network::Release()
+{
+	//======================================
+	// accept 해제
+	//======================================
+	m_accept.Release();
+
+	//======================================
+	// IOCP해제
+	//======================================
+	GetIOCP.Release();
+
+	//======================================
+	// 쓰레드 종료
+	//======================================
+	GetThreadMgr.EndAllThread();
+
+	//======================================
+	// 세션 공간 삭제
+	//======================================
+	GetSessionMgr.Release();
 }

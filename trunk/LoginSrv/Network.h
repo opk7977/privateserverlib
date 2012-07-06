@@ -18,6 +18,7 @@ public:
 	BOOL Init( int sessionCount );
 
 	BOOL SrvSetting( int port );
+	void Release();
 };
 
 #define GetNetwork Network::GetInstance()

@@ -76,25 +76,43 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 
 	MSG Message;
 
-	while(1)
+// 	while(1)
+// 	{
+// 		if( PeekMessage( &Message, NULL, 0, 0, PM_REMOVE ) )
+// 		{
+// 			if( Message.message == WM_QUIT )
+// 				break;
+// 
+// 			TranslateMessage( &Message );
+// 			DispatchMessage( &Message );
+// 		}
+// 		else
+// 		{
+// 		}
+// 	}
+	while( GetMessage( &Message, NULL, 0, 0 ) )
 	{
-		if( PeekMessage( &Message, NULL, 0, 0, PM_REMOVE ) )
+		if ( !TranslateAccelerator( Message.hwnd, NULL, &Message ) )
 		{
-			if( Message.message == WM_QUIT )
-				break;
-
 			TranslateMessage( &Message );
 			DispatchMessage( &Message );
 		}
-		else
-		{
-		}
 	}
+
 
 	//======================================
 	// 할당 해제
 	//======================================
  	delete lMain;
+
+	//======================================
+	// log해제
+	//======================================
+	m_logger->Release();
+
+	//======================================
+	// 뮤텍스 해제
+	//======================================
 	ReleaseMutex();
 
 	return (int)Message.wParam;
