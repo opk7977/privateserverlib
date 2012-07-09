@@ -24,7 +24,7 @@ LoginMain::LoginMain(void)
 
 LoginMain::~LoginMain(void)
 {
-	Relase();
+	//Release();
 }
 
 BOOL LoginMain::Init()
@@ -69,8 +69,13 @@ BOOL LoginMain::Init()
 	return TRUE;
 }
 
-void LoginMain::Relase()
+void LoginMain::Release()
 {
+	//======================================
+	// DB연결 정보 없애기
+	//======================================
+	m_dbSrvMgr->DisConnect();
+
 	//======================================
 	// network해제
 	//======================================

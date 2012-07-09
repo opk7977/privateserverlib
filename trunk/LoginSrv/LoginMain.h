@@ -31,5 +31,5 @@ public:
 	// √ ±‚»≠
 	BOOL Init();
 
-	void Relase();
+	void Release();
 };

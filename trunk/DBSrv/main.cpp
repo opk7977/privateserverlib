@@ -70,8 +70,11 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	// login 메인 실행
 	//======================================
-	DBMain* lMain = new DBMain;
-	if( !lMain->Init() )
+// 	DBMain* lMain = new DBMain;
+// 	if( !lMain->Init() )
+// 		return 0;
+	DBMain dMain;
+	if( dMain.Init() )
 		return 0;
 
 	MSG Message;
@@ -103,7 +106,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	// 할당 해제
 	//======================================
- 	delete lMain;
+ 	//delete lMain;
+	dMain.Release();
 
 	//======================================
 	// log해제

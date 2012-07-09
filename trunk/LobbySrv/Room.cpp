@@ -340,6 +340,7 @@ void Room::PackageRoomModeInfo( SPacket &packet )
 	SSynchronize Sync( this );
 
 	//게임관련 모드
+	packet << m_stageMap;
 	packet << m_gameMode;
 	packet << m_playTime;
 	packet << m_playCount;

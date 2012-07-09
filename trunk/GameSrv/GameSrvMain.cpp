@@ -28,7 +28,7 @@ GameSrvMain::GameSrvMain(void)
 
 GameSrvMain::~GameSrvMain(void)
 {
-	Release();
+	//Release();
 }
 
 BOOL GameSrvMain::Init()

@@ -31,6 +31,7 @@ public:
 	~TmpSessionSpace(void);
 
 	void Init( int SessionCount );
+	void Release();
 
 	//번호를 하나 받아 간다.
 	int GetIndex();

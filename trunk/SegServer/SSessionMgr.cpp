@@ -173,6 +173,16 @@ void SSessionMgr::Release()
 	if( m_mapSession.IsEmpty() )
 		return;
 
+	{
+		SSynchronize sync( &m_listPlayer );
+		m_listPlayer.Clear();
+	}
+
+	{
+		SSynchronize sync( &m_indexQueue );
+		m_indexQueue.Release();
+	}
+
 	SServerObj* tmpSession;
 	POSITION pos = m_mapSession.GetStartPosition();
 	while( pos )

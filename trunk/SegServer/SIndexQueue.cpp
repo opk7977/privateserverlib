@@ -7,6 +7,7 @@ SIndexQueue::SIndexQueue(void) : m_iReadPos(0)
 
 SIndexQueue::~SIndexQueue(void)
 {
+	//Release();
 }
 
 BOOL SIndexQueue::Create( int count, int startindex )
@@ -30,7 +31,8 @@ void SIndexQueue::Release()
 	if( m_vecIndex.empty() )
 		return;
 
-	m_vecIndex.clear();
+	//m_vecIndex.clear();
+	std::vector<int>().swap( m_vecIndex );
 }
 
 BOOL SIndexQueue::IsPull()

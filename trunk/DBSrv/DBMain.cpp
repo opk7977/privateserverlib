@@ -27,7 +27,7 @@ DBMain::DBMain(void)
 
 DBMain::~DBMain(void)
 {
-	Release();
+	//Release();
 }
 
 BOOL DBMain::Init()

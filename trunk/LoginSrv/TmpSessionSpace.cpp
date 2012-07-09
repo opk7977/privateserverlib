@@ -8,6 +8,7 @@ TmpSessionSpace::TmpSessionSpace(void)
 
 TmpSessionSpace::~TmpSessionSpace(void)
 {
+	Release();
 }
 
 void TmpSessionSpace::Init( int SessionCount )
@@ -27,6 +28,14 @@ void TmpSessionSpace::Init( int SessionCount )
 		LoginSession* tmpSession = NULL;
 		m_waitSession.push_back( tmpSession );
 	}
+}
+
+void TmpSessionSpace::Release()
+{
+	SSynchronize sync( this );
+
+	m_indexQ.Release();
+	std::vector<LoginSession*>().swap( m_waitSession );
 }
 
 int TmpSessionSpace::GetIndex()

@@ -67,8 +67,10 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	// Game 메인 실행
 	//======================================
-	GameSrvMain* myMain = new GameSrvMain;
-	myMain->Init();
+// 	GameSrvMain* myMain = new GameSrvMain;
+// 	myMain->Init();
+	GameSrvMain gMain;
+	gMain.Init();
 
 
 	MSG Message;
@@ -91,7 +93,17 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	// 할당 해제
 	//======================================
-	delete myMain;
+	//delete myMain;
+	gMain.Release();
+
+	//======================================
+	// log해제
+	//======================================
+	m_logger->Release();
+
+	//======================================
+	// 뮤텍스 해제
+	//======================================
 	ReleaseMutex();
 
 	return (int)Message.wParam;

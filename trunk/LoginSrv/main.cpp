@@ -1,5 +1,6 @@
 #include "WinMgr.h"
 #include "LoginMain.h"
+#include "SThreadMgr.h"
 
 #include "DataLeader.h"
 #include "SLogger.h"
@@ -67,8 +68,10 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	// login 메인 실행
 	//======================================
-	LoginMain* lMain = new LoginMain;
-	lMain->Init();
+// 	LoginMain* lMain = new LoginMain;
+// 	lMain->Init();
+	LoginMain lMain;
+	lMain.Init();
 
 	MSG Message;
 
@@ -86,11 +89,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		{
 		}
 	}
-
 	//======================================
 	// 할당 해제
 	//======================================
-	delete lMain;
+// 	lMain->Release();
+// 	delete lMain;
+	lMain.Release();
 
 	//======================================
 	// 로그 해제

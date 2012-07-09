@@ -23,7 +23,7 @@ LobbyMain::LobbyMain(void)
 
 LobbyMain::~LobbyMain(void)
 {
-	Release();
+	//Release();
 }
 
 BOOL LobbyMain::Init()

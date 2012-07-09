@@ -69,10 +69,10 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	// login 메인 실행
 	//======================================
-	LobbyMain* lMain = new LobbyMain;
-	lMain->Init();
-
-
+// 	LobbyMain* lMain = new LobbyMain;
+// 	lMain->Init();
+	LobbyMain lMain;
+	lMain.Init();
 
 	MSG Message;
 
@@ -94,7 +94,17 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	// 할당 해제
 	//======================================
-	delete lMain;
+	//delete lMain;
+	lMain.Release();
+
+	//======================================
+	// log해제
+	//======================================
+	m_logger->Release();
+
+	//======================================
+	// 뮤텍스 해제
+	//======================================
 	ReleaseMutex();
 
 	return (int)Message.wParam;
