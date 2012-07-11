@@ -7,34 +7,59 @@ class GameSession;
 class DataLeader;
 class SLogger;
 
-#define CHARACTER_INVINCIBLE_TIME	5
+//======================================
+// 무적시간
+//======================================
+#define CHARACTER_INVINCIBLE_TIME			5
 
-#define CHARACTER_HIDE_POINT		15
-#define CHARACTER_HIDEON_TIME		1.0f
-#define CHARACTER_HIDEOFF_TIME		3.0f
+//======================================	
+// 은신
+//======================================	
+#define CHARACTER_HIDE_POINT				15
+#define CHARACTER_HIDEON_TIME				1.0f
+#define CHARACTER_HIDEOFF_TIME				3.0f
 
-#define CHARACTER_SCAN_POINT		15
-#define CHARACTER_SCANON_TIME		0.75f
-#define CHARACTER_SCANOFF_TIME		3.0f
+//======================================	
+// 스캔
+//======================================	
+#define CHARACTER_SCAN_POINT				15
+#define CHARACTER_SCANON_TIME				0.75f
+#define CHARACTER_SCANOFF_TIME				3.0f
 
+//======================================	
+// HP
+//======================================	
+#define CHARACTER_HP_INCREASE_POINT			1
+#define CHARACTER_HP_INCREASE_TIME			1
+#define CHARACTER_HP_MAX_INCREASE_POINT		100
+
+//======================================	
+// 게임 결과 정산Point
+//======================================	
 enum INCREASE_POINT
 {
-	DEATHMATCH_WINNER_KILL_POINT	= 10,
-	DEATHMATCH_LOSER_KILL_POINT		= 5,
-	MISSION_WINNER_KILL_POINT		= 2,
-	MISSION_LOSER_KILL_POINT		= 1,
-	MISSION_WINNER_INCREASE_POINT	= 50,
+	DEATHMATCH_WINNER_KILL_POINT			= 10,
+	DEATHMATCH_LOSER_KILL_POINT				= 5,
+	MISSION_WINNER_KILL_POINT				= 2,
+	MISSION_LOSER_KILL_POINT				= 1,
+	MISSION_WINNER_INCREASE_POINT			= 50,
 };
 
+//======================================
+// 팀 정보
+//======================================
 enum SRV_CHAR_TEAM
 {
-	SRV_CHAR_TEAM_ATT				= 0,
+	SRV_CHAR_TEAM_ATT						= 0,
 	SRV_CHAR_TEAM_DEF,
 };
 
+//======================================	
+// 무기_지금은 사용하지 않음...
+//======================================	
 enum SRV_CHAR_WEAPON
 {
-	SWEAPON_BLASTER					= 0,
+	SWEAPON_BLASTER							= 0,
 	SWEAPON_MACHINEGUN,
 	SWEAPON_DARKMATTER,
 	SWEAPON_GRENADE,
@@ -43,9 +68,12 @@ enum SRV_CHAR_WEAPON
 	SWEAPON_SHOTGUN,
 };
 
+//======================================	
+// 캐릭터 스킬 사용상태
+//======================================	
 enum SRV_CHAR_SKILL_STATE
 {
-	SKILL_NONE						= 100,
+	SKILL_NONE								= 100,
 	SKILL_HIDE,
 	SKILL_SCAN,
 };
@@ -72,8 +100,12 @@ private:
 
 	//위치
 	POINT3					m_pos;
+
+	//======================================
 	//에너지
 	int						m_HP;
+	float					m_increaseHPTime;
+	//======================================
 
 	//======================================
 	// 무적
@@ -140,12 +172,13 @@ public:
 	BOOL IsDie();
 	//살리기
  	void SetAlive();
-	//피1 올리기_ return FALSE는 원래 피가 100이라 올릴게 없을 경우
-	BOOL HPUpOnePoint();
+	//==============================================================
+	//피1 올리기_ return 1 POINT가 올랐다면 TRUE를 return
+	BOOL HPUpOnePoint( float elaps );
 	//==============================================================
 
 	//==============================================================
-	//skill 포인트 증감 변화가 있으면 TRUE를 return한다.
+	// skill 포인트 증감 변화가 있으면 TRUE를 return한다.
 	// 그때 클라에게 전송하면 됨
 	BOOL CountSkillPoint( float elaps );
 	
@@ -219,7 +252,6 @@ public:
 	//해당 index에 해당하는 character를 받아 간다.
 	CharObj* FindCharAsIndex( int index );
 	CharObj* FindCharAsSessionId( int sessionID );
-
 };
 
 #define GetCharMgr CharMgr::GetInstance()

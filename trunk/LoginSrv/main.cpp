@@ -68,32 +68,23 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	// login 메인 실행
 	//======================================
-// 	LoginMain* lMain = new LoginMain;
-// 	lMain->Init();
 	LoginMain lMain;
 	lMain.Init();
 
 	MSG Message;
 
-	while(1)
+	while( GetMessage( &Message, NULL, 0, 0 ) )
 	{
-		if( PeekMessage( &Message, NULL, 0, 0, PM_REMOVE ) )
+		if ( !TranslateAccelerator( Message.hwnd, NULL, &Message ) )
 		{
-			if( Message.message == WM_QUIT )
-				break;
-
 			TranslateMessage( &Message );
 			DispatchMessage( &Message );
 		}
-		else
-		{
-		}
 	}
+
 	//======================================
 	// 할당 해제
 	//======================================
-// 	lMain->Release();
-// 	delete lMain;
 	lMain.Release();
 
 	//======================================

@@ -70,29 +70,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	// login 메인 실행
 	//======================================
-// 	DBMain* lMain = new DBMain;
-// 	if( !lMain->Init() )
-// 		return 0;
 	DBMain dMain;
-	if( dMain.Init() )
+	if( !dMain.Init() )
 		return 0;
 
 	MSG Message;
 
-// 	while(1)
-// 	{
-// 		if( PeekMessage( &Message, NULL, 0, 0, PM_REMOVE ) )
-// 		{
-// 			if( Message.message == WM_QUIT )
-// 				break;
-// 
-// 			TranslateMessage( &Message );
-// 			DispatchMessage( &Message );
-// 		}
-// 		else
-// 		{
-// 		}
-// 	}
 	while( GetMessage( &Message, NULL, 0, 0 ) )
 	{
 		if ( !TranslateAccelerator( Message.hwnd, NULL, &Message ) )
@@ -106,7 +89,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	// 할당 해제
 	//======================================
- 	//delete lMain;
 	dMain.Release();
 
 	//======================================

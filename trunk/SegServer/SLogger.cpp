@@ -50,11 +50,7 @@ void SLogger::Release()
 	FreeConsole();
 #endif
 
-	if( m_pFile == 0 )
-		return;
-
-	fclose( m_pFile );
-	m_pFile = 0;
+	CloseFile();
 }
 
 BOOL SLogger::OpenFile()
@@ -79,9 +75,23 @@ BOOL SLogger::OpenFile()
 
 	//파일을 연다( 쓰기모드 ) / 성공하면 0 return
 	if( fopen_s( &m_pFile, m_chtmpFilepath, "a+" ) != 0 )
+	{
+		OutputDebugStringA( "파일 open실패" );
 		return FALSE;
+	}
 
 	return TRUE;
+}
+
+void SLogger::CloseFile()
+{
+	SSynchronize sync( this );
+
+	if( m_pFile == 0 )
+		return;
+
+	fclose( m_pFile );
+	m_pFile = 0;
 }
 
 void SLogger::PutLog( short errLv, char* lpszFmt, ... )
@@ -243,5 +253,6 @@ void SLogger::WriteToFile( char* _string )
 	//문자열을 파일에 저장
 	fwrite( _string, strlen( _string ), 1, m_pFile );
 
-	Release();
+	//Release();
+	CloseFile();
 }

@@ -289,7 +289,6 @@ public:
 	//SC_GAME_UNINSTALL_BOOM
 
 	//SC_GAME_RADIO_PLAY
-	//BOOL SendGameRadioPlay( SPacket &packet );
 	BOOL SendGameRadioPlay( int index );
 
 	//SC_GAME_TIME_COUNTDOWN

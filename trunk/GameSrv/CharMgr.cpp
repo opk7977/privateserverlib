@@ -87,6 +87,7 @@ void CharObj::SetAlive()
 
 	//HP
 	m_HP = 100;
+	m_increaseHPTime	= CHARACTER_HP_INCREASE_TIME;
 	
 	//무적 설정
 	m_isInvincible		= TRUE;
@@ -104,7 +105,7 @@ void CharObj::SetAlive()
 	m_scanOffTime		= CHARACTER_SCANOFF_TIME;
 }
 
-BOOL CharObj::HPUpOnePoint()
+BOOL CharObj::HPUpOnePoint( float elaps )
 {
 	SSynchronize sync( this );
 
@@ -112,13 +113,27 @@ BOOL CharObj::HPUpOnePoint()
 	if( IsDie() )
 		return FALSE;
 
-	//이미 100이면 그냥 return
-	if( m_HP >= 100 )
+	//hp가 이미 올릴수 있는 최대값이면 그냥 return
+	if( m_HP >= CHARACTER_HP_MAX_INCREASE_POINT )
 		return FALSE;
 
-	//올려 주고
-	++m_HP;
-	return TRUE;
+	//시간을 줄여 주고
+	m_increaseHPTime -= elaps;
+	//시간 확인
+	if( m_increaseHPTime <= 0 )
+	{
+		//피 올리고
+		m_HP += CHARACTER_HP_INCREASE_POINT;
+
+		//시간 원상태로 바꾸고
+		m_increaseHPTime = CHARACTER_HP_INCREASE_TIME;
+
+		//올렸으면 send를 위해 TRUE를 return
+		return TRUE;
+	}
+
+	//올린거 없음
+	return FALSE;
 }
 
 BOOL CharObj::CountSkillPoint( float elaps )

@@ -66,6 +66,7 @@ public:
 	inline void SetRun() { m_isRun = TRUE; }
 
 	//Áö·Ú ¼³Ä¡µÊ?
+	inline void SetInstall() { m_isInstall = TRUE; }
 	inline BOOL IsInstall() { return m_isInstall; }
 
 	//Áö·Ú ÅÍÁü

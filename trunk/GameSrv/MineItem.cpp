@@ -48,7 +48,7 @@ BOOL MineItem::SetMine( float posX, float posY, float posZ, float dirX, float di
 	m_pos.SetElement( posX, posY, posZ );
 	m_dir.SetElement( dirX, dirY, dirZ );
 	m_boomTime			= BOOM_TIME;
-	m_isInstall			= TRUE;
+	//m_isInstall			= TRUE;
 
 	//한번 사용했으면 다시 사용할 수 없다.
 	m_isUseable			= FALSE;

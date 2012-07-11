@@ -691,21 +691,6 @@ void GameSession::RecvGameLayMine( SPacket &packet )
 	packet >> dirX >> dirY >> dirZ;
 
 	m_myGameProc->SettingMine( this, posX, posY, posZ, dirX, dirY, dirZ );
-
-// 	if( !m_myGameProc->SettingMine( m_myCharInfo->GetSessionID(), posX, posY, posZ, dirX, dirY, dirZ ) )
-// 	{
-// 		//지뢰 설치 실패
-// 		SendPacket( SC_GAME_LAY_MINE_FAILD );
-// 		return;
-// 	}
-// 	
-// 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-// 		_T("GameSession::RecvGameLayMine()\n캐릭더 %s이 %.2f/%.2f/%.2f/위치에 지뢰설치.\n\n"),
-// 		m_myCharInfo->GetID(), posX, posY, posZ );
-// 
-// 
-// 	//지뢰 설치 성공
-// 	SendGameLayMine( posX, posY, posZ, dirX, dirY, dirZ );
 }
 
 void GameSession::RecvGameChangeWeapon( SPacket &packet )
@@ -1210,9 +1195,8 @@ BOOL GameSession::SendGameLayMine( float posX, float posY, float posZ, float dir
 	sendPacket << dirX << dirY << dirZ;
 
 	//======================================
-	// 내 팀만 보낸다
+	// 함께 게임하는 모두에게 보낸다
 	//======================================
-	//m_myGameProc->SendPacketToMyTeam( m_myCharInfo->GetTeam(), sendPacket );
 	m_myGameProc->SendAllPlayerInGame( sendPacket );
 	return TRUE;
 }
@@ -1223,6 +1207,9 @@ BOOL GameSession::SendGameChangeWeapon( int weapon )
 	sendPacket << m_myCharInfo->GetSessionID();
 	sendPacket << weapon;
 
+	//======================================
+	// 함께 게임하는 모두에게 보낸다( 나는 뺀다 )
+	//======================================
 	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
 
 	return TRUE;
@@ -1234,6 +1221,9 @@ BOOL GameSession::GameCharVisibleHide()
 
 	sendPacket << m_myCharInfo->GetSessionID();
 
+	//======================================
+	// 함께 게임하는 모두에게 보낸다( 나는 뺀다 )
+	//======================================
 	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
 
 	return TRUE;
@@ -1246,6 +1236,9 @@ BOOL GameSession::GameCharInvisibleHide()
 	sendPacket << m_myCharInfo->GetSessionID();
 	sendPacket << m_myCharInfo->GetHidePoint();
 
+	//======================================
+	// 함께 게임하는 모두에게 보낸다( 나는 뺀다 )
+	//======================================
 	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
 
 	return TRUE;
@@ -1267,6 +1260,9 @@ BOOL GameSession::SendGameChangeState( int state, BOOL isJump, int objIndex )
 		return FALSE;
 	}
 
+	//======================================
+	// 함께 게임하는 모두에게 보낸다( 나는 뺀다 )
+	//======================================
 	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
 
 	return TRUE;
@@ -1287,6 +1283,9 @@ BOOL GameSession::SendGameCharRevival( int pointIndex )
 		return FALSE;
 	}
 
+	//======================================
+	// 함께 게임하는 모두에게 보낸다( 나는 뺀다 )
+	//======================================
 	m_myGameProc->SendAllPlayerInGame( sendPacket, this );
 
 	return TRUE;
@@ -1312,6 +1311,10 @@ BOOL GameSession::SendGameChatting( TCHAR* chatting )
 						_T("GameSession::SendGameChatting()\n방 게임 proc정보가 유효하지 않습니다.\n\n") );
 		return FALSE;
 	}
+
+	//======================================
+	// 함께 게임하는 모두에게 보낸다
+	//======================================
 	m_myGameProc->SendAllPlayerInGame( sendPacket );
 
 	return TRUE;
@@ -1337,32 +1340,14 @@ BOOL GameSession::SendGameTeamChat( TCHAR* chatting )
 			_T("GameSession::SendGameChatting()\n방 게임 proc정보가 유효하지 않습니다.\n\n") );
 		return FALSE;
 	}
+
+	//======================================
+	// 내 팀에게만 보낸다
+	//======================================
 	m_myGameProc->SendPacketToMyTeam( m_myCharInfo->GetTeam(), sendPacket );
 
 	return TRUE;
 }
-
-// BOOL GameSession::SendGameRadioPlay( SPacket &packet )
-// {
-// 	if( m_myCharInfo == NULL )
-// 	{
-// 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-// 			_T("GameSession::SendGameRadioPlay()\n캐릭터 정보가 유효하지 않습니다.\n\n") );
-// 		return FALSE;
-// 	}
-// 
-// 	if( m_myGameProc == NULL )
-// 	{
-// 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-// 			_T("GameSession::SendGameRadioPlay()\n캐릭터 %s의 게임 proc정보가 유효하지 않습니다.\n\n"), m_myCharInfo->GetID() );
-// 		return FALSE;
-// 	}
-// 
-// 	//자신의 팀에만 보낸다
-// 	m_myGameProc->SendPacketToMyTeam( m_myCharInfo->GetTeam(), packet, this );
-// 
-// 	return TRUE;
-// }
 
 BOOL GameSession::SendGameRadioPlay( int index )
 {
@@ -1383,7 +1368,9 @@ BOOL GameSession::SendGameRadioPlay( int index )
 	sendPacket   << m_myCharInfo->GetSessionID();
 	sendPacket << index;
 
-	//자신의 팀에만 보낸다
+	//======================================
+	// 내 팀에게만 보낸다
+	//======================================
 	m_myGameProc->SendPacketToMyTeam( m_myCharInfo->GetTeam(), sendPacket );
 
 	return TRUE;
@@ -1395,6 +1382,9 @@ BOOL GameSession::SendGameSelfDisconnect()
 
 	SPacket sendPacket( SC_LOBBY_GAME_SELF_DISCONNECT );
 
+	//======================================
+	// 나에게만 보낸다
+	//======================================
 	SendPacket( sendPacket );
 
 	return TRUE;
@@ -1416,7 +1406,9 @@ BOOL GameSession::SendCharDisconnect()
 		return FALSE;
 	}
 
-	//나는 이미 빠져 있으니 모두에게 보내도 된다.
+	//======================================
+	// 함께 게임하는 모두에게 보낸다( 나는 어차피 지워졌으니 모두에게 보내도 됨 )
+	//======================================
 	m_myGameProc->SendAllPlayerInGame( sendPacket );
 
 	return TRUE;

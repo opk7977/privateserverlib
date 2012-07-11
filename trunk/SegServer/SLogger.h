@@ -56,8 +56,9 @@ public:
 	void Create( char* filename );
 	//해제
 	void Release();
-	//저장 파일 열기
+	//저장 파일 열기/ 닫기
 	BOOL OpenFile();
+	void CloseFile();
 
 	//문자열을 Buf에 저장
 	void PutLog( short errLv, char* lpszFmt, ... );

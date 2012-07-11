@@ -212,7 +212,6 @@ BOOL GameProc::Run()
 
 void GameProc::GameRun()
 {
-	float TimePointFive			= 0.f;
 	float TimeOneSec			= 0.f;
 
 
@@ -229,25 +228,7 @@ void GameProc::GameRun()
 		ElapsedTime = m_timer.GetElapsedTime();
 
 		//======================================
-		// 0.5초 단위 처리
-		//======================================
-		TimePointFive += ElapsedTime;
-		if( TimePointFive >= 0.5f )
-		{
-			//우선 초기화
-			TimePointFive = 0.f;
-
-			//--------------------------------------
-			// hp를 1씩 올려 준다.
-			//--------------------------------------
-			//부상당한 캐릭터를 모두 1씩 올려 준다
-			PlayerHeal();
-			//그애들만 보낸다.
-			SendPlayerHeal();
-		}
-
-		//======================================
-		// 1초 단위 처리
+		// 1초 단위 처리_시간 처리
 		//======================================
 // 		if( m_isGameCountDown )
 // 		{
@@ -275,6 +256,11 @@ void GameProc::GameRun()
 		//======================================
 		// 프레임 단위로 처리
 		//======================================
+
+		//======================================
+		// HP
+		//======================================
+		CountUpCharHP( ElapsedTime );
 
 		//======================================
 		// 은신/ 스캔 수치
@@ -381,7 +367,7 @@ BOOL GameProc::ResetGame()
 	m_nowIsPlaying		= TRUE;
 	m_AttKillCount		= m_DefKillCount = 0;
 	m_isWin				= -1;
-	m_SendList.Clear();
+// 	m_SendList.Clear();
 
 	//캐릭터의 HP등을 모두 reset!
 	CharacterRestart();
@@ -670,7 +656,6 @@ void GameProc::CharacterRestart()
 
 BOOL GameProc::MineResetTarget( int sessionID )
 {
-	//SSynchronize Sync( &m_boomSoon );
 	SSynchronize sync( m_mineCritical );
 
 	MineItem* tmpMine = NULL;
@@ -681,8 +666,6 @@ BOOL GameProc::MineResetTarget( int sessionID )
 	}
 
 	tmpMine->Reset();
-
-	//m_boomSoon.DelItem( tmpMine );
 
 	return TRUE;
 }
@@ -729,39 +712,30 @@ MineItem* GameProc::FindMine( int sessionID )
 	return tmpMine;
 }
 
-void GameProc::PlayerHeal()
+void GameProc::CountUpCharHP( float elaps )
 {
 	SSynchronize sync( &m_listPlayer );
 
 	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
+
+	//모든 캐릭터를 돌면서 올려줄 스킬 수치는 올려준다
 	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
 	{
-		if( (*iter)->GetMyInfo()->HPUpOnePoint() )
-		{
-			SSynchronize sync( &m_SendList );
-			//hp를 올린애는 list에 넣어 준다
-			m_SendList.AddItem( (*iter) );
-		}
+		//증감의 변화가 있다면 TRUE를 return받아 hp를 전송한다
+		if( (*iter)->GetMyInfo()->HPUpOnePoint( elaps ) )
+			SendHPCountUp( (*iter) );
 	}
 }
 
-void GameProc::SendPlayerHeal()
+BOOL GameProc::SendHPCountUp( GameSession* session )
 {
-	SPacket sendPacket;
+	SPacket sendPacket( SC_GAME_REMAIN_HP );
 
-	SSynchronize sync( &m_SendList );
+	sendPacket << session->GetMyInfo()->GetHP();
 
-	std::list<GameSession*>::iterator iter = m_SendList.GetHeader();
-	for( ; !m_SendList.IsEnd( iter ); ++iter )
-	{
-		sendPacket.PacketClear();
-		sendPacket.SetID( SC_GAME_REMAIN_HP );
+	session->SendPacket( sendPacket );
 
-		sendPacket << (*iter)->GetMyInfo()->GetHP();
-		(*iter)->SendPacket( sendPacket );
-	}
-
-	m_SendList.Clear();
+	return TRUE;
 }
 
 void GameProc::CountSkillPoints( float elaps )
@@ -879,6 +853,9 @@ BOOL GameProc::SettingMine( GameSession* session, float posX, float posY, float 
 	//지뢰 설치 성공
 	session->SendGameLayMine( posX, posY, posZ, dirX, dirY, dirZ );
 
+	//보낸후부터 지뢰체크하는 flag를 설정한다.
+	tmpMine->SetInstall();
+
 	return TRUE;
 }
 
@@ -995,10 +972,10 @@ void GameProc::ExplosionMineCrashCheck()
 
 						//지뢰 주인의 kill수를 올려 준다
 						mineMaster->KillCountUp();
-
-						//죽으면 지뢰정보를 초기화 해 줘야 한다
-						MineResetTarget( tmpChar->GetSessionID() );
 					}
+
+					//죽으면 지뢰정보를 초기화 해 줘야 한다
+					MineResetTarget( tmpChar->GetSessionID() );
 
 					//죽은것에 대한 패킷
 					SendGameCharDieByMine( mineMaster->GetSessionID(), tmpChar );
@@ -1032,8 +1009,9 @@ void GameProc::MineCrashCheck()
 
 		for( iterChar= m_listPlayer.GetHeader(); !m_listPlayer.IsEnd( iterChar ); ++iterChar )
 		{
-			//지뢰맞은애
+			//지뢰밟은애 받아 오고
 			CharObj* tmpChar = (*iterChar)->GetMyInfo();
+
 			//죽은 애는 패스
 			if( tmpChar->IsDie() )
 				continue;
@@ -1041,8 +1019,6 @@ void GameProc::MineCrashCheck()
 			//내 팀이면 무시
 			if( tmpMine->GetTeam() == tmpChar->GetTeam() )
 				continue;
-
-			//죽은 애는 무시
 			
 			POINT3 charpos= tmpChar->GetPos();
 
@@ -1055,6 +1031,9 @@ void GameProc::MineCrashCheck()
 
 				//지뢰 실행 패킷을 보낸다.
 				SendGameRunMine( tmpMine );
+
+				//이미 실행된 지뢰 다른 캐릭터 처리는 않해도 된다
+				break;
 			}
 		}
 	}

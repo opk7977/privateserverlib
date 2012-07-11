@@ -71,7 +71,7 @@ private:
 	//======================================
 
 	// 피 체운 대상 보내고 clear되고하는 패턴임
-	SList<GameSession*>				m_SendList;
+	//SList<GameSession*>				m_SendList;
 
 	//======================================
 	// 게임중 flag
@@ -152,7 +152,7 @@ private:
 	//======================================
 
 
-	//test
+	//test용
 	//총고르는 시간이 흐르면 안됨
 	BOOL							m_isSelectCountDown;
 	//게임 시간이 흐르면 안됨
@@ -274,10 +274,10 @@ public:
 	//지뢰검색
 	MineItem* FindMine( int sessionID );
 
-	//모든 캐릭터의 피를 올려 주고 피가 올라간 애들을 list에 넣어 준다
-	void PlayerHeal();
-	//피가 올라간 애들만 보낸다.
-	void SendPlayerHeal();
+	//피를 올리고 올라간 애들에게 남은 hp를 보내준다
+	void CountUpCharHP( float elaps );
+	//SC_GAME_REMAIN_HP
+	BOOL SendHPCountUp( GameSession* session );
 
 	//======================================
 	// 은신/ 스캔
