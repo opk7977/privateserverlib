@@ -18,3 +18,5 @@
 Unknown
 <<DB Server ID/ Password>>
 sa 1234
+<<SrvName_게임서버 열때 제목>>
+Unknown

@@ -336,9 +336,8 @@ enum GAME_SERVER
 
 	// client -> server
 	// 캐릭터의 공격
-	// int			-		헤드샷?
 	// int			-		피격대상 sessionID
-	// int			-		감소 에너지
+	// int			-		헤드샷? | 무기종류 | 감소 에너지
 	// float		-		PosX
 	// float		-		PosY
 	// float		-		PosZ
@@ -398,14 +397,14 @@ enum GAME_SERVER
 
 	// server -> client
 	// 공격당한 캐릭터가 죽으면 보내는 패킷
-	// int			-		헤드샷?
+	// int			-		헤드샷? | 무기종류
 	// int			-		공격자SessionID
 	// int			-		피격대상SessionID
 	SC_GAME_CHAR_DIE,
 
 	// server -> client
 	// 공격당해서 죽으면 나에게 보내는 패킷
-	// int			-		헤드샷?
+	// int			-		헤드샷? | 무기종류
 	// int			-		공격자SessionID
 	SC_GAME_YOU_DIE,
 

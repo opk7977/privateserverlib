@@ -28,6 +28,7 @@ public:
 	char	DBSrvIp[15];
 	int		DBSrvPortNum;
 	//--------------------------------------------------------------
+	TCHAR	SrvName[32];
 
 public:
 	DataLeader(void);

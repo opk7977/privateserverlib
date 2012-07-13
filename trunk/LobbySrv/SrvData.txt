@@ -12,3 +12,11 @@
 192.168.0.56 7800
 <<DB 서버>>
 192.168.0.56 9000
+<<DB connect mdbFile:0 / SQLServer2008DB:1>>
+0
+<<DB NAME>>
+Unknown
+<<DB Server ID/ Password>>
+sa 1234
+<<SrvName_게임서버 열때 제목>>
+Unknown

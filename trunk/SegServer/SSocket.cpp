@@ -72,7 +72,7 @@ BOOL SSocket::CreateUDPSock()
 		return FALSE;
 
 	//家南 积己(TCP)
-	m_socket = socket( AF_INET, SOCK_STREAM, 0 );
+	m_socket = socket( AF_INET, SOCK_DGRAM, 0 );
 
 	//家南 积己俊 巩力啊 乐菌促搁 false return
 	if( m_socket == INVALID_SOCKET )

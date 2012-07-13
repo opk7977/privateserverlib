@@ -231,7 +231,7 @@ public:
 	//함수 없음
 
 	//SC_GAME_CHAR_DIE //SC_GAME_YOU_DIE
-	BOOL SendGameDie( BOOL isHead, CharObj* dieChar );
+	BOOL SendGameDie( BOOL isHead, int weaponType, CharObj* dieChar );
 	//캐릭터 자살
 	BOOL SendGameDie();
 

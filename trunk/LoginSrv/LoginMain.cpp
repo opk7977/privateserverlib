@@ -1,6 +1,7 @@
 #include "LoginMain.h"
 #include "DataLeader.h"
 #include "Network.h"
+#include "UDPSender.h"
 #include "LoginProtocol.h"
 #include "TmpSessionSpace.h"
 
@@ -13,6 +14,7 @@
 LoginMain::LoginMain(void)
 {
 	m_network	= &GetNetwork;
+	m_udpSender	= &GetUDPSender;
 	m_document	= &GetDocument;
 	m_tmpSpace	= &GetTmpSpace;
 #ifdef CONNECT_LOG_SERVER
@@ -51,6 +53,11 @@ BOOL LoginMain::Init()
 	if( !m_logSrv->ConnectToLogSrv( m_document->LogSrvIP, m_document->LogSrvPortNum ) )
 		return FALSE;
 #endif
+
+	//======================================
+	// 서버가 열렸다고 알리기 위해 설정
+	//======================================
+	m_udpSender->Init( m_document->SrvName, m_document->LoginSrvIP, 8000 );
 	
 	//======================================
 	// 임시 session공간 초기화

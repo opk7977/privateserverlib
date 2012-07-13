@@ -44,17 +44,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	SLogger* m_logger = &GetLogger;
 	m_logger->Create( "LoginSrv" );
-	
-	//======================================
-	// 윈도우 생성
-	//======================================
-	HWND hWnd;
-	WinMgr window;
-	if( !window.CreateWindows( hInstance, _T("Login"), _T("LoginSrv"), hWnd, 800, 600, nCmdShow ) )
-	{
-		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("main\n윈도우 생성 실패!\n\n") );
-		return 0;
-	}
 
 	//======================================
 	// 서버 데이터 로드
@@ -62,6 +51,18 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	if( !GetDocument.DataSetting() )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("main\n데이터 로드 실패!\n\n") );
+		return 0;
+	}
+	
+	//======================================
+	// 윈도우 생성
+	//======================================
+	HWND hWnd;
+	WinMgr window;
+	window.SetInstance( hInstance );
+	if( !window.CreateWindows( hInstance, _T("Login"), _T("LoginSrv"), hWnd, 800, 600, nCmdShow ) )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("main\n윈도우 생성 실패!\n\n") );
 		return 0;
 	}
 

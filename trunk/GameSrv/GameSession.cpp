@@ -565,12 +565,15 @@ void GameSession::RecvGameAttack( SPacket &packet )
 		return;
 	}
 
-	int attectedSessionID, damage;
+	int attectedSessionID, shoutData;
+	int dataHead, dataWeapon, dataDamage;
 	float posX, posY, posZ, normalX, normalY, normalZ;
-	BOOL isHead;
-	packet >> isHead;
+
 	packet >> attectedSessionID;
-	packet >> damage;
+	packet >> shoutData;
+	dataHead	= ( ( shoutData & 0xff000000 ) >> 24 );
+	dataWeapon	= ( ( shoutData & 0x00ff0000 ) >> 16 );
+	dataDamage	= ( shoutData & 0x0000ffff );
 
 	packet >> posX >> posY >> posZ;
 	packet >> normalX >> normalY >> normalZ;
@@ -619,7 +622,7 @@ void GameSession::RecvGameAttack( SPacket &packet )
 
 	//에너지를 달게 한다
 	//죽으면 death가 오른다
-	tmpChar->DownHP( damage );
+	tmpChar->DownHP( dataDamage );
 
 	//attect패킷
 	//모두에게
@@ -640,7 +643,7 @@ void GameSession::RecvGameAttack( SPacket &packet )
 		m_myGameProc->MineResetTarget( tmpChar->GetSessionID() );
 
 		//die패킷
-		SendGameDie( isHead, tmpChar );
+		SendGameDie( dataHead, dataWeapon, tmpChar );
 	}
 }
 
@@ -1133,14 +1136,17 @@ BOOL GameSession::SendGameTryAttact( SPacket& packet )
 	return TRUE;
 }
 
-BOOL GameSession::SendGameDie( BOOL isHead, CharObj* dieChar )
+BOOL GameSession::SendGameDie( BOOL isHead, int weaponType, CharObj* dieChar )
 {
+	int shoutData = 0;
+	shoutData |= ( isHead << 16 );
+	shoutData |= weaponType;
 	//======================================
 	// 남들에게 보냄
 	//======================================
 	SPacket sendPacket( SC_GAME_CHAR_DIE );
 
-	sendPacket << isHead;
+	sendPacket << shoutData;
 	sendPacket << m_myCharInfo->GetSessionID();
 	sendPacket << dieChar->GetSessionID();
 
@@ -1152,7 +1158,7 @@ BOOL GameSession::SendGameDie( BOOL isHead, CharObj* dieChar )
 	sendPacket.PacketClear();
 	sendPacket.SetID( SC_GAME_YOU_DIE );
 
-	sendPacket << isHead;
+	sendPacket << shoutData;
 	sendPacket << m_myCharInfo->GetSessionID();
 	dieChar->GetSession()->SendPacket( sendPacket );
 
@@ -1161,12 +1167,16 @@ BOOL GameSession::SendGameDie( BOOL isHead, CharObj* dieChar )
 
 BOOL GameSession::SendGameDie()
 {
+	//헤드샷은 아니고 무기는 8번
+	int shoutData = 0;
+	shoutData |= 8;
+
 	//======================================
 	// 남들에게 보냄
 	//======================================
 	SPacket sendPacket( SC_GAME_CHAR_DIE );
 
-	sendPacket << TRUE;
+	sendPacket << shoutData;
 	sendPacket << m_myCharInfo->GetSessionID();
 	sendPacket << m_myCharInfo->GetSessionID();
 
@@ -1178,7 +1188,7 @@ BOOL GameSession::SendGameDie()
 	sendPacket.PacketClear();
 	sendPacket.SetID( SC_GAME_YOU_DIE );
 
-	sendPacket << TRUE;
+	sendPacket << shoutData;
 	sendPacket << m_myCharInfo->GetSessionID();
 	SendPacket( sendPacket );
 

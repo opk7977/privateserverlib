@@ -5,6 +5,7 @@
 #define LOGIN_SERVER_ID 8800
 
 class Network;
+class UDPSender;
 class DataLeader;
 class TmpSessionSpace;
 
@@ -18,6 +19,7 @@ private:
 	// singleTon°´Ã¼µé
 	//======================================
 	Network*			m_network;
+	UDPSender*			m_udpSender;
 	DataLeader*			m_document;
 	TmpSessionSpace*	m_tmpSpace;
 	LogSrvMgr*			m_logSrv;
