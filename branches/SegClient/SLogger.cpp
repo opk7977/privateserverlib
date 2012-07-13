@@ -5,52 +5,27 @@
 //한글 입력을 위해 사용해야 하는 헤더
 #include <locale.h>
 
-SLogger::SLogger(void) : m_fileCount(0)
-					   , canWrite(FALSE)
-					   , m_pFile(NULL)
+SLogger::SLogger(void) : m_pFile(0)
 {
-	m_logCritical = new CRITICAL_SECTION;
-	InitializeCriticalSection( m_logCritical );
-
-	//기본적으로 사용될 파일 하나를 생성
-	Create( "Client" );
-
 	//한글을 입력되게 선언해 줘야 한다!!!!!!!
 	_tsetlocale(LC_ALL, _T("Korean")); 
-
-	//콘솔 창을 띄움
-	AllocConsole();
+	
 }
 
 SLogger::~SLogger(void)
 {
-	Release();
-
-	DeleteCriticalSection( m_logCritical );
-	delete m_logCritical;
-	m_logCritical = 0;
-
-	FreeConsole();
-}
-
-void SLogger::StartCritical()
-{
-	if( m_logCritical == NULL )
-		return;
-
-	EnterCriticalSection( m_logCritical );
-}
-
-void SLogger::EndCritical()
-{
-	if( m_logCritical == NULL )
-		return;
-
-	LeaveCriticalSection( m_logCritical );
+	//Release();
 }
 
 void SLogger::Create( char* filename )
 {
+	SSynchronize Sync( this );
+
+#ifdef _DEBUG 
+	//콘솔 창을 띄움
+	AllocConsole();
+#endif
+
 	//넘겨받은 filename의 길이 체크
 	int filenameLen = strlen( filename );
 	if( filenameLen > 255 )
@@ -63,71 +38,67 @@ void SLogger::Create( char* filename )
 	ZeroMemory( m_chFilename, filenameLen+1 );
 	CopyMemory( m_chFilename, filename, filenameLen );
 
-	//디렉토리 만들고
+	//디렉토리 만든다
 	_mkdir( m_chFilename );
-
-	//log파일을 만든다
-	CreateLogger();
 }
 
-BOOL SLogger::CreateLogger()
+void SLogger::Release()
 {
-	StartCritical();
+	SSynchronize Sync( this );
 
-	//우선 글쓰기를 막아 두고
-	canWrite = FALSE;
+#ifdef _DEBUG
+	FreeConsole();
+#endif
+
+	CloseFile();
+}
+
+BOOL SLogger::OpenFile()
+{
+	SSynchronize Sync( this );
 
 	//현재 시간을 받는다.
 	time_t timer = time( NULL );
-
 	struct tm t;
 	localtime_s( &t, &timer );
 
 	//경로를 만든다.
 	//파일 이름은 "제목_년월일_시분.txt"
 	sprintf_s( m_chtmpFilepath, 255, "%s\\%s_%d년%d월%d일_%d시%d분.txt", m_chFilename
-																	   , m_chFilename
-																	   , t.tm_year+1900
-																	   , t.tm_mon+1
-																	   , t.tm_mday
-																	   , t.tm_hour
-																	   , t.tm_min );
+																		, m_chFilename
+																		, t.tm_year+1900
+																		, t.tm_mon+1
+																		, t.tm_mday
+																		, t.tm_hour
+																		, t.tm_min );
 
-
-	//이미 파일이 열려 있다면 닫고
-	if( m_pFile != 0 )
-		Release();
 
 	//파일을 연다( 쓰기모드 ) / 성공하면 0 return
-	int retval = fopen_s( &m_pFile, m_chtmpFilepath, "a+" );
-
-	if( retval != 0 )
+	if( fopen_s( &m_pFile, m_chtmpFilepath, "a+" ) != 0 )
+	{
+		OutputDebugStringA( "파일 open실패" );
 		return FALSE;
-
-	//다시 쓸수 있게 풀어 준다.
-	canWrite = TRUE;
-	EndCritical();
+	}
 
 	return TRUE;
 }
 
-BOOL SLogger::IsFullFile()
+void SLogger::CloseFile()
 {
-	fseek(m_pFile, 0L, SEEK_END);
-	int fileLen = ftell( m_pFile );
+	SSynchronize sync( this );
 
-	//현재 파일의 크기가 FILE_MAX_SIZE를 넘었다면
-	if( fileLen >= FILE_MAX_SIZE )
-		return TRUE;
+	if( m_pFile == 0 )
+		return;
 
-	return FALSE;
+	fclose( m_pFile );
+	m_pFile = 0;
 }
 
 void SLogger::PutLog( short errLv, char* lpszFmt, ... )
 {
-	StartCritical();
+	SSynchronize Sync( this );
 
-	ZeroMemory( str, TMPSTRING_LENTH );
+	char str[TMPSTRING_LENTH]={0,};
 	va_list Vargs;
 
 	//-----------------------------------------------------------------
@@ -145,25 +116,27 @@ void SLogger::PutLog( short errLv, char* lpszFmt, ... )
 		//디버그 창에 한번 뿌려준다.
 		OutputDebugStringA( str );
 	}
+
+#ifdef _DEBUG 
 	if( errLv & LOG_FLAG_CONSOLE )
 	{
 		//콘솔창에 뿌림
 		_cprintf_s( "%s", str );
 	}
+#endif
+
 	if( errLv & LOG_FLAG_FILE )
 	{
 		//파일에 문자열 쓰기
 		WriteToFile( str );
 	}
-
-	EndCritical();
 }
 
 void SLogger::PutLog( short errLv, TCHAR* lpszFmt, ... )
 {
-	StartCritical();
+	SSynchronize Sync( this );
 
-	ZeroMemory( tstr, TMPSTRING_LENTH * sizeof(TCHAR) );
+	TCHAR tstr[TMPSTRING_LENTH]={0,};
 	va_list Vargs;
 
 	//-----------------------------------------------------------------
@@ -181,24 +154,29 @@ void SLogger::PutLog( short errLv, TCHAR* lpszFmt, ... )
 		//디버그 창에 한번 뿌려준다.
 		OutputDebugString( tstr );
 	}
+
+#ifdef _DEBUG
 	if( errLv & LOG_FLAG_CONSOLE )
 	{
 		//콘솔창에 뿌림
 		_cwprintf( _T("%s"), tstr );
 	}
+#endif
+
 	if( errLv & LOG_FLAG_FILE )
 	{
+		char transStr[TMPSTRING_LENTH*2]={0,};
 		WideCharToMultiByte( CP_ACP, 0, tstr, -1, transStr, _tcslen(tstr)*sizeof(TCHAR), NULL, NULL );
 		//파일에 문자열 쓰기
 		WriteToFile( transStr );
 	}
-
-	EndCritical();
 }
 
 void SLogger::ErrorLog( INT32 errorcode, char* lpszFmt )
 {
-	StartCritical();
+	SSynchronize Sync( this );
+
+	char tmpStr[TMPSTRING_LENTH]={0,};
 
 	int retval = FormatMessageA( FORMAT_MESSAGE_FROM_SYSTEM
 								, NULL
@@ -213,24 +191,25 @@ void SLogger::ErrorLog( INT32 errorcode, char* lpszFmt )
 		OutputDebugStringA( "Filed Get Error Meg\n" );
 		return;
 	}
-
-	ZeroMemory( tstr, TMPSTRING_LENTH );
+	
+	char str[TMPSTRING_LENTH]={0,};
 	CopyMemory( str, lpszFmt, strlen( lpszFmt ) );
 	strcat_s( str, tmpStr );
 
 	//에러는 전부 남겨야 한다//////////////////////////////////////
 	OutputDebugStringA( str );
+#ifdef _DEBUG
 	_cprintf_s( "%s", str );
+#endif
 	WriteToFile( str );
 	///////////////////////////////////////////////////////////////
-
-	EndCritical();
-
 }
 
 void SLogger::ErrorLog( INT32 errorcode, TCHAR* lpszFmt )
 {
-	StartCritical();
+	SSynchronize Sync( this );
+
+	TCHAR tmpTStr[TMPSTRING_LENTH]={0,};
 
 	int retval = FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM
 								, NULL
@@ -246,43 +225,34 @@ void SLogger::ErrorLog( INT32 errorcode, TCHAR* lpszFmt )
 		return;
 	}
 
-	ZeroMemory( tstr, TMPSTRING_LENTH );
+	TCHAR tstr[TMPSTRING_LENTH]={0,};
 	CopyMemory( tstr, lpszFmt, _tcslen( lpszFmt )*sizeof(TCHAR) );
 	_tcscat_s( tstr, tmpTStr );
 
 	//에러는 전부 남겨야 한다//////////////////////////////////////
 	OutputDebugString( tstr );
-	_cwprintf( _T("%s"), tstr );
+#ifdef _DEBUG
+	_cwprintf( _T("%s\n"), tstr );
+#endif
+	char transStr[TMPSTRING_LENTH*2]={0,};
 	WideCharToMultiByte( CP_ACP, 0, tstr, -1, transStr, _tcslen(tstr)*sizeof(TCHAR), NULL, NULL );
 	WriteToFile( transStr );
 	///////////////////////////////////////////////////////////////
-
-	EndCritical();
 }
 
 void SLogger::WriteToFile( char* _string )
 {
-	if( !canWrite )
+	SSynchronize Sync( this );
+
+	if( !OpenFile() )
 	{
-		//현재 파일은 닫혀 있는 상태라면 디버그창에만 뿌려야 한다.
-		//넘어 가자
-		OutputDebugStringA( "파일이 현재 닫혀 있습니다\n파일에는 적히지 않았습니다.\n" );
+		OutputDebugStringA( "파일을 열 수 없습니다.\n\n" );
 		return;
 	}
 
-	//현재 파일의 크기를 확인하고 넘어 갔다면
-	//새로 파일을 생성해 주고 파일에 쓰기 작업을 해야 한다. 
-	if( IsFullFile() )	//넘었으면 새로 파일을 만들어야 함
-		CreateLogger();
-
 	//문자열을 파일에 저장
 	fwrite( _string, strlen( _string ), 1, m_pFile );
-}
 
-void SLogger::Release()
-{
-	canWrite = FALSE;
-
-	fclose( m_pFile );
-	m_pFile = 0;
+	//Release();
+	CloseFile();
 }

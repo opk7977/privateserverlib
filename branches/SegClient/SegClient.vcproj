@@ -206,6 +206,10 @@
 				RelativePath=".\SWindow.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\UPacketQueue.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="헤더 파일"
@@ -274,6 +278,10 @@
 			</File>
 			<File
 				RelativePath=".\SWindow.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UPacketQueue.h"
 				>
 			</File>
 		</Filter>

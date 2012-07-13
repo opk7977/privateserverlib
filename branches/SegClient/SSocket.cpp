@@ -71,8 +71,16 @@ BOOL SSocket::CreateUDPSock()
 	if( WSAStartup( MAKEWORD(2, 2), &wsaData ) != 0 )
 		return FALSE;
 
+	//버전 정보를 한번 확인해 준다.
+	if( wsaData.wVersion != MAKEWORD(2, 2) )
+	{
+		//버전이 다르면 false return
+		WSACleanup();
+		return FALSE;
+	}
+
 	//소켓 생성(TCP)
-	m_socket = socket( AF_INET, SOCK_STREAM, 0 );
+	m_socket = socket( AF_INET, SOCK_DGRAM, 0 );
 
 	//소켓 생성에 문제가 있었다면 false return
 	if( m_socket == INVALID_SOCKET )

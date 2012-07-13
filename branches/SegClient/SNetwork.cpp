@@ -1,5 +1,7 @@
 #include "SNetwork.h"
-#include "SLogger.h"
+#ifdef SERVER_LOG_PRINT
+	#include "SLogger.h"
+#endif
 #include "SPacketQueue.h"
 
 SNetwork::SNetwork(void)
@@ -7,8 +9,10 @@ SNetwork::SNetwork(void)
 : m_isConnect(FALSE)
 , m_isReConnect(FALSE)
 , m_sendSize(0)
+, m_workingThread(FALSE)
 {
 	ZeroMemory( m_sendStream, DEFAULT_BUFFER_SIZE );
+	/*ZeroMemory( m_LoginSrvIp, 15 );*/
 
 	//패킷 큐를 셋팅!
 	m_packetQ = &GetPacketQ;
@@ -25,6 +29,9 @@ SNetwork::~SNetwork(void)
 
 BOOL SNetwork::Init()
 {
+	//패킷 큐 초기화
+	m_packetQ->Init();
+
 	//초기화
 	if( !m_conSock.Init() )
 		return FALSE;
@@ -56,7 +63,8 @@ BOOL SNetwork::ConnectToSrv( char* ipAddr, int port )
 {
 	m_hStartEvent = ::CreateEvent( NULL, TRUE, FALSE, NULL);
 
-	BeginThread();
+	if( !m_workingThread )
+		BeginThread();
 
 	if( !m_conSock.ConnectSock( ipAddr, port ) )
 		return FALSE;
@@ -110,6 +118,7 @@ void SNetwork::DisConnect()
 BOOL SNetwork::Run()
 {
 	//ConnectToSrv( m_LoginSrvIp, m_LoginSrvPort );
+	m_workingThread = TRUE;
 
 	const int tmpbufSize = 512;
 
@@ -122,7 +131,7 @@ BOOL SNetwork::Run()
 
 	while(1)
 	{
-		//Sleep( 1 );
+		Sleep( 0 );
 
 		WaitForSingleObject( m_hStartEvent, INFINITE );
 
@@ -137,7 +146,9 @@ BOOL SNetwork::Run()
 				if( !m_isReConnect )
 				{
 					//다시 연결을 위해 잠시 끊긴 상태가 아니면 진짜 오류
+#ifdef SERVER_LOG_PRINT
 					GetLogger.ErrorLog( errorCode, _T("[SNetwork::Run()] ") );
+#endif
 					return FALSE;
 				}
 			}
@@ -201,29 +212,32 @@ BOOL SNetwork::PilePacket( SPacket* packet )
 	return TRUE;
 }
 
-// int SNetwork::SendPacket( SPacket* packet )
-// {
-// 	int retval = send( m_conSock.GetSocket(), packet->GetDataBufferPtr(), packet->GetPacketSize(), 0 );
-// 
-// 	if( retval < 0 )
-// 	{
-// 		DWORD errorcode = WSAGetLastError();
-// 		if( errorcode != WSAEWOULDBLOCK )
-// 		{
-// 			GetLogger.ErrorLog( WSAGetLastError(), _T("[Network::SendPacket()] ") );
-// 			Release();
-// 			return;
-// 		}
-// 	}
-// 	else if( retval == 0 )
-// 	{
-// 		//연결 끊기
-// 		Release();
-// 	}
-// 
-// 	//잘 전송됬으면
-// 	return retval;
-// }
+BOOL SNetwork::SendPacket( SPacket* packet )
+{
+	int retval = send( m_conSock.GetSocket(), packet->GetDataBufferPtr(), packet->GetPacketSize(), 0 );
+
+	if( retval < 0 )
+	{
+		DWORD errorcode = WSAGetLastError();
+		if( errorcode != WSAEWOULDBLOCK )
+		{
+#ifdef SERVER_LOG_PRINT
+			GetLogger.ErrorLog( WSAGetLastError(), _T("[Network::SendPacket()] ") );
+#endif
+			Release();
+			return FALSE;
+		}
+	}
+	else if( retval == 0 )
+	{
+		//연결 끊기
+		Release();
+		return FALSE;
+	}
+
+	//잘 전송됬으면
+	return TRUE;
+}
 
 BOOL SNetwork::SendPacket()
 {
@@ -242,7 +256,9 @@ BOOL SNetwork::SendPacket()
 		DWORD errorcode = WSAGetLastError();
 		if( errorcode != WSAEWOULDBLOCK )
 		{
+#ifdef SERVER_LOG_PRINT
 			GetLogger.ErrorLog( WSAGetLastError(), _T("[Network::SendPacket()] ") );
+#endif
 			Release();
 			return FALSE;
 		}

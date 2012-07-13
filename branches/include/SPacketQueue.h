@@ -1,13 +1,13 @@
 #pragma once
 
-#include "SServerObj.h"
+#include "SServerStd.h"
 
 class SPacket;
 
 #define VECBUFFER_SIZE 300
 #define PACKETDATA_SIZE 8192
 
-class SPacketQueue : public SSingleton <SPacketQueue>, public SServerObj
+class SPacketQueue : public SSingleton <SPacketQueue>
 {
 private:
 	friend class SSingleton<SPacketQueue>;

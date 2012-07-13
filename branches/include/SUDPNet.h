@@ -6,7 +6,8 @@
 #include "SIndexQueue.h"
 #include "SList.h"
 
-class SPacketQueue;
+//class SPacketQueue;
+class UPacketQueue;
 
 struct SockAddr
 {
@@ -51,9 +52,11 @@ private:
 	SList<SockAddr*>					m_clientList;
 
 	//패킷 큐 클레스
-	SPacketQueue*						m_packetQ;
+	//SPacketQueue*						m_packetQ;
+	UPacketQueue*						m_packetQ;
 
 	//연결 flag
+	BOOL								m_isConnect;
 	BOOL								m_gameStart;
 	
 private:
@@ -62,6 +65,8 @@ private:
 
 public:
 	BOOL Init( int port );
+	void Release();
+
 	BOOL AddSockAddr( int sessionId, char* _ip, int port );
 	BOOL DelSockAddr( int sessionId );
 	//게임 종료후 모든 정보를 초기화/ 자신의 소켓도 초기화

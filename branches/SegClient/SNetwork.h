@@ -19,6 +19,10 @@ private:
 	char			m_sendStream[DEFAULT_BUFFER_SIZE];
 	int				m_sendSize;
 
+	//로그인 서버ip
+// 	char			m_LoginSrvIp[15];
+// 	int				m_LoginSrvPort;
+
 	//쓰레드 동작 핸들이벤트
 	HANDLE			m_hStartEvent;
 
@@ -26,6 +30,9 @@ private:
 	BOOL			m_isConnect;
 	//재 연결을 위해 연결을 끊었다는 BOOL값
 	BOOL			m_isReConnect;
+
+	//쓰레드 동작 flag
+	BOOL			m_workingThread;
 
 	SPacketQueue*	m_packetQ;
 
@@ -57,7 +64,7 @@ public:
 	//stream에 쌓는 함수
 	BOOL PilePacket( SPacket* packet );
 	//보내기 함수
-	//int SendPacket( SPacket* packet );
+	BOOL SendPacket( SPacket* packet );
 	BOOL SendPacket();
 
 };
