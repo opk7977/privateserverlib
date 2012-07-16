@@ -86,3 +86,8 @@ LRESULT SWindow::WindowMegProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 	}
 	return DefWindowProc( hWnd, msg, wParam, lParam );
 }
+
+void SWindow::SetMyWindowText( HWND &hWnd, TCHAR* title )
+{
+	SetWindowText( hWnd, title );
+}

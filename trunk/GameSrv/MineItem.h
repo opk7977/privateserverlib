@@ -6,12 +6,11 @@
 
 //사람 충돌 반경
 #define MINE_COLLISION_CHAR_ROUND	35
+
 //지뢰 충돌 반경
 #define MINE_COLLISION_ROUND		20
 //지뢰 폭발 반경
-#define MINE_BOOM_COL_ROUND			50
-//캐릭터 구 반경
-// #define MINE_CHAR_ROUND				
+#define MINE_BOOM_COL_ROUND			50			
 
 //데미지
 #define MINE_BOOM_DAMEGE			100

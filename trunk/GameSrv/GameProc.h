@@ -16,7 +16,7 @@ class MineItem;
 class CharMgr;
 
 
-#define WAIT_GAME_END_TIME	5
+#define WAIT_GAME_END_TIME	10
 
 enum Team
 {
@@ -216,7 +216,7 @@ public:
 	//게임 완전히 종료
 	void EndGame();
 	//그냥 시간을 기다리는 함수 지정된 시간만큼 기다림
-	void WaitTimeLogic( int waitTime );
+	void WaitTimeLogic( float waitTime );
 	//시간을 세서 SendTime단위마다 패킷을 보내는데 LastCount설정부터 하나씩 보낸다.
 	//SendTime은 10과 5/ LastCount는 3정도가 적당하다
 	//void CountDownLogin( int waitTime, SendTime sendTime, LastTime lastTime );

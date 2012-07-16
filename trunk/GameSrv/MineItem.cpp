@@ -135,7 +135,7 @@ int MineItem::IsBoomCollision( float posX, float posY, float posZ )
 	if( dist > (MINE_BOOM_COL_ROUND+MINE_COLLISION_CHAR_ROUND)*(MINE_BOOM_COL_ROUND+MINE_COLLISION_CHAR_ROUND) )
 		return 0;
 
-	//충돌이면 내적계산해서 다시 충돌체크
+	//충돌이면 내적계산해서 방향 충돌체크
 	if( m_dir.DotVector( posX-m_pos.m_X, charY-m_pos.m_Y, posZ-m_pos.m_Z ) < 0 )
 		return 0;
 

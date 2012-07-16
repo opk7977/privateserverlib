@@ -54,6 +54,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		return 0;
 	}
 
+	window.SetMyWindowText( hWnd, _T("GameSrv_준비중") );
+
 	//======================================
 	// 서버 데이터 로드
 	//======================================
@@ -69,6 +71,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	GameSrvMain gMain;
 	gMain.Init();
+
+	window.SetMyWindowText( hWnd, _T("GameSrv_실행중") );
 
 
 	MSG Message;

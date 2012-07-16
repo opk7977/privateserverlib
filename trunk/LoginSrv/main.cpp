@@ -66,11 +66,15 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		return 0;
 	}
 
+	window.SetMyWindowText( hWnd, _T("LoginSrv_준비중") );
+
 	//======================================
 	// login 메인 실행
 	//======================================
 	LoginMain lMain;
 	lMain.Init();
+
+	window.SetMyWindowText( hWnd, _T("LoginSrv_실행중") );
 
 	MSG Message;
 

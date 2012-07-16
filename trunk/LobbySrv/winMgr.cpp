@@ -13,7 +13,7 @@ LRESULT WinMgr::WindowMegProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	switch( msg )
 	{
 	case WM_CREATE:
-		ResizeWindows( hWnd, 200, 100 );
+		ResizeWindows( hWnd, 500, 100 );
 		break;
 
 	case WM_DESTROY:

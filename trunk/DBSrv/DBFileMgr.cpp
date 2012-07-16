@@ -140,7 +140,8 @@ int DBFileMgr::TryLogin( TCHAR* _id, TCHAR* _pw )
 BOOL DBFileMgr::SettingUserData( int sessionID, PlayerObj* player )
 {
 	SQLWCHAR	strQuery[255];
-	wsprintf( (TCHAR*)strQuery, _T("select ID,USER_ID,RANK_ID,RANK_POINT,ACCUMULATED_KILL,ACCUMULATED_DEATH from AccountTbl where ID=%d;"), sessionID );
+	//wsprintf( (TCHAR*)strQuery, _T("select ID,USER_ID,RANK_ID,RANK_POINT,ACCUMULATED_KILL,ACCUMULATED_DEATH from AccountTbl where ID=%d;"), sessionID );
+	wsprintf( (TCHAR*)strQuery, _T("select * from AccountTbl where ID=%d;"), sessionID );
 
 	if( !m_query->Exec( strQuery ) )
 	{

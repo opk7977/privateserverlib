@@ -189,13 +189,18 @@ BOOL GameProc::Run()
 		if( !m_nowIsPlaying )
 			continue;
 
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nWaitForSingleObject.\n\n") );
+
 		WaitForSingleObject( m_hReturnResult, INFINITE );
 
 		//이제 끝나기를 5초정도 기다렸다가 끝나는 신호를 클라들에게 전송한다.
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nstart WaitTimeLogic().\n\n") );
 		WaitTimeLogic( WAIT_GAME_END_TIME );
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nend WaitTimeLogic().\n\n") );
 
 		//캐릭터 상태가 로비로 돌아가는 준비중이라는 표시를 해 준다
-		//SetGotoLobby();
+		SetGotoLobby();
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nSetGotoLobby.\n\n") );
 
 		//클라들에게 로비로 돌아가라는 패킷을 보낸다.
 		SendGotoLobbyPacket();
@@ -384,27 +389,30 @@ void GameProc::EndGame()
 // 	ResetEvent( m_hReturnResult );
 }
 
-void GameProc::WaitTimeLogic( int waitTime )
+void GameProc::WaitTimeLogic( float waitTime )
 {
-	float frameTime = 0.f;
-
 	//시간이 다 되기 전까지 loop
+	DWORD nowTime = 0;
+	DWORD preTime = 0;
+	int timeForWait = (int)waitTime*1000;
+
+	preTime = GetTickCount();
 	while(1)
 	{
 		//======================================
 		// 시간 처리
 		//======================================
-		m_timer.ProcessTime();
-		frameTime += m_timer.GetElapsedTime();
-		if( frameTime >= 1.0f )
-		{
-			//우선 초기화
-			frameTime = 0.f;
+		nowTime = GetTickCount();
+		timeForWait -= nowTime - preTime;
+		preTime = nowTime;
 
-			//시간 줄이고 다 줄었으면 return
-			if( --frameTime <= 0 )
-				return;
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("%d\n"), timeForWait );
+		if( timeForWait <= 0 )
+		{
+			return;
 		}
+
+		Sleep( 50 );
 	}
 }
 

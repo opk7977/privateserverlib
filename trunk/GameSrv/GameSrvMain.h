@@ -2,7 +2,7 @@
 
 #include "SServerStd.h"
 
-#define LOBBY_SERVER_ID 7900
+#define GAME_SERVER_ID 7900
 
 class DataLeader;
 

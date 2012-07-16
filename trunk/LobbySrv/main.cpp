@@ -56,6 +56,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		return 0;
 	}
 
+	window.SetMyWindowText( hWnd, _T("LobbySrv_준비중") );
+
+
 	//======================================
 	// 서버 데이터 로드
 	//======================================
@@ -71,6 +74,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	LobbyMain lMain;
 	lMain.Init();
+
+	window.SetMyWindowText( hWnd, _T("LobbySrv_실행중") );
 
 	MSG Message;
 

@@ -61,7 +61,7 @@ BOOL GameSrvMain::Init()
 	// 로그서버 접속
 	//======================================
 #ifdef CONNECT_LOG_SERVER
-	if( !m_logSrv->Init( LOBBY_SERVER_ID ) )
+	if( !m_logSrv->Init( GAME_SERVER_ID ) )
 		return FALSE;
 
 	if( !m_logSrv->ConnectToLogSrv( m_document->LogSrvIP, m_document->LogSrvPortNum ) )

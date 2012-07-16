@@ -738,6 +738,12 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 
 		//방사람들의 정보를 나에게 전송
 		SendRoomOtherCharInfo();
+
+		//나에게 방장의 정보를 알린다.
+		SendRoomLeader();
+
+		//방장에게 start버튼관련 packet을 보내는 함수
+		SendStartBtnForVisible();
 	}
 	else
 	{
@@ -1336,7 +1342,7 @@ void LobbySession::RecvAllChat( SPacket& packet )
 
 	packet >> size;
 	if( size > 255 )
-		size = 256;
+		size = 255;
 	packet.GetData( chatText, size );
 
 #ifdef _DEBUG
