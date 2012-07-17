@@ -382,8 +382,8 @@ void LobbySession::RecvCharDrop( SPacket& packet )
 
 	//캐릭터가 게임서버에 있다면 우선은 지우지 않는다
 	//어차피 게임서버에서 연결이 끊긴다고 신호가 올것이기 때문에
-	if( tmpChar->GetIsPlay() )
-		return;
+// 	if( tmpChar->GetIsPlay() )
+// 		return;
 
 	//아니면 캐릭터에게 연결 종료 명령을 내려야 한다.
 	tmpChar->GetSession()->SendLobbySelfDisconnect();

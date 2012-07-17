@@ -189,18 +189,19 @@ BOOL GameProc::Run()
 		if( !m_nowIsPlaying )
 			continue;
 
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nWaitForSingleObject.\n\n") );
+		//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nWaitForSingleObject.\n\n") );
 
 		WaitForSingleObject( m_hReturnResult, INFINITE );
 
 		//이제 끝나기를 5초정도 기다렸다가 끝나는 신호를 클라들에게 전송한다.
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nstart WaitTimeLogic().\n\n") );
-		WaitTimeLogic( WAIT_GAME_END_TIME );
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nend WaitTimeLogic().\n\n") );
+		//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nstart WaitTimeLogic().\n\n") );
+		//WaitTimeLogic( WAIT_GAME_END_TIME );
+		Sleep( WAIT_GAME_END_TIME*1000 );
+		//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nend WaitTimeLogic().\n\n") );
 
 		//캐릭터 상태가 로비로 돌아가는 준비중이라는 표시를 해 준다
 		SetGotoLobby();
-		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nSetGotoLobby.\n\n") );
+		//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nSetGotoLobby.\n\n") );
 
 		//클라들에게 로비로 돌아가라는 패킷을 보낸다.
 		SendGotoLobbyPacket();
