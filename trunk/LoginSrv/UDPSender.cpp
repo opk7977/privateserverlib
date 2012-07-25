@@ -72,10 +72,9 @@ BOOL UDPSender::Init( TCHAR* serverName, char* serverIp, int PortNum )
 
 void UDPSender::Release()
 {
-	SSynchronize sync( this );
-
 	EndThread();
-	m_sock.Release();
+	Sleep(10);
+ 	m_sock.Release();
 }
 
 BOOL UDPSender::Run()
@@ -114,6 +113,13 @@ BOOL UDPSender::Run()
 			}
 		}
 	}
+
+	//id는 변경합니다
+	sendPacket.SetID( 1 );
+	retval = sendto( m_sock.GetSocket(), sendPacket.GetDataBufferPtr(), sendPacket.GetPacketSize(),
+		0, (SOCKADDR *)&remoteaddr, sizeof(remoteaddr) );
+
+//	m_sock.Release();
 
 	return TRUE;
 }

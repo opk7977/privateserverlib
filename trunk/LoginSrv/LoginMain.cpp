@@ -57,7 +57,7 @@ BOOL LoginMain::Init()
 	//======================================
 	// 서버가 열렸다고 알리기 위해 설정
 	//======================================
-	//m_udpSender->Init( m_document->SrvName, m_document->LoginSrvIP, 8000 );
+	m_udpSender->Init( m_document->SrvName, m_document->LoginSrvIP, 8000 );
 	
 	//======================================
 	// 임시 session공간 초기화
@@ -81,7 +81,7 @@ void LoginMain::Release()
 	//======================================
 	// 보내는걸 지우고
 	//======================================
-	//m_udpSender->Release();
+	m_udpSender->Release();
 
 	//======================================
 	// DB연결 정보 없애기
