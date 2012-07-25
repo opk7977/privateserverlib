@@ -591,31 +591,6 @@ enum GAME_SERVER
 	// TCHAR		-		공지문자
 	SC_GAME_NOTICE,
 
-	// client -> server
-	// 공격팀의 player가 폭탄을 설치했음
-	// 데이터 없음
-	CS_GAME_INSTALL_BOOM,
-
-	// server -> client
-	// 폭탄 설치를 모두에게 알림
-	// int			-		SessionID
-	SC_GAME_INSTALL_BOOM,
-
-	// server -> client
-	// 폭탄의 카운트 다운
-	// 데이터 없음( or int  - 남은 카운트 )
-	SC_GAME_BOOM_COUNTDOWN,
-
-	// client -> server
-	// 수비팀이 폭탄을 제거함
-	// 데이터 없음
-	CS_GAME_UNINSTALL_BOOM,
-
-	// server -> client
-	// 폭탄이 제거되었음을 알림
-	// int			-		sesseionID
-	SC_GAME_UNINSTALL_BOOM,
-
 	// server -> client
 	// 일정시간마다 hp를 올려 올라간 hp를 받는다
 	// int			-		현재의 hp
@@ -647,6 +622,21 @@ enum GAME_SERVER
 	// 보류
 	SC_TIME_OUT,
 
+	// client -> server
+	// 건물을 공격함
+	// int			-		damege
+	CS_GAME_ATTACK_TOWER,
+
+	// server -> client
+	// 이번판의 승리팀
+	// int			-		승리팀
+	SC_GAME_THIS_STAGE_WINNER_TEAM,
+
+	// server -> client
+	// 게임의 승리팀
+	// int			-		승리팀
+	SC_GAME_GAME_WINNER_TEAM,
+
 // 	// server -> client
 // 	// 게임 종료
 // 	// int			-		종료의 종류( 팀 승리/ 타임오버 )
@@ -657,31 +647,6 @@ enum GAME_SERVER
 // 	// int			-		수비팀 win 수
 // 	// int			-		게임 비긴 수
 // 	SC_GAME_END,
-
-	// client -> server
-	// 아이템 설치
-	// int			-		item종류
-	// float		-		posX
-	// float		-		poaY
-	// float		-		posZ
-	CS_GAME_INSTALL_ITEM,
-
-	// server -> client
-	// 아이템의 설치를 모두에게 알림
-	// int			-		설치자의 Team
-	// int			-		item종류
-	// int			-		item ID
-	// float		-		posX
-	// float		-		posY
-	// float		-		posZ
-	SC_GAME_INSTALL_ITEM,
-
-	// client -> server
-	// 아이템이 동작함
-	// int			-		item에 공격당한 player의 sessionId
-	// int			-		item ID
-	// int			-		데미지
-	SC_GAME_RUN_ITEM,
 
 	// server -> client
 	// 게임을 다시 시작한다는 패킷을 보낸다

@@ -17,31 +17,31 @@ class CharMgr;
 
 
 #define WAIT_GAME_END_TIME	10
+#define TOWER_HP			2000
 
 enum Team
 {
-	GAME_TEAM_ATT = 0,
+	GAME_TEAM_ATT			= 0,
 	GAME_TEAM_DEF,
 };
 
 enum GameMode
 {
-	GAME_MODE_DEATH_MATCH = 0,
-	GAME_MODE_BOOM_MISSION,
-	GAME_MODE_HACKING_MISSION,
+	GAME_MODE_DEATH_MATCH	= 0,
+	GAME_MODE_DESTROY,
 
 	GAME_MODE_COUNT,
 };
 
 enum SendTime
 {
-	SENDTIME_TEN	= 10,
-	SENDTIME_FIVE	= 5,
+	SENDTIME_TEN			= 10,
+	SENDTIME_FIVE			= 5,
 };
 
 enum LastTime
 {
-	LASTTIME_THREE	= 3,
+	LASTTIME_THREE			= 3,
 };
 
 class GameProc : public SThread
@@ -62,21 +62,12 @@ private:
 
 	// playerlist
 	SList<GameSession*>				m_listPlayer;
-	// 아이템 정보 list
-// 	SList<ItemObj*>					m_listItem;
 
 	//======================================
 	// 동기화를 위한 객체
 	SServerObj*						m_mineCritical;
 	// 지뢰
 	ATL::CAtlMap<int, MineItem*>	m_mapMine;
-	// 설치된 지뢰
-	//SList<MineItem*>				m_boomSoon;
-	//======================================
-
-	// 피 체운 대상 보내고 clear되고하는 패턴임
-	//SList<GameSession*>				m_SendList;
-
 	//======================================
 	// 게임중 flag
 	BOOL							m_nowIsPlaying;
@@ -116,6 +107,14 @@ private:
 	int								m_gameStageMap;
 	// 게임 모드
 	int								m_gameMode;
+	//--------------------------------------
+	// 게임 모드가 부수는 모드일때
+	//--------------------------------------
+	//건물의 현재 팀 상태(수비팀)
+	int								m_towerTeam;
+	//건물의 HP
+	int								m_towerHP;
+	//--------------------------------------
 	//======================================
 	//======================================
 	// 시간
@@ -210,6 +209,10 @@ public:
 	// return값이	TRUE면 정상적인 게임 종료이고
 	//				FALSE이면 player가 모두 종료해서 게임이 종료된 경우다
 	void GameRun();
+	//--------------------------------------
+	// 건물 공격
+	//--------------------------------------
+	void TowerDameged( int team, int damege );
 	//==============================================================
 	//게임시작_변수 셋팅
 	BOOL StartGame();
@@ -224,7 +227,6 @@ public:
 	void WaitTimeLogic( float waitTime );
 	//시간을 세서 SendTime단위마다 패킷을 보내는데 LastCount설정부터 하나씩 보낸다.
 	//SendTime은 10과 5/ LastCount는 3정도가 적당하다
-	//void CountDownLogin( int waitTime, SendTime sendTime, LastTime lastTime );
 	void CountDownLogic( int waitTime );
 	//==============================================================
 
@@ -239,10 +241,8 @@ public:
 	//--------------------------------------------------------------
 	// GAME_MODE_DEATH_MATCH
 	void GameEnd_DeathMatch( int winnerTeam );
-	// GAME_MODE_BOOM_MISSION
-	void GameEnd_BoomMission( int winnerTeam );
-	// GAME_MODE_HACKING_MISSION
-	void GameEnd_HackingMission( int winnerTeam );
+	// GAME_MODE_DESTROY
+	void GameEnd_Destroy( int winnerTeam );
 
 	// 정산된 내용을 DB서버로 전송
 	BOOL SendToDBGameResult();

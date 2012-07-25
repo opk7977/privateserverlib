@@ -40,9 +40,11 @@ enum INCREASE_POINT
 {
 	DEATHMATCH_WINNER_KILL_POINT			= 10,
 	DEATHMATCH_LOSER_KILL_POINT				= 5,
-	MISSION_WINNER_KILL_POINT				= 2,
-	MISSION_LOSER_KILL_POINT				= 1,
-	MISSION_WINNER_INCREASE_POINT			= 50,
+
+	DESTROY_WINNER_KILL_POINT				= 10,
+	DESTROY_LOSER_KILL_POINT				= 5,
+	DESTROY_WINNER_INCREASE_POINT			= 50,
+	DESTROY_LOSER_INCREASE_POINT			= 20,
 };
 
 //======================================
@@ -212,7 +214,6 @@ public:
 	// 게임한판이 끝나고 지금까지의 결과를 넣는다.
 	//==================================================
 	void PackageMyInfoForDB( SPacket& packet );
-//	void PackageCharInfoForResult( SPacket& packet );
 };
 
 

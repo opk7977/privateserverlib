@@ -30,11 +30,6 @@ GameSession::GameSession(void)
 , m_myGameProc(NULL)
 , isEndGame(TRUE)
 {
-// 	m_srvNet	= &GetSrvNet;
-// 	m_logger	= &GetLogger;
-// 	m_gameMgr	= &GetGameMgr;
-// 	m_charMgr	= &GetCharMgr;
-// 	m_itemMgr	= &GetItemMgr;
 }
 
 GameSession::~GameSession(void)
@@ -207,17 +202,8 @@ void GameSession::PacketParsing( SPacket& packet )
 	case CS_GAME_CHATTING:
 		RecvGameChatting( packet );
 		break;
-	case CS_GAME_INSTALL_BOOM:
-		//
-		break;
-	case CS_GAME_UNINSTALL_BOOM:
-		//
-		break;
 	case CS_GAME_RADIO_PLAY:
 		RecvGameRadioPlay( packet );
-		break;
-	case CS_GAME_INSTALL_ITEM:
-		//
 		break;
 	case CS_GAME_GOTO_LOBBY:
 		RecvGameGotoLobby();
@@ -320,7 +306,7 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 		//방을 얻어 왔고 게임이 시작중이 아니라면 게임을 열고 캐릭터를 저장해 준다
 
 		int sessionId, size, team;
-		int rankId/*, rankPoint, accumulKillCount, accumulDeathCount*/;
+		int rankId;
 		TCHAR stringID[30];
 		//인원수에 맞게 캐릭터를 생성해 준다
 		for( int i=0; i<count; ++i )
@@ -331,8 +317,7 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 			packet.GetData( stringID, size );
 			packet >> team;
 
-			packet >> rankId/* >> rankPoint*/;
-// 			packet >> accumulKillCount >> accumulDeathCount;
+			packet >> rankId;
 
 			//캐릭터 생성
 			CharObj* tmpChar = m_charMgr->GetCharSpace();
@@ -349,9 +334,6 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 			tmpChar->SetID( stringID );
 			tmpChar->SetTeam( team );
 			tmpChar->SetRankID( rankId );
-// 			tmpChar->SetRankPoint( rankPoint );
-// 			tmpChar->SetAccumulKillCount( accumulKillCount );
-// 			tmpChar->SetAccumulDeathCount( accumulDeathCount );
 		}
 
 		//======================================
@@ -954,6 +936,30 @@ void GameSession::RecvGameRadioPlay( SPacket &packet )
 
 	//SendGameRadioPlay( packet );
 	SendGameRadioPlay( index );
+}
+
+void GameSession::RecvGameAttackTower( SPacket &packet )
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameAttackTower()\n")
+			_T("캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameAttackTower()\n")
+			_T("게임 proc정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	int damege;
+	packet >> damege;
+
+	m_myGameProc->TowerDameged( m_myCharInfo->GetTeam(), damege );
 }
 
 void GameSession::RecvGameGotoLobby()

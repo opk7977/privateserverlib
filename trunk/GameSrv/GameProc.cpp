@@ -33,8 +33,7 @@ GameProc::GameProc(void)
 
 	//결과 정산함수를 셋팅
 	m_GameResult[GAME_MODE_DEATH_MATCH]		= &GameProc::GameEnd_DeathMatch;
-	m_GameResult[GAME_MODE_BOOM_MISSION]	= &GameProc::GameEnd_BoomMission;
-	m_GameResult[GAME_MODE_HACKING_MISSION]	= &GameProc::GameEnd_HackingMission;
+	m_GameResult[GAME_MODE_DESTROY]			= &GameProc::GameEnd_Destroy;
 
 	m_timer.Init();
 
@@ -66,23 +65,28 @@ void GameProc::Init()
 	//정보는 초기화
 	m_listPlayer.Clear();
 	
-	m_nowIsPlaying		= FALSE;
-	m_playerCount		= 8;	//기본...
-	m_AttKillCount		= m_DefKillCount	= 0;
-	m_isWin				= -1;
-	m_AttKillAllCount	= m_DefKillAllCount = 0;
-	m_AttWinCount		= m_DefWinCount		= 0;
-	m_nowPlayTimeCount	= 0;
-	m_TieCount			= 0;
-	m_readyCount		= 0;
+	m_nowIsPlaying			= FALSE;
+	m_playerCount			= 8;	//기본...
+	m_AttKillCount			= m_DefKillCount	= 0;
+	m_isWin					= -1;
+	m_AttKillAllCount		= m_DefKillAllCount = 0;
+	m_AttWinCount			= m_DefWinCount		= 0;
+	m_nowPlayTimeCount		= 0;
+	m_TieCount				= 0;
+	m_readyCount			= 0;
+	
+
+	//기본
+	m_towerTeam				= GAME_TEAM_DEF;
+	m_towerHP				= TOWER_HP;
 
 	ResetEvent( m_hStartGame );
 	ResetEvent( m_hStartEvent );
 	ResetEvent( m_hReturnResult );
 
 	//test
-	m_isSelectCountDown	= FALSE;
-	m_isGameCountDown	= FALSE;
+	m_isSelectCountDown		= FALSE;
+	m_isGameCountDown		= FALSE;
 }
 
 BOOL GameProc::Run()
@@ -109,14 +113,13 @@ BOOL GameProc::Run()
 		//--------------------------------------
 		// 무기 고를 시간 줍니다.
 		//--------------------------------------
-		//CountDownLogin( 29, SENDTIME_TEN, LASTTIME_THREE );
 		CountDownLogic( 19 );
 		//--------------------------------------
 		// 게임 시작 packet을 보낸다.
 		//--------------------------------------
 		//SendStartPacket();
 		//======================================
-
+		
 		//게임 loop를 돈다
 		BOOL isEnd = FALSE;
 		while( !isEnd )
@@ -150,8 +153,14 @@ BOOL GameProc::Run()
 				// 게임 다시 시작! 아직 판수가 남음
 				// 잠시 대기 후에 다시 시작 패킷을 보낸다.
 				//======================================
-				WaitTimeLogic( WAIT_GAME_END_TIME );
+				//10초 후 다시 게임이 시작한다는 신호를 보냄
+				//
 
+				//10초 대기
+				//WaitTimeLogic( WAIT_GAME_END_TIME );
+				Sleep( WAIT_GAME_END_TIME * 1000 );
+
+				//다시 시작
 				SendRestartPacket();
 				continue;
 			}
@@ -196,15 +205,11 @@ BOOL GameProc::Run()
 		WaitForSingleObject( m_hReturnResult, INFINITE );
 
 		//이제 끝나기를 5초정도 기다렸다가 끝나는 신호를 클라들에게 전송한다.
-		//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nstart WaitTimeLogic().\n\n") );
-		//WaitTimeLogic( WAIT_GAME_END_TIME );
 		Sleep( WAIT_GAME_END_TIME*1000 );
-		//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nend WaitTimeLogic().\n\n") );
 
 		//캐릭터 상태가 로비로 돌아가는 준비중이라는 표시를 해 준다
 		SetGotoRoom();
-		//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nSetGotoLobby.\n\n") );
-
+		
 		//클라들에게 로비로 돌아가라는 패킷을 보낸다.
 		SendGotoRoomPacket();
 
@@ -238,8 +243,6 @@ void GameProc::EndThread()
 void GameProc::GameRun()
 {
 	float TimeOneSec			= 0.f;
-
-
 	float ElapsedTime;
 
 	SPacket sendPacket;
@@ -319,6 +322,25 @@ void GameProc::GameRun()
 	}
 }
 
+void GameProc::TowerDameged( int team, int damege )
+{
+	//건물의 팀과 한번 확인하고 같으면 데미지를 입을 일 없음
+	if( team == m_towerTeam )
+		return;
+	
+	//건물의 HP를 달게 하고
+	m_towerHP -= damege;
+
+	//건물의 HP가 모두 달았다면 게임 종료
+	if( m_towerHP <= 0 )
+	{
+		//이긴 팀을 체크해 주고
+		m_isWin = (m_towerTeam == GAME_TEAM_ATT) ? GAME_TEAM_DEF : GAME_TEAM_ATT;
+		//시간 종료
+		m_nowPlayTimeCount = 0;
+	}
+}
+
 void GameProc::AddReadyCount()
 {
 	//준비완료 인원이 게임 실행 인원과 같아 지면 게임을 시작할 수 있다.
@@ -338,6 +360,14 @@ BOOL GameProc::StartGame()
 	m_AttKillCount		= m_DefKillCount = 0;
 	m_isWin				= -1;
 
+	//모드에 따라
+	if( m_gameMode == GAME_MODE_DESTROY )
+	{
+		m_towerTeam				= GAME_TEAM_DEF;
+		m_towerHP				= TOWER_HP;
+		m_isWin					= m_towerTeam;
+	}
+
 	SetEvent( m_hStartGame );
 
 	return TRUE;
@@ -354,15 +384,23 @@ BOOL GameProc::ResetGame()
 		{
 			//킬 /데스 비교
 			if( m_AttKillCount > m_DefKillCount )
-				++m_AttWinCount;		//어택팀이 이김
+			{
+				m_isWin = 0;
+				++m_AttWinCount;		//레드팀이 이김
+			}
 			else if( m_AttKillCount < m_DefKillCount )
-				++m_DefWinCount;		//디펜스팀이 이김
+			{
+				m_isWin = 1;
+				++m_DefWinCount;		//불루스팀이 이김
+			}
 			else
+			{
+				m_isWin = 3;
 				++m_TieCount;			//비김
+			}
 		}
 		break;
-	case GAME_MODE_BOOM_MISSION:
-	case GAME_MODE_HACKING_MISSION:
+	case GAME_MODE_DESTROY:
 		{
 			// m_isWin확인
 			if( m_isWin == GAME_TEAM_ATT )
@@ -377,6 +415,12 @@ BOOL GameProc::ResetGame()
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameProc::ResetGame()\n게임 모드가 유효하지 않습니다\n\n") );
 		return FALSE;
 	}
+
+	//승리조건에 따라 누가 이겼다는 패킷을 보낸다
+	//
+	//
+	//
+
 	
 	//총 킬/ 데스 카운터를 적립해준다.
 	m_AttKillAllCount	+= m_AttKillCount;
@@ -392,7 +436,15 @@ BOOL GameProc::ResetGame()
 	m_nowIsPlaying		= TRUE;
 	m_AttKillCount		= m_DefKillCount = 0;
 	m_isWin				= -1;
-// 	m_SendList.Clear();
+
+	//모드에 따라
+	if( m_gameMode == GAME_MODE_DESTROY )
+	{
+		//건물의 팀을 바꿔 주고
+		m_towerTeam			= ( m_towerTeam == GAME_TEAM_DEF ) ? GAME_TEAM_ATT : GAME_TEAM_DEF;
+		m_towerHP			= TOWER_HP;
+		m_isWin				= m_towerTeam;
+	}
 
 	//캐릭터의 HP등을 모두 reset!
 	CharacterRestart();
@@ -436,46 +488,6 @@ void GameProc::WaitTimeLogic( float waitTime )
 	}
 }
 
-// void GameProc::CountDownLogin( int waitTime, SendTime sendTime, LastTime lastTime )
-// {
-// 	float framTime = 0.f;
-// 	TCHAR TmpChar[64]={0,};
-// 
-// 	while(1)
-// 	{
-// 		//======================================
-// 		// 시간 처리
-// 		//======================================
-// 		m_timer.ProcessTime();
-// 
-// 		framTime += m_timer.GetElapsedTime();
-// 		if( framTime > 1.0f )
-// 		{
-// 			//우선 초기화
-// 			framTime = 0.f;
-// 
-// 			//정해진 시간단위로 남은 시간을 공지형식으로 보낸다
-// 			if( (waitTime % sendTime) == 0 )
-// 			{
-// 				ZeroMemory( TmpChar, 64*2 );
-// 				_stprintf_s( TmpChar, 64, _T("[Notice] %d초 남았습니다."), waitTime );
-// 
-// 				SendNotice( TmpChar );
-// 			}
-// 
-// 			//마지막 카운트는 그냥 숫사를 보낸다
-// 			if( waitTime <= lastTime )
-// 			{
-// 				SendTimeRemain( waitTime );
-// 			}
-// 
-// 			//시간 줄이고 다 줄었으면 return
-// 			if( --waitTime <= 0 )
-// 				return;
-// 		}
-// 	}
-// }
-
 void GameProc::CountDownLogic( int waitTime )
 {
 	float framTime = 0.f;
@@ -491,9 +503,6 @@ void GameProc::CountDownLogic( int waitTime )
 		//======================================
 		m_timer.ProcessTime();
 
-// 		if( !m_isSelectCountDown )
-// 			m_wait = waitTime;
-
 		framTime += m_timer.GetElapsedTime();
 		if( framTime > 1.0f )
 		{
@@ -507,6 +516,11 @@ void GameProc::CountDownLogic( int waitTime )
 			SendTimeRemain( m_wait );
 		}
 	}
+}
+
+void GameProc::AddDestroyPoint( int Team, int damege )
+{
+	m_teamDestroyPoint[Team] += damege;
 }
 
 void GameProc::MineClear()
@@ -549,7 +563,7 @@ void GameProc::GameEnd_DeathMatch( int winnerTeam )
 	}
 }
 
-void GameProc::GameEnd_BoomMission( int winnerTeam )
+void GameProc::GameEnd_Destroy( int winnerTeam )
 {
 	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
 	CharObj* tmpObj = NULL;
@@ -560,33 +574,12 @@ void GameProc::GameEnd_BoomMission( int winnerTeam )
 		if( tmpObj->GetTeam() == winnerTeam )
 		{
 			//이긴팀
-			tmpObj->SetRankPoint( tmpObj->GetKillCount() * MISSION_WINNER_KILL_POINT + MISSION_WINNER_INCREASE_POINT );
+			tmpObj->SetRankPoint( tmpObj->GetKillCount() * DESTROY_WINNER_KILL_POINT + DESTROY_WINNER_INCREASE_POINT );
 		}
 		else
 		{
 			//진팀/ 혹은 비겼을때
-			tmpObj->SetRankPoint( tmpObj->GetKillCount() * MISSION_LOSER_KILL_POINT );
-		}
-	}
-}
-
-void GameProc::GameEnd_HackingMission( int winnerTeam )
-{
-	std::list<GameSession*>::iterator iter = m_listPlayer.GetHeader();
-	CharObj* tmpObj = NULL;
-	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
-	{
-		tmpObj = (*iter)->GetMyInfo();
-
-		if( tmpObj->GetTeam() == winnerTeam )
-		{
-			//이긴팀
-			tmpObj->SetRankPoint( tmpObj->GetKillCount() * MISSION_WINNER_KILL_POINT + MISSION_WINNER_INCREASE_POINT );
-		}
-		else
-		{
-			//진팀/ 혹은 비겼을때
-			tmpObj->SetRankPoint( tmpObj->GetKillCount() * MISSION_LOSER_KILL_POINT );
+			tmpObj->SetRankPoint( tmpObj->GetKillCount() * DESTROY_LOSER_KILL_POINT + DESTROY_LOSER_INCREASE_POINT );
 		}
 	}
 }

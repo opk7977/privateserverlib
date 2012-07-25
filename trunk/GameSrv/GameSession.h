@@ -161,14 +161,11 @@ public:
 	//CS_GAME_CHATTING
 	void RecvGameChatting( SPacket &packet );
 
-	//CS_GAME_INSTALL_BOOM
-
-	//CS_GAME_UNINSTALL_BOOM
-
 	//CS_GAME_RADIO_PLAY
 	void RecvGameRadioPlay( SPacket &packet );
 
-	//CS_GAME_INSTALL_ITEM
+	//CS_GAME_ATTACK_TOWER
+	void RecvGameAttackTower( SPacket &packet );
 
 	//CS_GAME_GOTO_LOBBY
 	void RecvGameGotoLobby();
@@ -289,12 +286,6 @@ public:
 	BOOL SendGameChatting( TCHAR* chatting );
 	BOOL SendGameTeamChat( TCHAR* chatting );
 
-	//SC_GAME_INSTALL_BOOM
-
-	//SC_GAME_BOOM_COUNTDOWN
-
-	//SC_GAME_UNINSTALL_BOOM
-
 	//SC_GAME_RADIO_PLAY
 	BOOL SendGameRadioPlay( int index );
 
@@ -303,10 +294,6 @@ public:
 
 	//SC_TIME_OUT
 	//게임proc에 있음
-
-	//SC_GAME_INSTALL_ITEM
-
-	//SC_GAME_RUN_ITEM
 
 	//SC_GAME_RESTART
 	//게임Proc에 있음
