@@ -41,11 +41,7 @@ BOOL SegIOCP::Run()
 void SegIOCP::Release()
 {
 	for( int i=0; i<m_workThreadCount; ++i )
-	{
-		//delete m_pWorkThread[i];
-		//m_pWorkThread[i] = 0;
-		m_pWorkThread[i]->Release();
-	}
+		m_pWorkThread[i]->EndThread();
 
 	if ( m_hIOCP )
 	{
@@ -64,7 +60,7 @@ BOOL SegIOCP::AddHandleToIOCP( HANDLE handle, DWORD key )
 	//넘겨받은 key값과 handle값을 완료포트에 연결(?)한다
 	//성공하면 넘겨받은 핸들은 handle값이다
 	if( CreateIoCompletionPort( handle, m_hIOCP, key, 0 ) != handle )
-		return FALSE;	
+		return FALSE;
 
 	return TRUE;
 }

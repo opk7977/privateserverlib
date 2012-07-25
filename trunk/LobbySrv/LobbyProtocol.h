@@ -55,7 +55,7 @@ enum SERVER_TO_SERVER
 	// gameSrv -> lobbySrv
 	// 게임서버가 로비서버로 자신이 게임서버라는 것을 알린다
 	// 데이터 없음
-	GL_CONNECT_SERVER = 100,
+	GL_CONNECT_SERVER		= 100,
 
 	// lobbySrv -> gameSrv
 	// 방의 유저들이 게임을 시작하게 되어 게임서버의 준비상태를 명령
@@ -76,7 +76,7 @@ enum SERVER_TO_SERVER
 
 	// gameSrv -> lobbySrv
 	// 게임 시작이 가능한 상태니 신호를 보내라는 패킷
-	// int			-		roomNum
+	// int			-		roomNo
 	GL_START_OK,
 
 	// lobbySrv -> gameSrv
@@ -88,6 +88,12 @@ enum SERVER_TO_SERVER
 	// 게임이 종료되고 방을 다시 일반 상태로 바꿔 준다
 	// int			-		roomNum
 	GL_GAME_END,
+
+	// gameSrv -> lobbySrv
+	// 게임도중에 캐릭터가 로비로 간다고 알림
+	// int			-		roomNum
+	// int			-		sessionId
+	GL_GAME_GOTO_LOBBY,
 
 	// gameSrv -> lobbySrv
 	// 게임서버에서 접속을 끊어버린 player에 대한 처리

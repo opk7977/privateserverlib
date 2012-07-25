@@ -2,15 +2,16 @@
 
 #include "SServerObj.h"
 
-#define BOOM_TIME 0.5
-
+//폭발까지의 시간
+#define BOOM_TIME					0.5
+//지뢰 개수
+#define MINE_COUNT					2
 //사람 충돌 반경
 #define MINE_COLLISION_CHAR_ROUND	35
-
 //지뢰 충돌 반경
-#define MINE_COLLISION_ROUND		20
+#define MINE_COLLISION_ROUND		30
 //지뢰 폭발 반경
-#define MINE_BOOM_COL_ROUND			50			
+#define MINE_BOOM_COL_ROUND			60			
 
 //데미지
 #define MINE_BOOM_DAMEGE			100
@@ -18,8 +19,8 @@
 class MineItem : public SServerObj
 {
 private:
-	//이미 사용한애면 FALSE
-	BOOL		m_isUseable;
+	//지뢰 사용횟수
+	int			m_mineCount;
 
 	//설치 했나?
 	BOOL		m_isInstall;
@@ -47,7 +48,7 @@ public:
 
 	void Reset();
 
-	inline BOOL CanUse() { return m_isUseable; }
+	BOOL CanUse();
 
 	inline int GetSessionID() { return m_masterSessionID; }
 	inline int GetTeam() { return m_masterTeam; }
@@ -65,7 +66,7 @@ public:
 	inline void SetRun() { m_isRun = TRUE; }
 
 	//지뢰 설치됨?
-	inline void SetInstall() { m_isInstall = TRUE; }
+	inline void SetInstall( BOOL flag ) { m_isInstall = flag; }
 	inline BOOL IsInstall() { return m_isInstall; }
 
 	//지뢰 터짐

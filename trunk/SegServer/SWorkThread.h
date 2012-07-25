@@ -3,6 +3,8 @@
 
 #include "SThread.h"
 
+class SSessionMgr;
+
 class SWorkThread : public SThread
 {
 	//---------------------------------------
@@ -10,9 +12,15 @@ class SWorkThread : public SThread
 	//---------------------------------------
 
 private:
+	//======================================
+	// SingleTon 객체
+	//======================================
+	SSessionMgr*	m_sessionMgr;
+
+private:
 	//IOCP에서 사용할 수 있도록 friend선언을 해 줘야 한다.
-	friend class SegIOCP;
-	static BOOL m_bThreadLoop;
+	friend class	SegIOCP;
+	static BOOL		m_bThreadLoop;
 
 private:
 	//외부에서 사용되지 않으므로 private선언을 해 준다.
@@ -22,7 +30,7 @@ private:
 public:
 	BOOL Init();
 	BOOL Run();
-	void Release();
+	void EndThread();
 };
 
 

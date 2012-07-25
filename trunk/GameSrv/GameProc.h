@@ -48,6 +48,10 @@ class GameProc : public SThread
 {
 private:
 	//======================================
+	// 쓰레드 동작 flag
+	//======================================
+	BOOL							m_startThread;
+	//======================================
 	// 지정값
 	//======================================
 	// 자신의 ID(방번호(key값))
@@ -196,9 +200,10 @@ public:
 	//==============================================================
 
 	//======================================
-	// 쓰레드 동작함수
+	// 쓰레드 동작/종료함수
 	//======================================
 	BOOL Run();
+	void EndThread();
 	//--------------------------------------
 	// Run에서 불려질 게임 실행 함수
 	//--------------------------------------
@@ -327,9 +332,9 @@ public:
 	//SC_GAME_RESTART
 	BOOL SendRestartPacket();
 	//캐릭터 상태를 종료가 아니라 로비로 돌아가는 상태로 바꿔 줌
-	void SetGotoLobby();
-	//SC_GAME_GOTO_LOBBY
-	BOOL SendGotoLobbyPacket();
+	void SetGotoRoom();
+	//SC_GAME_GOTO_ROOM
+	BOOL SendGotoRoomPacket();
 
 	//SC_GAME_RUN_MINE
 	BOOL SendGameRunMine( MineItem* mine );

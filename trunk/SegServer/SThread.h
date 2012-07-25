@@ -22,7 +22,7 @@ public:
 
 	//virtual_ 상속받은 클래스가 작업하는 함수로
 	//각각 작업에 맞게 재 정의하여 사용
-	inline virtual BOOL Run() { return TRUE; }
+	virtual BOOL Run() = 0;
 
 	//쓰레드 자신의 ID를 return
 	inline DWORD GetThreadId() { return m_iThread; }

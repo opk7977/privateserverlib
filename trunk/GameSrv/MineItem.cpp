@@ -1,4 +1,5 @@
 #include "MineItem.h"
+#include "SSynchronize.h"
 
 MineItem::MineItem(void)
 {
@@ -25,7 +26,8 @@ void MineItem::Init()
 
 void MineItem::Reset()
 {
-	m_isUseable			= TRUE;
+	m_mineCount			= MINE_COUNT;
+
 	m_isInstall			= FALSE;
 	m_isRun				= FALSE;
 	m_pos.Clear();
@@ -33,31 +35,49 @@ void MineItem::Reset()
 	m_boomTime			= BOOM_TIME;
 }
 
+BOOL MineItem::CanUse()
+{
+	SSynchronize sync( this );
+
+	//지미 지뢰가 설치 되어 있으면 사용할 수 없음
+	if( m_isInstall )
+		return FALSE;
+
+	//지뢰사용횟수를 넘었으면 사용할 수 없음
+	if( m_mineCount <= 0 )
+		return FALSE;
+
+	//그렇지 않으면 설치 할 수 있음
+	return TRUE;
+}
+
 void MineItem::SetMineSpace( int sessionId, int team )
 {
+	SSynchronize sync( this );
+
 	m_masterSessionID	= sessionId;
 	m_masterTeam		= team;
 }
 
 BOOL MineItem::SetMine( float posX, float posY, float posZ, float dirX, float dirY, float dirZ )
 {
-	if( !m_isUseable )
-		return FALSE;
+	SSynchronize sync( this );
 
 	//지뢰 설치
 	m_pos.SetElement( posX, posY, posZ );
 	m_dir.SetElement( dirX, dirY, dirZ );
 	m_boomTime			= BOOM_TIME;
-	//m_isInstall			= TRUE;
 
-	//한번 사용했으면 다시 사용할 수 없다.
-	m_isUseable			= FALSE;
+	//지뢰 사용횟수를 줄인다
+	--m_mineCount;
 
 	return TRUE;
 }
 
 BOOL MineItem::IsBoom()
 {
+	SSynchronize sync( this );
+
 	//남은 시간이 0보다 작거나 같으면 터진다
 	if( m_boomTime <= 0 )
 		return TRUE;
@@ -88,6 +108,7 @@ BOOL MineItem::IsCollision( float posX, float posY, float posZ )
 // 		return TRUE;
 // 	else
 // 		return FALSE;
+	SSynchronize sync( this );
 
 	//반구와 구(캐릭터)
 	//캐릭터 키 반만큼 위로 올려 준다
@@ -117,11 +138,16 @@ void MineItem::DownTimer( float ElapsedTime )
 
 void MineItem::Boom()
 {
+	SSynchronize sync( this );
+
 	m_boomTime = 0;
+	SetRun();
 }
 
 int MineItem::IsBoomCollision( float posX, float posY, float posZ )
 {
+	SSynchronize sync( this );
+
 	//반구와 구(캐릭터)
 	//캐릭터 키 반만큼 위로 올려 준다
 	float charY = posY + MINE_COLLISION_CHAR_ROUND;

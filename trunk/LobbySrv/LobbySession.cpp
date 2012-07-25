@@ -38,16 +38,6 @@ LobbySession::LobbySession(void)
 : m_myCharInfo(NULL)
 , m_myRoom(NULL)
 {
-// 	m_sessionMgr	= &GetSessionMgr;
-// 	m_document		= &GetDocument;
-// 	m_lobbyMgr		= &GetLobbyMgr;
-// 	m_roomMgr		= &GetRoomMgr;
-// 	m_charMgr		= &GetCharMgr;
-// 	m_srvNet		= &GetSrvNet;
-// 	m_dbMgr			= &GetDBSrv;
-// #ifdef _DEBUG
-// 	m_logger		= &GetLogger;
-// #endif
 }
 
 LobbySession::~LobbySession(void)
@@ -67,8 +57,6 @@ void LobbySession::OnCreate()
 
 void LobbySession::OnDestroy()
 {
-	//SSynchronize Sync( this );
-
 	if( m_myCharInfo == NULL )
 	{
 		//캐릭터 정보가 없다면 서버 혹은 클라에서 자신의 정보를 보내기 전에 끈경우
@@ -225,6 +213,7 @@ void LobbySession::PacketParsing( SPacket& packet )
 	case DB_TO_LOBBY_UPDATE_USERDATA:
 		RecvToDBUpdateUserData( packet );
 		break;
+
 	//==============================================================> GameSrv
 	case SC_GAME_CONNECT_OK:
 		RecvConnectServer();
@@ -237,6 +226,9 @@ void LobbySession::PacketParsing( SPacket& packet )
 		break;
 	case GL_GAME_END:
 		RecvGameEnd( packet );
+		break;
+	case  GL_GAME_GOTO_LOBBY:
+		RecvGameGotoLobby( packet );
 		break;
 	case GL_PLAYER_DISCONNECT:
 		RecvPlayerDiconnectInGame( packet );
@@ -382,8 +374,8 @@ void LobbySession::RecvCharDrop( SPacket& packet )
 
 	//캐릭터가 게임서버에 있다면 우선은 지우지 않는다
 	//어차피 게임서버에서 연결이 끊긴다고 신호가 올것이기 때문에
-// 	if( tmpChar->GetIsPlay() )
-// 		return;
+	if( tmpChar->GetIsPlay() )
+		return;
 
 	//아니면 캐릭터에게 연결 종료 명령을 내려야 한다.
 	tmpChar->GetSession()->SendLobbySelfDisconnect();
@@ -565,6 +557,59 @@ void LobbySession::RecvGameEnd( SPacket& packet )
 	SendLobbyGameEnd( room );
 }
 
+void LobbySession::RecvGameGotoLobby( SPacket& packet )
+{
+	int room, session;
+	packet >> room;
+	packet >> session;
+
+	LobbyChar* tmpChar = m_charMgr->FindCharAsSessionId( session );
+	if( tmpChar == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("LobbySession::RecvGameGotoLobby()\n%d번 캐릭터의 정보가 없습니다.\n\n"), room );
+		return;
+	}
+
+	//해당 번호에 맞는 방을 찾아 온다
+	Room* tmpRoom = m_roomMgr->FindRoom( room );
+	if( tmpRoom == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("LobbySession::RecvGameGotoLobby()\n%d번 방의 정보가 없습니다.\n\n"), room );
+		return;
+	}
+
+	//방에서 제거
+	if( !tmpRoom->DelPlayerInRoom( tmpChar ) )
+	{
+		//방에 사람 없음 방을 지워준다
+		m_roomMgr->CloseRoom( tmpRoom->GetRoomNum() );
+		SendCloseRoom( tmpRoom->GetRoomNum() );
+#ifdef _DEBUG
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+			_T("LobbySession::RecvGameGotoLobby()\n%d번 방이 닫힙니다.\n\n"),
+			tmpRoom->GetRoomNum() );
+#endif
+#ifdef CONNECT_LOG_SERVER
+		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
+			_T("LobbySession::RecvGameGotoLobby() %d번 방이 닫힙니다."),
+			tmpRoom->GetRoomNum() );
+#endif
+	}
+
+	//팀/ ready정보 초기화
+	tmpChar->SetRoom(NULL);
+	tmpChar->SetTeam(-1);
+	tmpChar->SetReady(FALSE);
+
+	//로비로 알림
+	SendLobbyRoomCharOut( room, session );
+	
+	//waitchar로 넣어 주기
+	m_charMgr->AddWaitChar( session, tmpChar );
+}
+
 void LobbySession::RecvPlayerDiconnectInGame( SPacket& packet )
 {
 	//================================================
@@ -683,6 +728,9 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 			//======================================
 			// 방으로 재 접속
 			//======================================
+			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+				_T("LobbySession::RecvInsertLobby()\n%d번캐릭터 %d번방으로 재 접속.\n\n"),
+				sessionId, roomNum );
 			//--------------------------------------
 			// 캐릭터와 방의 정보를 다시 갱신
 			//--------------------------------------
@@ -730,12 +778,6 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 
 #endif
 
-		//방에 나를 추가
-		//m_myRoom->AddPlayerInRoom( m_myCharInfo );
-
-		//내 정보를 내 방 사람들에게 전송
-		//SendRoomMyInfoToOtherChar();
-
 		//방사람들의 정보를 나에게 전송
 		SendRoomOtherCharInfo();
 
@@ -758,7 +800,7 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 		else
 		{
 			//--------------------------------------
-			// 새로 접속
+			// 새로 접속 & 게임에서 바로 로비로
 			//--------------------------------------
 			//캐릭터를 얻어 온다
 			m_myCharInfo = m_charMgr->GetWaitCharInfo( sessionId );
@@ -794,9 +836,16 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 			//로비list에 나를 추가
 			m_lobbyMgr->AddUser( m_myCharInfo );
 
-			//로비의 유저들에게 내 정보를 보낸다.
-			//모두에게 전송( 나는 빼고 보낸다! )
-			SendMyCharInfo();
+			//게임에서 넘어온거면 보내지 말고
+			//새로 들어왔을 때만 보내야 한다
+			if( !m_myCharInfo->GetIsPlay() )
+			{
+				//로비의 유저들에게 내 정보를 보낸다.
+				//모두에게 전송( 나는 빼고 보낸다! )
+				SendMyCharInfo();
+			}
+			m_myCharInfo->SetIsPlay( FALSE );
+			m_myCharInfo->SetReady( FALSE );
 		}
 		//나에게 방 정보를 보낸다.
 		SendRoomInfo();
@@ -882,8 +931,8 @@ void LobbySession::RecvInsertRoom( SPacket& packet )
 		return;
 	}
 
-	//캐릭터에 방을 넣어 준다.
-	m_myCharInfo->SetRoom( m_myRoom );
+// 	//캐릭터에 방을 넣어 준다.
+// 	m_myCharInfo->SetRoom( m_myRoom );
 
 	//방이 지금 게임 준비중이거나 인원이 다 찼으면 들어갈 수 없다
 	if( !m_myRoom->CanInsert() )
@@ -899,9 +948,13 @@ void LobbySession::RecvInsertRoom( SPacket& packet )
 						m_myCharInfo->GetID(), room );
 #endif
 		m_myRoom = NULL;
+		//m_myCharInfo->SetRoom( NULL );
 		SendResultInsert(-10);
 		return;
 	}
+
+	//캐릭터에 방을 넣어 준다.
+	m_myCharInfo->SetRoom( m_myRoom );
 
 	//방이 정상으로 존재 한다면 넣자
 	m_myRoom->AddPlayerInRoom( m_myCharInfo );
@@ -1832,6 +1885,18 @@ BOOL LobbySession::SendLobbyRoomCharOut()
 	SPacket sendPacket( SC_LOBBY_ROOM_PLAYER_OUT );
 	sendPacket << m_myRoom->GetRoomNum();
 	sendPacket << m_myCharInfo->GetSessionID();
+
+	//로비의 사람들에게 몇번방에 사람이 줄었다는 패킷을 보낸다.
+	m_lobbyMgr->SendPacketAllInLobby( sendPacket );
+
+	return TRUE;
+}
+
+BOOL LobbySession::SendLobbyRoomCharOut( int roomNum, int sessionId )
+{
+	SPacket sendPacket( SC_LOBBY_ROOM_PLAYER_OUT );
+	sendPacket << roomNum;
+	sendPacket << sessionId;
 
 	//로비의 사람들에게 몇번방에 사람이 줄었다는 패킷을 보낸다.
 	m_lobbyMgr->SendPacketAllInLobby( sendPacket );

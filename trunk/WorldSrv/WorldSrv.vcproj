@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="LoginSrv"
-	ProjectGUID="{16129887-81C1-47CE-8994-94B7F6A8B27C}"
-	RootNamespace="LoginSrv"
+	Name="WorldSrv"
+	ProjectGUID="{C3777651-CCAA-4AC6-85DE-1CF21F593C7B}"
+	RootNamespace="WorldSrv"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="../output/LoginSrv"
-			IntermediateDirectory="../output/LoginSrv"
+			OutputDirectory="../output/WorldSrv"
+			IntermediateDirectory="../output/WorldSrv"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
@@ -92,8 +92,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="../Release/LoginSrv"
-			IntermediateDirectory="../Release/LoginSrv"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -117,7 +117,6 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="../Rinclude"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -136,9 +135,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SegServer.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="../Rlib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -177,11 +174,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\LoginMain.cpp"
+				RelativePath=".\main.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\main.cpp"
+				RelativePath=".\WorldMain.cpp"
 				>
 			</File>
 		</Filter>
@@ -191,11 +188,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\LoginMain.h"
-				>
-			</File>
-			<File
-				RelativePath=".\resource.h"
+				RelativePath=".\WorldMain.h"
 				>
 			</File>
 		</Filter>
@@ -204,114 +197,86 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-			<File
-				RelativePath=".\LoginSrv.rc"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Network"
 			>
 			<File
-				RelativePath=".\LoginProtocol.h"
+				RelativePath=".\WorldProtocol.h"
 				>
 			</File>
-			<File
-				RelativePath=".\Network.cpp"
+			<Filter
+				Name="NetMgr"
 				>
-			</File>
-			<File
-				RelativePath=".\Network.h"
-				>
-			</File>
+				<File
+					RelativePath=".\Network.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Network.h"
+					>
+				</File>
+			</Filter>
 			<Filter
 				Name="Session"
 				>
 				<File
-					RelativePath=".\LoginSession.cpp"
+					RelativePath=".\WorldSession.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\LoginSession.h"
+					RelativePath=".\WorldSession.h"
 					>
 				</File>
 			</Filter>
 			<Filter
-				Name="LogSrv"
+				Name="FieldSrvMgr"
 				>
 				<File
-					RelativePath=".\LogSrvMgr.cpp"
+					RelativePath=".\FieldSrvMgr.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\LogSrvMgr.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="DBSrv"
-				>
-				<File
-					RelativePath=".\DBSrvMgr.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DBSrvMgr.h"
+					RelativePath=".\FieldSrvMgr.h"
 					>
 				</File>
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Window"
+			Name="WinMgr"
 			>
 			<File
-				RelativePath=".\winMgr.cpp"
+				RelativePath=".\WinMgr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\winMgr.h"
+				RelativePath=".\WinMgr.h"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="DataLeader"
+			Name="Document"
 			>
 			<File
-				RelativePath=".\DataLeader.cpp"
+				RelativePath=".\Document.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\DataLeader.h"
+				RelativePath=".\Document.h"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="TmpSessionSpace"
+			Name="FieldMgr"
 			>
 			<File
-				RelativePath=".\TmpSessionSpace.cpp"
+				RelativePath=".\FieldMgr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\TmpSessionSpace.h"
+				RelativePath=".\FieldMgr.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="UDP"
-			>
-			<File
-				RelativePath=".\UDPSender.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\UDPSender.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="dlg"
-			>
 		</Filter>
 	</Files>
 	<Globals>

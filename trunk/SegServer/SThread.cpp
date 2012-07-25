@@ -5,8 +5,9 @@
 	#include "SLogger.h"
 #endif
 
-SThread::SThread(void) : m_bIsStart(FALSE)
-					   , m_iThread(0)
+SThread::SThread(void)
+: m_bIsStart(FALSE)
+, m_iThread(0)		
 {
 }
 
@@ -22,7 +23,6 @@ void SThread::BeginThread()
 
 	//Mgr에 자신을 매개 변수로 함수 호출
 	m_handleThread = GetThreadMgr.Create( HandleRunner, this, &m_iThread );
-
 	m_bIsStart = TRUE;
 }
 
@@ -42,6 +42,5 @@ unsigned int __stdcall SThread::HandleRunner( LPVOID parameter )
 
 void SThread::EndThread()
 {
-
+	m_bIsStart = FALSE;
 }
-

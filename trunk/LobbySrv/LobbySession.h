@@ -109,6 +109,9 @@ public:
 	//GL_GAME_END
 	void RecvGameEnd( SPacket& packet );
 
+	//GL_GAME_GOTO_LOBBY
+	void RecvGameGotoLobby( SPacket& packet );
+
 	//GL_PLAYER_DISCONNECT
 	void RecvPlayerDiconnectInGame( SPacket& packet );
 
@@ -216,6 +219,7 @@ public:
 
 	//SC_LOBBY_ROOM_PLAYER_OUT
 	BOOL SendLobbyRoomCharOut();
+	BOOL SendLobbyRoomCharOut( int roomNum, int sessionId );
 
 	//SC_ROOM_CHAR_READY
 	BOOL SendRoomCharReady();

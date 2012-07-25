@@ -23,6 +23,8 @@ CharMgr*		GameProc::m_charMgr		= &GetCharMgr;
 
 GameProc::GameProc(void)
 {
+	m_startThread	= TRUE;
+
 	m_hStartGame	= ::CreateEvent( NULL, TRUE, FALSE, NULL );
 	m_hStartEvent	= ::CreateEvent( NULL, TRUE, FALSE, NULL );
 	m_hReturnResult	= ::CreateEvent( NULL, TRUE, FALSE, NULL );
@@ -85,7 +87,7 @@ void GameProc::Init()
 
 BOOL GameProc::Run()
 {
-	while(1)
+	while( m_startThread )
 	{
 		//======================================
 		// 시작 신호를 기다린다.
@@ -200,11 +202,11 @@ BOOL GameProc::Run()
 		//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nend WaitTimeLogic().\n\n") );
 
 		//캐릭터 상태가 로비로 돌아가는 준비중이라는 표시를 해 준다
-		SetGotoLobby();
+		SetGotoRoom();
 		//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nSetGotoLobby.\n\n") );
 
 		//클라들에게 로비로 돌아가라는 패킷을 보낸다.
-		SendGotoLobbyPacket();
+		SendGotoRoomPacket();
 
 		//게임이 종료됨
 #ifdef _DEBUG
@@ -214,6 +216,23 @@ BOOL GameProc::Run()
 	}
 
 	return TRUE;
+}
+
+void GameProc::EndThread()
+{
+	//flag는 다 내려주고
+	m_startThread		= FALSE;
+	m_nowPlayTimeCount	= 0;
+
+	//신호도 다 꺼주고
+	CloseHandle( m_hStartGame );
+	CloseHandle( m_hStartEvent );
+	CloseHandle( m_hReturnResult );
+// 	SetEvent( m_hStartGame );
+// 	SetEvent( m_hStartEvent );
+// 	SetEvent( m_hReturnResult );
+
+	SThread::EndThread();
 }
 
 void GameProc::GameRun()
@@ -843,7 +862,7 @@ BOOL GameProc::SettingMine( GameSession* session, float posX, float posY, float 
 		return TRUE;
 	}
 
-	//지뢰를 이미 사용했다면 사용할 수 없다
+	//지뢰를 사용할 수 있는지 체크
 	if( !tmpMine->CanUse() )
 	{
 		session->SendPacket( SC_GAME_LAY_MINE_FAILD );
@@ -863,7 +882,7 @@ BOOL GameProc::SettingMine( GameSession* session, float posX, float posY, float 
 	session->SendGameLayMine( posX, posY, posZ, dirX, dirY, dirZ );
 
 	//보낸후부터 지뢰체크하는 flag를 설정한다.
-	tmpMine->SetInstall();
+	tmpMine->SetInstall( TRUE );
 
 	return TRUE;
 }
@@ -942,6 +961,8 @@ void GameProc::ExplosionMineCrashCheck()
 		//게임에 있는 모두에게 전송
 		SendGameExplosionMine( tmpMine );
 
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::ExplosionMineCrashCheck()\n%d번의 지뢰가 폭발합니다."), tmpMine->GetSessionID() );
+
 		//폭발 충돌체크하자
 		for( iterChar = m_listPlayer.GetHeader(); !m_listPlayer.IsEnd( iterChar ); ++iterChar )
 		{
@@ -992,7 +1013,6 @@ void GameProc::ExplosionMineCrashCheck()
 			}
 		}
 		//터졌으몇 지뢰data를 변경해 준다.
-		//list에서 지워준다
 		tmpMine->SetExplosion();
 	}
 }
@@ -1041,7 +1061,7 @@ void GameProc::MineCrashCheck()
 				//지뢰 실행 패킷을 보낸다.
 				SendGameRunMine( tmpMine );
 
-				//이미 실행된 지뢰 다른 캐릭터 처리는 않해도 된다
+				//이미 실행된 지뢰, 다른 캐릭터 처리는 않해도 된다
 				break;
 			}
 		}
@@ -1148,7 +1168,7 @@ BOOL GameProc::SendRestartPacket()
 	return TRUE;
 }
 
-void GameProc::SetGotoLobby()
+void GameProc::SetGotoRoom()
 {
 	SSynchronize sync( &m_listPlayer );
 
@@ -1156,13 +1176,13 @@ void GameProc::SetGotoLobby()
 
 	for( ; !m_listPlayer.IsEnd( iter ); ++iter )
 	{
-		(*iter)->SetGotoGame();
+		(*iter)->SetGotoRoom();
 	}
 }
 
-BOOL GameProc::SendGotoLobbyPacket()
+BOOL GameProc::SendGotoRoomPacket()
 {
-	SPacket sendPacket( SC_GAME_GOTO_LOBBY );
+	SPacket sendPacket( SC_GAME_GOTO_ROOM );
 
 	//로비의 ip와 port번호를 넣는다.
 	int size = strlen( m_document->LobbySrvIP );

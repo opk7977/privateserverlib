@@ -1,19 +1,19 @@
 #include "SAcceptor.h"
 #include "SSessionMgr.h"
 
-#ifdef _DEBUG
-	#include "SLogger.h"
-#endif
+#include "SLogger.h"
 
 BOOL SAcceptor::m_bThreadLoop = TRUE;
 
 SAcceptor::SAcceptor(void)
 {
+	m_logger		= &GetLogger;
+	m_sessionMgr	= &GetSessionMgr;
 }
 
 SAcceptor::~SAcceptor(void)
 {
-	m_bThreadLoop = FALSE;
+	EndThread();
 	WaitForSingleObject( GetThreadHandle(), 1000 );
 	Release();
 }
@@ -32,66 +32,66 @@ BOOL SAcceptor::SetAcceptor( int port, int backlogCount )
 	if( !m_srvSock.CreateSocket() )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Acceptor::SetAcceptor()] 소겟을 생성 실패\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Acceptor::SetAcceptor()] 소겟을 생성 실패\n") );
 #endif
 		return FALSE;
 	}
 
 	//log를 남긴다
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Acceptor::SetAcceptor()] 소겟을 생성\n") );
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Acceptor::SetAcceptor()] 소겟을 생성\n") );
 #endif
 
 	//ip 재사용 설정( 서버 필수! )
 	if( !m_srvSock.SetScokReuseAddr() )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Acceptor::SetAcceptor()] ip재사용을 위해 ResuseAddr옵션을 설정 실패\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Acceptor::SetAcceptor()] ip재사용을 위해 ResuseAddr옵션을 설정 실패\n") );
 #endif
 		return FALSE;
 	}
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Acceptor::SetAcceptor()] ip재사용을 위해 ResuseAddr옵션을 설정\n") );
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Acceptor::SetAcceptor()] ip재사용을 위해 ResuseAddr옵션을 설정\n") );
 #endif
 
 	//소켓 넌블럭 설정
 	if( !m_srvSock.SetNonBlkSock() )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Acceptor::SetAcceptor()] NonBlock 옵션 설정 실패\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Acceptor::SetAcceptor()] NonBlock 옵션 설정 실패\n") );
 #endif
 		return FALSE;
 	}
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Acceptor::SetAcceptor()] NonBlock 옵션 설정\n") );
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Acceptor::SetAcceptor()] NonBlock 옵션 설정\n") );
 #endif
 
 	//소켓을 서버로 bind한다.
 	if( !m_srvSock.BindSocket( port ) )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Acceptor::SetAcceptor()] 소켓 Bind 실패\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Acceptor::SetAcceptor()] 소켓 Bind 실패\n") );
 #endif
 		return FALSE;
 	}
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Acceptor::SetAcceptor()] 소켓 Bind\n") );
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Acceptor::SetAcceptor()] 소켓 Bind\n") );
 #endif
 
 	//소켓 listen 활성화
 	if( !m_srvSock.SocketListen( backlogCount ) )
 	{
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Acceptor::SetAcceptor()] 소켓 Listen 실패\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("[Acceptor::SetAcceptor()] 소켓 Listen 실패\n") );
 #endif
 		return FALSE;
 	}
 
 #ifdef _DEBUG
-	GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Acceptor::SetAcceptor()] 소켓 Listen\n") );
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Acceptor::SetAcceptor()] 소켓 Listen\n") );
 #endif
 
 	//쓰레드 동작
@@ -121,7 +121,7 @@ BOOL SAcceptor::Run()
 		{
 			INT32 tmp = WSAGetLastError();
 #ifdef _DEBUG
-			GetLogger.ErrorLog( tmp, _T("[Acceptor::Run()] " ) );
+			m_logger->ErrorLog( tmp, _T("[Acceptor::Run()] " ) );
 #endif
 
 			if( tmp == WSAENOTSOCK )
@@ -137,11 +137,11 @@ BOOL SAcceptor::Run()
 			continue;
 
 #ifdef _DEBUG
-		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Acceptor::Run()] client Listen\n") );
+		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("[Acceptor::Run()] client Listen\n") );
 #endif
 
 		//player를 추가 해 주는 작업을 한다
-		GetSessionMgr.CreateNewSession( clientSock, addr );
+		m_sessionMgr->CreateNewSession( clientSock, addr );
 	}
 
 	return TRUE;
@@ -149,9 +149,12 @@ BOOL SAcceptor::Run()
 
 void SAcceptor::Release()
 {
-	m_bThreadLoop = FALSE;
-// #ifdef _DEBUG
-// 	GetLogger.PutLog( SLogger::LOG_LEVEL_DBGINFO, _T("[Acepptor::Release()] srv소켓을 닫습니다.\n") );
-// #endif
 	m_srvSock.Release();
+}
+
+void SAcceptor::EndThread()
+{
+	m_bThreadLoop = FALSE;
+
+	SThread::EndThread();
 }

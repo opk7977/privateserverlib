@@ -6,11 +6,12 @@
 #include "CharMgr.h"
 #include "ItemMgr.h"
 #include "GameMgr.h"
+#include "DataLeader.h"
 
 #include "DBSrvMgr.h"
 
 #include "GameProc.h"
-
+#include "MineItem.h"
 
 SIMPLEMENT_DYNAMIC(GameSession)
 SIMPLEMENT_DYNCREATE(GameSession)
@@ -20,6 +21,7 @@ SLogger*	GameSession::m_logger	= &GetLogger;
 GameMgr*	GameSession::m_gameMgr	= &GetGameMgr;
 CharMgr*	GameSession::m_charMgr	= &GetCharMgr;
 ItemMgr*	GameSession::m_itemMgr	= &GetItemMgr;
+DataLeader*	GameSession::m_document	= &GetDocument;
 
 DBSrvMgr*	GameSession::m_dbMgr	= &GetDBSrv;
 
@@ -43,9 +45,9 @@ void GameSession::Clear()
 {
 	SSynchronize sync( this );
 
-	m_myCharInfo = NULL;
-	m_myGameProc = NULL;
-	isEndGame	= TRUE;
+	m_myCharInfo	= NULL;
+	m_myGameProc	= NULL;
+	isEndGame		= TRUE;
 }
 
 void GameSession::OnCreate()
@@ -175,6 +177,9 @@ void GameSession::PacketParsing( SPacket& packet )
 	case CS_GAME_LAY_MINE:
 		RecvGameLayMine( packet );
 		break;
+	case CS_GAME_MINE_HIT:
+		RecvGameMineHit( packet );
+		break;
 	case CS_GAME_WEAPON_CHANGE:
 		RecvGameChangeWeapon( packet );
 		break;
@@ -214,9 +219,9 @@ void GameSession::PacketParsing( SPacket& packet )
 	case CS_GAME_INSTALL_ITEM:
 		//
 		break;
-// 	case CS_GAME_GOTO_LOBBY:
-// 		//
-// 		break;
+	case CS_GAME_GOTO_LOBBY:
+		RecvGameGotoLobby();
+		break;
 // 	case CS_GAME_END_GUNSELECT:
 // 		RecvGameEndGunSelect();
 // 		break;
@@ -394,18 +399,6 @@ void GameSession::RecvInGame( SPacket &packet )
 	packet >> sessionId;
 	packet >> roomNum;
 
-// 	if( roomNum == 0 )
-// 	{
-// 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-// 						_T("GameSession::RecvInGame()\n%d번 캐릭터 임시 캐릭터 공간을 만듭니다.\n\n") 
-// 						, sessionId );
-// 
-// 		//임시 캐릭터 공간을 만든다
-// 		CharObj* tmpChar = m_charMgr->GetCharSpace();
-// 		tmpChar->SetSessionID( sessionId );
-// 		tmpChar->SetID( _T("Unknown") );
-// 		tmpChar->SetTeam( (int)(sessionId % 2) );
-// 	}
 	if( roomNum == 0 )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
@@ -446,8 +439,6 @@ void GameSession::RecvInGame( SPacket &packet )
 
 void GameSession::RecvGameReadyOK()
 {
-	//SSynchronize sync( this );
-
 	if( m_myGameProc == NULL )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("GameSession::RecvGameReadyOK()\n해당 게임 프로세스를 찾지 못했습니다.\n\n") );
@@ -696,6 +687,41 @@ void GameSession::RecvGameLayMine( SPacket &packet )
 	m_myGameProc->SettingMine( this, posX, posY, posZ, dirX, dirY, dirZ );
 }
 
+void GameSession::RecvGameMineHit( SPacket &packet )
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameMineHit()\n캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameMineHit()\n캐릭더 %s의 게임 프로세스를 찾지 못했습니다.\n\n"), m_myCharInfo->GetID() );
+		return;
+	}
+
+	//지뢰의 id를 받고
+	int mineId;
+	packet >> mineId;
+
+	MineItem* tmpMine = m_myGameProc->FindMine( mineId );
+	if( tmpMine == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameMineHit()\n번 지뢰가 존재하지 않습니다.\n\n") );
+		return;
+	}
+
+	//설치된 지뢰인지 체크
+	if( !tmpMine->IsInstall() )
+		return;
+
+	//지뢰폭발
+	tmpMine->Boom();
+}
+
 void GameSession::RecvGameChangeWeapon( SPacket &packet )
 {
 	int weapon;
@@ -928,6 +954,34 @@ void GameSession::RecvGameRadioPlay( SPacket &packet )
 
 	//SendGameRadioPlay( packet );
 	SendGameRadioPlay( index );
+}
+
+void GameSession::RecvGameGotoLobby()
+{
+	if( m_myCharInfo == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameGotoLobby()\n")
+			_T("캐릭터 정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	if( m_myGameProc == NULL )
+	{
+		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
+			_T("GameSession::RecvGameGotoLobby()\n")
+			_T("게임 proc정보가 유효하지 않습니다\n\n") );
+		return;
+	}
+
+	//로비로 알림
+	SendGameToLobbyCharGotoLobby();
+
+	//로비로 옮긴다는 표시를 함
+	SetGotoLobby();
+
+	//로비로 가라고 알림
+	SendGameGotoLobby();
 }
 
 //test
@@ -1382,6 +1436,33 @@ BOOL GameSession::SendGameRadioPlay( int index )
 	// 내 팀에게만 보낸다
 	//======================================
 	m_myGameProc->SendPacketToMyTeam( m_myCharInfo->GetTeam(), sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendGameToLobbyCharGotoLobby()
+{
+	SPacket sendPacket( GL_GAME_GOTO_LOBBY );
+
+	sendPacket << m_myGameProc->GetGameID();
+	sendPacket << m_myCharInfo->GetSessionID();
+
+	m_srvNet->SendToLobbyServer( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameSession::SendGameGotoLobby()
+{
+	SPacket sendPacket( SC_GAME_GOTO_LOBBY );
+
+	//로비의 ip와 port번호를 넣는다.
+	int size = strlen( m_document->LobbySrvIP );
+	sendPacket << size;
+	sendPacket.PutData( m_document->LobbySrvIP, size );
+	sendPacket << m_document->LobbySrvPortNum;
+
+	SendPacket( sendPacket );
 
 	return TRUE;
 }

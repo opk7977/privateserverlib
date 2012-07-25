@@ -10,6 +10,7 @@ class SLogger;
 class GameMgr;
 class CharMgr;
 class ItemMgr;
+class DataLeader;
 
 class DBSrvMgr;
 //--------------------------------------
@@ -38,6 +39,7 @@ private:
 	static GameMgr*			m_gameMgr;
 	static CharMgr*			m_charMgr;
 	static ItemMgr*			m_itemMgr;
+	static DataLeader*		m_document;
 
 	static DBSrvMgr*		m_dbMgr;
 	//======================================
@@ -48,7 +50,7 @@ private:
 	GameProc*			m_myGameProc;
 
 
-	//게임을 끝낸건가?(로비로 간것이 아니다)
+	//게임을 끝낸건가?(FALSE면 서버이동을 한 것임)
 	BOOL				isEndGame;
 
 public:
@@ -63,7 +65,8 @@ public:
 	CharObj*	GetMyInfo() const { return m_myCharInfo; }
 	GameProc*	GetMyGame() const { return m_myGameProc; }
 
-	inline void SetGotoGame() { isEndGame = FALSE; }
+	inline void SetGotoRoom() { isEndGame = FALSE; }
+	inline void SetGotoLobby() { isEndGame = FALSE; }
 
 	//내 ip정보를 담자
 	void PackageMyNetInfo( SPacket& packet );
@@ -128,6 +131,9 @@ public:
 	//CS_GAME_LAY_MINE
 	void RecvGameLayMine( SPacket &packet );
 
+	//CS_GAME_MINE_HIT
+ 	void RecvGameMineHit( SPacket &packet );
+
 	//CS_GAME_WEAPON_CHANGE
 	void RecvGameChangeWeapon( SPacket &packet );
 
@@ -164,7 +170,8 @@ public:
 
 	//CS_GAME_INSTALL_ITEM
 
-//	//CS_GAME_GOTO_LOBBY
+	//CS_GAME_GOTO_LOBBY
+	void RecvGameGotoLobby();
 
 	//test
 	//CS_GAME_END_GUNSELECT
@@ -297,8 +304,6 @@ public:
 	//SC_TIME_OUT
 	//게임proc에 있음
 
-//	//SC_GAME_END
-
 	//SC_GAME_INSTALL_ITEM
 
 	//SC_GAME_RUN_ITEM
@@ -306,13 +311,15 @@ public:
 	//SC_GAME_RESTART
 	//게임Proc에 있음
 
-	//SC_GAME_GOTO_LOBBY
+	//SC_GAME_GOTO_ROOM
 	//게임Proc에 있음
+
+	//GL_GAME_GOTO_LOBBY/ SC_GAME_GOTO_LOBBY
+	BOOL SendGameToLobbyCharGotoLobby();
+	BOOL SendGameGotoLobby();
 
 	//SC_LOBBY_GAME_SELF_DISCONNECT
 	BOOL SendGameSelfDisconnect();
-
-//	//SC_GAME_CHAR_GOTO_LOBBY
 
 	//SC_GAME_CHAR_DISCONNECT
 	BOOL SendCharDisconnect();

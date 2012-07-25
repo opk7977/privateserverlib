@@ -121,4 +121,6 @@ BOOL UDPSender::Run()
 void UDPSender::EndThread()
 {
 	m_startThread = FALSE;
+
+	SThread::EndThread();
 }

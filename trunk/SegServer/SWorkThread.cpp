@@ -6,14 +6,14 @@ BOOL SWorkThread::m_bThreadLoop = TRUE;
 
 SWorkThread::SWorkThread(void)
 {
+	m_sessionMgr	= &GetSessionMgr;
 }
 
 SWorkThread::~SWorkThread(void)
 {
-	m_bThreadLoop = FALSE;
 	//쓰레드가 죽길 기다린다.
+	EndThread();
 	WaitForSingleObject( GetThreadHandle(), 1000 );
-	Release();
 }
 
 BOOL SWorkThread::Init()
@@ -47,7 +47,7 @@ BOOL SWorkThread::Run()
 		{
 			//받은 결과를 처리
 			SSession* session = 0;
-			session = (SSession*)GetSessionMgr.GetSession( keyValue );
+			session = (SSession*)m_sessionMgr->GetSession( keyValue );
 
 			//session을 제대로 받아 왔으면 처리합시다!
 			if( session != NULL )
@@ -59,8 +59,8 @@ BOOL SWorkThread::Run()
 			//WSARecv대기상태에서 WSASend를 하게 되어 반환도니 취소값이므로
 			//에러가 아니니 넘어 가야 한다.
 			//그렇지 않다면 session의 remove처리를 해 준다.
-			if( keyValue != 0 && GetLastError() != ERROR_OPERATION_ABORTED )
-				GetSessionMgr.RemoveSession( (int)keyValue );
+			if( keyValue != 0 && WSAGetLastError() != ERROR_OPERATION_ABORTED )
+				m_sessionMgr->RemoveSession( (int)keyValue );
 		}
 	}
 
@@ -69,7 +69,9 @@ BOOL SWorkThread::Run()
 	return TRUE;
 }
 
-void SWorkThread::Release()
+void SWorkThread::EndThread()
 {
 	m_bThreadLoop = FALSE;
+
+	SThread::EndThread();
 }

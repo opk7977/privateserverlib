@@ -7,37 +7,37 @@ enum SERVER_CODE
 	// 쿼리 오류 등 서버 자체적인 에러로
 	// 정상적인 처리가 되지 못한경우
 	// 결과값으로 들어가 있을 수 있다.
-	SERVER_ERROR = -10,
+	SERVER_ERROR					= -10,
 	// 성공의 결과값
-	SUCCESSED_ACK = 1,
+	SUCCESSED_ACK					= 1,
 
 	//--------------------------------------------------------------
 
 	// ID체크 결과로 ID가 중복될때
-	OVERLAPPED_ID = -1,
+	OVERLAPPED_ID					= -1,
 
 	// 로그인 결과로 해당 ID가 이미 로그인 중에 있을때
-	PRE_LOGIN_ID = -5,
+	PRE_LOGIN_ID					= -5,
 	// 로그인 결과로 ID가 없음
-	NONEXISTENT_ID = -1,
+	NONEXISTENT_ID					= -1,
 	// 로그인 결과로 PW가 틀림
-	WRONG_PW = 0,
+	WRONG_PW						= 0,
 
 	//--------------------------------------------------------------
 
 	// 방만들기 실패( 더이상 방을 만들 수 없음 )
-	ROOMCOUNT_IS_FULL = -1,
+	ROOMCOUNT_IS_FULL				= -1,
 
 	// 방 입장시 방이 게임중이면
-	ROOM_IS_PLAY_NOW = -1,
+	ROOM_IS_PLAY_NOW				= -1,
 	// 방 입장시 방이 인원 초과
-	ROOM_PLAYERCOUNT_FULL = 0,
+	ROOM_PLAYERCOUNT_FULL			= 0,
 
 	//--------------------------------------------------------------
 
 	// 게임 종료의 종류
 	// 시간 초과
-	GAME_END_TIMEATTECT = 1,
+	GAME_END_TIMEATTECT				= 1,
 	// 팀 전멸
 	GAME_END_TEAM_ALL_DIE,
 	// 팀 미션의 성공
@@ -49,7 +49,7 @@ enum SERVER_TO_SERVER
 	// gameSrv -> lobbySrv
 	// 게임서버가 로비서버로 자신이 게임서버라는 것을 알린다
 	// 데이터 없음
-	GL_CONNECT_SERVER = 100,
+	GL_CONNECT_SERVER				= 100,
 
 	// lobbySrv -> gameSrv
 	// 방의 유저들이 게임을 시작하게 되어 게임서버의 준비상태를 명령
@@ -84,6 +84,12 @@ enum SERVER_TO_SERVER
 	GL_GAME_END,
 
 	// gameSrv -> lobbySrv
+	// 게임도중에 캐릭터가 로비로 간다고 알림
+	// int			-		roomNum
+	// int			-		sessionId
+	GL_GAME_GOTO_LOBBY,
+
+	// gameSrv -> lobbySrv
 	// 게임서버에서 접속을 끊어버린 player에 대한 처리
 	// int			-		roomNum
 	// int			-		SessionId
@@ -94,12 +100,12 @@ enum SERVER_TO_SERVER
 enum LOBBY_SERVER
 {
 	//로비서버와의 연결을 확인
-	SC_LOBBY_CONNECT_OK = 200,
+	SC_LOBBY_CONNECT_OK				= 200,
 
 	// server -> client
 	// 캐릭터가 중복 로그인 되어 접속을 종료하라는 패킷
 	// 데이터 없음
-	SC_LOBBY_GAME_SELF_DISCONNECT = 241,
+	SC_LOBBY_GAME_SELF_DISCONNECT	= 241,
 };
 
 enum DB_SERVER
@@ -107,7 +113,7 @@ enum DB_SERVER
 	// DBSrv -> otherSrv
 	// 연결이 제대로 되었다는 신호
 	// 데이터 없음
-	DB_TO_OTHER_CONNECT_OK = 1000,
+	DB_TO_OTHER_CONNECT_OK			= 1000,
 
 	// loginSrv -> DBSrv
 	// id중복 체크
@@ -231,7 +237,7 @@ enum LOG_SERVER
 	//--------------------------------------------------------
 	// 데이터 없음
 	//========================================================
-	LOG_SERVER_CONNECT_OK = 10000,
+	LOG_SERVER_CONNECT_OK			= 10000,
 
 	//========================================================
 	// 다른서버 -> 로그서버
@@ -257,7 +263,7 @@ enum GAME_SERVER
 {
 	// server -> client
 	// 게임서버와의 연결이 정상적으로 되었다는 신호
-	SC_GAME_CONNECT_OK = 300,
+	SC_GAME_CONNECT_OK				= 300,
 
 	// client -> server
 	// 게임서버의 자신의 정보를 보냄
@@ -435,6 +441,11 @@ enum GAME_SERVER
 	// 데이터 없음
 	SC_GAME_LAY_MINE_FAILD,
 
+	// client -> server
+	// 지뢰를 총으로 쏴서 맞춤
+	// int			-		지뢰 id
+ 	CS_GAME_MINE_HIT,
+
 	// server -> client
 	// 누가 지뢰 밟았음
 	// int			-		설치자의 sessionId(지뢰의 ID)
@@ -517,16 +528,6 @@ enum GAME_SERVER
 	// 스캔 스킬 강종, 타임아웃
 	// 데이터 없음
 	SC_GAME_TIMEOUTL_SCAN,
-
-// 	// server -> client
-// 	// 은신 추치를 전송
-// 	// int			-		자신의 은신 point
-// 	SC_GAME_HIDE_POINT,
-// 
-// 	// server -> client
-// 	// 스캔 수치를 전송
-// 	// int			-		자신의 스캔 point
-// 	SC_GAME_SCAN_POINT,
 
 	// server -> client
 	// 은신/ 스캔수치를 보냄
@@ -686,22 +687,24 @@ enum GAME_SERVER
 	// 게임을 다시 시작한다는 패킷을 보낸다
 	SC_GAME_RESTART,
 
-// 	// client -> server
-// 	// 게임이 끝나고 방으로 이동하기 위해 정보 요청
-// 	// 데이터 없음
-// 	CS_GAME_GOTO_LOBBY,
+	// server -> client
+	// player를 룸으로 이동
+	// int			-		ip데이터의 크기
+	// char			-		로비서버ip
+	// int			-		port
+	SC_GAME_GOTO_ROOM,
+
+	// client -> server
+	// 게임을 중간에 끝내고 로비로 돌아가고 싶다고 보냄
+	// 데이터 없음
+	CS_GAME_GOTO_LOBBY,
 
 	// server -> client
-	// player를 로비로 이동
-	// int			-		ip데이터의 크기
-	// char			-		ip
+	// 게임 중간에 로비로 돌아감
+	// int			-		ip크기
+	// char			-		로비서버ip
 	// int			-		port
 	SC_GAME_GOTO_LOBBY,
-
-// 	// server -> client
-// 	// player가 로비로 이동했다고 알림
-// 	// int			-		SessionID
-// 	SC_GAME_CHAR_GOTO_LOBBY,
 
 	// server -> client
 	// player가 게임을 끄고 접속을 끊었을때 사람들에게 알림
