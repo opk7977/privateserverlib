@@ -52,6 +52,29 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		}
 		else
 		{
+// 			timer.ProcessTime();
+// 
+// 			timeF += timer.GetElapsedTime();
+// 			if( timeF >= 0.5f )
+// 			{
+// 				timeF = 0.0f;
+// 
+// 				if( isGOOD )
+// 					tmpParser->PacketProcess();
+// 				else
+// 					GetLogger.PutLog( SLogger::LOG_LEVEL_CONINFO, _T("²ý\n") );
+// 			}
+// 			if( isGOOD )
+// 			{
+// 				endTiem += timer.GetElapsedTime();
+// 				if( endTiem >= 5.0f )
+// 				{
+// 					preNet->Release();
+// 					tmpParser->Release();
+// 
+// 					isGOOD = FALSE;
+// 				}
+// 			}	
 			timer.ProcessTime();
 
 			timeF += timer.GetElapsedTime();
@@ -59,27 +82,13 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 			{
 				timeF = 0.0f;
 
-				if( isGOOD )
-					tmpParser->PacketProcess();
-				else
-					GetLogger.PutLog( SLogger::LOG_LEVEL_CONINFO, _T("²ý\n") );
-			}
-			if( isGOOD )
-			{
-				endTiem += timer.GetElapsedTime();
-				if( endTiem >= 5.0f )
-				{
-					preNet->Release();
-					tmpParser->Release();
-
-					isGOOD = FALSE;
-				}
+				tmpParser->PacketProcess();
 			}	
 		}
 	}
 
-// 	preNet->Release();
-// 	tmpParser->Release();
+	preNet->Release();
+	tmpParser->Release();
 	GetLogger.Release();
 	return (int)Message.wParam;
 }

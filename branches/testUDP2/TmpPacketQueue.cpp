@@ -131,9 +131,21 @@ void TmpPacketParser::PacketProcess()
 
 void TmpPacketParser::PacketParsing()
 {
-	if( m_packet.GetID() != 0 )
-		return;			//ID가 다름..
+	switch( m_packet.GetID() )
+	{
+	case 0:
+		AddPacket();
+		break;
+	case 1:
+		DelPacket();
+		break;
+	default:
+		break;
+	}
+}
 
+void TmpPacketParser::AddPacket()
+{
 	//패킷 처리합시다..
 	int		size = 0;
 	TCHAR	srvName[32]={0,};
@@ -145,9 +157,26 @@ void TmpPacketParser::PacketParsing()
 	m_packet.GetData( srvIP, size );
 
 	// TODO: 서버 이름과 ip를 받아 왔음
-	//OutputDebugString( srvName );
-	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("name: %s\n"), srvName );
-	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, "ip: %s\n", srvIP );
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("add: %s"), srvName );
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, ", %s\n", srvIP );
+
+}
+
+void TmpPacketParser::DelPacket()
+{
+	//패킷 처리합시다..
+	int		size = 0;
+	TCHAR	srvName[32]={0,};
+	char	srvIP[16]={0,};
+
+	m_packet >> size;
+	m_packet.GetData( srvName, size );
+	m_packet >> size;
+	m_packet.GetData( srvIP, size );
+
+	// TODO: 종료되는 서버 이름과 ip를 받아 왔음
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("del: %s"), srvName );
+	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, ", %s\n", srvIP );
 }
 
 

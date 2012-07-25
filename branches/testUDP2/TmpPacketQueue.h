@@ -67,6 +67,10 @@ public:
 	void PacketProcess();
 	void PacketParsing();
 
+private:
+	void AddPacket();
+	void DelPacket();
+
 };
 
 #define GetPrePacketParser TmpPacketParser::GetInstance()
