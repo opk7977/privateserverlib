@@ -63,7 +63,7 @@ BOOL DBFileMgr::RankDataSetting()
 BOOL DBFileMgr::CheckID( TCHAR* _id )
 {
 	SQLWCHAR	strQuery[255];
-	wsprintf( (TCHAR*)strQuery, _T("select ID from AccountTbl where U_ID='%s'"), _id );
+	wsprintf( (TCHAR*)strQuery, _T("select ID from AccountTbl where USER_ID='%s'"), _id );
 
 	if( !m_query->Exec( strQuery ) )
 	{
