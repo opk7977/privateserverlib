@@ -63,7 +63,7 @@ class SObject
 	//다른 Object class들이 상속받을 최상위 클래스
 	//순수 가상은 아니지만 생성자가 protected이므로 객체로 생성할 수는 없다.
 protected:
-	SObject();
+	SObject() {}
 
 public:
 	virtual SRTClass* GetRTClass() const { return NULL; }
@@ -71,7 +71,7 @@ public:
 	SDECLARE_DYNAMIC(SObject)		// = static SRTClass classSObject;
 
 	//virtual 함수가 반드시 하나는 있어야 한다
-	virtual ~SObject(void);
+	virtual ~SObject(void) {}
 };
 
 #endif

@@ -16,6 +16,8 @@ public:
 	BOOL ResizeWindows( HWND &hWnd, int width, int height );
 
 	virtual LRESULT WindowMegProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
+
+	void SetMyWindowText( HWND &hWnd, TCHAR* title );
 };
 
 #endif

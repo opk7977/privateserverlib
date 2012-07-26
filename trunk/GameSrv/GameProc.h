@@ -229,8 +229,6 @@ public:
 	//SendTime은 10과 5/ LastCount는 3정도가 적당하다
 	void CountDownLogic( int waitTime );
 	//==============================================================
-
-	//==============================================================
 	// 지뢰 초기화
 	//--------------------------------------------------------------
 	void MineClear();
@@ -346,6 +344,20 @@ public:
 	//SC_GAME_CHARACTER_DIE_BY_MINE
 	//SC_GAME_YOU_DIE_BY_MINE
 	BOOL SendGameCharDieByMine( int masterID, CharObj* dieChar );
+
+	//건물 뿌수기
+	//SC_GAME_REMAIN_TOWER_HP
+	BOOL SendGameRemainTowerHp();
+	//SC_GAME_DESTROY_TOWER
+	BOOL SendDestroyTower();
+
+	//팀승패 패킷
+	//각 판당
+	//SC_GAME_THIS_STAGE_WINNER_TEAM
+	BOOL SendGameThisStageWinnerTeam( int team );
+	//게임 종료
+	//SC_GAME_GAME_WINNER_TEAM
+	BOOL SendGameGameWinnerTeam( int team );
 
 	//방에 있는 모든 player에게 전송
 	//나를 빼고 보내려면 자신의 session을 매개변수로 넘긴다

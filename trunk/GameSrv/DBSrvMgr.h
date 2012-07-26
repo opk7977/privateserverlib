@@ -23,7 +23,6 @@ private:
 	SOCKADDR			m_sockAddr;
 
 	GameSession*		m_dbSrv;
-	BOOL				m_isConnect;
 
 private:
 	DBSrvMgr(void);
@@ -38,7 +37,8 @@ public:
 	void SetSession( GameSession* session );
 	inline GameSession* GetSession() const { return m_dbSrv; }
 
-	inline BOOL IsConnect() { return m_isConnect; }
+	//inline BOOL IsConnect() { return m_isConnect; }
+	inline BOOL IsConnect() { return (m_dbSrv != NULL); }
 
 	BOOL SendToDBServer( SPacket& packet );
 };

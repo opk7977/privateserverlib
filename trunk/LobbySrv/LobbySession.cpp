@@ -368,7 +368,7 @@ void LobbySession::RecvCharDrop( SPacket& packet )
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 			_T("LobbySession::RecvCharDrop()\n%d번 캐릭터는 접속중인 캐릭터가 아닙니다\n캐릭터 정보를 찾을 수 없습니다.\n\n") );
 		//DB서버로 여기는 그런애 없다고 보낸다. DB서버에선 지워야 하니까
-		//
+		SendToDBCharDiscconect( sessionid );
 		return;
 	}
 

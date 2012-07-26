@@ -49,7 +49,11 @@ BOOL SrvNet::ConnectToSrv( char* ipAddr, int port )
 
 void SrvNet::DisConnect()
 {
-	m_sock.Release();
+	//m_sock.Release();
+	if( m_LobbySrv == NULL )
+		return;
+
+	m_LobbySrv = NULL;
 }
 
 BOOL SrvNet::SendToLobbyServer( SPacket &packet )

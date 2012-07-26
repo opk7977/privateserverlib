@@ -184,11 +184,6 @@ private:
 	friend class SSingleton<RoomMgr>;
 
 private:
-	//======================================
-	// singleTon°´Ã¼
-	//======================================
-	DataLeader*						m_document;
-	//======================================
 	//¹æÀÇ ÃÑ°ø°£
 	int								m_roomCount;
 	ATL::CAtlMap<int, Room*>		m_mapRoom;
@@ -203,7 +198,7 @@ private:
 	~RoomMgr();
 
 public:
-	void	CreateRoomSpace();
+	void	CreateRoomSpace( int count );
 	void	Release();
 
 	Room*	OpenRoom( TCHAR* title );

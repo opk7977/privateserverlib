@@ -4,8 +4,6 @@
 #include "SLogger.h"
 #include "SPacket.h"
 
-#include "DataLeader.h"
-
 
 //Room
 SLogger* Room::m_logger		= &GetLogger;
@@ -123,7 +121,11 @@ void Room::SetNormal()
 
 BOOL Room::CanInsert()
 {
-	//방상태가 normal이 아니면 들어 올 수 없음
+	//방이 열려 있는 상태가 아니면 들어갈 수 없음
+	if( !IsOpen() )
+		return FALSE;
+
+	//방상태가 normal이 아니면 들어 갈 수 없음
 	if( m_roomState != ROOM_STATE_NORMAL )
 		return FALSE;
 
@@ -242,7 +244,7 @@ void Room::ChangReadyCount( BOOL isReady )
 
 #ifdef _DEBUG
 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-					_T("readyCount : %d"),
+					_T("readyCount : %d\n\n"),
 					m_readyCount );
 #endif
 }
@@ -419,7 +421,6 @@ void Room::PackagePlayerInRoomForGame( SPacket &packet, LobbyChar* itMe /*= NULL
 
 RoomMgr::RoomMgr()
 {
-	m_document = &GetDocument;
 }
 
 RoomMgr::~RoomMgr()
@@ -427,11 +428,11 @@ RoomMgr::~RoomMgr()
 	Release();
 }
 
-void RoomMgr::CreateRoomSpace()
+void RoomMgr::CreateRoomSpace( int count )
 {
 	SSynchronize Sync( this );
 
-	m_roomCount = m_document->RoomCount;
+	m_roomCount = count;
 
 	//방 공간을 만들어 놓자
 	for( int i=1; i<=m_roomCount; ++i )

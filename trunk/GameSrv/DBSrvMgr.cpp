@@ -8,7 +8,6 @@
 
 DBSrvMgr::DBSrvMgr(void)
 : m_dbSrv(NULL)
-, m_isConnect(FALSE)
 {
 	m_logger = &GetLogger;
 }
@@ -69,12 +68,11 @@ void DBSrvMgr::SetSession( GameSession* session )
 		return;
 
 	m_dbSrv = session;
-	m_isConnect = TRUE;
 }
 
 BOOL DBSrvMgr::SendToDBServer( SPacket& packet )
 {
-	if( !m_isConnect )
+	if( m_dbSrv == NULL )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 			_T("DBSrvMgr::SendToLogServer()\n서버와의 연결이 되어 있지 않습니다.\n\n") );

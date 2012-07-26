@@ -61,7 +61,14 @@ void GameSession::OnDestroy()
 		if( m_srvNet->GetSession() == this )
 		{
 			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-							_T("GameSession::OnDestroy()\n 서버와의 접속을 끊습니다.\n\n") );
+							_T("GameSession::OnDestroy()\n 로비서버와의 접속을 끊습니다.\n\n") );
+			//m_srvNet->DisConnect();
+		}
+		else if( m_dbMgr->GetSession() == this )
+		{
+			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
+				_T("GameSession::OnDestroy()\n DB서버와의 접속을 끊습니다.\n\n") );
+			//m_dbMgr->DisConnect();
 		}
 		else
 		{
@@ -93,8 +100,11 @@ void GameSession::OnDestroy()
 		}
 		else
 		{
-			//아직 남아 있는 같이 게임하고 있던 사람들에게 내가 나가는것을 알림
-			SendCharDisconnect();
+			if( isEndGame )
+			{
+				//아직 남아 있는 같이 게임하고 있던 사람들에게 내가 나가는것을 알림
+				SendCharDisconnect();
+			}
 		}
 
 		//캐릭터 공간의 정보를 지워 준다.
@@ -276,7 +286,7 @@ void GameSession::RecvLobbyStartGame( SPacket &packet )
 	packet >> count;		//방의 인원수
 
 	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-						_T("GameSession::RecvLobbyStartGame()\n%d번 방에 %d명의 캐릭터가 게임을 시작합니다.\n\n") 
+						_T("GameSession::RecvLobbyStartGame()\n%d번 방에 %d명의 캐릭터가 게임을 시작을 시도합니다.\n\n") 
 						, roomNum, count );
 
 	//우선 방 번호에 해당하는 게임을 연다
@@ -870,11 +880,16 @@ void GameSession::RecvGameAskRevival( SPacket &packet )
 		return;
 	}
 
-	m_myCharInfo->SetAlive();
-
 	int startPoingIndex;
+	float posX, posY, posZ;
 
 	packet >> startPoingIndex;
+	packet >> posX >> posY >> posZ;
+
+	//위치 갱신해 주고
+	m_myCharInfo->SetPos( posX, posY, posZ );
+	//그러고 부활시킨다
+	m_myCharInfo->SetAlive();
 
 	SendGameCharRevival( startPoingIndex );
 }

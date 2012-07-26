@@ -56,11 +56,11 @@ void DBSession::OnDestroy()
 	{
 #ifdef _DEBUG
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-						_T("DBSession::OnDestroy()\n로그 서버와 연결이 끈겼습니다.\n\n") );
+						_T("DBSession::OnDestroy()\n로그인 서버와 연결이 끈겼습니다.\n\n") );
 #endif
 #ifdef CONNECT_LOG_SERVER
 		m_logSrv->SendLog( LogSrvMgr::LOG_LEVEL_INFORMATION,
-						_T("DBSession::OnDestroy() 로그 서버와 연결이 끈겼습니다") );
+						_T("DBSession::OnDestroy() 로그인 서버와 연결이 끈겼습니다") );
 #endif
 		m_login->Release();
 	}

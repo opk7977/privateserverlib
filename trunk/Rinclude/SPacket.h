@@ -33,7 +33,7 @@ private:
 	//쌓인(?) 패킷의 크기
 	int		m_iReceivedSize;
 
-	//데이터의 끗위치!!
+	//데이터의 끝위치!!
 	char*	m_chpEndofDataField;
 
 

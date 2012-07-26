@@ -554,6 +554,9 @@ enum GAME_SERVER
 	// client -> server
 	// 부활할 수 있는 시간이 되어 부활을 요청한다
 	// int			-		부활 위치 index
+	// float		-		부활위치posX
+	// float		-		부활위치posY
+	// float		-		부활위치posZ
 	CS_GAME_ASK_REVIVAL,
 
 	// server -> client
@@ -626,6 +629,16 @@ enum GAME_SERVER
 	// 건물을 공격함
 	// int			-		damege
 	CS_GAME_ATTACK_TOWER,
+
+	// server -> client
+	// 건물 공격당함 건물의 HP를 보냄
+	// int			-		건물의 남은 HP
+	SC_GAME_REMAIN_TOWER_HP,
+
+	// server -> client
+	// 건물의HP가 다 되서 건물이 무너짐
+	// int			-		건물의 팀
+	SC_GAME_DESTROY_TOWER,
 
 	// server -> client
 	// 이번판의 승리팀

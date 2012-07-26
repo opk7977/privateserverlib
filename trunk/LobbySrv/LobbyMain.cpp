@@ -9,6 +9,8 @@
 
 #include "DataLeader.h"
 
+#define RoomCount 4
+
 LobbyMain::LobbyMain(void)
 {
 	m_network	= &GetNetwork;
@@ -31,7 +33,7 @@ BOOL LobbyMain::Init()
 	//======================================
 	// 방 셋팅
 	//======================================
-	m_roomMgr->CreateRoomSpace();
+	m_roomMgr->CreateRoomSpace( RoomCount );
 
 	//======================================
 	// 캐릭터 공간 셋팅

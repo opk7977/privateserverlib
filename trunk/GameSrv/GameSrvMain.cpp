@@ -13,6 +13,8 @@
 #include "LogSrvMgr.h"
 #include "DBSrvMgr.h"
 
+#define RoomCount 4
+
 GameSrvMain::GameSrvMain(void)
 {
 	m_document	= &GetDocument;
@@ -46,7 +48,7 @@ BOOL GameSrvMain::Init()
 	//======================================
 	// 게임proc셋팅
 	//======================================
-	m_gameMgr->CreateGameProc( m_document->RoomCount );
+	m_gameMgr->CreateGameProc( RoomCount );
 
 	//======================================
 	// 서버 초기화/ 셋팅

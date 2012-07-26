@@ -154,7 +154,7 @@ BOOL GameProc::Run()
 				// 잠시 대기 후에 다시 시작 패킷을 보낸다.
 				//======================================
 				//10초 후 다시 게임이 시작한다는 신호를 보냄
-				//
+				SendNotice( _T("[Notice] 10초후 게임이 시작합니다.") );
 
 				//10초 대기
 				//WaitTimeLogic( WAIT_GAME_END_TIME );
@@ -190,6 +190,10 @@ BOOL GameProc::Run()
 				(this->*m_GameResult[m_gameMode])(whosWin);
 				// 게임의 결과 rankPoint를 DB에 데이터를 보낸다
 				SendToDBGameResult();
+				// 게임의 승패를 클라들에게 보낸다
+				SendGameGameWinnerTeam( whosWin );
+
+				//게임루프 종료flag
 				isEnd = TRUE;
 			}
 		}
@@ -331,6 +335,10 @@ void GameProc::TowerDameged( int team, int damege )
 	//건물의 HP를 달게 하고
 	m_towerHP -= damege;
 
+	//건물의 HP를 모두에게 보낸다
+	//SC_GAME_REMAIN_TOWER_HP
+	//
+
 	//건물의 HP가 모두 달았다면 게임 종료
 	if( m_towerHP <= 0 )
 	{
@@ -338,6 +346,10 @@ void GameProc::TowerDameged( int team, int damege )
 		m_isWin = (m_towerTeam == GAME_TEAM_ATT) ? GAME_TEAM_DEF : GAME_TEAM_ATT;
 		//시간 종료
 		m_nowPlayTimeCount = 0;
+
+		//건물이 무너졌다고 모두에게 보낸다
+		//SC_GAME_DESTROY_TOWER
+		//
 	}
 }
 
@@ -391,7 +403,7 @@ BOOL GameProc::ResetGame()
 			else if( m_AttKillCount < m_DefKillCount )
 			{
 				m_isWin = 1;
-				++m_DefWinCount;		//불루스팀이 이김
+				++m_DefWinCount;		//블루팀이 이김
 			}
 			else
 			{
@@ -416,20 +428,19 @@ BOOL GameProc::ResetGame()
 		return FALSE;
 	}
 
-	//승리조건에 따라 누가 이겼다는 패킷을 보낸다
-	//
-	//
-	//
-
-	
 	//총 킬/ 데스 카운터를 적립해준다.
 	m_AttKillAllCount	+= m_AttKillCount;
 	m_DefKillAllCount	+= m_DefKillCount;
 
-
 	//게임을 모두 끝냈으면 FALSE를 return하여 게임을 종료 할 수 있게 한다.
 	if( --m_playCount <= 0 )
 		return FALSE;
+
+	//======================================
+	// 이번 판의 승리팀을 보낸다.
+	//======================================
+	SendGameThisStageWinnerTeam( m_isWin );
+
 
 	//게임을 더 해야 하는 경우는 다시 정보를 초기화
 	m_nowPlayTimeCount	= m_playTime;
@@ -516,11 +527,6 @@ void GameProc::CountDownLogic( int waitTime )
 			SendTimeRemain( m_wait );
 		}
 	}
-}
-
-void GameProc::AddDestroyPoint( int Team, int damege )
-{
-	m_teamDestroyPoint[Team] += damege;
 }
 
 void GameProc::MineClear()
@@ -1250,6 +1256,54 @@ BOOL GameProc::SendGameCharDieByMine( int masterID, CharObj* dieChar )
 	sendPacket << masterID;
 
 	dieChar->GetSession()->SendPacket( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameProc::SendGameRemainTowerHp()
+{
+	SPacket sendPacket( SC_GAME_REMAIN_TOWER_HP );
+
+	sendPacket << m_towerHP;
+
+	//모두에게 남은 건물의 HP를 보낸다.
+	SendAllPlayerInGame( sendPacket );
+	
+	return TRUE;
+}
+
+BOOL GameProc::SendDestroyTower()
+{
+	SPacket sendPacket( SC_GAME_DESTROY_TOWER );
+
+	sendPacket << m_towerTeam;
+
+	//모두에게 건물이 무너졌다고 보낸다.
+	SendAllPlayerInGame( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameProc::SendGameThisStageWinnerTeam( int team )
+{
+	SPacket sendPacket( SC_GAME_THIS_STAGE_WINNER_TEAM );
+
+	sendPacket << team;
+
+	//모두에게 승리팀을 보낸다
+	SendAllPlayerInGame( sendPacket );
+
+	return TRUE;
+}
+
+BOOL GameProc::SendGameGameWinnerTeam( int team )
+{
+	SPacket sendPacket( SC_GAME_GAME_WINNER_TEAM );
+
+	sendPacket << team;
+
+	//모두에게 게임의 승리팀의 보낸다
+	SendAllPlayerInGame( sendPacket );
 
 	return TRUE;
 }
