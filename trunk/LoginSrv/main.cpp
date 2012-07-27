@@ -48,7 +48,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	// 서버 데이터 로드
 	//======================================
-	if( !GetDocument.DataSetting() )
+	if( !GetDocument.DataSetting( IpzCmdParam ) )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("main\n데이터 로드 실패!\n\n") );
 		return 0;
@@ -60,7 +60,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	HWND hWnd;
 	WinMgr window;
 	window.SetInstance( hInstance );
-	if( !window.CreateWindows( hInstance, _T("Login"), _T("LoginSrv"), hWnd, 800, 600, nCmdShow ) )
+	//if( !window.CreateWindows( hInstance, _T("Login"), _T("LoginSrv"), hWnd, 800, 600, nCmdShow ) )
+	if( !window.CreateHideWindows( hInstance, _T("Login"), _T("LoginSrv"), hWnd, nCmdShow ) )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("main\n윈도우 생성 실패!\n\n") );
 		return 0;

@@ -56,6 +56,45 @@ BOOL SWindow::CreateWindows( HINSTANCE hInst, TCHAR* className, TCHAR* appName, 
 	return TRUE;
 }
 
+BOOL SWindow::CreateHideWindows( HINSTANCE hInst, TCHAR* className, TCHAR* appName, HWND &hWnd, int nCmdShow )
+{
+	m_wcex.cbSize					= sizeof(WNDCLASSEX);
+	m_wcex.style					= CS_HREDRAW | CS_VREDRAW;
+	m_wcex.lpfnWndProc				= (WNDPROC)gMsgProc;
+	m_wcex.cbClsExtra				= 0;
+	m_wcex.cbWndExtra				= 0;
+	m_wcex.hInstance				= hInst;
+	m_wcex.hIcon					= LoadIcon(hInst, IDI_APPLICATION);
+	m_wcex.hIconSm					= LoadIcon(hInst, IDI_APPLICATION);
+	m_wcex.hCursor					= LoadCursor(NULL, IDC_ARROW);
+	m_wcex.hbrBackground			= (HBRUSH)GetStockObject(WHITE_BRUSH);
+	m_wcex.lpszMenuName				= NULL;
+	m_wcex.lpszClassName			= className;
+
+	if( !RegisterClassEx( &m_wcex ) )
+		return FALSE;
+
+	hWnd = CreateWindowEx( WS_EX_APPWINDOW
+						, className
+						, appName
+						, WS_OVERLAPPEDWINDOW
+						, CW_USEDEFAULT
+						, CW_USEDEFAULT
+						, 10
+						, 10
+						, NULL
+						, NULL
+						, hInst
+						, NULL );
+
+	if( !hWnd )
+		return FALSE;
+
+	//ShowWindow( hWnd, nCmdShow );
+
+	return TRUE;
+}
+
 BOOL SWindow::ResizeWindows( HWND &hWnd, int width, int height )
 {
 	RECT	rc;

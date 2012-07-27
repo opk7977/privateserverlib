@@ -23,8 +23,11 @@ LRESULT WinMgr::WindowMegProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	{
 	case WM_CREATE:
 		ResizeWindows( hWnd, 500, 100 );
-		DialogBox( m_hInst, MAKEINTRESOURCE( IDD_IN_SRVNAME ), HWND_DESKTOP, DlgProc );
 
+		{
+			if( !GetDocument.isSetSrvName )
+				DialogBox( m_hInst, MAKEINTRESOURCE( IDD_IN_SRVNAME ), HWND_DESKTOP, DlgProc );
+		}
 		break;
 
 	case WM_DESTROY:
@@ -40,6 +43,7 @@ BOOL CALLBACK DlgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 	{
 	case WM_INITDIALOG:
 		SetDlgItemText( hWnd, IDC_EDIT_SRVNAME, GetDocument.SrvName );
+		break;
 	case WM_COMMAND:
 		switch( LOWORD( wParam ) )
 		{

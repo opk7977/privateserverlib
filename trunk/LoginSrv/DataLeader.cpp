@@ -7,6 +7,7 @@ DataLeader::DataLeader(void)
 , LobbySrvPortNum(0)
 , GameSrvPortNum(0)
 , LogSrvPortNum(0)
+, isSetSrvName(FALSE)
 {
 	ZeroMemory( DBSrvIp, 15 );
 	ZeroMemory( LoginSrvIP, 15 );
@@ -21,7 +22,7 @@ DataLeader::~DataLeader(void)
 {
 }
 
-BOOL DataLeader::DataSetting()
+BOOL DataLeader::DataSetting( char* IpzCmdParam )
 {
 	//==============================================================
 	// 파일에서 읽어 오는 data
@@ -125,8 +126,20 @@ BOOL DataLeader::DataSetting()
 	//--------------------------------------
 	// 자신이 여는 서버의 제목
 	//--------------------------------------
-	//SrvName_게임서버 열때 제목: Unknown 
-	_stprintf_s( SrvName, _T("Unknown") );
+	//SrvName_게임서버 열때 제목: Unknown
+	if( strcmp( IpzCmdParam, "" ) == 0 )
+	{
+		//아무것도 없음
+		isSetSrvName = FALSE;
+		_stprintf_s( SrvName, _T("Unknown") );
+	}
+	else
+	{
+		//받아온 글이있음
+		isSetSrvName = TRUE;
+		MultiByteToWideChar( CP_ACP, 0, IpzCmdParam, -1, SrvName, 32 );
+	}
+	
 
 	return TRUE;
 }

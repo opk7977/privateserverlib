@@ -38,14 +38,15 @@ public:
 	char	LogSrvIP[15];
 	int		LogSrvPortNum;
 	//--------------------------------------------------------------
-	TCHAR	SrvName[32];
+	BOOL	isSetSrvName;
+	TCHAR	SrvName[64];
 
 public:
 	DataLeader(void);
 	~DataLeader(void);
 
 public:
-	BOOL DataSetting();
+	BOOL DataSetting( char* IpzCmdParam );
 	//--------------------------------------------------------------
 private:
 	//현재 컴퓨터의 ip주소를 받아 자동으로 셋팅한다

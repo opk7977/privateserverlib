@@ -13,6 +13,7 @@ public:
 	virtual ~SWindow(void);
 
 	BOOL CreateWindows( HINSTANCE hInst, TCHAR* className, TCHAR* appName, HWND &hWnd, int width, int height, int nCmdShow );
+	BOOL CreateHideWindows( HINSTANCE hInst, TCHAR* className, TCHAR* appName, HWND &hWnd, int nCmdShow );
 	BOOL ResizeWindows( HWND &hWnd, int width, int height );
 
 	virtual LRESULT WindowMegProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
