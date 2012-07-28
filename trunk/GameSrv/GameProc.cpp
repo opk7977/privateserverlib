@@ -108,16 +108,16 @@ BOOL GameProc::Run()
 		//--------------------------------------
 		// 게임 준비가 완료 되었다는 신호를 보낸다
 		//--------------------------------------
-		//SendReadyPacket();
-		SendStartPacket();
+		SendReadyPacket();
+		//SendStartPacket();
 		//--------------------------------------
 		// 무기 고를 시간 줍니다.
 		//--------------------------------------
-		CountDownLogic( 19 );
+		CountDownLogic( 20 );
 		//--------------------------------------
 		// 게임 시작 packet을 보낸다.
 		//--------------------------------------
-		//SendStartPacket();
+		SendStartPacket();
 		//======================================
 		
 		//게임 loop를 돈다
@@ -250,6 +250,12 @@ void GameProc::GameRun()
 	float ElapsedTime;
 
 	SPacket sendPacket;
+
+	//맨 첫 초를 보낸다
+	sendPacket.PacketClear();
+	sendPacket.SetID( SC_GAME_TIME_COUNTDOWN );
+	sendPacket << m_nowPlayTimeCount;
+	SendAllPlayerInGame( sendPacket );
 
 	//======================================
 	// 게임 play시간동안 loop
@@ -521,7 +527,7 @@ void GameProc::CountDownLogic( int waitTime )
 			framTime = 0.f;
 
 			//시간 줄이고 다 줄었으면 return
-			if( --m_wait <= 0 )
+			if( --m_wait < 0 )
 				return;
 			
 			SendTimeRemain( m_wait );
@@ -962,6 +968,9 @@ void GameProc::ExplosionMineCrashCheck()
 
 		m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::ExplosionMineCrashCheck()\n%d번의 지뢰가 폭발합니다."), tmpMine->GetSessionID() );
 
+		//지뢰주인을 찾고
+		CharObj* mineMaster = m_charMgr->FindCharAsSessionId( tmpMine->GetSessionID() );
+
 		//폭발 충돌체크하자
 		for( iterChar = m_listPlayer.GetHeader(); !m_listPlayer.IsEnd( iterChar ); ++iterChar )
 		{
@@ -975,10 +984,14 @@ void GameProc::ExplosionMineCrashCheck()
 			if( tmpChar->IsInvincible() )
 				continue;
 
+			//내꺼면 우선 패스함
+			if( tmpChar == mineMaster )
+				continue;
+
 			POINT3 charpos = tmpChar->GetPos();
 
-			//지뢰주인을 찾고
-			CharObj* mineMaster = m_charMgr->FindCharAsSessionId( tmpMine->GetSessionID() );
+// 			//지뢰주인을 찾고
+// 			CharObj* mineMaster = m_charMgr->FindCharAsSessionId( tmpMine->GetSessionID() );
 			
 			int damege = tmpMine->IsBoomCollision( charpos.m_X, charpos.m_Y, charpos.m_Z );
 
@@ -1011,6 +1024,30 @@ void GameProc::ExplosionMineCrashCheck()
 				}
 			}
 		}
+
+		//마지막으로 나를 체크
+		POINT3 charpos = mineMaster->GetPos();
+		int damege = tmpMine->IsBoomCollision( charpos.m_X, charpos.m_Y, charpos.m_Z );
+		
+		if( damege > 0 )
+		{
+			mineMaster->DownHP( damege );
+
+			//나를 뺀 모두에게 폭탄터저 에너지가 달았다는 패킷을 보낸다
+			//나에게 너 폭탄 맞았다는 패킷을 보낸다.
+			SendGameCharDamegedByMine( mineMaster->GetSessionID(), mineMaster );
+
+
+			if( mineMaster->IsDie() )
+			{
+				//죽으면 지뢰정보를 초기화 해 줘야 한다
+				MineResetTarget( mineMaster->GetSessionID() );
+
+				//죽은것에 대한 패킷
+				SendGameCharDieByMine( mineMaster->GetSessionID(), mineMaster );
+			}
+		}
+
 		//터졌으몇 지뢰data를 변경해 준다.
 		tmpMine->SetExplosion();
 	}
