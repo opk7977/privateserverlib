@@ -10,8 +10,6 @@ private:
 private:
 	BOOL		m_isStartServer;
 
-	char		m_Dir[512];
-
 public:
 	SrvCtrl(void);
 	~SrvCtrl(void);
