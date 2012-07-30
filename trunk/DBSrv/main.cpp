@@ -42,7 +42,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 		return 0;
 
 	//======================================
-	// 로그 초기화
+	// 로그 초기화2
 	//======================================
 	SLogger* m_logger = &GetLogger;
 	m_logger->Create( "DBSrv" );

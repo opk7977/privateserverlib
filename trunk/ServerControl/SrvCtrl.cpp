@@ -1,4 +1,5 @@
 #include "SrvCtrl.h"
+#include "SLogger.h"
 #include <io.h>
 
 SrvCtrl::SrvCtrl(void)

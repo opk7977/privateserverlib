@@ -356,12 +356,32 @@ void LobbySession::RecvCharacterLogin( SPacket& packet )
 
 void LobbySession::RecvCharDrop( SPacket& packet )
 {
-	//만약 캐릭터가 게임중이면 게임서버에서의 신호를 받아야 하는 거니까 무시
-
 	int sessionid;
 	packet >> sessionid;
 
-	LobbyChar* tmpChar = m_charMgr->FindCharAsSessionId( sessionid );
+	//우선 로그인에서 들어오기를 기다리는 부분에서 찾는다
+	LobbyChar* tmpChar = m_charMgr->GetWaitCharInfo( sessionid );
+	if( tmpChar != NULL )
+	{
+		//로그인 서버에서 넘어오는것을 기다리고 있는 중
+		//======================================
+		// 기다리는 캐릭터 목록에서 뺀다
+		//======================================
+		tmpChar->Init();		//초기화 해주고
+		m_charMgr->DelWaitChar( sessionid );
+
+		//======================================
+		// DB에 보낸다
+		//======================================
+		SendToDBCharDiscconect( sessionid );
+
+		return;
+	}
+
+	//======================================
+	// 기다리는 목록에는 없음
+	//======================================
+	tmpChar = m_charMgr->FindCharAsSessionId( sessionid );
 
 	if( tmpChar == NULL )
 	{
@@ -372,13 +392,29 @@ void LobbySession::RecvCharDrop( SPacket& packet )
 		return;
 	}
 
-	//캐릭터가 게임서버에 있다면 우선은 지우지 않는다
-	//어차피 게임서버에서 연결이 끊긴다고 신호가 올것이기 때문에
-	if( tmpChar->GetIsPlay() )
-		return;
+	//정상적인 상태가 아니라면공간을 지운다
+	if( tmpChar->GetSession() == NULL )
+	{
+		//======================================
+		// 게임에 들어간 상태
+		//======================================
+		//공간 반납하고
+		m_charMgr->ReturnCharSpace( tmpChar );
 
+		//DB에 알림
+		SendToDBCharDiscconect( sessionid );
+
+		return;
+	}
+	
 	//아니면 캐릭터에게 연결 종료 명령을 내려야 한다.
 	tmpChar->GetSession()->SendLobbySelfDisconnect();
+
+	//게임 서버에 있는 경우 캐릭터 공간을 지운다
+	m_charMgr->ReturnCharSpace( tmpChar );
+
+	//DB에 알림
+	SendToDBCharDiscconect( sessionid );
 }
 
 void LobbySession::RecvToDBUpdateUserData( SPacket& packet )
@@ -823,6 +859,10 @@ void LobbySession::RecvInsertLobby( SPacket& packet )
 							m_myCharInfo->GetID() );
 
 #endif
+			//======================================
+			// 기다리는 캐릭터 목록에서 나를 뺀다
+			//======================================
+			m_charMgr->DelWaitChar( sessionId );
 
 			//======================================
 			// 내 정보 셋팅
