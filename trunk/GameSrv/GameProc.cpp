@@ -1010,7 +1010,7 @@ void GameProc::ExplosionMineCrashCheck()
 					if( tmpChar->GetTeam() != mineMaster->GetTeam() )
 					{
 						//죽은캐릭터 반대 팀의 kill수를 올려 주고
-						(*iterChar)->GetMyGame()->AddKillCount( mineMaster->GetTeam() );
+						(*iterChar)->GetMyGame()->AddKillCount( tmpChar->GetTeam() );
 
 						//지뢰 주인의 kill수를 올려 준다
 						mineMaster->KillCountUp();
