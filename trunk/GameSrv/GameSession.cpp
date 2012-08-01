@@ -62,13 +62,11 @@ void GameSession::OnDestroy()
 		{
 			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 							_T("GameSession::OnDestroy()\n 로비서버와의 접속을 끊습니다.\n\n") );
-			//m_srvNet->DisConnect();
 		}
 		else if( m_dbMgr->GetSession() == this )
 		{
 			m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 				_T("GameSession::OnDestroy()\n DB서버와의 접속을 끊습니다.\n\n") );
-			//m_dbMgr->DisConnect();
 		}
 		else
 		{
@@ -273,8 +271,6 @@ void GameSession::RecvLobbyConnectOK()
 
 void GameSession::RecvLobbyStartGame( SPacket &packet )
 {
-	//SSynchronize Sync( this );
-
 	int roomNum, mapNum, gameMode, playTime, playCount, count;
 
 	packet >> roomNum;		//방번호
@@ -384,8 +380,6 @@ void GameSession::RecvLobbyEndReadyOK( SPacket &packet )
 //--------------------------------------
 void GameSession::RecvInGame( SPacket &packet )
 {
-	//SSynchronize Sync( this );
-
 	int sessionId, roomNum;
 
 	packet >> sessionId;
@@ -525,8 +519,6 @@ void GameSession::RecvGameCharChangeObj( SPacket &packet )
 
 void GameSession::RecvGameAttack( SPacket &packet )
 {
-	//SSynchronize Sync( this );
-
 	if( m_myCharInfo == NULL )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
@@ -600,8 +592,6 @@ void GameSession::RecvGameAttack( SPacket &packet )
 			_T("GameSession::RecvGameAttec()\n캐릭터%s는 무적상태 입니다.\n\n"), tmpChar->GetID() );
 		return;
 	}
-
-// 	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("받음 : %d\n\n"), GetTickCount() );
 
 	//에너지를 달게 한다
 	//죽으면 death가 오른다
@@ -744,15 +734,6 @@ void GameSession::RecvGameVisibleHide()
 
 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 			_T("%s님이 은신 사용\n\n"), m_myCharInfo->GetID() );
-	
-// 	//이놈이 지금 NONE상태가 아니면 안됨
-// 	if( m_myCharInfo->GetSkillState() != SKILL_NONE )
-// 	{
-// 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-// 			_T("GameSession::RecvGameVisibleHide()\n")
-// 			_T("넌 지금 기본 상태가 아님\n\n") );
-// 		return;
-// 	}
 
 	//나 은신 설정
 	m_myCharInfo->SetSkillHide();
@@ -779,15 +760,6 @@ void GameSession::RecvGameInvisibleHide()
 
 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
 		_T("%s님이 은신 취소\n\n"), m_myCharInfo->GetID() );
-
-// 	//은신 상태가 아니면 무시해
-// 	if( m_myCharInfo->GetSkillState() != SKILL_HIDE )
-// 	{
-// 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
-// 			_T("GameSession::RecvGameVisibleHide()\n")
-// 			_T("넌 지금 은신 상태가 아님\n\n") );
-// 		return;
-// 	}
 
 	//나 은신 설정 해제
 	m_myCharInfo->SetSkillNone();
@@ -848,8 +820,6 @@ void GameSession::RecvGameKillMyself()
 
 void GameSession::RecvGameChangeState( SPacket &packet )
 {
-	//SSynchronize Sync( this );
-
 	int state, objIndex;
 	BOOL isJump;
 	packet >> state;
@@ -869,8 +839,6 @@ void GameSession::RecvGameChangeState( SPacket &packet )
 
 void GameSession::RecvGameAskRevival( SPacket &packet )
 {
-	//SSynchronize sync( this );
-
 	//우선 애를 부활시켜 준다.
 	if( m_myCharInfo == NULL )
 	{
@@ -896,11 +864,8 @@ void GameSession::RecvGameAskRevival( SPacket &packet )
 
 void GameSession::RecvGameChatting( SPacket &packet )
 {
-	//SSynchronize Sync( this );
-
 	int target, size;
 	TCHAR tmpChatting[256] = {0,};
-	//TCHAR Chatting[300] = {0,};
 
 	packet >> target;
 	packet >> size;
@@ -921,11 +886,9 @@ void GameSession::RecvGameChatting( SPacket &packet )
 	switch( target )
 	{
 	case CHATTING_ALL:
-		//swprintf_s( Chatting, _T("[All][%s] %s"), m_myCharInfo->GetID(), tmpChatting );
 		SendGameChatting( tmpChatting );
 		break;
 	case CHATTING_TEAM:
-		//swprintf_s( Chatting, _T("[Team][%s] %s"), m_myCharInfo->GetID(), tmpChatting );
 		SendGameTeamChat( tmpChatting );
 		break;
 	default:
@@ -934,22 +897,12 @@ void GameSession::RecvGameChatting( SPacket &packet )
 						_T("GameSession::RecvGameChatting()\ntarget이 유효하지 않습니다.\n\n") );
 		return;
 	}
-
-// 	size = _tcslen( Chatting )*sizeof( TCHAR );
-// 
-// 	m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM,
-// 		_T("GameSession::RecvGameChatting()\n%s\n\n"), Chatting );
-// 
-// 	SendGameChatting( Chatting, size );
 }
 
 void GameSession::RecvGameRadioPlay( SPacket &packet )
 {
 	int index;
 	packet >> index;
-	//packet.SetID( SC_GAME_RADIO_PLAY );
-
-	//SendGameRadioPlay( packet );
 	SendGameRadioPlay( index );
 }
 
@@ -1186,9 +1139,6 @@ BOOL GameSession::SendGameAttack( CharObj* attactedChar, float posX, float posY,
 	sendPacket << normalX << normalY << normalZ;
 
 	m_myGameProc->SendAllPlayerInGame( sendPacket, attactedChar->GetSession() );
-
-// 	m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("보냄 : %d\n\n"), GetTickCount() );
-
 
 	return TRUE;
 }

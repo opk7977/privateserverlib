@@ -48,14 +48,11 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	HWND hWnd;
 	WinMgr window;
-	//if( !window.CreateWindows( hInstance, _T("GameSrv"), _T("GameSrv"), hWnd, 800, 600, nCmdShow ) )
 	if( !window.CreateHideWindows( hInstance, _T("GameSrv"), _T("GameSrv"), hWnd, nCmdShow ) )
 	{
 		GetLogger.PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("main::WinMain()\n윈도우 생성에 실패했습니다.\n\n") );
 		return 0;
 	}
-
-	window.SetMyWindowText( hWnd, _T("GameSrv_준비중") );
 
 	//======================================
 	// 서버 데이터 로드
@@ -72,9 +69,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	GameSrvMain gMain;
 	gMain.Init();
-
-	window.SetMyWindowText( hWnd, _T("GameSrv_실행중") );
-
 
 	MSG Message;
 

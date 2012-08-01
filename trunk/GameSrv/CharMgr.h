@@ -186,9 +186,9 @@ public:
 	
 	//--------------------------------------------------------------
 	inline int GetSkillState() { return m_skillState; }
-	void SetSkillNone();// { m_skillState = SKILL_NONE; }
-	void SetSkillHide();// { m_skillState = SKILL_HIDE; }
-	void SetSkillScan();// { m_skillState = SKILL_SCAN; }
+	void SetSkillNone();
+	void SetSkillHide();
+	void SetSkillScan();
 
 	inline int GetHidePoint() { return m_hidePoint; }
 	inline int GetScanPoint() { return m_scanPoint; }

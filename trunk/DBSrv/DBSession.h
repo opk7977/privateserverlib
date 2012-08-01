@@ -5,7 +5,6 @@
 
 class SrvMgr;
 class DataBaseObj;
-//class DBMgr;
 
 class PlayerObj;
 class PlayerMgr;

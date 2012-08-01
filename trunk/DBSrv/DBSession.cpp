@@ -404,9 +404,6 @@ void DBSession::RecvLoginTryLogin( SPacket& packet )
 
 		//id가 이미 사용중이었다고 보낸다
 		SendLoginTryLoginResult( indexId, PRE_LOGIN_ID );
-
-		//캐릭터 삭제
-		//m_playerMgr->ReturnPlayerSpace( tmpPlayer );
 	}
 }
 

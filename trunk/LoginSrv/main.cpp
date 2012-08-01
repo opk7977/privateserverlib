@@ -60,22 +60,17 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	HWND hWnd;
 	WinMgr window;
 	window.SetInstance( hInstance );
-	//if( !window.CreateWindows( hInstance, _T("Login"), _T("LoginSrv"), hWnd, 800, 600, nCmdShow ) )
 	if( !window.CreateHideWindows( hInstance, _T("Login"), _T("LoginSrv"), hWnd, nCmdShow ) )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("main\n윈도우 생성 실패!\n\n") );
 		return 0;
 	}
 
-	window.SetMyWindowText( hWnd, _T("LoginSrv_준비중") );
-
 	//======================================
 	// login 메인 실행
 	//======================================
 	LoginMain lMain;
 	lMain.Init();
-
-	window.SetMyWindowText( hWnd, _T("LoginSrv_실행중") );
 
 	MSG Message;
 

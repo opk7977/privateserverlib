@@ -26,7 +26,6 @@ LoginMain::LoginMain(void)
 
 LoginMain::~LoginMain(void)
 {
-	//Release();
 }
 
 BOOL LoginMain::Init()

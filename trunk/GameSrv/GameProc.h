@@ -298,7 +298,6 @@ public:
 	// 지뢰 로직
 	//======================================
 	//지뢰 설치
-	//BOOL SettingMine( int sessionId, float posX, float posY, float posZ, float dirX, float dirY, float dirZ );
 	BOOL SettingMine( GameSession* session, float posX, float posY, float posZ, float dirX, float dirY, float dirZ );
 	//--------------------------------------
 	//터질 예정인 애들 시간 줄이기
@@ -368,7 +367,6 @@ public:
 	//방에 있는 모든 player정보를 패킷에 담는다
 	//나를 빼고 담으려면 자신의 session을 매개변수로 넘긴다.
 	void PackageAllPlayerInGame( SPacket& packet, GameSession* me = NULL  );
-
 
 	//test
 	void SetIsSelectGun() { m_isSelectCountDown = TRUE; }

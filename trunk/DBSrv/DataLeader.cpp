@@ -62,6 +62,10 @@ BOOL DataLeader::DataSetting()
 	if( isAutoSrvSetting )
 	{
 		AutoServerSetting();
+
+		//뒤의 data는 필요 없음
+		for( int i=0; i<10; ++i )
+			fgets( text, 256, fp );
 	}
 	else
 	{

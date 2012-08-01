@@ -205,6 +205,22 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath=".\16.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\icon_server_16.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\icon_server_48.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\icon_server_48.png"
+				>
+			</File>
+			<File
 				RelativePath=".\ServerControl.rc"
 				>
 			</File>

@@ -30,16 +30,6 @@ LoginSession::LoginSession(void)
 : isLogin(FALSE)
 , m_isWaitting(FALSE)
 {
-	//singleTon객체를 미리 받아 논다.
-// #ifdef _DEBUG
-// 	m_logger	= &GetLogger;
-// #endif
-// 	m_document	= &GetDocument;
-// #ifdef CONNECT_LOG_SERVER
-// 	m_logSrv	= &GetLogSrvMgr;
-// #endif
-// 	m_dbSrvMgr	= &GetDBSrv;
-// 	m_tmpSpace	= &GetTmpSpace;
 }
 
 LoginSession::~LoginSession(void)
@@ -63,8 +53,6 @@ void LoginSession::OnCreate()
 
 void LoginSession::OnDestroy()
 {
-	//SSynchronize Sync( this );
-
 	//그냥 지워 주면 됨
 	SSession::OnDestroy();
 }

@@ -49,16 +49,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	HWND hWnd;
 	WinMgr window;
-	//if( !window.CreateWindows( hInstance, _T("Lobby"), _T("LobbySrv"), hWnd, 800, 600, nCmdShow ) )
 	if( !window.CreateHideWindows( hInstance, _T("Lobby"), _T("LobbySrv"), hWnd, nCmdShow ) )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG,
 						_T("main\n윈도우 생성 실패!\n\n") );
 		return 0;
 	}
-
-	window.SetMyWindowText( hWnd, _T("LobbySrv_준비중") );
-
 
 	//======================================
 	// 서버 데이터 로드
@@ -75,8 +71,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	LobbyMain lMain;
 	lMain.Init();
-
-	window.SetMyWindowText( hWnd, _T("LobbySrv_실행중") );
 
 	MSG Message;
 

@@ -202,8 +202,6 @@ BOOL CharObj::CountSkillPoint( float elaps )
 			if( --m_scanPoint <= 0)
 			{
 				m_scanPoint = 0;
-				//스캔 포인트가 0보다 작거나 같으면 스캔 풀어줘야 함
-				//SetSkillNone();
 			}
 			isChange = TRUE;
 		}

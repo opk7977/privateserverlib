@@ -49,7 +49,6 @@ BOOL SrvNet::ConnectToSrv( char* ipAddr, int port )
 
 void SrvNet::DisConnect()
 {
-	//m_sock.Release();
 	if( m_LobbySrv == NULL )
 		return;
 

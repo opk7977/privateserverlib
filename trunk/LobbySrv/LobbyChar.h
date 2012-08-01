@@ -136,10 +136,6 @@ private:
 	//접속을 기다리는 캐릭터들
 	ATL::CAtlMap<int, LobbyChar*>	m_waitChar;
 
-// 	std::list<int>				m_connectPlayer;
-// 	//접속해있는 전체 캐릭터의 수
-// 	int							m_connectPlayerCount;
-
 private:
 	CharMgr();
 	~CharMgr();

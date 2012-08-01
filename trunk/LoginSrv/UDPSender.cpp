@@ -119,8 +119,6 @@ BOOL UDPSender::Run()
 	retval = sendto( m_sock.GetSocket(), sendPacket.GetDataBufferPtr(), sendPacket.GetPacketSize(),
 		0, (SOCKADDR *)&remoteaddr, sizeof(remoteaddr) );
 
-//	m_sock.Release();
-
 	return TRUE;
 }
 

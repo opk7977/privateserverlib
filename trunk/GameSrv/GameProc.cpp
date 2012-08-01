@@ -109,7 +109,6 @@ BOOL GameProc::Run()
 		// 게임 준비가 완료 되었다는 신호를 보낸다
 		//--------------------------------------
 		SendReadyPacket();
-		//SendStartPacket();
 		//--------------------------------------
 		// 무기 고를 시간 줍니다.
 		//--------------------------------------
@@ -204,8 +203,6 @@ BOOL GameProc::Run()
 		if( !m_nowIsPlaying )
 			continue;
 
-		//m_logger->PutLog( SLogger::LOG_LEVEL_SYSTEM, _T("GameProc::Run()\nWaitForSingleObject.\n\n") );
-
 		WaitForSingleObject( m_hReturnResult, INFINITE );
 
 		//이제 끝나기를 5초정도 기다렸다가 끝나는 신호를 클라들에게 전송한다.
@@ -237,9 +234,6 @@ void GameProc::EndThread()
 	CloseHandle( m_hStartGame );
 	CloseHandle( m_hStartEvent );
 	CloseHandle( m_hReturnResult );
-// 	SetEvent( m_hStartGame );
-// 	SetEvent( m_hStartEvent );
-// 	SetEvent( m_hReturnResult );
 
 	SThread::EndThread();
 }
@@ -475,7 +469,6 @@ void GameProc::EndGame()
 {
 	//게임 종료
 	m_nowPlayTimeCount = 0;
-// 	ResetEvent( m_hReturnResult );
 }
 
 void GameProc::WaitTimeLogic( float waitTime )
@@ -705,7 +698,6 @@ BOOL GameProc::MineResetTarget( int sessionID )
 
 void GameProc::MineReset()
 {
-	//SSynchronize Sync( &m_boomSoon );
 	SSynchronize sync( m_mineCritical );
 
 	POSITION pos = m_mapMine.GetStartPosition();
@@ -733,7 +725,6 @@ CharObj* GameProc::FindChar( int sessionID )
 
 MineItem* GameProc::FindMine( int sessionID )
 {
-	//SSynchronize sync( &m_boomSoon );
 	SSynchronize sync( m_mineCritical );
 
 	MineItem* tmpMine = NULL;
@@ -892,28 +883,6 @@ BOOL GameProc::SettingMine( GameSession* session, float posX, float posY, float 
 	return TRUE;
 }
 
-// BOOL GameProc::SettingMine( int sessionId, float posX, float posY, float posZ, float dirX, float dirY, float dirZ )
-// {
-// 	SSynchronize sync( m_mineCritical );
-// 
-// 	MineItem* tmpMine;
-// 
-// 	//sessionID확인
-// 	if( !m_mapMine.Lookup( sessionId, tmpMine ) )
-// 		return FALSE;
-// 
-// 	//지뢰를 이미 사용했다면 사용할 수 없다
-// 	if( !tmpMine->CanUse() )
-// 		return FALSE;
-// 
-// 	//아니면 사용하자
-// 	tmpMine->SetMine( posX, posY, posZ, dirX, dirY, dirZ );
-// 
-// 	//설치 성공
-// 
-// 	return TRUE;
-// }
-
 void GameProc::CountDownRunningMine()
 {
 	float elapsed = m_timer.GetElapsedTime();
@@ -990,9 +959,6 @@ void GameProc::ExplosionMineCrashCheck()
 
 			POINT3 charpos = tmpChar->GetPos();
 
-// 			//지뢰주인을 찾고
-// 			CharObj* mineMaster = m_charMgr->FindCharAsSessionId( tmpMine->GetSessionID() );
-			
 			int damege = tmpMine->IsBoomCollision( charpos.m_X, charpos.m_Y, charpos.m_Z );
 
 			if( damege > 0 )

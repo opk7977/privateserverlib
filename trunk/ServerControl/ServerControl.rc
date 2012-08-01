@@ -58,7 +58,7 @@ CAPTION "Server Control"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     PUSHBUTTON      "서버 종료",ID_SRV_END,89,60,50,14
-    RTEXT           "서버가 연결되어 있지 않습니다.",IDC_STATE_MESSAGE,37,44,114,8
+    RTEXT           "서버가 연결되어 있지 않습니다.",IDC_STATE_MESSAGE,10,44,144,8
     EDITTEXT        IDC_EDIT_SRVNAME,57,20,82,14,ES_AUTOHSCROLL
     LTEXT           "서버 이름 :",IDC_STATIC,16,22,40,8
     DEFPUSHBUTTON   "서버실행",ID_SRV_START,25,60,50,14
@@ -83,6 +83,16 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON_48             ICON                    "icon_server_48.ico"
+IDI_ICON_16             ICON                    "icon_server_16.ico"
 #endif    // 한국어 resources
 /////////////////////////////////////////////////////////////////////////////
 

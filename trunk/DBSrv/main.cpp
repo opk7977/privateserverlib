@@ -52,14 +52,11 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	//======================================
 	HWND hWnd;
 	WinMgr window;
-	//if( !window.CreateWindows( hInstance, _T("DB"), _T("DBSrv"), hWnd, 800, 600, nCmdShow ) )
 	if( !window.CreateHideWindows( hInstance, _T("DB"), _T("DBSrv"), hWnd, nCmdShow ) )
 	{
 		m_logger->PutLog( SLogger::LOG_LEVEL_WORRNIG, _T("main\n윈도우 생성 실패!\n\n") );
 		return 0;
 	}
-
-	window.SetMyWindowText( hWnd, _T("DBSrv_준비중") );
 
 	//======================================
 	// 서버 데이터 로드
@@ -77,8 +74,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 	if( !dMain.Init() )
 		return 0;
 
-	window.SetMyWindowText( hWnd, _T("DBSrv_실행중") );
-
 	MSG Message;
 
 	while( GetMessage( &Message, NULL, 0, 0 ) )
@@ -89,7 +84,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpzCmdPa
 			DispatchMessage( &Message );
 		}
 	}
-
 
 	//======================================
 	// 할당 해제

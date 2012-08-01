@@ -30,7 +30,6 @@ GameSrvMain::GameSrvMain(void)
 
 GameSrvMain::~GameSrvMain(void)
 {
-	//Release();
 }
 
 BOOL GameSrvMain::Init()

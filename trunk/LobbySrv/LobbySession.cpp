@@ -971,9 +971,6 @@ void LobbySession::RecvInsertRoom( SPacket& packet )
 		return;
 	}
 
-// 	//캐릭터에 방을 넣어 준다.
-// 	m_myCharInfo->SetRoom( m_myRoom );
-
 	//방이 지금 게임 준비중이거나 인원이 다 찼으면 들어갈 수 없다
 	if( !m_myRoom->CanInsert() )
 	{
@@ -988,7 +985,6 @@ void LobbySession::RecvInsertRoom( SPacket& packet )
 						m_myCharInfo->GetID(), room );
 #endif
 		m_myRoom = NULL;
-		//m_myCharInfo->SetRoom( NULL );
 		SendResultInsert(-10);
 		return;
 	}
