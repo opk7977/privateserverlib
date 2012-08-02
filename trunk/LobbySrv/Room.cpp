@@ -185,7 +185,8 @@ BOOL Room::DelPlayerInRoom( LobbyChar* charspace )
 	if( charspace->GetReady() )
 		--m_readyCount;
 
-	m_listPlayer.DelItem( charspace );
+	if( !m_listPlayer.IsEnd( m_listPlayer.DelItem( charspace ) ) )
+		--m_playerCount;
 
 	//캐릭터가 없으면 FALSE를 return해 주자
 	if( m_listPlayer.IsEmpty() )
