@@ -233,7 +233,7 @@ void DBSession::RecvGameConnectOK()
 void DBSession::RecvLoginCheckID( SPacket& packet )
 {
 	int indexId, size;
-	TCHAR tmpId[10]={0,};
+	TCHAR tmpId[20]={0,};
 
 	packet >> indexId;
 	//id추출
@@ -267,7 +267,7 @@ void DBSession::RecvLoginCheckID( SPacket& packet )
 void DBSession::RecvLoginCreateAccount( SPacket& packet )
 {
 	int indexId, size;
-	TCHAR tmpId[10]={0,}, tmpPw[15]={0,}, tmpMail[50]={0,};
+	TCHAR tmpId[20]={0,}, tmpPw[30]={0,}, tmpMail[50]={0,};
 
 	packet >> indexId;
 	//id추출
@@ -318,7 +318,7 @@ void DBSession::RecvLoginCreateAccount( SPacket& packet )
 void DBSession::RecvLoginTryLogin( SPacket& packet )
 {
 	int indexId, size;
-	TCHAR tmpId[10]={0,}, tmpPw[15]={0,};
+	TCHAR tmpId[20]={0,}, tmpPw[30]={0,};
 
 	packet >> indexId;
 	//id추출
