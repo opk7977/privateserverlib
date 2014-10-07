@@ -1,6 +1,0 @@
-VSWIZARD 7.0
-Wizard=VsWizard.VsWizardEngine.9.0
-
-Param="WIZARD_NAME = NeoLuxSample Wizard"
-Param="ABSOLUTE_PATH = D:\newsdu\NeoLux\NeoLuxSample Wizard"
-Param="FALLBACK_LCID = 1042"
